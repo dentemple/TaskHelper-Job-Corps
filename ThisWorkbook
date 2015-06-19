@@ -1,0 +1,196 @@
+'================================
+' # ThisWorkbook (Microsoft Excel Objects)
+
+'Note: "Parent" is our software's term for "Third-party Agency"
+'================================
+
+
+
+' /// /// ///
+' To-Do List: _
+1 - Combine the four separate userforms into a single, master userform _
+
+' /// /// ///
+
+
+
+Sub HomepageButton_Click()
+
+WelcomeForm.Show
+
+End Sub
+
+
+
+Sub HomeToData_Click()
+
+'"""
+'Navigates from the Homepage to the Statistics sheet. Hides the former, shows the latter.
+'"""
+
+Application.ScreenUpdating = False
+
+Call NavigateSheets("HomeSheet", "DataSheet")
+
+Application.ScreenUpdating = True
+
+End Sub
+
+
+
+Sub HomeToEnroll_Click()
+
+'"""
+'Navigates from the Homepage to the Registration sheet. Hides the former, shows the latter.
+'"""
+
+Application.ScreenUpdating = False
+
+Call NavigateSheets("HomeSheet", "EnrollSheet")
+
+Application.ScreenUpdating = True
+
+End Sub
+
+
+
+Sub EnrollToHome_Click()
+
+'"""
+'Navigates from the Registration sheet to the Homepage. Hides the former, shows the latter.
+'"""
+
+Application.ScreenUpdating = False
+
+Call NavigateSheets("EnrollSheet", "HomeSheet")
+
+Application.ScreenUpdating = True
+
+End Sub
+
+
+
+Sub EnrollToData_Click()
+
+'"""
+'Navigates from the Registration sheet to the Statistics sheet. Hides the former, shows the latter.
+'"""
+
+Application.ScreenUpdating = False
+
+Call NavigateSheets("EnrollSheet", "DataSheet")
+
+Application.ScreenUpdating = True
+
+End Sub
+
+
+
+Sub DataToEnroll_Click()
+
+'"""
+'Navigates from the Statistics sheet to the Registration sheet. Hides the former, shows the latter.
+'"""
+
+Application.ScreenUpdating = False
+
+Call NavigateSheets("DataSheet", "EnrollSheet")
+
+Application.ScreenUpdating = True
+
+End Sub
+
+
+
+Sub DataToHome_Click()
+
+'"""
+'Navigates from the Statistics sheet to the Homepage. Hides the former, shows the latter.
+'"""
+
+Application.ScreenUpdating = False
+
+Call NavigateSheets("DataSheet", "HomeSheet")
+
+Application.ScreenUpdating = True
+
+End Sub
+
+
+
+Sub NewStudentNoParent_Click()
+'"""
+'Shows the userform selected by the user
+'"""
+
+New_Student_No_Parent.Show
+
+End Sub
+
+
+
+Sub ReturnStudentNoParent_Click()
+'"""
+'Shows the userform selected by the user
+'"""
+
+Return_Student_No_Parent.Show
+
+End Sub
+
+
+
+Sub NewStudentWithParent_Click()
+'"""
+'Shows the userform selected by the user
+'"""
+
+New_Student_With_Parent.Show
+
+End Sub
+
+
+
+Sub ReturnStudentWithParent_Click()
+'"""
+'Shows the userform selected by the user
+'"""
+
+Return_Student_With_Parent.Show
+
+End Sub
+
+
+
+Sub ActivityButton_Click()
+
+'"""
+'User selects whether they wish to have the enrollment process _
+in the foreground or the background.
+
+'This choice will later be passed into the relevant variable.
+'"""
+
+Dim str As String
+Dim ws As Excel.Worksheet
+
+str = vbNullString
+
+Application.ScreenUpdating = False
+
+Set ws = GetSheetFromCodeName(Workbooks("TaskHelper VBA iSeries.xlsm"), "EnrollSheet")
+str = ws.Range("ActivityDecision").Text
+
+If str = "Show" Then
+    ws.Range("ActivityDecision") = "Hide"
+
+ElseIf str = "Hide" Then
+    ws.Range("ActivityDecision") = "Show"
+    
+End If
+
+Application.ScreenUpdating = True
+    
+End Sub
+
+
