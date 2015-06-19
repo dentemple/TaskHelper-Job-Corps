@@ -20,7 +20,8 @@ those individuals seeking to learn more about Excel-to-AS/400 automation may fin
 informative for their own purposes.**  
 
 With each iteration of this project, I'll do what I can to localize context requirments, but I can't guarantee true
-*context-free code* for quite a long time, if at all.  Unfortunately, it's simply not within my project's intended scope.
+*context-free code* for quite a long time, if at all.  Unfortunately, it's simply not within my project's intended scope
+ (but I'll do what I can).
 
 To learn more about IBM's HACL:
 
