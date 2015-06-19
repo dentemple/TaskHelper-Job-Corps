@@ -1,0 +1,1685 @@
+'=================================================
+' # New_Student_With_Parent (Userform)
+'
+' Note: The launch button requires the AS/400
+'
+' This userform handles registration for brand new students _
+enrolling under a "parent" (third-party agency) account
+
+' Input: _
+Manual user entries
+
+' Output: _
+Passes AS/400 control to a seperate module _
+A PDF document _
+
+' To-Do List: _
+1 - Evaluate variable and procedure names
+2 - Improve comments (provide better context for procedures/actions)
+2 - Merge the cStudent, cRegistration, and cTag classes
+3 - Further move actions/calculations to separate modules
+4 - Merge the four separate enrollment userforms into one
+5 - Add Outlook functionality
+6 - Add Github functionality
+7 - Can DRY be applied to VBA events?
+
+'=================================================
+
+
+
+Option Explicit
+
+Private Sub UserForm_Initialize()
+
+'"""
+'Initialization event. Sets userform to its base state
+'"""
+
+'Dimensions end user selection options
+Dim selection_Salesperson As String
+Dim selection_Session As String
+Dim selection_Activity As String
+
+'Empties the textboxes
+textbox_Salesperson.Value = vbNullString
+textbox_Firstname.Value = vbNullString
+textbox_Lastname.Value = vbNullString
+textbox_Midname.Value = vbNullString
+textbox_Phone_Area.Value = vbNullString
+textbox_Phone_SevenDigit.Value = vbNullString
+textbox_Email.Value = vbNullString
+textbox_AddressA.Value = vbNullString
+textbox_AddressB.Value = vbNullString
+textbox_AddressC.Value = vbNullString
+textbox_AddressD.Value = vbNullString
+textbox_City.Value = vbNullString
+textbox_State.Value = vbNullString
+textbox_Zipcode.Value = vbNullString
+textbox_ProgramMod.Value = vbNullString
+textbox_BaseTuition.Value = vbNullString
+textbox_ClassMod0.Value = vbNullString
+textbox_ClassMod1.Value = vbNullString
+textbox_ClassMod2.Value = vbNullString
+textbox_ClassMod3.Value = vbNullString
+textbox_ClassMod4.Value = vbNullString
+textbox_ClassMod5.Value = vbNullString
+textbox_ClassMod6.Value = vbNullString
+textbox_ClassTuition0.Value = vbNullString
+textbox_ClassTuition1.Value = vbNullString
+textbox_ClassTuition2.Value = vbNullString
+textbox_ClassTuition3.Value = vbNullString
+textbox_ClassTuition4.Value = vbNullString
+textbox_ClassTuition5.Value = vbNullString
+textbox_ClassTuition6.Value = vbNullString
+textbox_Parent_Invoice.Value = vbNullString
+textbox_Student_Tuition.Value = vbNullString
+textbox_Student_Fees.Value = vbNullString
+textbox_Student_Net.Value = vbNullString
+textbox_Downpayment_SetVal.Value = vbNullString
+textbox_Installments_SetVal.Value = vbNullString
+textbox_DollarsPerMonth_SetVal.Value = vbNullString
+textbox_Downpayment_GetVal.Value = vbNullString
+textbox_Installments_GetVal.Value = vbNullString
+textbox_DollarsPerMonth_GetVal.Value = vbNullString
+textbox_Finalpay_approx.Value = vbNullString
+textbox_Helptext.Value = vbNullString
+
+'Locks & Grays certain TextBoxes
+textbox_Parent_Invoice.Locked = True
+textbox_Parent_Invoice.BackColor = cGrey
+textbox_Student_Net.Locked = True
+textbox_Student_Net.BackColor = cGrey
+textbox_Downpayment_GetVal.Locked = True
+textbox_Downpayment_GetVal.BackColor = cGrey
+textbox_Installments_GetVal.Locked = True
+textbox_Installments_GetVal.BackColor = cGrey
+textbox_DollarsPerMonth_GetVal.Locked = True
+textbox_DollarsPerMonth_GetVal.BackColor = cGrey
+textbox_Finalpay_approx.Locked = True
+textbox_Finalpay_approx.BackColor = cGrey
+textbox_Helptext.Locked = True
+textbox_Helptext.BackColor = cGrey
+
+selection_Salesperson = CStr(Range("DefaultSalesperson"))
+textbox_Salesperson.Value = selection_Salesperson
+
+selection_Session = CStr(Range("DefaultSession"))
+selection_Activity = CStr(Range("ActivityDecision"))
+
+'Initializes the ComboBoxes
+combo_Session.Clear
+With combo_Session
+    .AddItem selection_Session
+    .AddItem "A"
+    .AddItem "B"
+    .AddItem "C"
+    .AddItem "D"
+    .AddItem "E"
+End With
+combo_Session.Text = combo_Session.List(0)
+
+combo_Activity.Clear
+With combo_Activity
+    .AddItem selection_Activity
+    .AddItem "Show"
+    .AddItem "Hide"
+End With
+combo_Activity.Text = combo_Activity.List(0)
+
+checkbox_ParentLC.Clear
+With checkbox_ParentLC
+    .AddItem "MyCAA/College"
+    .AddItem "MyCAA/Career"
+End With
+
+'Unchecks the checkbox
+checkbox_ProofHS.Value = False
+
+'Sets initial focus
+textbox_Firstname.SetFocus
+
+End Sub
+
+
+
+'/////////////////////////////////////////////////////////////////
+'/////////////////////////////////////////////////////////////////
+
+
+
+Private Sub textbox_Salesperson_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+'Restricts the field to numbers only
+Call Integers_Only(KeyAscii)
+
+End Sub
+
+
+
+Private Sub textbox_Phone_Area_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+'Restricts the field to numbers only
+Call Integers_Only(KeyAscii)
+
+End Sub
+
+
+
+Private Sub textbox_Phone_SevenDigit_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+'Restricts the field to numbers only
+Call Integers_Only(KeyAscii)
+
+End Sub
+
+
+
+Private Sub textbox_Zipcode_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+'Restricts the field to numbers only
+Call Integers_Only(KeyAscii)
+
+End Sub
+
+
+
+Private Sub textbox_ProgramMod_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+'Restricts the field to numbers only
+Call Integers_Only(KeyAscii)
+
+End Sub
+
+
+
+Private Sub textbox_BaseTuition_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+'Restricts the field to only numbers and a single decimal
+Call Floats_and_Integers_Only(KeyAscii, textbox_BaseTuition)
+
+End Sub
+
+
+
+Private Sub textbox_ClassTuition0_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+'Restricts the field to only numbers and a single decimal
+Call Floats_and_Integers_Only(KeyAscii, textbox_ClassTuition0)
+
+End Sub
+
+
+
+Private Sub textbox_ClassTuition1_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+'Restricts the field to only numbers and a single decimal
+Call Floats_and_Integers_Only(KeyAscii, textbox_ClassTuition1)
+
+End Sub
+
+
+
+Private Sub textbox_ClassTuition2_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+'Restricts the field to only numbers and a single decimal
+Call Floats_and_Integers_Only(KeyAscii, textbox_ClassTuition2)
+
+End Sub
+
+
+
+Private Sub textbox_ClassTuition3_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+'Restricts the field to only numbers and a single decimal
+Call Floats_and_Integers_Only(KeyAscii, textbox_ClassTuition3)
+
+End Sub
+
+
+
+Private Sub textbox_ClassTuition4_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+'Restricts the field to only numbers and a single decimal
+Call Floats_and_Integers_Only(KeyAscii, textbox_ClassTuition4)
+
+End Sub
+
+
+
+Private Sub textbox_ClassTuition5_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+'Restricts the field to only numbers and a single decimal
+Call Floats_and_Integers_Only(KeyAscii, textbox_ClassTuition5)
+
+End Sub
+
+
+
+Private Sub textbox_ClassTuition6_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+'Restricts the field to only numbers and a single decimal
+Call Floats_and_Integers_Only(KeyAscii, textbox_ClassTuition6)
+
+End Sub
+
+
+
+Private Sub textbox_Student_Tuition_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+'Restricts the field to only numbers and a single decimal
+Call Floats_and_Integers_Only(KeyAscii, textbox_Student_Tuition)
+
+End Sub
+
+
+
+Private Sub textbox_Student_Fees_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+'Restricts the field to only numbers and a single decimal
+Call Floats_and_Integers_Only(KeyAscii, textbox_Student_Fees)
+
+End Sub
+
+
+
+Private Sub textbox_Downpayment_SetVal_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+'Restricts the field to only numbers and a single decimal
+Call Floats_and_Integers_Only(KeyAscii, textbox_Downpayment_SetVal)
+
+End Sub
+
+
+
+Private Sub textbox_Installments_SetVal_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+'Restricts the field to numbers only
+Call Integers_Only(KeyAscii)
+
+End Sub
+
+
+
+Private Sub textbox_DollarsPerMonth_SetVal_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+'Restricts the field to only numbers and a single decimal
+Call Floats_and_Integers_Only(KeyAscii, textbox_DollarsPerMonth_SetVal)
+
+End Sub
+
+
+
+'/////////////////////////////////////////////////////////////////
+'/////////////////////////////////////////////////////////////////
+
+
+
+Private Sub UserForm_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+
+'Clears the help text when mouse hovers over the userform object itself
+Me.textbox_Helptext = vbNullString
+
+End Sub
+
+
+
+Private Sub textbox_Salesperson_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+ 
+Call Pop_HelpText(textbox_Helptext, _
+    "(Required)  Enter your 4-digit salesperson code.")
+    
+End Sub
+
+
+
+Private Sub combo_Session_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Select your AS400 Session. Please ensure the session is active and ready.")
+    
+End Sub
+
+
+
+Private Sub textbox_Firstname_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "(Required)  Enter the student's first name.")
+
+End Sub
+
+
+
+Private Sub textbox_Lastname_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "(Required)  Enter the student's last name.")
+
+End Sub
+
+
+
+Private Sub textbox_Midname_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enters the student's middle name/initial.")
+
+End Sub
+
+
+
+Private Sub textbox_Phone_Area_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enters the student's area code (numbers only).")
+
+End Sub
+
+
+
+Private Sub textbox_Phone_SevenDigit_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enters the student's base phone number (numbers only).")
+
+End Sub
+
+
+
+Private Sub textbox_Email_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enters the student's email address.")
+
+End Sub
+
+
+
+Private Sub option_Male_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Select the student's gender.")
+
+End Sub
+
+
+
+Private Sub option_Female_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Select the student's gender.")
+
+End Sub
+
+
+
+Private Sub textbox_AddressA_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enter the student's address. (First line).")
+
+End Sub
+
+
+
+Private Sub textbox_AddressB_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enter the student's address. (Second line).")
+
+End Sub
+
+
+
+Private Sub textbox_AddressC_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enter the student's address. (Third line).")
+
+End Sub
+
+
+
+Private Sub textbox_AddressD_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enter the student's address. (Fourth line).")
+
+End Sub
+
+
+
+Private Sub textbox_City_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enter the student's city.")
+
+End Sub
+
+
+
+Private Sub textbox_State_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enter the student's 2-str_Session state abbreviation.")
+
+End Sub
+
+
+
+Private Sub textbox_Zipcode_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enter the student's 5-digit zip code.")
+
+End Sub
+
+
+
+Private Sub checkbox_ProofHS_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Select verification of the student's Proof of Education.")
+
+End Sub
+
+
+
+Private Sub option_Parent_INS_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "The parent is not affiliated with the military.")
+
+End Sub
+
+
+
+Private Sub optMIL_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "The parent is a military account.")
+
+End Sub
+
+
+
+Private Sub option_CareerProgram_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enroll the student into a career program.")
+
+End Sub
+
+
+
+Private Sub option_FullSemester_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enroll the student into a semester program.")
+
+End Sub
+
+
+
+Private Sub option_IndividualCredits_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enroll the student into individual college credits.")
+
+End Sub
+
+
+
+Private Sub textbox_ProgramMod_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "(Required)  Enter the 8-digit program code.")
+
+End Sub
+
+
+
+Private Sub textbox_BaseTuition_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "(Required)  Enter the tuition amount.")
+
+End Sub
+
+
+
+Private Sub textbox_ClassMod0_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enter the course mod.")
+
+End Sub
+
+
+
+Private Sub textbox_ClassMod1_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enter the course mod.")
+
+End Sub
+
+
+
+Private Sub textbox_ClassMod2_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enter the course mod.")
+
+End Sub
+
+
+
+Private Sub textbox_ClassMod3_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enter the course mod.")
+
+End Sub
+
+
+
+Private Sub textbox_ClassMod4_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enter the course mod.")
+
+End Sub
+
+
+
+Private Sub textbox_ClassMod5_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enter the course mod.")
+
+End Sub
+
+
+
+Private Sub textbox_ClassMod6_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enter the course mod.")
+
+End Sub
+
+
+
+Private Sub textbox_ClassTuition0_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enter the base tuition for the selected class.")
+
+End Sub
+
+
+
+Private Sub textbox_ClassTuition1_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enter the base tuition for the selected class.")
+
+End Sub
+
+
+
+Private Sub textbox_ClassTuition2_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enter the base tuition for the selected class.")
+
+End Sub
+
+
+
+Private Sub textbox_ClassTuition3_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enter the base tuition for the selected class.")
+
+End Sub
+
+
+
+Private Sub textbox_ClassTuition4_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enter the base tuition for the selected class.")
+
+End Sub
+
+
+
+Private Sub textbox_ClassTuition5_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enter the base tuition for the selected class.")
+
+End Sub
+
+
+
+Private Sub textbox_ClassTuition6_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Enter the base tuition for the selected class.")
+
+End Sub
+
+
+
+Private Sub button_Calculate_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Calculate the values listed below.")
+
+End Sub
+
+
+
+Private Sub button_ClearCalculation_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Clear the values listed below.")
+
+End Sub
+
+
+
+Private Sub textbox_Parent_Invoice_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Show the total PA tuition value(s) from the selected program field(s).")
+
+End Sub
+
+
+
+Private Sub textbox_Student_Tuition_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Add any tuition to be covered by the student.")
+
+End Sub
+
+
+
+Private Sub textbox_Student_Fees_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Add any fees to be covered by the student.")
+
+End Sub
+
+
+
+Private Sub textbox_Student_Net_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Shows the net total to be covered by the student.")
+
+End Sub
+
+
+
+Private Sub option_Calc_by_Installments_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Calculate the student's payments based on the number of installments.")
+
+End Sub
+
+
+
+Private Sub option_Calc_by_MonthlyPayments_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Calculate the student's payments based on the amount to pay per month.")
+
+End Sub
+
+
+
+Private Sub option_Payment_in_Full_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Student is paying their owed balance in full.")
+
+End Sub
+
+
+
+Private Sub option_No_Cost_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Perform the registration without adding additional tuition.")
+
+End Sub
+
+
+
+Private Sub textbox_Downpayment_SetVal_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+    
+Call Pop_HelpText(textbox_Helptext, _
+    "Enter the student's down payment.")
+ 
+End Sub
+
+
+
+Private Sub textbox_Downpayment_GetVal_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "The student's selected down payment.")
+
+End Sub
+
+
+
+Private Sub textbox_Installments_SetVal_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Calculate the student's payments based on the number of installments.")
+
+End Sub
+
+
+
+Private Sub textbox_Installments_GetVal_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "The student's approximate number of installments. (Informational only).")
+
+End Sub
+
+
+
+Private Sub textbox_DollarsPerMonth_SetVal_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Calculate the student's payments based on the amount to pay per month.")
+
+End Sub
+
+
+
+Private Sub textbox_DollarsPerMonth_GetVal_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "The student's approximate total per month. (Informational only).")
+
+End Sub
+
+
+
+Private Sub textbox_Finalpay_approx_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "The student's approximate final monthly payment. (Informational only).")
+
+End Sub
+
+
+
+Private Sub button_Launch_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Launch the Registration script.  An active AS/400 screen is required.")
+
+End Sub
+
+
+
+Private Sub button_Confirm_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+     
+Call Pop_HelpText(textbox_Helptext, _
+    "Confirm the above entered information.")
+
+End Sub
+
+
+
+Private Sub button_ClearUserform_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+    
+Call Pop_HelpText(textbox_Helptext, _
+    "Clear the Registration form.")
+
+End Sub
+
+
+
+Private Sub button_Cancel_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+    
+Call Pop_HelpText(textbox_Helptext, _
+    "Close the Registration form.")
+
+End Sub
+
+
+
+Private Sub textbox_Helptext_MouseMove(ByVal Button As Integer, _
+    ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+'Populates Help Text
+
+Call Pop_HelpText(textbox_Helptext, _
+    "Help Text. Provides additional information.")
+
+End Sub
+
+
+
+'/////////////////////////////////////////////////////////////////
+'/////////////////////////////////////////////////////////////////
+
+
+
+Private Sub option_CareerProgram_Click()
+
+'Dimensions an array used for value passing
+Dim array_textboxes(15) As Object
+
+'Assigns selected textboxes to the array_textboxes array
+Call Store_TextBox_Objects(array_textboxes, New_Student_With_Parent)
+
+If option_CareerProgram = True Then Call Manipulate_TextBoxes(array_textboxes, True)
+
+End Sub
+
+
+
+Private Sub option_FullSemester_Click()
+
+'Dimensions an array used for value passing
+Dim array_textboxes(15) As Object
+
+'Assigns selected textboxes to the array_textboxes array
+Call Store_TextBox_Objects(array_textboxes, New_Student_With_Parent)
+
+If option_FullSemester = True Then Call Manipulate_TextBoxes(array_textboxes, True)
+
+End Sub
+
+
+
+Private Sub option_IndividualCredits_Click()
+
+'Dimensions an array used for value passing
+Dim array_textboxes(15) As Object
+
+'Assigns selected textboxes to the array_textboxes array
+Call Store_TextBox_Objects(array_textboxes, New_Student_With_Parent)
+
+If option_IndividualCredits = True Then Call Manipulate_TextBoxes(array_textboxes, False)
+
+End Sub
+
+
+
+Private Sub option_Calc_by_Installments_Click()
+
+'Clears the total per month option
+textbox_DollarsPerMonth_SetVal.Value = vbNullString
+textbox_DollarsPerMonth_GetVal.Value = vbNullString
+
+textbox_Student_Tuition.Locked = False     'unlocks
+textbox_Student_Tuition.BackColor = cWhite
+
+textbox_Student_Fees.Locked = False     'unlocks
+textbox_Student_Fees.BackColor = cWhite
+
+textbox_Downpayment_SetVal.Locked = False       'unlocks
+textbox_Downpayment_SetVal.BackColor = cWhite
+
+textbox_Installments_SetVal.Locked = False   'unlocks
+textbox_Installments_SetVal.BackColor = cWhite
+
+textbox_DollarsPerMonth_SetVal.Locked = True   'locks
+textbox_DollarsPerMonth_SetVal.BackColor = cGrey
+
+End Sub
+
+
+
+Private Sub option_Calc_by_MonthlyPayments_Click()
+
+'Clears the # of installments option
+textbox_Installments_SetVal.Value = vbNullString
+textbox_Installments_GetVal.Value = vbNullString
+
+textbox_Student_Tuition.Locked = False     'unlocks
+textbox_Student_Tuition.BackColor = cWhite
+
+textbox_Student_Fees.Locked = False     'unlocks
+textbox_Student_Fees.BackColor = cWhite
+
+textbox_Downpayment_SetVal.Locked = False       'unlocks
+textbox_Downpayment_SetVal.BackColor = cWhite
+
+textbox_Installments_SetVal.Locked = True    'locks
+textbox_Installments_SetVal.BackColor = cGrey
+
+textbox_DollarsPerMonth_SetVal.Locked = False  'unlocks
+textbox_DollarsPerMonth_SetVal.BackColor = cWhite
+
+End Sub
+
+
+
+Private Sub option_Payment_in_Full_Click()
+
+'Clears the unnecessary options
+textbox_Downpayment_SetVal.Value = vbNullString
+textbox_Installments_SetVal.Value = vbNullString
+textbox_DollarsPerMonth_SetVal.Value = vbNullString
+textbox_DollarsPerMonth_GetVal.Value = vbNullString
+
+textbox_Student_Tuition.Locked = False     'unlocks
+textbox_Student_Tuition.BackColor = cWhite
+
+textbox_Student_Fees.Locked = False     'unlocks
+textbox_Student_Fees.BackColor = cWhite
+
+textbox_Downpayment_SetVal.Locked = True        'locks
+textbox_Downpayment_SetVal.BackColor = cGrey
+
+textbox_Installments_SetVal.Locked = True    'locks
+textbox_Installments_SetVal.BackColor = cGrey
+
+textbox_DollarsPerMonth_SetVal.Locked = True   'locks
+textbox_DollarsPerMonth_SetVal.BackColor = cGrey
+
+End Sub
+
+
+
+Private Sub option_No_Cost_Click()
+
+'Clears the unnecessary options
+textbox_Parent_Invoice.Value = vbNullString
+textbox_Student_Tuition.Value = vbNullString
+textbox_Student_Fees.Value = vbNullString
+textbox_Student_Net.Value = vbNullString
+
+textbox_Downpayment_SetVal.Value = vbNullString
+textbox_Installments_SetVal.Value = vbNullString
+textbox_DollarsPerMonth_SetVal.Value = vbNullString
+
+textbox_Student_Tuition.Locked = True      'locks
+textbox_Student_Tuition.BackColor = cGrey
+
+textbox_Student_Fees.Locked = True      'locks
+textbox_Student_Fees.BackColor = cGrey
+
+textbox_Downpayment_SetVal.Locked = True        'locks
+textbox_Downpayment_SetVal.BackColor = cGrey
+
+textbox_Installments_SetVal.Locked = True    'locks
+textbox_Installments_SetVal.BackColor = cGrey
+
+textbox_DollarsPerMonth_SetVal.Locked = True   'locks
+textbox_DollarsPerMonth_SetVal.BackColor = cGrey
+
+End Sub
+
+
+
+Private Sub button_ClearCalculation_Click()
+
+textbox_Parent_Invoice.Value = vbNullString
+textbox_Student_Tuition.Value = vbNullString
+textbox_Student_Fees.Value = vbNullString
+textbox_Student_Net.Value = vbNullString
+
+textbox_Downpayment_SetVal.Value = vbNullString
+textbox_Installments_SetVal.Value = vbNullString
+textbox_DollarsPerMonth_SetVal.Value = vbNullString
+textbox_Downpayment_GetVal.Value = vbNullString
+textbox_Installments_GetVal.Value = vbNullString
+textbox_DollarsPerMonth_GetVal.Value = vbNullString
+textbox_Finalpay_approx.Value = vbNullString
+
+End Sub
+
+
+
+Private Sub button_Calculate_Click()
+
+Dim str_Message As String
+str_Message = vbNullString
+
+Call Calculate_Payments(str_Message)     'within module
+
+If Calculate_Payments(str_Message) = False Then MsgBox str_Message, vbCritical, "Payments Message"
+
+End Sub
+
+
+
+Private Function Calculate_Payments(ByRef str_Message As String) As Boolean
+
+'"""
+'Passes in the TUI and FEE amounts and returns the calculated values
+'"""
+
+Dim db_Remaining_Due As Double
+Dim db_Dollars_Per_Month As Double
+Dim db_Final_Payment As Double
+
+Dim int_Installments As Integer
+
+db_Remaining_Due = 0
+db_Dollars_Per_Month = 0
+int_Installments = 0
+db_Final_Payment = 0
+
+Calculate_Payments = True
+
+'"""
+'Part 1: Populate total tuition and fees
+'"""
+
+'For full programs/semester, only one value needs to be passed
+If option_CareerProgram = True Or option_FullSemester = True Then
+
+    textbox_Parent_Invoice = textbox_BaseTuition
+
+'Adds together the individual credit textboxes, then passes the value
+ElseIf option_IndividualCredits = True Then
+
+    textbox_Parent_Invoice = Val(textbox_ClassTuition0) + Val(textbox_ClassTuition1) + Val(textbox_ClassTuition2) + _
+        Val(textbox_ClassTuition3) + Val(textbox_ClassTuition4) + Val(textbox_ClassTuition5) + Val(textbox_ClassTuition6)
+    
+Else
+
+    Calculate_Payments = False
+    str_Message = "* No enrollment option has been selected." & vbNewLine
+
+End If
+
+textbox_Student_Net = Val(textbox_Student_Tuition) + Val(textbox_Student_Fees)
+
+'"""
+'Part 2: Calculate payments
+'"""
+
+If option_No_Cost = True Then
+
+    Call button_ClearCalculation_Click
+    
+ElseIf option_Payment_in_Full = True Then
+
+    textbox_Downpayment_SetVal = vbNullString
+    textbox_Installments_SetVal = vbNullString
+    textbox_DollarsPerMonth_SetVal = vbNullString
+    textbox_DollarsPerMonth_GetVal = vbNullString
+    textbox_Finalpay_approx = vbNullString
+    
+    textbox_Downpayment_GetVal = textbox_Student_Net
+    textbox_Installments_GetVal = 1
+    
+ElseIf option_Calc_by_MonthlyPayments = True Then
+
+    'Note: The above action also unlocks the textbox_DollarsPerMonth_SetVal field
+    '       and locks the textbox_Installments_SetVal field
+    
+    textbox_Downpayment_GetVal = textbox_Downpayment_SetVal
+    textbox_Installments_SetVal = vbNullString
+    
+    db_Remaining_Due = Val(textbox_Student_Net) - Val(textbox_Downpayment_SetVal)
+    
+    If Val(textbox_Student_Net) < 0 Then
+    
+        str_Message = str_Message & _
+            "* The NET total must be greater than zero" & vbNewLine
+            
+        textbox_Downpayment_GetVal = vbNullString
+        textbox_Installments_GetVal = vbNullString
+        textbox_DollarsPerMonth_GetVal = vbNullString
+        textbox_Finalpay_approx = vbNullString
+            
+        GoTo SkipToFalse
+        
+    ElseIf db_Remaining_Due < 0 Then
+    
+        str_Message = str_Message & _
+            "* There must be a valid total left for monthly payments:" & vbNewLine & _
+            vbTab & Format(textbox_Student_Net, "Currency") & " (NET) - " & _
+            Format(textbox_Downpayment_SetVal, "Currency") & " (DP) = " & "-" & _
+            Format(str(db_Remaining_Due), "Currency") & " (Remaining)" & vbNewLine
+            
+        textbox_Downpayment_GetVal = vbNullString
+        textbox_Installments_GetVal = vbNullString
+        textbox_DollarsPerMonth_GetVal = vbNullString
+        textbox_Finalpay_approx = vbNullString
+            
+        GoTo SkipToFalse
+        
+    ElseIf textbox_DollarsPerMonth_SetVal < 0 Then
+    
+        str_Message = str_Message & _
+            "* The 'Per Month' entry must be greater than zero." & vbNewLine
+            
+        textbox_Downpayment_GetVal = vbNullString
+        textbox_Installments_GetVal = vbNullString
+        textbox_DollarsPerMonth_GetVal = vbNullString
+        textbox_Finalpay_approx = vbNullString
+        
+        GoTo SkipToFalse
+        
+    Else
+    
+        db_Dollars_Per_Month = Val(textbox_DollarsPerMonth_SetVal)
+        textbox_DollarsPerMonth_GetVal = db_Dollars_Per_Month
+        'Note: Backslash indicates integer division
+        int_Installments = CInt(db_Remaining_Due) \ Val(textbox_DollarsPerMonth_SetVal)
+        textbox_Installments_GetVal = int_Installments
+        
+        db_Final_Payment = db_Remaining_Due - (int_Installments * db_Dollars_Per_Month)
+        textbox_Finalpay_approx = db_Final_Payment
+               
+    End If
+
+ElseIf option_Calc_by_Installments = True Then
+
+    'Note: The above action also unlocks the textbox_Installments_SetVal field
+    '       and locks the textbox_DollarsPerMonth_SetVal field
+    
+    textbox_Downpayment_GetVal = textbox_Downpayment_SetVal
+    textbox_DollarsPerMonth_SetVal = vbNullString
+    
+    db_Remaining_Due = Val(textbox_Student_Net) - Val(textbox_Downpayment_SetVal)
+    
+    If Val(textbox_Student_Net) < 0 Then
+    
+        str_Message = str_Message & _
+            "* The NET total must be greater than zero" & vbNewLine
+            
+        textbox_Downpayment_GetVal = vbNullString
+        textbox_Installments_GetVal = vbNullString
+        textbox_DollarsPerMonth_GetVal = vbNullString
+        textbox_Finalpay_approx = vbNullString
+            
+        GoTo SkipToFalse
+        
+    ElseIf db_Remaining_Due < 0 Then
+    
+        str_Message = str_Message & _
+            "* There must be a valid total left for monthly payments:" & vbNewLine & _
+            vbTab & Format(textbox_Student_Net, "Currency") & " (NET) - " & _
+            Format(textbox_Downpayment_SetVal, "Currency") & " (DP) = " & "-" & _
+            Format(str(db_Remaining_Due), "Currency") & " (Remaining)" & vbNewLine
+            
+        textbox_Downpayment_GetVal = vbNullString
+        textbox_Installments_GetVal = vbNullString
+        textbox_DollarsPerMonth_GetVal = vbNullString
+        textbox_Finalpay_approx = vbNullString
+            
+        GoTo SkipToFalse
+        
+    ElseIf textbox_Installments_SetVal < 1 Then
+    
+        str_Message = str_Message & _
+            "* The 'Installments' entry must be greater than one." & vbNewLine
+            
+        textbox_Downpayment_GetVal = vbNullString
+        textbox_Installments_GetVal = vbNullString
+        textbox_DollarsPerMonth_GetVal = vbNullString
+        textbox_Finalpay_approx = vbNullString
+        
+        GoTo SkipToFalse
+            
+    Else
+    
+        int_Installments = CInt(textbox_Installments_SetVal)
+        textbox_Installments_GetVal = int_Installments
+        'Note: Backslash indicates integer division
+        db_Dollars_Per_Month = db_Remaining_Due \ int_Installments
+        'Converts db_Dollars_Per_Month into a truncated integer.  This is done
+        '   to more closely approximate the AS400's calculation.
+        db_Dollars_Per_Month = CInt(db_Dollars_Per_Month)
+        textbox_DollarsPerMonth_GetVal = db_Dollars_Per_Month
+        
+        db_Final_Payment = db_Remaining_Due - (int_Installments * db_Dollars_Per_Month)
+        textbox_Finalpay_approx = db_Final_Payment
+        
+    End If
+
+Else
+
+    Calculate_Payments = False
+    str_Message = str_Message & _
+        "* No Payment option has been selected." & vbNewLine
+    
+End If
+
+Cleanup:
+Exit Function
+
+SkipToFalse:
+Calculate_Payments = False
+GoTo Cleanup
+
+
+End Function
+
+
+
+'/////////////////////////////////////////////////////////////////
+'/////////////////////////////////////////////////////////////////
+
+Private Sub button_ClearUserform_Click()
+
+Call UserForm_Initialize
+
+End Sub
+
+Private Sub button_Cancel_Click()
+
+Unload Me
+
+End Sub
+
+
+
+Private Sub button_Confirm_Click()
+
+'User confirmation
+Dim blueMessage As String
+Dim redMessage As String
+
+'"""
+'cStudent, cRegistration, and cTag are Class Modules.
+'"""
+
+'Stores Student Information
+Dim stuConfirm As cStudent
+Set stuConfirm = New cStudent
+
+'Stores Class and Payment Information
+Dim regConfirm As cRegistration
+Set regConfirm = New cRegistration
+
+'Stores general information
+Dim tagConfirm As cTag
+Set tagConfirm = New cTag
+
+blueMessage = vbNullString
+redMessage = vbNullString
+
+Call Convert_From_Textboxes(blueMessage, redMessage, tagConfirm, regConfirm, stuConfirm)   'within the module
+
+'Shows the appropriate textbox message
+If Len(redMessage) > 1 Then
+    MsgBox redMessage, vbCritical, "Please resolve the following issues:"
+Else
+    MsgBox blueMessage, vbInformation, "Please confirm the following information:"
+End If
+
+End Sub
+
+
+
+Private Sub button_Launch_Click()
+
+'Sets the data worksheet values
+Dim wsData As Excel.Worksheet
+Dim long_row As Long
+
+'User confirmation
+Dim blueMessage As String
+Dim redMessage As String
+Dim str_Confirm As String
+Dim str_Export As String
+
+'Stores AS400 objects
+Dim objAS400 As Object            'Main AS/400 PS object
+Dim obj_AS400_Focus As Object    'Object to focus the AS/400
+Dim ConnList As Object      'Object to refresh the AS/400
+Dim str_Session As String
+
+'Stores Student Information
+Dim stu As cStudent
+
+'Stores Class and Payment Information
+Dim reg As cRegistration
+
+'Stores general information
+Dim tag As cTag
+
+'Initialization
+Set stu = New cStudent
+Set reg = New cRegistration
+Set tag = New cTag
+Call Defaults_Off
+blueMessage = vbNullString
+redMessage = vbNullString
+str_Export = vbNullString
+str_Session = vbNullString
+str_Confirm = "A Student ID# has been generated successfully." & _
+                vbNewLine & vbNewLine & "SID:" & vbTab & vbTab
+
+'Preps to pass data to the data sheet
+Set wsData = GetSheetFromCodeName(Workbooks("TaskHelper VBA iSeries.xlsm"), "DataSheet")
+long_row = wsData.Range("Ref").End(xlDown).row + 1
+
+'Passes the userform data into the relevant class objects.  This procedure _
+    is located within the module.
+Call Convert_From_Textboxes(blueMessage, redMessage, tag, reg, stu)   'within the module
+
+'Connects to the AS/400 Host Automation Objects
+str_Session = tag.Session
+Call Initialize_AS400(blueMessage, redMessage, str_Session, objAS400, obj_AS400_Focus, ConnList)
+
+'Additional user check against individual college credit codes (a common source of mistakes)
+If tag.EnrollmentType = 3 Then If Confirm_Indiv_Course_Codes(reg) = True Then GoTo Cleanup
+
+'Shows the appropriate textbox message
+If Len(redMessage) > 1 Then
+    MsgBox redMessage, vbCritical, "Please resolve the following issues:"
+Else
+
+    If MsgBox(blueMessage, vbOKCancel, "Confirmation") = vbOK Then
+
+        'Sends initial data to the data sheet
+        Call InitialData_Student_No(stu, tag, wsData, long_row)
+        Call PassToDataSheet("New_Student_With_Parent", "Userform", wsData, long_row)
+
+        'Runs the first enrollment script
+        str_Confirm = Register_into_the_AddressBook(objAS400, obj_AS400_Focus, stu, tag, reg, wsData, long_row)
+
+        'If the above function fails prior to enrollment, then...
+        If tag.StudentID = "X" Then GoTo Cleanup
+    
+        'Allows the following MsgBox to receive focus
+        AppActivate ("Microsoft excel")
+        If MsgBox(str_Confirm, vbOKCancel, "Student ID") = vbCancel Then
+            MsgBox "The registration process has been cancelled", vbInformation, "Cancelled"
+            GoTo Cleanup
+        End If
+        
+        'Sends registration data to the data sheet
+        Call InitialData_Registration(reg, wsData, long_row)
+        
+        'Runs the second enrollment script
+        Call Register_into_the_Classes(objAS400, obj_AS400_Focus, stu, reg, tag, wsData, long_row)
+        
+        'Creates an order form and saves it as a PDF file
+        str_Export = Create_PDF(stu, reg, tag)
+        Call PassToDataSheet(str_Export, "strNewDocName", wsData, long_row)
+        
+        'Final message
+        'AppActivate ("Microsoft excel")
+        MsgBox "The registration has completed successfully" & vbNewLine & vbNewLine & _
+            "SID:" & vbTab & vbTab & tag.StudentID, vbExclamation, "Success!"
+        
+    End If
+End If
+
+
+Cleanup:
+Call Defaults_On
+
+End Sub
+
+
+
+Private Sub Convert_From_Textboxes(ByRef blueMessage As String, ByRef redMessage As String, _
+                ByRef tag As cTag, ByRef reg As cRegistration, ByRef stu As cStudent)
+                
+'"""
+' Passes textbox values into the relevant class objects. The parent procedure will then _
+    pass control over to the Registration_Main module for enrollment.
+    
+' Accepts as two separate string variables: "blueMessage" and "redMessage" which will _
+    act as confirmation messages.
+
+'   USERFORM TEXTBOX >>>>> CLASS OBJECT
+'"""
+                
+'Calls the cParent Class Module
+Dim par As cParent
+Set par = New cParent
+
+On Error GoTo CalcFail
+
+'Populates cost calculations
+Call Calculate_Payments(redMessage)
+
+LoadInfo:
+If Not Debugger Then On Error GoTo Unknown_Error Else On Error GoTo 0
+
+'Populates the relevant class objects
+Call Load_Data_Into_Stu_Class(stu, New_Student_With_Parent)
+Call Load_Data_Into_Reg_Class(reg, New_Student_With_Parent)
+
+'''''''''
+'Populating the cTag class object
+tag.StudentStatus = False   'Not a current student
+tag.StudentID = vbNullString
+tag.ParentStatus = True    'No associated parent account
+
+If combo_Activity = "Hide" Then tag.Activity = False Else tag.Activity = True
+
+tag.Session = combo_Session
+tag.SalesPerson = textbox_Salesperson
+
+If checkbox_ParentLC.Text = "MyCAA/College" Then
+    tag.ParentLC = par.val_MyCAA_College
+
+ElseIf checkbox_ParentLC.Text = "MyCAA/Career" Then
+    tag.ParentLC = par.val_MyCAA_Career
+    
+ElseIf Len(checkbox_ParentLC.Text) <= 1 Then
+    tag.ParentLC = vbNullString
+    
+ElseIf IsNumeric(checkbox_ParentLC.Text) Then
+    tag.ParentLC = checkbox_ParentLC.Text
+    
+Else
+    tag.ParentLC = vbNullString
+End If
+
+If option_Parent_INS = True Then
+    tag.B2BPrefix = "INS"
+ElseIf optMIL = True Then
+    tag.B2BPrefix = "MIL"
+Else
+    redMessage = redMessage & "* Please choose either 'MIL' (Military) or 'INS' (Non-Military)" & vbNewLine & vbNewLine
+End If
+
+If option_CareerProgram = True Then
+    tag.EnrollmentType = 1
+    tag.SchoolCode = "ICS"
+    tag.DegreeCode = "N"
+
+ElseIf option_FullSemester = True Then
+    tag.EnrollmentType = 2
+    tag.SchoolCode = "CDS"
+    tag.DegreeCode = "Y"
+
+ElseIf option_IndividualCredits = True Then
+    tag.EnrollmentType = 3
+    tag.SchoolCode = "CDS"
+    tag.DegreeCode = "N"
+
+Else
+    tag.EnrollmentType = 0
+    tag.SchoolCode = vbNullString
+    tag.DegreeCode = vbNullString
+End If
+'''''''''
+'//  Adding to confirmation messages //
+'StudentStatus & ParentStatus
+blueMessage = blueMessage & "NEW STUDENT (with PARENT)" & vbNewLine & vbNewLine
+
+'Salesperson
+If Len(tag.SalesPerson) < 4 Then
+    redMessage = redMessage & "* The Salesperson code must be 4 digits long." & vbNewLine
+Else
+    blueMessage = blueMessage & "Salesperson:" & vbTab & tag.SalesPerson & vbNewLine
+End If
+
+'AS400 Session
+blueMessage = blueMessage & "AS400 Session:" & vbTab & tag.Session & vbNewLine & vbNewLine
+
+'Enrollment Type
+If tag.EnrollmentType = 1 Then
+    blueMessage = blueMessage & "Enrollment Type:" & vbTab & "Career Program" & vbNewLine & vbNewLine
+ElseIf tag.EnrollmentType = 2 Then
+    blueMessage = blueMessage & "Enrollment Type:" & vbTab & "College Semester" & vbNewLine & vbNewLine
+ElseIf tag.EnrollmentType = 3 Then
+    blueMessage = blueMessage & "Enrollment Type:" & vbTab & "Individual Credits" & vbNewLine & vbNewLine
+Else
+    redMessage = redMessage & "* The Enrollment Type must be selected." & vbNewLine
+End If
+
+'//  Adding to confirmation messages //
+Call Confirm_Data_In_Stu_Class(stu, blueMessage, redMessage)
+Call Confirm_Data_In_Reg_Class(reg, blueMessage, redMessage, tag.EnrollmentType)
+
+Cleanup:
+Exit Sub
+
+'/// /// /// ///
+'ERROR HANDLING
+'/// /// /// ///
+
+CalcFail:
+redMessage = redMessage & "* Tuition calculation has returned an error" & vbNewLine
+Resume LoadInfo
+
+Unknown_Error:
+redMessage = redMessage & "* An unexpected error has occurred" & vbNewLine
+Resume Next
+
+End Sub
+
+
+
+
