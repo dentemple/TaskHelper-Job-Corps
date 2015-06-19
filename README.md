@@ -19,8 +19,8 @@ Because of its reliance on *GetText/SetText*, it only works "as is" within a sin
 those individuals seeking to learn more about Excel-to-AS/400 automation may find the overall use of the HACL to be very 
 informative for their own purposes.**  
 
-*Context-neutral code* can be built from these automation objects; however, doing so is beyond my current scope 
-for this project.
+With each iteration of this project, I'll do what I can to localize context requirments, but I can't guarantee true
+*context-free code* for quite a long time, if at all.  Unfortunately, it's simply not within my project's intended scope.
 
 To learn more about IBM's HACL:
 
