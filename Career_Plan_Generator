@@ -1,0 +1,256 @@
+'=================================================
+' # Career_Plan_Generator (Userform)
+'
+' Note: Does not use the AS/400
+'
+' The Career Plan Generator creates education plans for use _
+by third-party agencies.
+
+' Input: _ 
+Manual user entries
+
+' Output: _
+A PDF document _
+An Outlook email _
+
+' Requirements: _
+MS Word templates for each career plan _
+A folder named /Sources that contains said career plans _
+
+' To-Do List: _
+1 - Complete project per current spec. _
+2 - Move all actions/calculations to a separate module _
+3 - Remove the need to maintain individual templates _
+4 - Merge with the college plan generator _
+
+'=================================================
+
+
+
+Option Explicit
+
+Private Sub UserForm_Initialize()
+
+'"""
+'Initialization event. Sets userform to its base state
+'"""
+
+textbox_Student_Name.Value = vbNullString
+textbox_Student_Email.Value = vbNullString
+textbox_Program_Code.Value = vbNullString
+textbox_Program_Tuition.Value = vbNullString
+textbox_Program_Net.Value = vbNullString
+textbox_Program_Fee.Value = vbNullString
+textbox_Start_Date.Value = vbNullString
+textbox_End_Date.Value = vbNullString
+textbox_Advisor_Name.Value = vbNullString
+textbox_Advisor_Email.Value = vbNullString
+
+textbox_Current_Date.Value = Format(Now(), "mm/dd/yy")
+
+'Populates the combo box
+combo_Programs.Clear
+combo_Programs.AddItem "=== PLEASE SELECT A CAREER PLAN ==="
+Call Populate_ComboBox(combo_Programs)
+combo_Programs.Text = combo_Programs.List(0)
+
+textbox_Student_Name.SetFocus
+
+End Sub
+
+
+
+Private Sub Populate_ComboBox(ByRef cBox As MSForms.ComboBox)
+
+'"""
+'Populates the combo box with the contents of the "\Sources" folder, and
+'   only with the documents flagged as a career program template ("CAR")
+'"""
+
+Dim obj_File As Object
+Dim str_FolderName As String
+Dim obj_Folder As Object
+
+'career_folder_object
+'career_folder_string
+
+Call Set_Program_Info(obj_Folder, str_FolderName)
+
+'Loops through each file in the directory and applies each name to the listbox
+For Each obj_File In obj_Folder.Files
+
+    If Left(obj_File.NAME, 3) = "CAR" Then cBox.AddItem obj_File.NAME
+    
+Next obj_File
+
+Cleanup:
+End Sub
+
+
+
+Private Sub textbox_Program_Code_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+'Restricts the field to numbers only
+Call Integers_Only(KeyAscii)
+
+End Sub
+
+
+
+Private Sub textbox_Program_Tuition_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+'Restricts the field to only numbers and a single decimal
+Call Floats_and_Integers_Only(KeyAscii, textbox_Program_Tuition)
+
+End Sub
+
+
+
+
+Private Sub textbox_Program_Fee_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+'Restricts the field to only numbers and a single decimal
+Call Floats_and_Integers_Only(KeyAscii, textbox_Program_Fee)
+
+End Sub
+
+
+
+Private Sub textbox_Program_Net_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+'Restricts the field to only numbers and a single decimal
+Call Floats_and_Integers_Only(KeyAscii, textbox_Program_Net)
+
+End Sub
+
+
+
+Private Sub button_ClearUserform_Click()
+
+Call UserForm_Initialize
+
+End Sub
+
+
+
+Private Sub button_Cancel_Click()
+
+Unload Me
+
+End Sub
+
+
+
+Private Sub button_Calculate_Click()
+
+Call Calculate_Payment_Info
+
+End Sub
+
+
+
+Private Sub button_Launch_Click()
+
+'"""
+'Passes information from the userform to the cPlan class object, then _
+    creates, saves, and emails a relevant plan of study
+'"""
+
+Dim obj_Folder As Object
+Dim str_FolderName As String
+str_FolderName = vbNullString
+
+'Initialize class instance
+Dim plan As cPlan
+Set plan = New cPlan
+
+'Passes the student and advisor information
+plan.StudentName = textbox_Student_Name
+plan.StudentEmail = textbox_Student_Email
+plan.AdvisorName = textbox_Advisor_Name
+plan.AdvisorEmail = textbox_Advisor_Email
+
+'Locates and passes the document information
+Call Set_Program_Info(obj_Folder, str_FolderName)
+plan.FileName = str_FolderName
+
+'Passes cost information; calculates if necessary
+Call Set_Cost_Info(plan)
+
+'Formats and passes the date information
+plan.DateCurrent = Format(textbox_Current_Date, "mmmm dd yyyy")
+plan.DateStart = Format(textbox_Start_Date, "mm/dd/yy")
+plan.DateEnd = Format(textbox_End_Date, "mm/dd/yy")
+
+
+End Sub
+
+
+
+Private Sub Set_Program_Info(ByRef passFolder As Object, ByRef passName As String)
+
+Dim obj_FSO As Object
+
+'Creates instance of the FileSystemObject
+Set obj_FSO = CreateObject("Scripting.FileSystemObject")
+
+'Finds the necessary file path, then sets the Folder object
+passName = ThisWorkbook.Path
+passName = passName & "\Sources"
+Set passFolder = obj_FSO.GetFolder(passName)
+
+End Sub
+
+
+
+Private Sub Set_Cost_Info(ByRef plan As cPlan)
+
+textbox_Program_Tuition
+textbox_Program_Fee
+textbox_Program_Net
+
+'All values are less than $1
+If textbox_Program_Tuition.Value < 1 And _
+    textbox_Program_Fee.Value < 1 And textbox_Program_Net.Value < 1 Then
+    
+    MsgBox "Please enter valid cost information"
+
+'All values are greater than or equal to $1
+ElseIf textbox_Program_Tuition.Value >= 1 And _
+    textbox_Program_Fee.Value >= 1 And textbox_Program_Net.Value >= 1 Then
+    
+    plan.ProgramTuition = textbox_Program_Tuition
+    plan.ProgramFee = textbox_Program_Fee
+    plan.ProgramNet = textbox_Program_Net
+
+'Only the Tuition is less than $1
+ElseIf textbox_Program_Tuition.Value < 1 And _
+    textbox_Program_Fee.Value >= 1 And textbox_Program_Net.Value >= 1 Then
+
+    plan.ProgramTuition = Val(textbox_Program_Net) - Val(textbox_Program_Fee)
+    plan.ProgramFee = textbox_Program_Fee
+    plan.ProgramNet = textbox_Program_Net
+    
+'Only the Tuition is greater than or equal to $1
+
+'Only the Fee is less than $1
+
+'Only the Fee is greater than or equal to $1
+
+'Only the Net is less than $1
+
+'Only the Net is greater than or equal to $1
+
+'Unknown error
+Else
+
+End If
+
+    plan.ProgramTuition
+    plan.ProgramFee
+    plan.ProgramNet
+    
+End Sub
+
+
+
