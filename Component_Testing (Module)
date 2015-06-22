@@ -1,0 +1,94 @@
+'=================================================
+' # Component_Testing (Module)
+'
+' Tests various components used within this project
+'
+' UNDER CONSTRUCTION
+'
+'=================================================
+
+Option Explicit
+
+Private Sub Test_Connection_to_the_AS400()
+
+'"""
+' Attempts to connect to the AutECLSession automation object
+
+' Returns a pass/fail MsgBox
+
+' Note: To use the Enrollment App, the client must be able to connect to _
+    the AS/400's Host Automation Library.  If the user is on a thinclient, _
+    this may not be enabled by default.
+'"""
+
+Dim bDebug As Boolean
+Dim objAS400 As Object
+Dim err_Message As String
+
+bDebug = False
+If Not bDebug Then On Error GoTo ErrHandler Else On Error GoTo 0
+
+err_Message = vbNullString
+Set objAS400 = CreateObject("PCOMM.autECLSession")
+
+Cleanup:
+Set objAS400 = Nothing
+Exit Sub
+
+ErrHandler:
+Select Case Err
+
+    '[... Description]
+    'Case [...]
+        'err_Message = "Unable to connect to the AS/400 Object"
+        'MsgBox err_Message, vbInformation
+        'Resume Cleanup
+        
+    'Case Else
+        'err_Message = "A different error has occurred."
+        'MsgBox err_Message, vbInformation
+        'Resume Cleanup
+        
+End Select
+
+End Sub
+
+
+
+Private Sub Test_Nav_To_Home_Screen()
+
+Dim bDebug As Boolean
+Dim objAS400 As Object
+Dim err_Message As String
+Dim str_Session As String
+
+bDebug = False
+str_Session = "A"
+If Not bDebug Then On Error GoTo ErrHandler Else On Error GoTo 0
+
+err_Message = vbNullString
+Set objAS400 = CreateObject("PCOMM.autECLSession")
+
+objAS400.SetConnectionByName (PassSession)
+
+If Not bDebug Then On Error GoTo MazePathErr Else On Error GoTo 0
+If Nav_To_Home_Screen(objAS400) = False Then GoTo MazePathFail
+
+
+Cleanup:
+Set objAS400 = Nothing
+Exit Sub
+
+ErrHandler:
+MsgBox "The AS/400 has failed to initialize", vbInformation
+GoTo Cleanup
+
+MazePathFail:
+MsgBox "A failure occurred while attempting to reach the target PS", vbInformation
+GoTo Cleanup
+
+MazePathErr:
+MsgBox "An error occurred while attempting to reach the target PS", vbInformation
+GoTo Cleanup
+
+End Sub
