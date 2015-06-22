@@ -1,0 +1,168 @@
+''''''''''''''''''''''''''''''
+' cPlan Class
+''''''''''''''''''''''''''''''
+
+''''''''''''''''''''''''''''''
+' To-Do List: _
+1 - Complete project as per spec
+''''''''''''''''''''''''''''''
+
+Option Explicit
+
+Private pPlanType As String
+Private pFileName As String
+Private pStudentName As String
+Private pStudentEmail As String
+Private pProgramCode As Long
+Private pProgramTuition As Long
+Private pProgramFee As Long
+Private pProgramNet As Long
+Private pDateCurrent As String
+Private pDateStart As String
+Private pDateEnd As String
+Private pAdvisorName As String
+Private pAdvisorEmail As String
+
+''''''''''''''''''''''''''''''
+'PlanType property
+''''''''''''''''''''''''''''''
+Public Property Get PlanType() As String
+    PlanType = pPlanType
+End Property
+
+Public Property Let PlanType(Value As String)
+    pPlanType = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'FileName property
+''''''''''''''''''''''''''''''
+Public Property Get FileName() As String
+    FileName = pFileName
+End Property
+
+Public Property Let FileName(Value As String)
+    pFileName = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'StudentName property
+''''''''''''''''''''''''''''''
+Public Property Get StudentName() As String
+    StudentName = pStudentName
+End Property
+
+Public Property Let NAME(Value As String)
+    pStudentName = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'StudentEmail property
+''''''''''''''''''''''''''''''
+Public Property Get StudentEmail() As String
+    StudentEmail = pStudentEmail
+End Property
+
+Public Property Let StudentEmail(Value As String)
+    pStudentEmail = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'ProgramCode property
+''''''''''''''''''''''''''''''
+Public Property Get ProgramCode() As Long
+    ProgramCode = pProgramCode
+End Property
+
+Public Property Let ProgramCode(Value As Long)
+    pProgramCode = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'ProgramTuition property
+''''''''''''''''''''''''''''''
+Public Property Get ProgramTuition() As Long
+    ProgramTuition = pProgramTuition
+End Property
+
+Public Property Let ProgramTuition(Value As Long)
+    pProgramTuition = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'ProgramFee property
+''''''''''''''''''''''''''''''
+Public Property Get ProgramFee() As Long
+    ProgramFee = pProgramFee
+End Property
+
+Public Property Let ProgramFee(Value As Long)
+    pProgramFee = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'ProgramNet property
+''''''''''''''''''''''''''''''
+Public Property Get ProgramNet() As Long
+    ProgramNet = pProgramNet
+End Property
+
+Public Property Let ProgramNet(Value As Long)
+    pProgramNet = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'DateCurrent property
+''''''''''''''''''''''''''''''
+Public Property Get DateCurrent() As String
+    DateCurrent = pDateCurrent
+End Property
+
+Public Property Let DateCurrent(Value As String)
+    pDateCurrent = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'DateStart property
+''''''''''''''''''''''''''''''
+Public Property Get DateStart() As String
+    DateStart = pDateStart
+End Property
+
+Public Property Let DateStart(Value As String)
+    pDateStart = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'DateEnd property
+''''''''''''''''''''''''''''''
+Public Property Get DateEnd() As String
+    DateEnd = pDateEnd
+End Property
+
+Public Property Let DateEnd(Value As String)
+    pDateEnd = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'AdvisorName property
+''''''''''''''''''''''''''''''
+Public Property Get AdvisorName() As String
+    AdvisorName = pAdvisorName
+End Property
+
+Public Property Let AdvisorName(Value As String)
+    pAdvisorName = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'AdvisorEmail property
+''''''''''''''''''''''''''''''
+Public Property Get AdvisorEmail() As String
+    AdvisorEmail = pAdvisorEmail
+End Property
+
+Public Property Let AdvisorEmail(Value As String)
+    pAdvisorEmail = Value
+End Property
+
