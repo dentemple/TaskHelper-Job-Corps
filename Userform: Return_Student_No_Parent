@@ -19,9 +19,7 @@ A PDF document _
 2 - Merge the cStudent, cRegistration, and cTag classes _
 3 - Further move actions/calculations to separate modules _
 4 - Merge the four separate enrollment userforms into one _
-5 - Add Outlook functionality _
-6 - Add Github functionality _
-7 - Can DRY be applied to VBA events? _
+5 - Can DRY be applied to VBA events? _
 
 '=================================================
 
