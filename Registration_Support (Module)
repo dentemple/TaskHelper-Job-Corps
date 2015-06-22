@@ -1,0 +1,854 @@
+'==================================================================================
+' # Registration_Support (Module)
+'
+' Contains public subs specific for the Registration Userforms and Modules
+'
+' To-Do List: _
+1 - Evaluate variable and procedure names _
+2 - Improve comments (provide better context for procedures/actions) _
+3 - Further move actions/calculations to separate modules _
+4 - Align procedures with a Best Practices approach
+'==================================================================================
+
+Option Explicit
+
+Public Sub Load_Data_Into_Stu_Class(ByRef stu As cStudent, passForm As MSForms.UserForm)
+
+'"""
+'Passes values from the userform's textboxes to the cStudent's class properties
+'
+'Accepts the active userform and the cStudent class variable
+'"""
+
+stu.FirstName = passForm.textbox_Firstname
+stu.LastName = passForm.textbox_Lastname
+If Len(Trim(stu.MidName)) > 0 Then
+    stu.MidName = passForm.textbox_Midname
+    stu.MailingName = stu.FirstName & Space(1) & stu.MidName & Space(1) & stu.LastName
+Else
+    stu.MailingName = stu.FirstName & Space(1) & stu.LastName
+End If
+
+stu.PhoneArea = passForm.textbox_Phone_Area
+stu.PhoneBase = passForm.textbox_Phone_SevenDigit
+stu.Email = passForm.textbox_Email
+
+stu.Address0 = passForm.textbox_AddressA
+stu.Address1 = passForm.textbox_AddressB
+stu.Address2 = passForm.textbox_AddressC
+stu.Address3 = passForm.textbox_AddressD
+stu.City = passForm.textbox_City
+stu.State = passForm.textbox_State
+stu.ZipCode = passForm.textbox_Zipcode
+
+If passForm.option_Female = True Then
+    stu.Gender = "F"
+ElseIf passForm.option_Male = True Then
+    stu.Gender = "M"
+Else
+    stu.Gender = "U"
+End If
+
+If passForm.checkbox_ProofHS = True Then
+    stu.ProofHS = "Y"
+Else
+    stu.ProofHS = "N"
+End If
+
+End Sub
+
+
+
+Public Sub Load_Data_Into_Reg_Class(ByRef reg As cRegistration, passForm As MSForms.UserForm)
+
+'"""
+'Accepts the active userform and the cRegistration class variable.
+'
+'Passes values from the userform's textboxes to the cRegistration's class properties.
+'
+'Assumes Student_Net has already been calculated.
+'"""
+
+reg.FullProgramCode = passForm.textbox_ProgramMod
+reg.ModCode0 = passForm.textbox_ClassMod0
+reg.ModCode1 = passForm.textbox_ClassMod1
+reg.ModCode2 = passForm.textbox_ClassMod2
+reg.ModCode3 = passForm.textbox_ClassMod3
+reg.ModCode4 = passForm.textbox_ClassMod4
+reg.ModCode5 = passForm.textbox_ClassMod5
+reg.ModCode6 = passForm.textbox_ClassMod6
+
+reg.FullProgramPrice = Val(passForm.textbox_BaseTuition)
+reg.ClassTuition0 = Val(passForm.textbox_ClassTuition0)
+reg.ClassTuition1 = Val(passForm.textbox_ClassTuition1)
+reg.ClassTuition2 = Val(passForm.textbox_ClassTuition2)
+reg.ClassTuition3 = Val(passForm.textbox_ClassTuition3)
+reg.ClassTuition4 = Val(passForm.textbox_ClassTuition4)
+reg.ClassTuition5 = Val(passForm.textbox_ClassTuition5)
+reg.ClassTuition6 = Val(passForm.textbox_ClassTuition6)
+
+reg.Installments = Val(passForm.textbox_Installments_SetVal)
+reg.Student_Tuition = Val(passForm.textbox_Student_Tuition)
+reg.Student_Fees = Val(passForm.textbox_Student_Fees)
+reg.Student_Net = Val(passForm.textbox_Student_Net)
+reg.DownPay = Val(passForm.textbox_Downpayment_SetVal)
+reg.CostPerMonth = Val(passForm.textbox_DollarsPerMonth_SetVal)
+
+If passForm.option_Calc_by_MonthlyPayments = True Then
+    reg.PaymentType = 1
+ElseIf passForm.option_Calc_by_Installments = True Then
+    reg.PaymentType = 2
+ElseIf passForm.option_Payment_in_Full = True Then
+    reg.PaymentType = 3
+ElseIf passForm.option_No_Cost = True Then
+    reg.PaymentType = 4
+Else
+    reg.PaymentType = 0
+End If
+
+'Error Handler used to cover a missing PA field
+On Error GoTo Does_Not_Exist:
+reg.Parent_Invoice = Val(passForm.textbox_Parent_Invoice)
+
+Cleanup:
+Exit Sub
+
+'Checked by the Confirm_Data_In_Reg_Class Sub
+Does_Not_Exist:
+reg.Parent_Invoice = -1
+Resume Cleanup
+
+End Sub
+
+
+
+Public Sub Confirm_Data_In_Stu_Class(ByRef stu As cStudent, _
+    ByRef blueMessage As String, ByRef redMessage As String)
+    
+'"""
+'Populates the confirmation messages.
+'
+'Accepts the cStudent class variable, the "success" message string, and
+'   the "failure" message string.
+'Returns True if fully validated; False if not.  This, in turn, delivers
+'   the appropriate message to the end user.
+'"""
+
+'First Name
+If Len(stu.FirstName) > 0 Then
+    blueMessage = blueMessage & "First Name:" & vbTab & stu.FirstName & vbNewLine
+Else
+    redMessage = redMessage & "* First Name is required." & vbNewLine
+End If
+
+'Last Name
+If Len(stu.LastName) > 0 Then
+    blueMessage = blueMessage & "Last Name:" & vbTab & stu.LastName & vbNewLine
+Else
+    redMessage = redMessage & "* Laste Name is required." & vbNewLine
+End If
+
+'Middle Name / Not Required
+blueMessage = blueMessage & "Middle Name:" & vbTab & stu.MidName & vbNewLine & vbNewLine
+'Phone Number / Not Required
+blueMessage = blueMessage & "Phone #:" & vbTab & stu.PhoneArea & "-" & stu.PhoneBase & vbNewLine
+'Email / Not Required
+blueMessage = blueMessage & "Email:" & vbTab & stu.Email & vbNewLine & vbNewLine
+
+'Address, First Line
+If Len(stu.Address0) > 0 Then
+    blueMessage = blueMessage & "Address:" & vbTab & stu.Address0 & vbNewLine
+Else
+    redMessage = redMessage & "* Address (Line A) is a required field" & vbNewLine
+End If
+'Address, Second Line / Not Required
+blueMessage = blueMessage & "Address:" & vbTab & stu.Address1 & vbNewLine
+'Address, Third Line / Not Required
+blueMessage = blueMessage & "Address:" & vbTab & stu.Address2 & vbNewLine
+'Address, Fourth Line / Not Required
+blueMessage = blueMessage & "Address:" & vbTab & stu.Address3 & vbNewLine & vbNewLine
+
+'City
+If Len(stu.City) > 0 Then
+    blueMessage = blueMessage & "City:" & vbTab & stu.City & vbNewLine
+Else
+    redMessage = redMessage & "* The City is missing" & vbNewLine
+End If
+'State
+If Len(stu.State) > 0 Then
+    blueMessage = blueMessage & "State:" & vbTab & stu.State & vbNewLine
+Else
+    redMessage = redMessage & "* The State Abbrev. is missing" & vbNewLine
+End If
+'Zip Code
+If Len(stu.ZipCode) > 0 Then
+    blueMessage = blueMessage & "Zip:" & vbTab & stu.ZipCode & vbNewLine & vbNewLine
+Else
+    redMessage = redMessage & "* The Zip Code is missing" & vbNewLine
+End If
+
+'Gender
+If stu.Gender = "F" Then
+    blueMessage = blueMessage & "Gender:" & vbTab & vbTab & "Female" & vbNewLine
+ElseIf stu.Gender = "M" Then
+    blueMessage = blueMessage & "Gender:" & vbTab & vbTab & "Male" & vbNewLine
+Else
+    blueMessage = blueMessage & "Gender:" & vbTab & vbTab & "Unknown" & vbNewLine
+End If
+
+'Proof of HS
+blueMessage = blueMessage & "Proof of HS:" & vbTab & stu.ProofHS & vbNewLine & vbNewLine
+
+End Sub
+
+
+
+Public Sub Confirm_Data_In_Reg_Class(ByRef reg As cRegistration, _
+    ByRef blueMessage As String, ByRef redMessage As String, EnrollType As Byte)
+    
+'"""
+'Populates the confirmation messages.
+'
+'Accepts the cRegistration class variable, the "success" message string, and
+'   the "failure" message string.
+'Returns True if fully validated; False if not.  This, in turn, delivers
+'   the appropriate message to the end user.
+'
+'Component of Registration Gate 0.
+'"""
+
+If reg.PaymentType = 1 Then
+    blueMessage = blueMessage & "Payment Type: Calculate by monthly payments" & vbNewLine & vbNewLine
+ElseIf reg.PaymentType = 2 Then
+    blueMessage = blueMessage & "Payment Type: Calculate by number of payments" & vbNewLine & vbNewLine
+ElseIf reg.PaymentType = 3 Then
+    blueMessage = blueMessage & "Payment Type: Payment in Full" & vbNewLine & vbNewLine
+ElseIf reg.PaymentType = 4 Then
+    blueMessage = blueMessage & "Payment Type: Enrollment At No Cost" & vbNewLine & vbNewLine
+Else
+    redMessage = redMessage & "* Payment Type not selected" & vbNewLine
+End If
+
+If EnrollType = 1 Or EnrollType = 2 Then
+    blueMessage = blueMessage & "Course Mod:" & vbTab & reg.FullProgramCode & vbNewLine
+    
+    If Not IsNumeric(reg.FullProgramCode) Or Not Len(reg.FullProgramCode) = 8 Then redMessage = redMessage & "* The program mod number is not 8 numbers long" & vbNewLine
+    
+    If reg.Parent_Invoice = -1 Then
+    blueMessage = blueMessage & "Tuition:" & vbTab & vbTab & Format(reg.FullProgramPrice, "Currency") & vbNewLine & vbNewLine
+    blueMessage = blueMessage & "Down Pay:" & vbTab & Format(reg.DownPay, "Currency") & vbNewLine
+    blueMessage = blueMessage & "Installments:" & vbTab & reg.Installments & vbNewLine
+    blueMessage = blueMessage & "Monthly Payments:" & vbTab & Format(reg.CostPerMonth, "Currency") & vbNewLine
+    Else
+    blueMessage = blueMessage & "PA TUI:" & vbTab & vbTab & Format(reg.Parent_Invoice, "Currency") & vbNewLine & vbNewLine
+    blueMessage = blueMessage & "TR NET:" & vbTab & vbTab & Format(reg.Student_Net, "Currency") & vbNewLine & vbNewLine
+    blueMessage = blueMessage & "Down Pay:" & vbTab & Format(reg.DownPay, "Currency") & vbNewLine
+    blueMessage = blueMessage & "Installments:" & vbTab & reg.Installments & vbNewLine
+    blueMessage = blueMessage & "Monthly Payments:" & vbTab & Format(reg.CostPerMonth, "Currency") & vbNewLine
+    End If
+
+ElseIf EnrollType = 3 Then
+    If Len(reg.ModCode0) > 0 Then blueMessage = blueMessage & "Individual:" & vbTab & reg.ModCode0 & " [" & Format(reg.ClassTuition0, "Currency") & "]" & vbNewLine
+    If Len(reg.ModCode1) > 0 Then blueMessage = blueMessage & "Individual:" & vbTab & reg.ModCode1 & " [" & Format(reg.ClassTuition1, "Currency") & "]" & vbNewLine
+    If Len(reg.ModCode2) > 0 Then blueMessage = blueMessage & "Individual:" & vbTab & reg.ModCode2 & " [" & Format(reg.ClassTuition2, "Currency") & "]" & vbNewLine
+    If Len(reg.ModCode3) > 0 Then blueMessage = blueMessage & "Individual:" & vbTab & reg.ModCode3 & " [" & Format(reg.ClassTuition3, "Currency") & "]" & vbNewLine
+    If Len(reg.ModCode4) > 0 Then blueMessage = blueMessage & "Individual:" & vbTab & reg.ModCode4 & " [" & Format(reg.ClassTuition4, "Currency") & "]" & vbNewLine
+    If Len(reg.ModCode5) > 0 Then blueMessage = blueMessage & "Individual:" & vbTab & reg.ModCode5 & " [" & Format(reg.ClassTuition5, "Currency") & "]" & vbNewLine
+    If Len(reg.ModCode6) > 0 Then blueMessage = blueMessage & "Individual:" & vbTab & reg.ModCode6 & " [" & Format(reg.ClassTuition6, "Currency") & "]" & vbNewLine & vbNewLine
+    
+    If reg.Parent_Invoice = -1 Then
+    blueMessage = blueMessage & "Total Tuition:" & vbTab & Format(reg.Student_Tuition, "Currency") & vbNewLine & vbNewLine
+    blueMessage = blueMessage & "Down Pay:" & vbTab & Format(reg.DownPay, "Currency") & vbNewLine
+    blueMessage = blueMessage & "Installments:" & vbTab & reg.Installments & vbNewLine
+    blueMessage = blueMessage & "Monthly Payments:" & vbTab & Format(reg.CostPerMonth, "Currency") & vbNewLine
+    Else
+    blueMessage = blueMessage & "PA TUI:" & vbTab & vbTab & Format(reg.Parent_Invoice, "Currency") & vbNewLine & vbNewLine
+    blueMessage = blueMessage & "TR NET:" & vbTab & vbTab & Format(reg.Student_Net, "Currency") & vbNewLine & vbNewLine
+    blueMessage = blueMessage & "Down Pay:" & vbTab & Format(reg.DownPay, "Currency") & vbNewLine
+    blueMessage = blueMessage & "Installments:" & vbTab & reg.Installments & vbNewLine
+    blueMessage = blueMessage & "Monthly Payments:" & vbTab & Format(reg.CostPerMonth, "Currency") & vbNewLine
+    End If
+    
+Else
+    redMessage = redMessage & "* Enrollment Type not selected" & vbNewLine
+End If
+    
+End Sub
+
+
+
+Public Function Confirm_Indiv_Course_Codes(reg As cRegistration) As Boolean
+
+'"""
+'When registering a student for individual college credits, it is a relatively easy mistake _
+    to accidentally leave out the course mod (which leaves the field with 6 characters _
+    as opposed to 8 characters).  HOWEVER, there are several course mods that are legitimately _
+    less than 8 characters.
+'Therefore, this procedure checks the individual mods for length and only provides a _
+    warning for when a potential mistake may exist.
+'"""
+
+Dim str_Message As String
+Dim bool_check As Boolean
+
+bool_check = False
+Confirm_Indiv_Course_Codes = False
+str_Message = "Warning!  The following class codes are less than 8 characters:" & vbNewLine & vbNewLine
+
+If Len(Trim(reg.ModCode0)) > 0 And Len(Trim(reg.ModCode0)) < 8 Then
+    str_Message = str_Message & CStr(reg.ModCode0) & vbNewLine
+    bool_check = True
+End If
+
+If Len(Trim(reg.ModCode1)) > 0 And Len(Trim(reg.ModCode1)) < 8 Then
+    str_Message = str_Message & CStr(reg.ModCode1) & vbNewLine
+    bool_check = True
+End If
+    
+If Len(Trim(reg.ModCode2)) > 0 And Len(Trim(reg.ModCode2)) < 8 Then
+    str_Message = str_Message & CStr(reg.ModCode2) & vbNewLine
+    bool_check = True
+End If
+
+If Len(Trim(reg.ModCode3)) > 0 And Len(Trim(reg.ModCode3)) < 8 Then
+    str_Message = str_Message & CStr(reg.ModCode3) & vbNewLine
+    bool_check = True
+End If
+
+If Len(Trim(reg.ModCode4)) > 0 And Len(Trim(reg.ModCode4)) < 8 Then
+    str_Message = str_Message & CStr(reg.ModCode4) & vbNewLine
+    bool_check = True
+End If
+
+If Len(Trim(reg.ModCode5)) > 0 And Len(Trim(reg.ModCode5)) < 8 Then
+    str_Message = str_Message & CStr(reg.ModCode5) & vbNewLine
+    bool_check = True
+End If
+
+If Len(Trim(reg.ModCode6)) > 0 And Len(Trim(reg.ModCode6)) < 8 Then
+    str_Message = str_Message & CStr(reg.ModCode6) & vbNewLine
+    bool_check = True
+End If
+
+str_Message = str_Message & "Please confirm that the above class codes are correct before proceeding with the enrollment"
+
+If bool_check = True Then
+    If MsgBox(str_Message, vbOKCancel, "Mod Check") = vbCancel Then
+        Confirm_Indiv_Course_Codes = True
+    End If
+End If
+
+End Function
+
+
+
+Public Sub Store_TextBox_Objects(ByRef passArr() As Object, passForm As MSForms.UserForm)
+
+'"""
+'Passes textbox references into the selected array
+'"""
+
+Set passArr(0) = passForm.textbox_ProgramMod
+Set passArr(1) = passForm.textbox_BaseTuition
+Set passArr(2) = passForm.textbox_ClassMod0
+Set passArr(3) = passForm.textbox_ClassMod1
+Set passArr(4) = passForm.textbox_ClassMod2
+Set passArr(5) = passForm.textbox_ClassMod3
+Set passArr(6) = passForm.textbox_ClassMod4
+Set passArr(7) = passForm.textbox_ClassMod5
+Set passArr(8) = passForm.textbox_ClassMod6
+Set passArr(9) = passForm.textbox_ClassTuition0
+Set passArr(10) = passForm.textbox_ClassTuition1
+Set passArr(11) = passForm.textbox_ClassTuition2
+Set passArr(12) = passForm.textbox_ClassTuition3
+Set passArr(13) = passForm.textbox_ClassTuition4
+Set passArr(14) = passForm.textbox_ClassTuition5
+Set passArr(15) = passForm.textbox_ClassTuition6
+
+End Sub
+
+
+
+Public Sub Manipulate_TextBoxes(PassArray() As Object, passBoolean As Boolean)
+
+'"""
+'Accepts an array of userform textboxes.  Locks or unlocks as needed.
+'
+'The color variables are dimensioned as variant so as to allow for different
+'   formatting options.
+'"""
+
+Dim oppositeBoolean As Boolean
+Dim i As Integer
+Dim var_Selected_Color As Variant
+Dim var_Opposite_Color As Variant
+
+oppositeBoolean = Not passBoolean
+
+'Determines color selection based on passed bool value
+If passBoolean = True Then
+    var_Selected_Color = cWhite
+    var_Opposite_Color = cGrey
+Else:
+    var_Selected_Color = cGrey
+    var_Opposite_Color = cWhite
+End If
+
+For i = LBound(PassArray) To UBound(PassArray)
+
+    If i < 2 Then
+    
+        'Unlocks if passed bool is true; locks if false
+        PassArray(i).Locked = oppositeBoolean
+        PassArray(i).BackColor = var_Selected_Color
+        'PassArray(i) = vbNullString    'Necessary? [...]
+    
+    Else:
+
+        'Locks if passed bool is true; unlocks if false
+        PassArray(i).Locked = passBoolean
+        PassArray(i).BackColor = var_Opposite_Color
+        'PassArray(i) = vbNullString    'Necessary? [...]
+
+    End If
+
+Next i
+
+End Sub
+
+Public Sub Pop_HelpText(ByRef PassTextbox As Object, str_HelpText As String)
+
+PassTextbox = str_HelpText
+
+End Sub
+
+
+
+Public Sub FieldLock(obj As Object, bool As Boolean)
+'Deprecated?
+
+If bool = True Then obj.Locked = False Else obj.Locked = True
+
+End Sub
+
+
+
+Public Sub FieldColor(obj As Object, bool As Boolean)
+'Deprecated?
+
+If bool = True Then obj.BackColor = cWhite Else obj.BackColor = cGrey
+
+End Sub
+
+
+
+Public Sub Pull_Stu_Data_From_AS400(objAS400 As Object, ByRef stu As cStudent, tag As cTag)
+
+'"""
+'When adding classes for a student already in the system, the user only inputs
+'   the Student ID#, not the student's information. Therefore, in automating
+'   the PDF order form, this procedure is necessary to capture the student info
+'   after the registration itself is complete.
+'
+'Not a critical procedure.
+'
+'GetText:
+'[String] = [AS400 Object].autECLPS.GetText([Row], [Column], [Length])
+'"""
+
+Dim get_text As String
+
+'This is a low-priority procedure. Any errors can be safely skipped.
+On Error Resume Next
+
+get_text = vbNullString
+
+'Checks for correct PS
+Call WaitForReady(objAS400, 10)
+get_text = objAS400.autECLPS.GetText(1, 2, 6)
+If Not get_text = "603131" Then GoTo Cleanup
+get_text = vbNullString
+
+'Takes Address0
+Call WaitForReady(objAS400, 10)
+get_text = objAS400.autECLPS.GetText(8, 2, 28)
+stu.Address0 = Trim(get_text)
+get_text = vbNullString
+
+'Takes Address1
+Call WaitForReady(objAS400, 10)
+get_text = objAS400.autECLPS.GetText(9, 2, 28)
+stu.Address1 = Trim(get_text)
+get_text = vbNullString
+
+'Takes City
+Call WaitForReady(objAS400, 10)
+get_text = objAS400.autECLPS.GetText(10, 2, 15)
+stu.City = Trim(get_text)
+get_text = vbNullString
+
+'Takes State Abbrev.
+Call WaitForReady(objAS400, 10)
+stu.State = objAS400.autECLPS.GetText(10, 18, 2)
+
+'Takes Zip Code
+Call WaitForReady(objAS400, 10)
+stu.ZipCode = objAS400.autECLPS.GetText(10, 22, 5)
+
+'Takes Area Code
+Call WaitForReady(objAS400, 10)
+stu.PhoneArea = objAS400.autECLPS.GetText(12, 9, 3)
+
+'Takes Base Phone#
+Call WaitForReady(objAS400, 10)
+get_text = objAS400.autECLPS.GetText(12, 15, 10)
+stu.PhoneBase = Trim(get_text)
+get_text = vbNullString
+
+Cleanup:
+End Sub
+
+
+
+Public Function Create_PDF(stu As cStudent, reg As cRegistration, tag As cTag) As String
+
+Dim objWord As Object
+Dim objDoc As Object
+Dim str_Timestamp, str_Datestamp As String
+Dim str_CurrentFolder, str_ReportsFolder, str_SourcesFolder As String
+Dim str_Template_Name, str_New_Document_Name As String
+Dim str_CityStateAndZip, str_PhoneAndEmail, str_TotalSale As String
+
+
+' /// Setting the initial values ///
+
+Application.ScreenUpdating = False
+Application.DisplayAlerts = False
+
+str_Timestamp = Format(CStr(Now), "mm.dd.yyyy hh.mm.ss")
+str_Datestamp = Format(Now, "MMMM dd, yyyy")
+
+str_CurrentFolder = ThisWorkbook.Path
+str_ReportsFolder = str_CurrentFolder & "\Reports"
+str_SourcesFolder = str_CurrentFolder & "\Sources"
+
+str_Template_Name = str_SourcesFolder & "\TEMPLATE - Order Form.doc"
+str_New_Document_Name = str_ReportsFolder & _
+    "\" & "Enrollment - " & stu.MailingName & Space(1) & str_Timestamp & ".pdf"
+
+
+' /// Checking folders ///
+    
+'If the Reports folder doesn't already exist, then this creates one
+If Dir(str_ReportsFolder, vbDirectory) = "" Then MkDir str_ReportsFolder
+
+'If the Sources folder doesn't already exist, then this passes an error message
+If Dir(str_SourcesFolder, vbDirectory) = "" Then GoTo FolderDoes_Not_Exist
+
+
+' /// Setting objects ///
+
+'GetObject will error if Word isn't already open; therefore, Resume Next will _
+    skip it to the following CreateObject conditional
+On Error Resume Next
+Set objWord = GetObject(, "Word.Application")
+
+'Creates the MS Word Object if it isn't open
+If objWord Is Nothing Then
+    Set objWord = CreateObject("Word.Application")
+End If
+
+'Resumes preferred error handling
+On Error GoTo BookmarkError
+
+'Activates Document
+objWord.Visible = True
+
+'Sets the document variable
+objWord.Documents.Open str_Template_Name
+Set objDoc = objWord.Documents.Open(str_Template_Name, ConfirmConversions:=False, ReadOnly:=False)
+
+' /// Inserting the relevent information ///
+
+'Format:
+'objDoc.Bookmarks("BOOKMARK").Range.Text = VARIABLE
+
+objDoc.Bookmarks("bmStudentID").Range.Text = tag.StudentID
+objDoc.Bookmarks("bmDatestamp").Range.Text = str_Datestamp
+
+If tag.EnrollmentType = 1 Or tag.EnrollmentType = 2 Then
+    objDoc.Bookmarks("bmCourseMod2").Range.Text = reg.FullProgramCode
+    objDoc.Bookmarks("bmCourseTUI2").Range.Text = Format(CStr(reg.FullProgramPrice), "Currency")
+ElseIf tag.EnrollmentType = 3 Then
+    objDoc.Bookmarks("bmCourseMod0").Range.Text = reg.ModCode0
+    objDoc.Bookmarks("bmCourseMod1").Range.Text = reg.ModCode1
+    objDoc.Bookmarks("bmCourseMod2").Range.Text = reg.ModCode2
+    objDoc.Bookmarks("bmCourseMod3").Range.Text = reg.ModCode3
+    objDoc.Bookmarks("bmCourseMod4").Range.Text = reg.ModCode4
+    objDoc.Bookmarks("bmCourseMod5").Range.Text = reg.ModCode5
+    objDoc.Bookmarks("bmCourseMod6").Range.Text = reg.ModCode6
+    If reg.ClassTuition0 >= 0.01 Then objDoc.Bookmarks("bmCourseTUI0").Range.Text = Format(CStr(reg.ClassTuition0), "Currency")
+    If reg.ClassTuition1 >= 0.01 Then objDoc.Bookmarks("bmCourseTUI1").Range.Text = Format(CStr(reg.ClassTuition1), "Currency")
+    If reg.ClassTuition2 >= 0.01 Then objDoc.Bookmarks("bmCourseTUI2").Range.Text = Format(CStr(reg.ClassTuition2), "Currency")
+    If reg.ClassTuition3 >= 0.01 Then objDoc.Bookmarks("bmCourseTUI3").Range.Text = Format(CStr(reg.ClassTuition3), "Currency")
+    If reg.ClassTuition4 >= 0.01 Then objDoc.Bookmarks("bmCourseTUI4").Range.Text = Format(CStr(reg.ClassTuition4), "Currency")
+    If reg.ClassTuition5 >= 0.01 Then objDoc.Bookmarks("bmCourseTUI5").Range.Text = Format(CStr(reg.ClassTuition5), "Currency")
+    If reg.ClassTuition6 >= 0.01 Then objDoc.Bookmarks("bmCourseTUI6").Range.Text = Format(CStr(reg.ClassTuition6), "Currency")
+End If
+
+objDoc.Bookmarks("bmMailingName").Range.Text = stu.MailingName
+objDoc.Bookmarks("bmAddress0").Range.Text = stu.Address0
+objDoc.Bookmarks("bmAddress1").Range.Text = stu.Address1
+objDoc.Bookmarks("bmAddress2").Range.Text = stu.Address2
+objDoc.Bookmarks("bmAddress3").Range.Text = stu.Address3
+
+str_CityStateAndZip = stu.City & ", " & stu.State & Space(2) & CStr(stu.ZipCode)
+objDoc.Bookmarks("bmCityStateZip").Range.Text = str_CityStateAndZip
+
+str_PhoneAndEmail = Format(stu.PhoneArea, "(###)") & Format(stu.PhoneBase, "###-####") & Space(6) & stu.Email
+objDoc.Bookmarks("bmPhoneEmail").Range.Text = str_PhoneAndEmail
+
+If tag.ParentStatus = True Then
+    objDoc.Bookmarks("bmBaseTUI").Range.Text = Format(CStr(reg.Parent_Invoice), "Currency")
+    objDoc.Bookmarks("bmAddTUI").Range.Text = Format(CStr(reg.Student_Tuition), "Currency")
+    objDoc.Bookmarks("bmStuFEE").Range.Text = Format(CStr(reg.Student_Fees), "Currency")
+    str_TotalSale = Format(CStr(reg.Parent_Invoice + reg.Student_Net), "Currency")
+    objDoc.Bookmarks("bmTotal").Range.Text = str_TotalSale
+    objDoc.Bookmarks("bmPayable").Range.Text = Format(CStr(reg.DownPay), "Currency")
+    objDoc.Bookmarks("bmParent").Range.Text = "Parent LC#: " & vbTab & tag.ParentLC
+    objDoc.Bookmarks("bmCAA").Range.Text = "Title:" & vbTab & "CAA"
+    objDoc.Bookmarks("bmDoD").Range.Text = "Name:" & vbTab & "DoD"
+    
+ElseIf tag.ParentStatus = False Then
+    objDoc.Bookmarks("bmBaseTUI").Range.Text = Format(CStr(reg.Student_Tuition), "Currency")
+    objDoc.Bookmarks("bmAddTUI").Range.Text = Format("0", "Currency")
+    objDoc.Bookmarks("bmStuFEE").Range.Text = Format(CStr(reg.Student_Fees), "Currency")
+    objDoc.Bookmarks("bmTotal").Range.Text = Format(CStr(reg.Student_Net), "Currency")
+    objDoc.Bookmarks("bmPayable").Range.Text = Format(CStr(reg.DownPay), "Currency")
+End If
+
+objDoc.Bookmarks("bmDP").Range.Text = Format(CStr(reg.DownPay), "Currency")
+objDoc.Bookmarks("bmMonthly").Range.Text = Format(CStr(reg.CostPerMonth), "Currency")
+objDoc.Bookmarks("bmSalesperson").Range.Text = tag.SalesPerson
+
+
+' /// Saving and Closing ///
+ReturnToSave:
+
+On Error GoTo SavingError
+
+'Saves as PDF
+objDoc.SaveAs2 str_New_Document_Name, 17
+
+'Closes the template document without saving
+objWord.Quit SaveChanges:=False
+
+Create_PDF = str_New_Document_Name
+
+' /// Cleanup ///
+Cleanup:
+
+'Empties the object variables
+Set objWord = Nothing
+Set objDoc = Nothing
+
+Application.ScreenUpdating = True
+Application.DisplayAlerts = True
+
+Exit Function
+
+
+' /// Error Handling ///
+
+FolderDoes_Not_Exist:
+GoTo Cleanup
+
+BookmarkError:
+Resume ReturnToSave
+
+SavingError:
+Resume Cleanup
+
+End Function
+
+
+
+Public Sub InitialData_Student_No(stu As cStudent, tag As cTag, _
+                                wSheet As Excel.Worksheet, long_row As Long)
+                                
+If Not Debugger Then On Error Resume Next Else On Error GoTo 0
+
+Call PassToDataSheet(CStr(long_row - 20), "Entry", wSheet, long_row)
+Call PassToDataSheet(Format(Now(), "yyyy/MM/dd"), "Date", wSheet, long_row)
+Call PassToDataSheet(Format(Now(), "HH:mm:ss"), "Time", wSheet, long_row)
+Call PassToDataSheet(Debugger, "DebugMode", wSheet, long_row)
+Call PassToDataSheet("Enrollment", "Action", wSheet, long_row)
+Call PassToDataSheet("None", "ErrMessage", wSheet, long_row)
+
+Call PassToDataSheet(True, "Gate00", wSheet, long_row)
+Call PassToDataSheet(False, "AddressBookNavigate", wSheet, long_row)
+Call PassToDataSheet(False, "Gate01", wSheet, long_row)
+Call PassToDataSheet(False, "Gate02", wSheet, long_row)
+Call PassToDataSheet(False, "Gate03", wSheet, long_row)
+Call PassToDataSheet(False, "Gate04", wSheet, long_row)
+
+Call PassToDataSheet(False, "Gate05", wSheet, long_row)
+Call PassToDataSheet("-", "G06Path", wSheet, long_row)
+Call PassToDataSheet(False, "Gate061", wSheet, long_row)
+Call PassToDataSheet(False, "Gate062", wSheet, long_row)
+Call PassToDataSheet(False, "Gate063", wSheet, long_row)
+Call PassToDataSheet(False, "Gate064", wSheet, long_row)
+Call PassToDataSheet(False, "Gate07", wSheet, long_row)
+Call PassToDataSheet("", "str_New_Document_Name", wSheet, long_row)
+
+Call PassToDataSheet(tag.StudentStatus, "Student", wSheet, long_row)
+Call PassToDataSheet(tag.ParentStatus, "Parent", wSheet, long_row)
+Call PassToDataSheet(tag.Activity, "Activity", wSheet, long_row)
+Call PassToDataSheet(tag.SalesPerson, "SalesPerson", wSheet, long_row)
+Call PassToDataSheet(tag.ParentLC, "ParentLC", wSheet, long_row)
+Call PassToDataSheet(tag.EnrollmentType, "EnrollmentType", wSheet, long_row)
+Call PassToDataSheet(tag.Session, "Session", wSheet, long_row)
+Call PassToDataSheet(tag.B2BPrefix, "B2BPrefix", wSheet, long_row)
+Call PassToDataSheet(tag.SchoolCode, "SchoolCode", wSheet, long_row)
+Call PassToDataSheet(tag.DegreeCode, "DegreeCode", wSheet, long_row)
+
+Call PassToDataSheet(stu.FirstName, "FirstName", wSheet, long_row)
+Call PassToDataSheet(stu.LastName, "LastName", wSheet, long_row)
+Call PassToDataSheet(stu.MidName, "MidName", wSheet, long_row)
+Call PassToDataSheet(stu.MailingName, "MailingName", wSheet, long_row)
+Call PassToDataSheet(stu.AlphaName, "AlphaName", wSheet, long_row)
+Call PassToDataSheet(stu.PhoneArea, "PhoneArea", wSheet, long_row)
+Call PassToDataSheet(stu.PhoneBase, "PhoneBase", wSheet, long_row)
+Call PassToDataSheet(stu.Address0, "Address0", wSheet, long_row)
+Call PassToDataSheet(stu.Address1, "Address1", wSheet, long_row)
+Call PassToDataSheet(stu.Address2, "Address2", wSheet, long_row)
+Call PassToDataSheet(stu.Address3, "Address3", wSheet, long_row)
+Call PassToDataSheet(stu.City, "City", wSheet, long_row)
+Call PassToDataSheet(stu.State, "State", wSheet, long_row)
+Call PassToDataSheet(stu.ZipCode, "ZipCode", wSheet, long_row)
+Call PassToDataSheet(stu.ProofHS, "ProofHS", wSheet, long_row)
+
+End Sub
+
+
+
+Public Sub InitialData_Student_Yes(stu As cStudent, tag As cTag, _
+            wSheet As Excel.Worksheet, long_row As Long)
+            
+If Not Debugger Then On Error Resume Next Else On Error GoTo 0
+
+Call PassToDataSheet(CStr(long_row - 20), "Entry", wSheet, long_row)
+Call PassToDataSheet(Format(Now(), "yyyy/MM/dd"), "Date", wSheet, long_row)
+Call PassToDataSheet(Format(Now(), "HH:mm:ss"), "Time", wSheet, long_row)
+Call PassToDataSheet(Debugger, "DebugMode", wSheet, long_row)
+Call PassToDataSheet("Enrollment", "Action", wSheet, long_row)
+Call PassToDataSheet("None", "ErrMessage", wSheet, long_row)
+
+Call PassToDataSheet(True, "Gate00", wSheet, long_row)
+Call PassToDataSheet("-", "AddressBookNavigate", wSheet, long_row)
+Call PassToDataSheet("-", "Gate01", wSheet, long_row)
+Call PassToDataSheet("-", "Gate02", wSheet, long_row)
+Call PassToDataSheet("-", "Gate03", wSheet, long_row)
+Call PassToDataSheet("-", "Gate04", wSheet, long_row)
+
+Call PassToDataSheet(False, "Gate05", wSheet, long_row)
+Call PassToDataSheet("-", "G06Path", wSheet, long_row)
+Call PassToDataSheet(False, "Gate061", wSheet, long_row)
+Call PassToDataSheet(False, "Gate062", wSheet, long_row)
+Call PassToDataSheet(False, "Gate063", wSheet, long_row)
+Call PassToDataSheet(False, "Gate064", wSheet, long_row)
+Call PassToDataSheet(False, "Gate07", wSheet, long_row)
+Call PassToDataSheet("", "str_New_Document_Name", wSheet, long_row)
+
+Call PassToDataSheet(tag.StudentStatus, "Student", wSheet, long_row)
+Call PassToDataSheet(tag.ParentStatus, "Parent", wSheet, long_row)
+Call PassToDataSheet(tag.Activity, "Activity", wSheet, long_row)
+Call PassToDataSheet(tag.SalesPerson, "SalesPerson", wSheet, long_row)
+Call PassToDataSheet(tag.ParentLC, "ParentLC", wSheet, long_row)
+Call PassToDataSheet(tag.EnrollmentType, "EnrollmentType", wSheet, long_row)
+Call PassToDataSheet(tag.Session, "Session", wSheet, long_row)
+Call PassToDataSheet(tag.B2BPrefix, "B2BPrefix", wSheet, long_row)
+Call PassToDataSheet(tag.SchoolCode, "SchoolCode", wSheet, long_row)
+Call PassToDataSheet(tag.DegreeCode, "DegreeCode", wSheet, long_row)
+
+Call PassToDataSheet("-", "FirstName", wSheet, long_row)
+Call PassToDataSheet("-", "LastName", wSheet, long_row)
+Call PassToDataSheet("-", "MidName", wSheet, long_row)
+Call PassToDataSheet(stu.MailingName, "MailingName", wSheet, long_row)
+Call PassToDataSheet("-", "AlphaName", wSheet, long_row)
+Call PassToDataSheet("-", "PhoneArea", wSheet, long_row)
+Call PassToDataSheet("-", "PhoneBase", wSheet, long_row)
+Call PassToDataSheet("-", "Address0", wSheet, long_row)
+Call PassToDataSheet("-", "Address1", wSheet, long_row)
+Call PassToDataSheet("-", "Address2", wSheet, long_row)
+Call PassToDataSheet("-", "Address3", wSheet, long_row)
+Call PassToDataSheet("-", "City", wSheet, long_row)
+Call PassToDataSheet("-", "State", wSheet, long_row)
+Call PassToDataSheet("-", "ZipCode", wSheet, long_row)
+Call PassToDataSheet("-", "ProofHS", wSheet, long_row)
+  
+End Sub
+
+
+                                
+Public Sub InitialData_Registration(reg As cRegistration, _
+            wSheet As Excel.Worksheet, long_row As Long)
+            
+If Not Debugger Then On Error Resume Next Else On Error GoTo 0
+
+Call PassToDataSheet(reg.FullProgramCode, "FullProgramCode", wSheet, long_row)
+Call PassToDataSheet(reg.ModCode0, "ModCode0", wSheet, long_row)
+Call PassToDataSheet(reg.ModCode1, "ModCode1", wSheet, long_row)
+Call PassToDataSheet(reg.ModCode2, "ModCode2", wSheet, long_row)
+Call PassToDataSheet(reg.ModCode3, "ModCode3", wSheet, long_row)
+Call PassToDataSheet(reg.ModCode4, "ModCode4", wSheet, long_row)
+Call PassToDataSheet(reg.ModCode5, "ModCode5", wSheet, long_row)
+Call PassToDataSheet(reg.ModCode6, "ModCode6", wSheet, long_row)
+Call PassToDataSheet(reg.PaymentType, "PaymentType", wSheet, long_row)
+Call PassToDataSheet(reg.Installments, "Installments", wSheet, long_row)
+Call PassToDataSheet(reg.FullProgramPrice, "FullProgramPrice", wSheet, long_row)
+Call PassToDataSheet(reg.ClassTuition0, "ClassTuition0", wSheet, long_row)
+Call PassToDataSheet(reg.ClassTuition1, "ClassTuition1", wSheet, long_row)
+Call PassToDataSheet(reg.ClassTuition2, "ClassTuition2", wSheet, long_row)
+Call PassToDataSheet(reg.ClassTuition3, "ClassTuition3", wSheet, long_row)
+Call PassToDataSheet(reg.ClassTuition4, "ClassTuition4", wSheet, long_row)
+Call PassToDataSheet(reg.ClassTuition5, "ClassTuition5", wSheet, long_row)
+Call PassToDataSheet(reg.ClassTuition6, "ClassTuition6", wSheet, long_row)
+Call PassToDataSheet(reg.Parent_Invoice, "Parent_Invoice", wSheet, long_row)
+Call PassToDataSheet(reg.Student_Tuition, "Student_Tuition", wSheet, long_row)
+Call PassToDataSheet(reg.Student_Fees, "Student_Fees", wSheet, long_row)
+Call PassToDataSheet(reg.Student_Net, "Student_Net", wSheet, long_row)
+Call PassToDataSheet(reg.DownPay, "DownPay", wSheet, long_row)
+Call PassToDataSheet(reg.CostPerMonth, "CostPerMonth", wSheet, long_row)
+
+End Sub
+
+
+
+Public Sub PassToDataSheet(PassVar As Variant, passName As String, _
+                                    wSheet As Excel.Worksheet, long_row As Long)
+
+Dim long_col As Long
+Dim str As String
+
+On Error GoTo ErrHandler
+str = CStr(PassVar)
+
+Continue:
+On Error GoTo Cleanup
+
+If long_col = 0 Then GoTo Cleanup Else long_col = Range(passName).Column
+
+If Len(str) < 1 Then Cells(long_row, long_col) = "-" Else Cells(long_row, long_col) = str
+
+Cleanup:
+str = vbNullString
+long_col = 0
+
+Exit Sub
+
+ErrHandler:
+str = "~Error~"
+Resume Continue
+
+End Sub
