@@ -1,0 +1,221 @@
+'==================================================================================
+' # Global_Procedures (Module)
+'
+' Contains global subs and variables for use across multiple modules and worksheets
+
+' To-Do List: _
+1 - Evaluate variable and procedure names _
+2 - Improve comments (provide better context for procedures/actions) _
+3 - Further move actions/calculations to separate modules _
+5 - Add Outlook functionality _
+6 - Add Github functionality _
+7 - Align procedures with a Best Practices approach
+
+'==================================================================================
+
+Option Explicit 'Forces explicit declaration of all variables
+
+'Sets Debug Mode
+Public Const Debugger As Boolean = True
+
+'Dimensions color constants. The Variant type is used to accommodate different formats.
+Public Const cGrey As Variant = &H80000000
+Public Const cWhite As Variant = &H80000005
+
+
+
+Public Sub WaitForReady(PassAS400 As Object, milliseconds As Long)
+
+'"""
+'Commands the AS/400 to wait until the application is ready for additional input
+'
+'The ECLOIA object can be accessed as a dot method to the ECLPSession object
+'"""
+
+If Not Debugger Then On Error Resume Next Else On Error GoTo 0
+
+PassAS400.autECLPS.Wait 10
+PassAS400.autECLOIA.WaitForAppAvailable
+PassAS400.autECLOIA.WaitForInputReady
+PassAS400.autECLPS.Wait milliseconds
+
+End Sub
+
+Public Sub Defaults_Off()
+
+Application.ScreenUpdating = False
+Application.DisplayAlerts = False
+Application.Calculation = xlCalculationManual
+
+End Sub
+
+Public Sub Defaults_On()
+
+Application.Calculation = xlCalculationAutomatic
+Application.DisplayAlerts = True
+Application.ScreenUpdating = True
+
+End Sub
+
+Public Function GetSheetFromCodeName(wb As Workbook, CodeName As String) As Excel.Worksheet
+
+'"""
+'|wb| = [Workbook] Name of the Workbook. |CodeName| = [String] The worksheet's code/secret name
+'
+'Returns Worksheet As Excel.Worksheet
+
+'Referencing a worksheet's codename instead of the worksheet's regular name (or position)
+'   allows users to change the sheet's name (or position) without breaking the relevant macros.
+'This function allows worksheet codenames to be referenced even across separate workbooks.
+
+'(SOURCE) D Glancy. (2012, Feb 10). Using Worksheet CodeNames in Other Workbooks [Web log].
+'   Retrieved from http://yoursumbuddy.com/using-worksheet-codenames-in-other-workbooks/
+'"""
+
+Dim wsCN As Excel.Worksheet
+
+If Not Debugger Then On Error Resume Next Else On Error GoTo 0
+
+For Each wsCN In wb.Worksheets
+
+     If wsCN.CodeName = CodeName Then
+         Set GetSheetFromCodeName = wsCN
+         Exit For
+     End If
+Next wsCN
+
+End Function
+
+Public Sub NavigateSheets(strStartSheetCodename As String, strEndSheetCodename As String)
+
+'"""
+' |strStartSheetCodename| = [String] Name of worksheet to navigate from.
+' |strEndSheetCodename| = [String] Name of worksheet to naviage to.
+'
+'This sub streamlines the user experience by showing only one worksheet at a time.  When the user clicks the
+'   commandbutton to move to the next sheet, the previous one closes.
+'
+'Instead of referencing the sheets' public name, this sub references the sheets' codename.
+'"""
+
+Dim wsStart As Excel.Worksheet  'Stores starting worksheet
+Dim wsEnd As Excel.Worksheet    'Stores ending worksheet
+
+If Not Debugger Then On Error Resume Next Else On Error GoTo 0
+
+'Calls the GetSheetFromCodeName function
+Set wsStart = GetSheetFromCodeName(Workbooks("TaskHelper VBA iSeries.xlsm"), strStartSheetCodename)
+Set wsEnd = GetSheetFromCodeName(Workbooks("TaskHelper VBA iSeries.xlsm"), strEndSheetCodename)
+
+wsEnd.Visible = xlSheetVisible
+wsEnd.Activate
+
+wsStart.Visible = xlSheetHidden
+
+End Sub
+
+
+Public Sub Integers_Only(KeyAscii As MSForms.ReturnInteger)
+
+'"""
+'Restricts the textbox to accept only numerals
+'"""
+
+Select Case KeyAscii
+     Case Asc("0") To Asc("9")
+     Case Asc(".")
+     Case Else
+         KeyAscii = 0
+ End Select
+
+End Sub
+
+Public Sub Floats_and_Integers_Only(KeyAscii As MSForms.ReturnInteger, str_textbox As String)
+
+'"""
+'Restricts the textbox to accept only real numbers
+'"""
+
+Select Case KeyAscii
+     Case Asc("0") To Asc("9")
+     Case Asc(".")
+         If InStr(1, str_textbox, ".") > 0 Then
+             KeyAscii = 0
+         End If
+     Case Else
+         KeyAscii = 0
+ End Select
+
+End Sub
+
+Public Function TextEntry(str_label As String, v_variable As Variant) As String
+
+'Depreciated
+
+'"""
+'Formats entries for use on error reports. Takes an entry's "label" and
+'   appends a colon and two tab returns.  Takes a variable, checks to see
+'   if it's a string, then converts it to a string if it's not.
+'"""
+
+Dim strTypeName As String
+
+TextEntry = str_label & ":" & vbTab & vbTab
+
+'Note: The TypeName function returns the variable's type as a string
+strTypeName = TypeName(v_variable)
+
+If strTypeName = "Empty" Then
+    TextEntry = TextEntry & ""
+    
+ElseIf strTypeName = "String" Then
+    TextEntry = TextEntry & v_variable
+
+Else
+    TextEntry = TextEntry & CStr(v_variable)
+End If
+
+End Function
+
+Public Sub Initialize_AS400(ByRef blueMessage As String, ByRef redMessage As String, PassSession As String, _
+    ByRef PassAS400 As Object, ByRef obj_AS400_Focus As Object, ByRef PassConnList As Object)
+
+If Not Debugger Then On Error GoTo GoToScript Else On Error GoTo 0
+
+'Sets the main AS/400 objects
+Set PassAS400 = CreateObject("PCOMM.autECLSession")
+Set obj_AS400_Focus = CreateObject("PCOMM.autECLWinMetrics")
+Set PassConnList = CreateObject("PCOMM.autECLConnList")
+
+'Sets the connection to the AS400 Presentation Space
+PassAS400.SetConnectionByName (PassSession)
+obj_AS400_Focus.SetConnectionByName (PassSession)    'Used only for setting the focus
+
+'Checks to see if the AS400 Session is connected
+If PassAS400.Started = False Then GoTo GoToScript
+blueMessage = blueMessage & vbNewLine & "AS400 Session: " & vbTab & PassSession & vbNewLine
+
+'Checks to see if communications are enabled
+If PassAS400.CommStarted = False Then GoTo GoToScript
+blueMessage = blueMessage & "AS400 Host:" & vbTab & "Connection Enabled" & vbNewLine
+
+'Checks to see if the AS400 is ready
+If PassAS400.Ready = False Then GoTo GoToScript
+blueMessage = blueMessage & "AS400 Pres Space:" & vbTab & "Ready" & vbNewLine & vbNewLine
+
+'Refreshes the AS/400's Connection List (Recommended for autECLWinMetrics)
+PassConnList.Refresh
+
+Cleanup:
+Exit Sub
+
+ErrorScript:
+redMessage = vbNewLine & redMessage & "* Error (Gate 01): THE AS400 SESSION HAS FAILED TO CONNECT" & vbNewLine
+Resume Cleanup
+
+GoToScript:
+redMessage = vbNewLine & redMessage & "* Error (Gate 01): THE AS400 SESSION HAS FAILED TO CONNECT" & vbNewLine
+GoTo Cleanup
+
+End Sub
+
