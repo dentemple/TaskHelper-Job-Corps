@@ -41,6 +41,8 @@ PassAS400.autECLPS.Wait milliseconds
 
 End Sub
 
+
+
 Public Sub Defaults_Off()
 
 Application.ScreenUpdating = False
@@ -49,6 +51,8 @@ Application.Calculation = xlCalculationManual
 
 End Sub
 
+
+
 Public Sub Defaults_On()
 
 Application.Calculation = xlCalculationAutomatic
@@ -56,6 +60,8 @@ Application.DisplayAlerts = True
 Application.ScreenUpdating = True
 
 End Sub
+
+
 
 Public Function GetSheetFromCodeName(wb As Workbook, CodeName As String) As Excel.Worksheet
 
@@ -86,6 +92,8 @@ Next wsCN
 
 End Function
 
+
+
 Public Sub NavigateSheets(strStartSheetCodename As String, strEndSheetCodename As String)
 
 '"""
@@ -115,6 +123,7 @@ wsStart.Visible = xlSheetHidden
 End Sub
 
 
+
 Public Sub Integers_Only(KeyAscii As MSForms.ReturnInteger)
 
 '"""
@@ -129,6 +138,8 @@ Select Case KeyAscii
  End Select
 
 End Sub
+
+
 
 Public Sub Floats_and_Integers_Only(KeyAscii As MSForms.ReturnInteger, str_textbox As String)
 
@@ -147,6 +158,8 @@ Select Case KeyAscii
  End Select
 
 End Sub
+
+
 
 Public Function TextEntry(str_label As String, v_variable As Variant) As String
 
@@ -176,6 +189,8 @@ Else
 End If
 
 End Function
+
+
 
 Public Sub Initialize_AS400(ByRef blueMessage As String, ByRef redMessage As String, PassSession As String, _
     ByRef PassAS400 As Object, ByRef obj_AS400_Focus As Object, ByRef PassConnList As Object)
