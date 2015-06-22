@@ -1,0 +1,34 @@
+Notes
+
+* Property Let: Assigns a value to a property - Can take multiple arguments (the last value is assigned)
+* Property Get: Returns the value of a property (read-only) - 1 argument only
+* Property Set: Sets a reference to an object (write-only)
+Pair: Let/Set and Get
+
+Also: Public Event / RaiseEvent / With Event
+http://www.cpearson.com/excel/Events.aspx
+
+- cStudentRegistration, uStudentRegistration
+- cAS400
+
+- Add procedures to the class modules; the bulk of calculations can be performed by the class
+- "Me" self-references to the same class
+- Multiple instances of classes can be saved
+- Add the option to enroll multiple students at once?
+
+- Storing multiple objects in a collection
+
+Dim Employees As Collection
+Dim Emp As cEmployee
+
+Set Employees = New Collection
+For Each Item In SomeList
+	Set Emp = New cEmployee
+	'| Set properties for Emp |
+	Employees.Add Emp
+Next Item
+
+Dim Emp as cEmployee
+For Each Emp In Employees
+	Debug.Print Emp.Name
+Next Emp
