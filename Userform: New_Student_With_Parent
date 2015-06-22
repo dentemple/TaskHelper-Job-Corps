@@ -14,14 +14,12 @@ Passes AS/400 control to a seperate module _
 A PDF document _
 
 ' To-Do List: _
-1 - Evaluate variable and procedure names
-2 - Improve comments (provide better context for procedures/actions)
-2 - Merge the cStudent, cRegistration, and cTag classes
-3 - Further move actions/calculations to separate modules
-4 - Merge the four separate enrollment userforms into one
-5 - Add Outlook functionality
-6 - Add Github functionality
-7 - Can DRY be applied to VBA events?
+1 - Evaluate variable and procedure names _
+2 - Improve comments (provide better context for procedures/actions) _
+2 - Merge the cStudent, cRegistration, and cTag classes _
+3 - Further move actions/calculations to separate modules _
+4 - Merge the four separate enrollment userforms into one _
+5 - Can DRY be applied to VBA events? _
 
 '=================================================
 
