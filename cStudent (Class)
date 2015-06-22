@@ -1,0 +1,205 @@
+''''''''''''''''''''''''''''''
+' cStudent Class
+''''''''''''''''''''''''''''''
+
+''''''''''''''''''''''''''''''
+' To-Do List: _
+1 - Combine with cTag and cRegistration _
+2 - Move property calculations from procedures to here
+''''''''''''''''''''''''''''''
+
+Option Explicit
+
+'Read-only (no variable): AlphaName
+Private pFirstName As String
+Private pMidName As String
+Private pLastName As String
+Private pMailingName As String
+Private pPhoneArea As String
+Private pPhoneBase As String
+Private pEmail As String
+Private pGender As String
+Private pAddress0 As String
+Private pAddress1 As String
+Private pAddress2 As String
+Private pAddress3 As String
+Private pCity As String
+Private pState As String
+Private pZipCode As String
+Private pProofHS As String
+
+''''''''''''''''''''''''''''''
+'AlphaName property (Read-only)
+''''''''''''''''''''''''''''''
+Public Property Get AlphaName() As String
+    If Len(MidName) < 1 Then
+        AlphaName = LastName & " " & FirstName
+    Else
+        AlphaName = LastName & " " & FirstName & " " & MidName
+    End If
+End Property
+
+''''''''''''''''''''''''''''''
+'FirstName property
+''''''''''''''''''''''''''''''
+Public Property Get FirstName() As String
+    FirstName = pFirstName
+End Property
+
+Public Property Let FirstName(Value As String)
+    pFirstName = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'MidName property
+''''''''''''''''''''''''''''''
+Public Property Get MidName() As String
+    MidName = pMidName
+End Property
+Public Property Let MidName(Value As String)
+    pMidName = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'LastName property
+''''''''''''''''''''''''''''''
+Public Property Get LastName() As String
+    LastName = pLastName
+End Property
+Public Property Let LastName(Value As String)
+    pLastName = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'MailingName property
+''''''''''''''''''''''''''''''
+Public Property Get MailingName() As String
+    MailingName = pMailingName
+End Property
+Public Property Let MailingName(Value As String)
+    pMailingName = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'PhoneArea property
+'Textbox input restricted to integers
+''''''''''''''''''''''''''''''
+Public Property Get PhoneArea() As String
+    PhoneArea = pPhoneArea
+End Property
+Public Property Let PhoneArea(Value As String)
+        pPhoneArea = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'PhoneBase property
+'Textbox input restricted to integers
+''''''''''''''''''''''''''''''
+Public Property Get PhoneBase() As String
+    PhoneBase = pPhoneBase
+End Property
+Public Property Let PhoneBase(Value As String)
+        pPhoneBase = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'Email property
+''''''''''''''''''''''''''''''
+Public Property Get Email() As String
+    Email = pEmail
+End Property
+Public Property Let Email(Value As String)
+    pEmail = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'Gender property
+''''''''''''''''''''''''''''''
+Public Property Get Gender() As String
+    Gender = pGender
+End Property
+Public Property Let Gender(Value As String)
+    pGender = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'Address0 property
+''''''''''''''''''''''''''''''
+Public Property Get Address0() As String
+    Address0 = pAddress0
+End Property
+Public Property Let Address0(Value As String)
+    pAddress0 = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'Address1 property
+''''''''''''''''''''''''''''''
+Public Property Get Address1() As String
+    Address1 = pAddress1
+End Property
+Public Property Let Address1(Value As String)
+    pAddress1 = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'Address2 property
+''''''''''''''''''''''''''''''
+Public Property Get Address2() As String
+    Address2 = pAddress2
+End Property
+Public Property Let Address2(Value As String)
+    pAddress2 = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'Address3 property
+''''''''''''''''''''''''''''''
+Public Property Get Address3() As String
+    Address3 = pAddress3
+End Property
+Public Property Let Address3(Value As String)
+    pAddress3 = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'City property
+''''''''''''''''''''''''''''''
+Public Property Get City() As String
+    City = pCity
+End Property
+Public Property Let City(Value As String)
+    pCity = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'State property
+''''''''''''''''''''''''''''''
+Public Property Get State() As String
+    State = pState
+End Property
+Public Property Let State(Value As String)
+    pState = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'ZipCode property
+'Textbox input restricted to integers
+''''''''''''''''''''''''''''''
+Public Property Get ZipCode() As String
+    ZipCode = pZipCode
+End Property
+Public Property Let ZipCode(Value As String)
+    pZipCode = Value
+End Property
+
+''''''''''''''''''''''''''''''
+'ProofHS property
+''''''''''''''''''''''''''''''
+Public Property Get ProofHS() As String
+    ProofHS = pProofHS
+End Property
+Public Property Let ProofHS(Value As String)
+    pProofHS = Value
+End Property
+
