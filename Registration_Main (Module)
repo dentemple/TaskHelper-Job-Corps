@@ -1,0 +1,928 @@
+'==================================================================================
+' # Registration_Main (Module)
+'
+' Automates class registration within the B2B Military/Enrichment Environment
+
+' To-Do List: _
+1 - Evaluate variable and procedure names _
+2 - Improve comments (provide better context for procedures/actions) _
+3 - Further move actions/calculations to separate modules _
+4 - Align procedures with a Best Practices approach
+'==================================================================================
+
+Option Explicit
+
+Public Function Register_into_the_AddressBook(objAS400 As Object, obj_AS400_Focus As Object, _
+        stu As cStudent, ByRef tag As cTag, reg As cRegistration, _
+        ws As Excel.Worksheet, long_row As Long) As String
+
+'"""
+'   Accepts the cStudent and cTag class modules _
+    This script accesses the AS/400's Automation Objects and runs through _
+        the steps required to perform a student's registeration _
+        within the B2B Environment _
+    The output to Word is (hopefully) performed should the script be _
+        critically interrupted
+
+' Assumes the required AS/400 session is ready and active
+' Assumes the data stored within the class module arguments are valid values
+'
+' For a brief review of the AS/400's Automation Objects, visit the _
+        Master_Documentation module
+'"""
+
+'Note: The AS/400 will only accept variable numbers as long
+Dim str_Message As String
+Dim milliseconds As Long
+Dim bool_error As Boolean
+
+'Determines length of padding in milliseconds for the wait procedure
+If tag.Activity = True Then milliseconds = 150 Else milliseconds = 75
+
+'Error Handling
+bool_error = False
+str_Message = "Warning: The script has completed, but with possible errors. " & _
+    "Please confirm the new Address Book entry is correct before attempting to proceed" & _
+    vbNewLine & vbNewLine & "Debug Log:" & vbNewLine & vbNewLine
+
+tag.StudentID = vbNullString
+
+'/// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// ///
+' REGISTRATION, GATE 01:
+'
+' Naviages the AS/400 to the correct presentation space (PS) and inputs
+'       the initial information
+'/// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// ///
+
+If Not Debugger Then On Error GoTo Pre_Enrollment_Error Else On Error GoTo 0
+
+If tag.Activity = True Then obj_AS400_Focus.Active = True
+
+'Runs maze loop to reach the "BNIMAIN" PS
+Call WaitForReady(objAS400, milliseconds)
+If Nav_To_Home_Screen(objAS400) = False Then GoTo Pre_Enrollment_Fail
+
+'Proceeds to the "BNICS" PS
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SetText "1", 19, 7
+objAS400.autECLPS.SendKeys ("[Enter]")
+Call WaitForReady(objAS400, milliseconds)
+
+'Enrollment path determined by parent status
+If tag.ParentStatus = True Then
+
+    'With Parent
+    objAS400.autECLPS.SetText "3", 19, 7
+    objAS400.autECLPS.SendKeys ("[Enter]")
+    Call WaitForReady(objAS400, milliseconds)
+
+Else
+
+    'No Parent
+    objAS400.autECLPS.SetText "23", 19, 7
+    objAS400.autECLPS.SendKeys ("[Enter]")
+    Call WaitForReady(objAS400, milliseconds)
+    
+End If
+
+' Depending on the path, the Nav_To_Home_Screen function can sometimes
+'   cause the above commands to not execute properly, probably due to
+'   the respective "wait" commands doing a poor job of doing so.
+' Re-performing the function and subsequent commands will clear this issue.
+
+If Not objAS400.autECLPS.SearchText("01051", 1, 1, 2) Then
+
+    Call WaitForReady(objAS400, milliseconds)
+    Call Nav_To_Home_Screen(objAS400)
+    
+    Call WaitForReady(objAS400, milliseconds)
+    objAS400.autECLPS.SetText "1", 19, 7
+    objAS400.autECLPS.SendKeys ("[Enter]")
+    
+    Call WaitForReady(objAS400, milliseconds)
+    If tag.ParentStatus = True Then
+        objAS400.autECLPS.SetText "3", 19, 7
+        objAS400.autECLPS.SendKeys ("[Enter]")
+        Call WaitForReady(objAS400, milliseconds)
+    Else
+        objAS400.autECLPS.SetText "23", 19, 7
+        objAS400.autECLPS.SendKeys ("[Enter]")
+        Call WaitForReady(objAS400, milliseconds)
+    End If
+End If
+
+Call PassToDataSheet(True, "AddressBookNavigate", ws, long_row)
+
+'Enters the initial student information
+If tag.ParentStatus = True Then
+
+    'With Parent
+    objAS400.autECLPS.SetText "A", 3, 19              'Action Code
+    objAS400.autECLPS.SetText stu.MailingName, 4, 19  'First name, Mid Name, Last Name
+    objAS400.autECLPS.SetText stu.AlphaName, 6, 19    'Last Name, First Name, Mid/Suffix
+    objAS400.autECLPS.SetText stu.Address0, 8, 19     'Address Line 0
+    objAS400.autECLPS.SetText stu.Address1, 9, 19     'Address Line 1
+    objAS400.autECLPS.SetText stu.Address2, 10, 19    'Address Line 2
+    objAS400.autECLPS.SetText stu.Address3, 11, 19    'Address Line 3
+    objAS400.autECLPS.SetText stu.ZipCode, 12, 19     'Zip Code
+    objAS400.autECLPS.SetText stu.City, 12, 55        'City
+    objAS400.autECLPS.SetText stu.State, 13, 55       'State
+    objAS400.autECLPS.SetText "TR", 14, 19            'Required Entry
+    objAS400.autECLPS.SetText tag.ParentLC, 17, 55    'Parent LC#
+    objAS400.autECLPS.SetText tag.B2BPrefix, 23, 19   'B2B Prefix Code
+    Call WaitForReady(objAS400, milliseconds)
+    
+Else
+
+    'No Parent
+    objAS400.autECLPS.SetText "A", 4, 19              'Action Code
+    objAS400.autECLPS.SetText stu.AlphaName, 7, 19    'Last Name, First Name, Mid/Suffix
+    objAS400.autECLPS.SetText "TR", 7, 77             'Required Entry
+    objAS400.autECLPS.SetText stu.PhoneArea, 9, 19    'Area Code
+    objAS400.autECLPS.SetText stu.PhoneBase, 9, 26    'Main Phone Number
+    objAS400.autECLPS.SetText stu.MailingName, 12, 19 'First name, Mid Name, Last Name
+    objAS400.autECLPS.SetText stu.Address0, 14, 19    'Address Line 0
+    objAS400.autECLPS.SetText stu.Address1, 15, 19    'Address Line 1
+    objAS400.autECLPS.SetText stu.Address2, 16, 19    'Address Line 2
+    objAS400.autECLPS.SetText stu.Address3, 17, 19    'Address Line 3
+    objAS400.autECLPS.SetText stu.ZipCode, 18, 19     'Zip Code
+    objAS400.autECLPS.SetText stu.City, 18, 55        'City
+    objAS400.autECLPS.SetText stu.State, 19, 55       'State
+    Call WaitForReady(objAS400, milliseconds)
+End If
+
+Call PassToDataSheet(True, "Gate01", ws, long_row)
+
+'/// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// ///
+' REGISTRATION, GATE 2 ***REGISTRATION***:
+'
+' This third step in the registration process receives the Student ID#,
+'       then performs the [Enter]-[F3] sequence
+'
+' Note: *** Entering Gate 2 is a POINT OF NO RETURN (with regards to enrollment)
+'       Improper enrollments from this point forward can only be deleted by the
+'       IT Department's AS400 administrator.  Also, if mistakes are made by the
+'       script, there is no guarantee the user would have either the access or
+'       the knowledge to correct it.
+'/// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// ///
+
+If Not Debugger Then On Error GoTo Error_Gate02 Else On Error GoTo 0
+
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SendKeys ("[Enter]")
+
+'Receives the Student ID#
+Call WaitForReady(objAS400, milliseconds)
+tag.StudentID = objAS400.autECLPS.GetText(4, 32, 8)
+
+Call PassToDataSheet(tag.StudentID, "StudentID", ws, long_row)
+
+If tag.Activity = True Then obj_AS400_Focus.Active = True
+
+'/// /// /// /// ///
+' Enter-F3 sequence
+'/// /// /// /// ///
+
+If Not Debugger Then On Error GoTo Error_EnterF3 Else On Error GoTo 0
+
+'Enter #1    Text disappears
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SendKeys ("[Enter]")
+
+'F3 #1      Proceeds to next PS
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SendKeys ("[pf3]")
+
+'Enter #2     Text disappears
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SendKeys ("[Enter]")
+
+'F3 #2
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SendKeys ("[pf3]")
+
+'Enter #3     Text disappears
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SendKeys ("[Enter]")
+
+'F3 #3
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SendKeys ("[pf3]")
+
+'Enter #4     Text will "red bar"
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SendKeys ("[Enter]")
+
+'F3 #4       Proceeds to next PS
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SendKeys ("[pf3]")
+
+Call PassToDataSheet(True, "Gate02", ws, long_row)
+
+'/// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// ///
+' REGISTRATION, GATE 3
+'
+' This fourth step enters the account-related details
+'/// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// ///
+
+If Not Debugger Then On Error GoTo Error_Gate03 Else On Error GoTo 0
+
+'Note: For non-parent accounts, the B2B Prefix Code needs to be entered
+Call WaitForReady(objAS400, milliseconds)
+If tag.ParentStatus = False Then objAS400.autECLPS.SetText tag.B2BPrefix, 9, 23
+Call WaitForReady(objAS400, milliseconds)
+
+'Enter #5     Text disappears
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SendKeys ("[Enter]")
+
+'F3 #5       Proceeds to next PS
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SendKeys ("[pf3]")
+
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SetText tag.SchoolCode, 6, 23       'Enters the School Type
+objAS400.autECLPS.SetText tag.DegreeCode, 10, 23      'Enters the Degree Student Code
+objAS400.autECLPS.SetText stu.ProofHS, 14, 57         'Enters the Proof of HS
+objAS400.autECLPS.SetText stu.Gender, 19, 57          'Enters the Gender
+Call WaitForReady(objAS400, milliseconds)
+
+'Enter      Text disappears
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SendKeys ("[Enter]")
+
+'F3         Proceeds to next PS
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SendKeys ("[pf3]")
+
+Call PassToDataSheet(True, "Gate03", ws, long_row)
+
+'/// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// ///
+' REGISTRATION, GATE 4
+'
+' This fifth step enters the contact information
+'/// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// ///
+
+If Not Debugger Then On Error GoTo Error_Gate04 Else On Error GoTo 0
+
+Call WaitForReady(objAS400, milliseconds)
+If tag.ParentStatus = True Then
+
+    'Enter is repeated to ensure the script continues
+    Call WaitForReady(objAS400, milliseconds)
+    objAS400.autECLPS.SendKeys ("[Enter]")
+    Call WaitForReady(objAS400, milliseconds)
+    objAS400.autECLPS.SendKeys ("[Enter]")
+    
+    'Enter Phone Number
+    Call WaitForReady(objAS400, milliseconds)
+    objAS400.autECLPS.SendKeys ("[pf12]")
+    
+    Call WaitForReady(objAS400, milliseconds)
+    objAS400.autECLPS.SetText "C", 4, 21              'Enters Action Code
+    objAS400.autECLPS.SetText CStr(stu.PhoneArea), 11, 9    'Area Code
+    objAS400.autECLPS.SetText CStr(stu.PhoneBase), 11, 16   'Main Phone Number
+    Call WaitForReady(objAS400, milliseconds)
+    
+    objAS400.autECLPS.SendKeys ("[Enter]")
+    Call WaitForReady(objAS400, milliseconds)
+    objAS400.autECLPS.SendKeys ("[pf3]")
+
+Else
+    Call WaitForReady(objAS400, milliseconds)
+    objAS400.autECLPS.SetText "I", 4, 19              'Enters Action Code
+    Call WaitForReady(objAS400, milliseconds)
+    objAS400.autECLPS.SetText tag.StudentID, 5, 19    'Enters SID
+    
+    Call WaitForReady(objAS400, milliseconds)
+    objAS400.autECLPS.SendKeys ("[Enter]")
+End If
+
+'Proceeds to the email entry
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SendKeys ("[pf5]")
+
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SendKeys ("[pf4]")
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SetText "C", 3, 18              'Enters Action Code
+objAS400.autECLPS.SetText "E", 11, 62              'Required entry
+objAS400.autECLPS.SetText stu.Email, 10, 4
+Call WaitForReady(objAS400, milliseconds)
+
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SendKeys ("[Enter]")
+
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SendKeys ("[pf3]")
+
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SendKeys ("[pf3]")
+
+
+Call PassToDataSheet(False, "Gate04", ws, long_row)
+
+Cleanup:
+
+If bool_error = True Then
+
+    'Message indicating possible errors
+    str_Message = str_Message & vbNewLine & vbNewLine & _
+                "DO YOU WISH TO CONTINUE?"
+
+Else
+
+    'Message indicating successful completion (overwrites)
+    str_Message = "A Student ID# has been generated successfully." & _
+                vbNewLine & vbNewLine & tag.StudentID & vbNewLine & vbNewLine & _
+                "DO YOU WISH TO CONTINUE?"
+
+End If
+
+Register_into_the_AddressBook = str_Message
+
+Exit Function
+
+'//////////////
+'ERROR HANDLERS
+'//////////////
+
+Pre_Enrollment_Error:
+bool_error = True
+tag.StudentID = "X"
+str_Message = "Error - The script has failed to reach the registration screen." & vbNewLine & vbNewLine & _
+    "Please navigate to a B2B Home Screen before trying again"
+Resume Cleanup
+
+Pre_Enrollment_Fail:
+bool_error = True
+tag.StudentID = "X"
+str_Message = "Failure - The script has failed to reach the registration screen." & vbNewLine & vbNewLine & _
+    "Please navigate to a B2B Home Screen before trying again"
+GoTo Cleanup
+
+Error_Gate02:
+str_Message = str_Message & "Error - Gate 02" & vbNewLine
+bool_error = True
+Resume Next
+
+Error_EnterF3:
+str_Message = str_Message & "Error - Enter/F3 sequence" & vbNewLine
+bool_error = True
+Resume Next
+
+Error_Gate03:
+str_Message = str_Message & "Error - Gate 03" & vbNewLine
+bool_error = True
+Resume Next
+
+Error_Gate04:
+str_Message = str_Message & "Error - Gate 04" & vbNewLine
+bool_error = True
+Resume Next
+
+End Function
+
+
+
+
+Public Sub Register_into_the_Classes(objAS400 As Object, obj_AS400_Focus As Object, _
+        stu As cStudent, reg As cRegistration, tag As cTag, _
+        ws As Excel.Worksheet, long_row As Long)
+
+'"""
+' Accepts the cRegistration and cTag class modules
+' This script accesses the AS/400's Automation Objects and runs through
+'       the steps required to perform a student's registeration
+'       within the B2B Environment
+' The output to Word is (hopefully) performed should the script be
+'       critically interrupted
+'
+' Assumes the required AS/400 session is ready and active
+' Assumes the data stored within the class module arguments are valid values
+'
+' For a brief review of the AS/400's Automation Objects, visit the
+'       Master_Documentation module
+'"""
+
+'Note: The AS/400 will only accept variable numbers as long
+Dim strGetText As String
+Dim i As Byte
+Dim str_Message As String
+Dim milliseconds As Long
+Dim bool_error As Boolean
+
+'Determines length of padding in milliseconds for the wait procedure
+If tag.Activity = True Then milliseconds = 300 Else milliseconds = 75
+
+str_Message = "Warning: An error has occurred and the script has stopped at this location:" & _
+    vbNewLine & vbNewLine
+strGetText = vbNullString
+bool_error = False
+long_row = 0
+i = 0
+
+'/// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// ///
+' REGISTRATION, GATE 5
+'
+' The fifth step in the enrollment process navigates the AS/400 to the
+'       correct Presentation Space (PS)
+'/// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// ///
+
+If Not Debugger Then On Error GoTo Error_Gate05 Else On Error GoTo 0
+
+If tag.Activity = True Then obj_AS400_Focus.Active = True
+
+'Runs maze loop to reach the "BNIMAIN" PS
+Call WaitForReady(objAS400, milliseconds)
+If Nav_To_Home_Screen(objAS400) = False Then GoTo MazePathFail
+
+If tag.EnrollmentType = 3 Then
+
+    'Proceeds to the PS for Individual Credits
+    Call WaitForReady(objAS400, milliseconds)
+    objAS400.autECLPS.SetText "17", 19, 7
+    objAS400.autECLPS.SendKeys ("[Enter]")
+    
+Else
+
+    'Proceeds to the PS for full programs
+    Call WaitForReady(objAS400, milliseconds)
+    objAS400.autECLPS.SetText "20", 19, 7
+    objAS400.autECLPS.SendKeys ("[Enter]")
+
+End If
+
+Call PassToDataSheet(True, "Gate05", ws, long_row)
+
+'/// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// ///
+' REGISTRATION, GATE 6A & 6B
+'
+' The sixth step in the enrollment process enters the class information &
+'   Payment information.
+'
+' Note: This script assumes the payment information is valid input.  Valid input
+'       should be handled by the previous userform and support modules.
+'
+' A >> Individual College Credits
+' B >> Full Program/Semester
+'/// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// ///
+
+If Not Debugger Then On Error GoTo Error_Gate06 Else On Error GoTo 0
+
+'////////////////////////////////////////////
+' ///////////////////////////////////////////
+' Gate 6A1
+' ///////////////////////////////////////////
+'////////////////////////////////////////////
+
+If tag.EnrollmentType = 3 Then
+'Individual College Credits
+
+    long_row = 12
+    Call PassToDataSheet("A", "G06Path", ws, long_row)
+
+    'Enters Account Information
+    Call WaitForReady(objAS400, milliseconds)
+    objAS400.autECLPS.SetText "A", 2, 20              'Enters Action Code
+    objAS400.autECLPS.SetText tag.StudentID, 3, 20    'Enters SID
+    objAS400.autECLPS.SetText CStr(tag.SalesPerson), 5, 20  'Enters Salesperson code
+    objAS400.autECLPS.SetText "99999999", 6, 20       'Program ID# for Individual Credits
+    objAS400.autECLPS.SetText "-", 6, 29              'Name for Individual Credits
+    If tag.ParentStatus = False Then objAS400.autECLPS.SetText CStr(tag.StudentID), 4, 20
+    
+    Call WaitForReady(objAS400, milliseconds)
+    objAS400.autECLPS.SendKeys ("[Enter]")
+    
+    'A brand new account contains an extra pop-up
+    Call WaitForReady(objAS400, milliseconds)
+    strGetText = objAS400.autECLPS.GetText(7, 32, 5)
+    Call WaitForReady(objAS400, milliseconds)
+    If strGetText = "66302" Then objAS400.autECLPS.SendKeys ("[Enter]")
+    
+    Do
+    '"""
+    '// If a student has been previously enrolled in individual credits, then
+    '   the previous classes are listed here. Repeats PageDown until blank pages
+    '   are reached, or until five pages have been checked //
+    
+        Call WaitForReady(objAS400, milliseconds)
+        strGetText = objAS400.autECLPS.GetText(11, 19, 3)
+    
+        If Not strGetText = "   " Then
+        
+            Call WaitForReady(objAS400, milliseconds)
+            objAS400.autECLPS.SendKeys ("[pagedn]")
+            
+        End If
+        
+        'Loop Counter
+        If i > 4 Then GoTo Loop_Cap
+        i = i + 1
+        
+    Loop Until strGetText = "   "
+    
+    strGetText = vbNullString
+    
+    Call WaitForReady(objAS400, milliseconds)
+    objAS400.autECLPS.SetText CStr(reg.ModCode0), 11, 19
+    objAS400.autECLPS.SetText CStr(reg.ModCode1), 12, 19
+    objAS400.autECLPS.SetText CStr(reg.ModCode2), 13, 19
+    objAS400.autECLPS.SetText CStr(reg.ModCode3), 14, 19
+    objAS400.autECLPS.SetText CStr(reg.ModCode4), 15, 19
+    objAS400.autECLPS.SetText CStr(reg.ModCode5), 16, 19
+    objAS400.autECLPS.SetText CStr(reg.ModCode6), 17, 19
+    Call WaitForReady(objAS400, milliseconds)
+    objAS400.autECLPS.SetText CStr(reg.ClassTuition0), 11, 64
+    objAS400.autECLPS.SetText CStr(reg.ClassTuition1), 12, 64
+    objAS400.autECLPS.SetText CStr(reg.ClassTuition2), 13, 64
+    objAS400.autECLPS.SetText CStr(reg.ClassTuition3), 14, 64
+    objAS400.autECLPS.SetText CStr(reg.ClassTuition4), 15, 64
+    objAS400.autECLPS.SetText CStr(reg.ClassTuition5), 16, 64
+    objAS400.autECLPS.SetText CStr(reg.ClassTuition6), 17, 64
+    
+    Call WaitForReady(objAS400, milliseconds)
+    objAS400.autECLPS.SendKeys ("[Enter]")
+    
+    'If the "No Cost" option is selected, skip to final registration
+    If reg.PaymentType = 4 Then GoTo FinalRegistration  'Located at end of script
+        
+    Call WaitForReady(objAS400, milliseconds)
+    objAS400.autECLPS.SendKeys ("[Enter]")
+    
+    Call PassToDataSheet(True, "Gate061", ws, long_row)
+    
+    ' ///////////////////////////////////////////
+    ' Gate 6A2
+    ' ///////////////////////////////////////////
+    
+    If reg.Student_Fees > 0 Or tag.ParentStatus = True Then
+    
+        Call WaitForReady(objAS400, milliseconds)
+        strGetText = objAS400.autECLPS.GetText(12, 11, 2)
+    
+        'Determining the necessary row
+        If strGetText = "  " Then
+            long_row = 12
+        Else
+            Call WaitForReady(objAS400, milliseconds)
+            strGetText = objAS400.autECLPS.GetText(13, 11, 2)
+            If strGetText = "  " Then
+                long_row = 13
+            Else
+                Call WaitForReady(objAS400, milliseconds)
+                strGetText = objAS400.autECLPS.GetText(14, 11, 2)
+                If strGetText = "  " Then
+                    long_row = 14
+                Else
+                    GoTo Failure_Gate06A2
+                End If
+            End If
+        End If
+    
+        strGetText = vbNullString
+        
+        If tag.ParentStatus = True Then
+        'If student is enrolling under a parent account...
+        
+            Call WaitForReady(objAS400, milliseconds)
+            If reg.Student_Tuition > 0 Then
+            'Adds the student's remaining tuition amount
+                objAS400.autECLPS.SetText "TR", long_row, 11
+                objAS400.autECLPS.SetText "TUI", long_row, 16
+                objAS400.autECLPS.SetText CStr(reg.Student_Tuition), long_row, 54
+                long_row = long_row + 1
+                Call WaitForReady(objAS400, milliseconds)
+            End If
+            If reg.Student_Fees > 0 Then
+            'Adds the student's additional fee
+                objAS400.autECLPS.SetText "TR", long_row, 11
+                objAS400.autECLPS.SetText "FEE", long_row, 16
+                objAS400.autECLPS.SetText CStr(reg.Student_Fees), long_row, 54
+                Call WaitForReady(objAS400, milliseconds)
+            End If
+        
+        Else
+        'For standard enrollments...
+        
+            Call WaitForReady(objAS400, milliseconds)
+            objAS400.autECLPS.SetText "TR", long_row, 11
+            objAS400.autECLPS.SetText "FEE", long_row, 16
+            objAS400.autECLPS.SetText CStr(reg.Student_Fees), long_row, 54
+            Call WaitForReady(objAS400, milliseconds)
+            
+        End If
+    
+    'No "Else" for the master If/Then Statement... script simply continues
+    End If
+    
+    Call WaitForReady(objAS400, milliseconds)
+    objAS400.autECLPS.SendKeys ("[Enter]")
+    
+    Call PassToDataSheet(True, "Gate062", ws, long_row)
+    
+    ' ///////////////////////////////////////////
+    ' Gate 6A3
+    ' ///////////////////////////////////////////
+        
+    If reg.PaymentType = 1 Then
+    'Option to select the monthly payment amount
+    
+        Call WaitForReady(objAS400, milliseconds)
+        objAS400.autECLPS.SetText "N", 19, 73
+        objAS400.autECLPS.SetText CStr(reg.DownPay), 13, 20
+        objAS400.autECLPS.SetText CStr(reg.CostPerMonth), 18, 20
+    
+        Call WaitForReady(objAS400, milliseconds)
+        Call WaitForReady(objAS400, milliseconds)
+        objAS400.autECLPS.SendKeys ("[Enter]")
+        Call WaitForReady(objAS400, milliseconds)
+        objAS400.autECLPS.SendKeys ("[Enter]")
+        
+    ElseIf reg.PaymentType = 2 Then
+    'Option to select the number of monthly payments
+    
+        Call WaitForReady(objAS400, milliseconds)
+        objAS400.autECLPS.SetText "N", 19, 73
+        objAS400.autECLPS.SetText CStr(reg.DownPay), 13, 20
+        objAS400.autECLPS.SetText CStr(reg.Installments), 17, 20
+    
+        Call WaitForReady(objAS400, milliseconds)
+        Call WaitForReady(objAS400, milliseconds)
+        objAS400.autECLPS.SendKeys ("[Enter]")
+        Call WaitForReady(objAS400, milliseconds)
+        objAS400.autECLPS.SendKeys ("[Enter]")
+     
+    ElseIf reg.PaymentType = 3 Then
+    'Option to select Payment in Full
+    
+        Call WaitForReady(objAS400, milliseconds)
+        objAS400.autECLPS.SetText "Y", 19, 73
+        
+        Call WaitForReady(objAS400, milliseconds)
+        objAS400.autECLPS.SendKeys ("[Enter]")
+        Call WaitForReady(objAS400, milliseconds)
+        objAS400.autECLPS.SendKeys ("[Enter]")
+        
+    Else:
+    
+        GoTo Failure_Gate06A3
+        
+    End If
+    
+    Call PassToDataSheet(True, "Gate063", ws, long_row)
+    
+    ' ///////////////////////////////////////////
+    ' Gate 6A4
+    ' ///////////////////////////////////////////
+        
+    Call WaitForReady(objAS400, milliseconds)
+    'Return to previous screen
+    objAS400.autECLPS.SendKeys ("[pf3]")
+    
+    Call WaitForReady(objAS400, milliseconds)
+    strGetText = objAS400.autECLPS.GetText(1, 3, 5)
+    
+    'If the necessary screen is not reached, then
+    '   return again to a previous screen
+    If Not strGetText = "66340" Then
+    
+        Call WaitForReady(objAS400, milliseconds)
+        objAS400.autECLPS.SendKeys ("[pf3]")
+        
+    'No Else statement... script simply continues
+    End If
+    
+    GoTo FinalRegistration  'Located at end of script
+    Call PassToDataSheet(True, "Gate064", ws, long_row)
+
+'////////////////////////////////////////////
+' ///////////////////////////////////////////
+' Gate 6B1
+' ///////////////////////////////////////////
+'////////////////////////////////////////////
+
+ElseIf tag.EnrollmentType = 1 Or tag.EnrollmentType = 2 Then
+'Full Program
+
+    long_row = 11
+    Call PassToDataSheet("B", "G06Path", ws, long_row)
+
+    'Enters Account Information
+    Call WaitForReady(objAS400, milliseconds)
+    objAS400.autECLPS.SetText "A", 3, 20              'Enters Action Code
+    objAS400.autECLPS.SetText tag.StudentID, 4, 20    'Enters SID
+    objAS400.autECLPS.SetText CStr(tag.SalesPerson), 6, 20  'Enters Salesperson code
+    objAS400.autECLPS.SetText CStr(reg.FullProgramCode), 7, 20
+    If tag.ParentStatus = False Then objAS400.autECLPS.SetText tag.StudentID, 5, 20
+    
+    Call WaitForReady(objAS400, milliseconds)
+    objAS400.autECLPS.SendKeys ("[Enter]")
+    
+    'Sometimes there is an extra pop-up
+    Call WaitForReady(objAS400, milliseconds)
+    strGetText = objAS400.autECLPS.GetText(7, 32, 5)
+    Call WaitForReady(objAS400, milliseconds)
+    If strGetText = "66302" Then objAS400.autECLPS.SendKeys ("[Enter]")
+    
+    Call PassToDataSheet(True, "Gate061", ws, long_row)
+    
+    ' ///////////////////////////////////////////
+    ' Gate 6B2
+    ' ///////////////////////////////////////////
+    
+    Call WaitForReady(objAS400, milliseconds)
+    If reg.PaymentType = 4 Then GoTo FinalRegistration  'Located at end of script
+    
+    If tag.ParentStatus = True And reg.Parent_Invoice > 0 Then
+    'If student is enrolling under a parent account...
+    
+        objAS400.autECLPS.SetText "PA", long_row, 11
+        objAS400.autECLPS.SetText "TUI", long_row, 16
+        objAS400.autECLPS.SetText CStr(reg.Parent_Invoice), long_row, 54
+        long_row = long_row + 1
+        Call WaitForReady(objAS400, milliseconds)
+    End If
+        
+    If reg.Student_Tuition > 0 Then
+        objAS400.autECLPS.SetText "TR", long_row, 11
+        objAS400.autECLPS.SetText "TUI", long_row, 16
+        objAS400.autECLPS.SetText CStr(reg.Student_Tuition), long_row, 54
+        long_row = long_row + 1
+        Call WaitForReady(objAS400, milliseconds)
+    End If
+        
+    If reg.Student_Fees > 0 Then
+        objAS400.autECLPS.SetText "TR", long_row, 11
+        objAS400.autECLPS.SetText "FEE", long_row, 16
+        objAS400.autECLPS.SetText CStr(reg.Student_Fees), long_row, 54
+        Call WaitForReady(objAS400, milliseconds)
+    End If
+        
+    long_row = 11
+    
+    Call WaitForReady(objAS400, milliseconds)
+    objAS400.autECLPS.SendKeys ("[Enter]")
+    
+    Call PassToDataSheet(True, "Gate062", ws, long_row)
+        
+    ' ///////////////////////////////////////////
+    ' Gate 6B3
+    '
+    'Note: This script assumes that monthly payments
+    '   are only ever a TR option, not a PA option
+    ' ///////////////////////////////////////////
+    
+    If reg.PaymentType = 1 Then
+    'Option to select the monthly payment amount
+    
+        Call WaitForReady(objAS400, milliseconds)
+        objAS400.autECLPS.SetText "N", 19, 73
+        objAS400.autECLPS.SetText CStr(reg.DownPay), 13, 20
+        objAS400.autECLPS.SetText CStr(reg.CostPerMonth), 18, 20
+    
+        Call WaitForReady(objAS400, milliseconds)
+        objAS400.autECLPS.SendKeys ("[Enter]")
+        Call WaitForReady(objAS400, milliseconds)
+        objAS400.autECLPS.SendKeys ("[Enter]")
+        
+    ElseIf reg.PaymentType = 2 Then
+    'Option to select the number of monthly payments
+    
+        Call WaitForReady(objAS400, milliseconds)
+        objAS400.autECLPS.SetText "N", 19, 73
+        objAS400.autECLPS.SetText CStr(reg.DownPay), 13, 20
+        objAS400.autECLPS.SetText CStr(reg.Installments), 17, 20
+    
+        Call WaitForReady(objAS400, milliseconds)
+        objAS400.autECLPS.SendKeys ("[Enter]")
+        Call WaitForReady(objAS400, milliseconds)
+        objAS400.autECLPS.SendKeys ("[Enter]")
+     
+    ElseIf reg.PaymentType = 3 Then
+    'Option to select Payment in Full
+    
+        Call WaitForReady(objAS400, milliseconds)
+        objAS400.autECLPS.SetText "Y", 19, 73
+        
+        Call WaitForReady(objAS400, milliseconds)
+        objAS400.autECLPS.SendKeys ("[Enter]")
+        Call WaitForReady(objAS400, milliseconds)
+        objAS400.autECLPS.SendKeys ("[Enter]")
+        
+    Else:
+    
+        GoTo Failure_Gate06B3
+        
+    End If
+    
+    Call PassToDataSheet(False, "Gate063", ws, long_row)
+    
+    ' ///////////////////////////////////////////
+    ' Gate 6B4
+    ' ///////////////////////////////////////////
+        
+    Call WaitForReady(objAS400, milliseconds)
+    'Return to previous screen
+    objAS400.autECLPS.SendKeys ("[pf3]")
+    
+    GoTo FinalRegistration  'Located at end of script
+    
+    Call PassToDataSheet(False, "Gate064", ws, long_row)
+
+End If
+
+'/// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// ///
+' REGISTRATION, GATE 7
+'
+' Final Registration
+'/// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// ///
+
+FinalRegistration:
+
+If Not Debugger Then On Error Resume Next Else On Error GoTo 0
+
+If reg.PaymentType = 4 Then
+
+    'If the "No Cost" option is selected...
+    Call WaitForReady(objAS400, milliseconds)
+    objAS400.autECLPS.SendKeys ("[pf12]")
+
+Else
+
+    'For all other enrollments...
+    Call WaitForReady(objAS400, milliseconds)
+    objAS400.autECLPS.SendKeys ("[pf11]")
+
+End If
+
+Call WaitForReady(objAS400, milliseconds)
+Call WaitForReady(objAS400, milliseconds)
+
+'Navigates to the Student Inquiry PS
+objAS400.autECLPS.SendKeys ("[pf3]")
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SetText "1", 19, 7
+objAS400.autECLPS.SendKeys ("[Enter]")
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SetText "14", 19, 7
+objAS400.autECLPS.SendKeys ("[Enter]")
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SetText tag.StudentID, 3, 13
+Call WaitForReady(objAS400, milliseconds)
+objAS400.autECLPS.SendKeys ("[Enter]")
+
+Call PassToDataSheet(True, "Gate07", ws, long_row)
+
+Cleanup:
+
+'Provides a message if an unforeseen error/failure has occurred
+If bool_error = True Then
+    str_Message = str_Message & vbNewLine & vbNewLine & _
+        "This has been caused by an unforeseen error, and it is recommended to proceed manually with the enrollment"
+    AppActivate ("Microsoft excel")
+    MsgBox str_Message, vbCritical, "Unexpected Error"
+End If
+
+Exit Sub
+
+'//////////////
+'ERROR HANDLERS
+'//////////////
+
+MazePathFail:
+str_Message = str_Message & "The script failed to navigate to the correct enrollment screen" & vbNewLine
+bool_error = True
+GoTo Cleanup
+
+Loop_Cap:
+str_Message = str_Message & "The script failed to input the selected class mods" & vbNewLine
+bool_error = True
+GoTo Cleanup
+
+Error_Gate05:
+str_Message = str_Message & "Gate 05 - Navigating the AS/400" & vbNewLine
+bool_error = True
+Resume Cleanup
+
+Error_Gate06:
+str_Message = str_Message & "Gate 06 - Entering the courses and payment summary" & vbNewLine
+bool_error = True
+Resume Cleanup
+
+Failure_Gate06A2:
+str_Message = str_Message & "Gate 06A2 - A failure occured when entering the tuition summary" & vbNewLine
+bool_error = True
+GoTo Cleanup
+
+Failure_Gate06A3:
+str_Message = str_Message & "Gate 06A3 - A failure occured when entering the payment information" & vbNewLine
+bool_error = True
+GoTo Cleanup
+
+Failure_Gate06B3:
+str_Message = str_Message & "Gate 06B3 - A failure occured when entering the payment information" & vbNewLine
+bool_error = True
+GoTo Cleanup
+
+End Sub
