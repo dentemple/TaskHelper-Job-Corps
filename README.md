@@ -12,7 +12,7 @@ See the included LICENSE.md file for a copy of the GNU General Public License.
 
 The **TaskHelper VBA iSeries** is a glue application built to automate processes performed between Microsoft Excel and IBM's AS/400.  The TaskHelper uses IBM's Host Access Class Library (HACL) and works exclusively through client-side access.
 
-Because of its reliance on *GetText/SetText*, it only works "as is" within a single company's AS/400 implementation.  **However, those individuals seeking to learn more about Excel-to-AS/400 automation may find the overall use of the HACL to be very informative for their own purposes.**  
+Because of its reliance on *GetText/SetText*, it only works "as is" within a single company's AS/400 implementation.  **However, those individuals seeking to learn more about Excel-to-AS/400 automation may find the overall use of the HACL to be informative for their own purposes.**  
 
 With each iteration of this project, I'll do what I can to localize context requirments, but I can't guarantee true *context-free code* for quite a long time, if at all.  This code is being uploaded to github.com due to our simple lack of version control.
 
