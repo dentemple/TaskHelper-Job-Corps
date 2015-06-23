@@ -17,6 +17,9 @@ Private pNAME As MSForms.Textbox
 Private pNAME As MSForms.Textbox
 Private pNAME As MSForms.Textbox
 Private pNAME As MSForms.Textbox
+Private pNAME As MSForms.Textbox
+Private pNAME As MSForms.Textbox
+Private pNAME As MSForms.Textbox
 
 ' FUNCTIONS
 ' Name:
