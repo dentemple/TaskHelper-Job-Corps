@@ -45,13 +45,12 @@ Private pStudentTuitionTextbox As MSForms.Textbox
 Private pStudentFeesTextbox As MSForms.Textbox
 Private pStudentInvoiceTextbox As MSForms.Textbox
 Private pDownPayTextbox As MSForms.Textbox
-Private pNAME As MSForms.Textbox
-Private pNAME As MSForms.Textbox
-Private pNAME As MSForms.Textbox
-Private pNAME As MSForms.Textbox
-Private pNAME As MSForms.Textbox
-Private pNAME As MSForms.Textbox
-Private pNAME As MSForms.Textbox
+Private pNumberOfMonthsTextbox As MSForms.Textbox
+Private pDollarPerMonthTextbox As MSForms.Textbox
+Private pSessionComboBox As MSForms.Combobox
+Private pParentNumberComboBox As MSForms.Combobox
+Private pPrefixCodeComboBox As MSForms.Combobox
+Private pProofHSCheckbox As MSForms.Checkbox
 
 ' FUNCTIONS
 ' Name:
