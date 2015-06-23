@@ -2,18 +2,24 @@
 ' cStudent (Class)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-"label" versions
-
 Option Explicit
 Option Compare Binary
 
-' READ-ONLY PROPERTIES
+' ERROR PROPERTIES
+
+' OBJECT PROPERTIES
+Private pUserform As MSForms.UserForm
+Private pFirstNameTextbox As MSForms.Textbox
+Private pMiddleNameTextbox As MSForms.Textbox
+Private pLastNameTextbox As MSForms.Textbox
+
+' FUNCTIONS
 ' Name:
-'	FirstNameString As String
-'	MiddleNameString As String
-'	LastNameString As String
-'	MailingName As String
-'	AlphaName As String
+'	GetFirstName As String
+'	GetMiddleName As String
+'	GetLastname As String
+'	GetMailingName As String
+'	GetAlphaName As String
 ' Contact:
 '	AreaCodeString As String
 '	PhoneNumberString As String
@@ -26,20 +32,15 @@ Option Compare Binary
 '	StateAbbrevString As String
 '	ZipCodeString As String
 
+' READ-ONLY PROPERTIES
+'	FirstNameTag As String
+'	MiddleNameTag As String
+'	LastNameTag As String
+
 ' INITIALIZED PROPERTIES
-
-' ERROR PROPERTIES
-
-' OBJECT PROPERTIES
-Private pUserform As MSForms.UserForm
-Private pFirstNameTextbox As MSForms.Textbox
-Private pMiddleNameTextbox As MSForms.Textbox
-Private pLastNameTextbox As MSForms.Textbox
-
 
 Private pITEM As MSForms.Textbox
 Private pITEM As TYPE
-
 
 
 Private Sub Class_Initialize()
@@ -97,50 +98,75 @@ End Property
 
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' FUNCTIONS
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+''''''''''''''''''''''''''''''
+' GetFirstName property
+''''''''''''''''''''''''''''''
+Public Function GetFirstName() As String
+    GetFirstName = FirstNameTextbox
+End Function
+
+''''''''''''''''''''''''''''''
+' GetMiddleName property
+''''''''''''''''''''''''''''''
+Public Function GetMiddleName() As String
+    GetMiddleName = MiddleNameTextbox
+End Function
+
+''''''''''''''''''''''''''''''
+' GetLastname property
+''''''''''''''''''''''''''''''
+Public Function GetLastname() As String
+    GetLastname = LastNameTextbox
+End Function
+
+''''''''''''''''''''''''''''''
+' GetMailingName property
+''''''''''''''''''''''''''''''
+Public Function GetMailingName() As String
+    If Len(Trim(GetMiddleName)) > 0 Then
+    	GetMailingName = GetFirstName & Space(1) & GetMiddleName & Space(1) & GetLastname
+    Else
+    	GetMailingName = GetFirstName & Space(1) & GetLastname
+    End If
+End Function
+
+''''''''''''''''''''''''''''''
+' GetAlphaName property
+''''''''''''''''''''''''''''''
+Public Function GetAlphaName() As String
+	If Len(Trim(GetMiddleName)) > 0 Then
+		GetAlphaName = GetLastname & Space(1) & GetFirstName & Space(1) & GetMiddleName
+	Else
+		GetAlphaName = GetLastname & Space(1) & GetFirstName
+	End If
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' READ-ONLY PROPERTIES
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 ''''''''''''''''''''''''''''''
-' FirstNameString property
+' FirstNameTag property
 ''''''''''''''''''''''''''''''
-Public Property Get FirstNameString() As String
-    FirstNameString = FirstNameTextbox
+Public Property Get FirstNameTag() As String
+    FirstNameTag = "FirstName"
 End Property
 
 ''''''''''''''''''''''''''''''
-' MiddleNameString property
+' MiddleNameTag property
 ''''''''''''''''''''''''''''''
 Public Property Get MiddleNameString() As String
     MiddleNameString = MiddleNameTextbox
 End Property
 
 ''''''''''''''''''''''''''''''
-' LastNameString property
+' LastNameTag property
 ''''''''''''''''''''''''''''''
-Public Property Get LastNameString() As String
-    LastNameString = LastNameTextbox
-End Property
-
-''''''''''''''''''''''''''''''
-' MailingName property
-''''''''''''''''''''''''''''''
-Public Property Get MailingName() As String
-    If Len(Trim(Me.MiddleNameString)) > 0 Then
-    	MailingName = FirstNameString & Space(1) & MiddleNameString & Space(1) & LastNameString
-    Else
-    	MailingName = FirstNameString & Space(1) & .LastNameString
-    End If
-End Property
-
-''''''''''''''''''''''''''''''
-' AlphaName property
-''''''''''''''''''''''''''''''
-Public Property Get AlphaName() As String
-	If Len(Trim(Me.MiddleNameString)) > 0 Then
-		AlphaName = LastNameString & Space(1) & FirstNameString & Space(1) & MiddleNameString
-	Else
-		AlphaName = LastNameString & Space(1) & FirstNameString
-	End If
+Public Property Get LastNameTag() As String
+    LastNameTag = LastNameTextbox
 End Property
 
 
