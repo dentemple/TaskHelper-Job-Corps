@@ -8,6 +8,9 @@ Pair: Let/Set and Get
 Also: Public Event / RaiseEvent / With Event
 http://www.cpearson.com/excel/Events.aspx
 
+Initialize defaults in classes
+http://stackoverflow.com/questions/24815394/vba-class-module-setting-default-values
+
 - cStudentRegistration, uStudentRegistration
 - cAS400
 
