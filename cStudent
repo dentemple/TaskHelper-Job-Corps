@@ -2,6 +2,8 @@
 ' cStudent (Class)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
+"label" versions
+
 Option Explicit
 Option Compare Binary
 
