@@ -2,37 +2,173 @@
 ' uStudentRegistration (Userform)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-'cStudentRegistration (Item List):
-'Textboxes:
-'	Salesperson_Textbox; Areacode_Textbox; Phonenumber_Textbox; Email_Textbox; 
-'	AddressLine1_Textbox; AddressLine2_Textbox; AddressLine3_Textbox; AddressLine4_Textbox; 
-'	City_Textbox; StateAbbrev_Textbox; Zipcode_Textbox; 
-'	Firstname_Textbox; Lastname_Textbox; Middlename_Textbox; 
-'	ProgramNumber_Textbox; ProgramTuition_Textbox; 
-'	ClassMod1_Textbox; ClassMod2_Textbox; ClassMod3_Textbox; ClassMod4_Textbox; ClassMod5_Textbox; 
-'	ClassMod6_Textbox; ClassMod7_Textbox; 
-'	ClassTuition1_Textbox; ClassTuition2_Textbox; ClassTuition3_Textbox; ClassTuition4_Textbox; 
-'	ClassTuition5_Textbox; ClassTuition6_Textbox; ClassTuition7_Textbox; 
-'	ParentInvoice_Textbox; StudentTuition_Textbox; StudentFees_Textbox; StudentInvoice_Textbox; 
-'	EnterDownPay_Textbox; ShowDownPay_Textbox; 
-'	EnterNumOfMonths_Textbox; ShowNumOfMonths_Textbox; 
-'	EnterDollarPerMonth_Textbox; ShowDollarPerMonth_Textbox; ShowFinalPayment_Textbox; 
+Option Explicit
+Option Compare Binary
 
-'ComboBoxes: 
-'	Session_ComboBox; ParentNumber_ComboBox; PrefixCode_ComboBox; 
+Private Sub UserForm_Initialize()
 
-'Checkboxes:
-'	ProofHS_Checkbox; 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Initialization event.
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-'Optionselect: 
-'	Male_Optionselect; Female_Optionselect; 
-'	NewStudent_Optionselect; ReturnStudent_Optionselect; 
-'	NoParent_Optionselect; WithParent_Optionselect; 
-'	CollegeSemester_Optionselect; CareerProgram_Optionselect; 
-'	CalcByDollarPerMonth_Optionselect; CalcByNumOfMonths_Optionselect; 
-'	PayInFull_Optionselect; NoCost_Optionselect; 
+' Empties the textboxes.
+Salesperson_Textbox = vbNullString
+Areacode_Textbox = vbNullString
+Phonenumber_Textbox = vbNullString
+Email_Textbox = vbNullString
+AddressLine1_Textbox = vbNullString
+AddressLine2_Textbox = vbNullString
+AddressLine3_Textbox = vbNullString
+AddressLine4_Textbox = vbNullString
+City_Textbox = vbNullString
+StateAbbrev_Textbox = vbNullString
+Zipcode_Textbox = vbNullString
+Firstname_Textbox = vbNullString
+Lastname_Textbox = vbNullString
+Middlename_Textbox = vbNullString
+ProgramNumber_Textbox = vbNullString
+ProgramTuition_Textbox = vbNullString
+ClassMod1_Textbox = vbNullString
+ClassMod2_Textbox = vbNullString
+ClassMod3_Textbox = vbNullString
+ClassMod4_Textbox = vbNullString
+ClassMod5_Textbox = vbNullString
+ClassMod6_Textbox = vbNullString
+ClassMod7_Textbox = vbNullString
+ClassTuition1_Textbox = vbNullString
+ClassTuition2_Textbox = vbNullString
+ClassTuition3_Textbox = vbNullString
+ClassTuition4_Textbox = vbNullString
+ClassTuition5_Textbox = vbNullString
+ClassTuition6_Textbox = vbNullString
+ClassTuition7_Textbox = vbNullString
+ParentInvoice_Textbox = vbNullString
+StudentTuition_Textbox = vbNullString
+StudentFees_Textbox = vbNullString
+StudentInvoice_Textbox = vbNullString
+EnterDownPay_Textbox = vbNullString
+ShowDownPay_Textbox = vbNullString
+EnterNumOfMonths_Textbox = vbNullString
+ShowNumOfMonths_Textbox = vbNullString
+EnterDollarPerMonth_Textbox = vbNullString
+ShowDollarPerMonth_Textbox = vbNullString
+ShowFinalPayment_Textbox = vbNullString
+Help_Textbox = vbNullString
 
-'Commandbutton:
-'	Test_Button; ClearCalculation_Button; 
-'	Launch_Button; 
-'	Confirm_Button; ClearUserform_Button; Cancel_Button; 
+' Certain textboxes are defaulted to Read-Only (respective to the user). _
+    This section locks and greys those fields (using a color constant).
+With ParentInvoice_Textbox
+    .Locked = True
+    .BackColor = cGrey
+End With
+With StudentInvoice_Textbox
+    .Locked = True
+    .BackColor = cGrey
+End With
+With ShowDownPay_Textbox
+    .Locked = True
+    .BackColor = cGrey
+End With
+With ShowNumOfMonths_Textbox
+    .Locked = True
+    .BackColor = cGrey
+End With
+With ShowDollarPerMonth_Textbox
+    .Locked = True
+    .BackColor = cGrey
+End With
+With ShowFinalPayment_Textbox
+    .Locked = True
+    .BackColor = cGrey
+End With
+With Help_Textbox
+    .Locked = True
+    .BackColor = cGrey
+End With
+
+' Populates the selection boxes.
+With Session_ComboBox
+    .Clear
+    .AddItem "--"
+    .AddItem "A"
+    .AddItem "B"
+    .AddItem "C"
+    .AddItem "D"
+    .AddItem "E"
+    .Text = Session_ComboBox.List(0)
+End With
+With ParentNumber_ComboBox
+    .Clear
+    .AddItem "--"
+    .AddItem "Select1"
+    .AddItem "Select2"
+    .Text = ParentNumber_ComboBox.List(0)
+End With
+With PrefixCode_ComboBox
+    .Clear
+    .AddItem "--"
+    .AddItem "INS"
+    .AddItem "MIL"
+    .Text = PrefixCode_ComboBox.List(0)
+End With
+
+' Unchecks the checkbox.
+ProofHS_Checkbox.Value = False
+
+' Sets the initial focus.
+Firstname_Textbox.SetFocus
+
+End Sub
+
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Control Settings.
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Restricts the fields to positive whole numbers using _
+    a keypress event.  Calls a public subroutine.
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+
+Private Sub Salesperson_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+Call RestrictToPostiveWholeNumbers(KeyAscii)
+
+End Sub
+
+Private Sub Areacode_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+Call RestrictToPostiveWholeNumbers(KeyAscii)
+
+End Sub
+
+Private Sub Phonenumber_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+Call RestrictToPostiveWholeNumbers(KeyAscii)
+
+End Sub
+
+Private Sub Zipcode_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+Call RestrictToPostiveWholeNumbers(KeyAscii)
+
+End Sub
+
+Private Sub ProgramNumber_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+Call RestrictToPostiveWholeNumbers(KeyAscii)
+
+End Sub
+
+Private Sub EnterNumOfMonths_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+Call RestrictToPostiveWholeNumbers(KeyAscii)
+
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Restricts the fields to positive numbers using _
+    a keypress event.  Allows for float/decimal values. _
+    Calls a public subroutine.
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
