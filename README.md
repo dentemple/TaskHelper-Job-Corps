@@ -8,6 +8,8 @@ See the included LICENSE.md file for a copy of the GNU General Public License.
 
 **1.03**
 
+*1.1 in progress*
+
 ## About
 
 The **TaskHelper VBA iSeries** is a glue application built to automate processes performed between Microsoft Excel and IBM's AS/400.  The TaskHelper uses IBM's Host Access Class Library (HACL) and works exclusively through client-side access.
