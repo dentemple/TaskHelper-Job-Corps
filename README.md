@@ -1,6 +1,6 @@
 # TaskHelper-VBA-iSeries
 
-*(Please note: this project is a work-in-process.  This is being worked on only by a single developer, in a live environment, by someone fully committed to other, non-programming responsibilities.  Also because of these details, I may not always be able to maintain "best practices" throughout each iteration.)*
+*(Please note: this project is a work in progress.  This is being developed by only a single person, in a live environment, by someone fully committed to other, non-programming responsibilities.  Also because of these details, I may not always be able to maintain "best practices" throughout each iteration.)*
 
 See the included LICENSE.md file for a copy of the GNU General Public License. 
 
