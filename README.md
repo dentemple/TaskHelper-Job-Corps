@@ -6,9 +6,7 @@ See the included LICENSE.md file for a copy of the GNU General Public License.
 
 ## Version
 
-**1.03**
-
-*1.1 in progress*
+**1.1**
 
 ## About
 
