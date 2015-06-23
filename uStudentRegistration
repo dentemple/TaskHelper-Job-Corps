@@ -1,3 +1,38 @@
-'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' uStudentRegistration (Userform)
-'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+'cStudentRegistration (Item List):
+'Textboxes:
+'	Salesperson_Textbox; Areacode_Textbox; Phonenumber_Textbox; Email_Textbox; 
+'	AddressLine1_Textbox; AddressLine2_Textbox; AddressLine3_Textbox; AddressLine4_Textbox; 
+'	City_Textbox; StateAbbrev_Textbox; Zipcode_Textbox; 
+'	Firstname_Textbox; Lastname_Textbox; Middlename_Textbox; 
+'	ProgramNumber_Textbox; ProgramTuition_Textbox; 
+'	ClassMod1_Textbox; ClassMod2_Textbox; ClassMod3_Textbox; ClassMod4_Textbox; ClassMod5_Textbox; 
+'	ClassMod6_Textbox; ClassMod7_Textbox; 
+'	ClassTuition1_Textbox; ClassTuition2_Textbox; ClassTuition3_Textbox; ClassTuition4_Textbox; 
+'	ClassTuition5_Textbox; ClassTuition6_Textbox; ClassTuition7_Textbox; 
+'	ParentInvoice_Textbox; StudentTuition_Textbox; StudentFees_Textbox; StudentInvoice_Textbox; 
+'	EnterDownPay_Textbox; ShowDownPay_Textbox; 
+'	EnterNumOfMonths_Textbox; ShowNumOfMonths_Textbox; 
+'	EnterDollarPerMonth_Textbox; ShowDollarPerMonth_Textbox; ShowFinalPayment_Textbox; 
+
+'ComboBoxes: 
+'	Session_ComboBox; ParentNumber_ComboBox; PrefixCode_ComboBox; 
+
+'Checkboxes:
+'	ProofHS_Checkbox; 
+
+'Optionselect: 
+'	Male_Optionselect; Female_Optionselect; 
+'	NewStudent_Optionselect; ReturnStudent_Optionselect; 
+'	NoParent_Optionselect; WithParent_Optionselect; 
+'	CollegeSemester_Optionselect; CareerProgram_Optionselect; 
+'	CalcByDollarPerMonth_Optionselect; CalcByNumOfMonths_Optionselect; 
+'	PayInFull_Optionselect; NoCost_Optionselect; 
+
+'Commandbutton:
+'	Test_Button; ClearCalculation_Button; 
+'	Launch_Button; 
+'	Confirm_Button; ClearUserform_Button; Cancel_Button; 
