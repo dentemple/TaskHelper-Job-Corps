@@ -1,0 +1,164 @@
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' cStudentRegistration (Class)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Option Explicit
+Option Compare Binary
+
+' READ-ONLY PROPERTIES
+' Name:
+'	FirstNameString As String
+'	MiddleNameString As String
+'	LastNameString As String
+'	MailingName As String
+'	AlphaName As String
+' Contact:
+'	AreaCodeString As String
+'	PhoneNumberString As String
+'	EmailString As String
+'	AddressLine1String As String
+'	AddressLine2String As String
+'	AddressLine3String As String
+'	AddressLine4String As String
+'	CityString As String
+'	StateAbbrevString As String
+'	ZipCodeString As String
+
+' INITIALIZED PROPERTIES
+
+' ERROR PROPERTIES
+
+' OBJECT PROPERTIES
+Private pUserform As MSForms.UserForm
+Private pFirstNameTextbox As MSForms.Textbox
+Private pMiddleNameTextbox As MSForms.Textbox
+Private pLastNameTextbox As MSForms.Textbox
+
+
+Private pITEM As MSForms.Textbox
+Private pITEM As TYPE
+
+
+
+Private Sub Class_Initialize()
+' The Class_Initialize event allows for default values to be created
+End Sub
+
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' OBJECT PROPERTIES
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+''''''''''''''''''''''''''''''
+' Userform property
+''''''''''''''''''''''''''''''
+Public Property Set Userform(Value As MSForms.UserForm)
+    Set pUserform = Value
+End Property
+
+Public Property Get Userform() As MSForms.UserForm
+    Set Userform = pUserform
+End Property
+
+''''''''''''''''''''''''''''''
+' FirstNameTextbox property
+''''''''''''''''''''''''''''''
+Public Property Set FirstNameTextbox(Value As MSForms.Textbox)
+    Set pFirstNameTextbox = Value
+End Property
+
+Public Property Get FirstNameTextbox() As MSForms.Textbox
+    Set FirstNameTextbox = pFirstNameTextbox
+End Property
+
+''''''''''''''''''''''''''''''
+' MiddleNameTextbox property
+''''''''''''''''''''''''''''''
+Public Property Set MiddleNameTextbox(Value As MSForms.Textbox)
+    Set pMiddleNameTextbox = Value
+End Property
+
+Public Property Get MiddleNameTextbox() As MSForms.Textbox
+    Set MiddleNameTextbox = pMiddleNameTextbox
+End Property
+
+''''''''''''''''''''''''''''''
+' LastNameTextbox property
+''''''''''''''''''''''''''''''
+Public Property Set LastNameTextbox(Value As MSForms.Textbox)
+    Set pLastNameTextbox = Value
+End Property
+
+Public Property Get LastNameTextbox() As MSForms.Textbox
+    Set LastNameTextbox = pLastNameTextbox
+End Property
+
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' READ-ONLY PROPERTIES
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+''''''''''''''''''''''''''''''
+' FirstNameString property
+''''''''''''''''''''''''''''''
+Public Property Get FirstNameString() As String
+    FirstNameString = Me.Userform.FirstNameTextbox
+End Property
+
+''''''''''''''''''''''''''''''
+' MiddleNameString property
+''''''''''''''''''''''''''''''
+Public Property Get MiddleNameString() As String
+    MiddleNameString = Me.Userform.MiddleNameTextbox
+End Property
+
+''''''''''''''''''''''''''''''
+' LastNameString property
+''''''''''''''''''''''''''''''
+Public Property Get LastNameString() As String
+    LastNameString = Me.Userform.LastNameTextbox
+End Property
+
+''''''''''''''''''''''''''''''
+' MailingName property
+''''''''''''''''''''''''''''''
+Public Property Get MailingName() As String
+    If Len(Trim(Me.MiddleNameString)) > 0 Then
+    	MailingName = Me.FirstNameString & Space(1) & Me.MiddleNameString & Space(1) & Me.LastNameString
+    Else
+    	MailingName = Me.FirstNameString & Space(1) & Me.LastNameString
+    End If
+End Property
+
+''''''''''''''''''''''''''''''
+' AlphaName property
+''''''''''''''''''''''''''''''
+Public Property Get AlphaName() As String
+	If Len(Trim(Me.MiddleNameString)) > 0 Then
+		AlphaName = Me.LastNameString & Space(1) & Me.FirstNameString & Space(1) & Me.MiddleNameString
+	Else
+		AlphaName = Me.LastNameString & Space(1) & Me.FirstNameString
+	End If
+End Property
+
+
+
+
+
+''''''''''''''''''''''''''''''
+' ITEM property
+''''''''''''''''''''''''''''''
+Public Property Get ITEM() As TYPE
+    ITEM = CODE
+End Property
+
+''''''''''''''''''''''''''''''
+' ITEM property
+''''''''''''''''''''''''''''''
+Public Property Let ITEM(Value As TYPE)
+    pItem = Value
+End Property
+
+Public Property Get ITEM() As TYPE
+    ITEM = pItem
+End Property
