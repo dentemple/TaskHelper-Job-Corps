@@ -12,6 +12,11 @@ Private pUserform As MSForms.UserForm
 Private pFirstNameTextbox As MSForms.Textbox
 Private pMiddleNameTextbox As MSForms.Textbox
 Private pLastNameTextbox As MSForms.Textbox
+Private pSalespersonTextbox As MSForms.Textbox
+Private pNAME As MSForms.Textbox
+Private pNAME As MSForms.Textbox
+Private pNAME As MSForms.Textbox
+Private pNAME As MSForms.Textbox
 
 ' FUNCTIONS
 ' Name:
@@ -96,6 +101,30 @@ Public Property Get LastNameTextbox() As MSForms.Textbox
     Set LastNameTextbox = pLastNameTextbox
 End Property
 
+''''''''''''''''''''''''''''''
+' TEXTBOXNAME property
+''''''''''''''''''''''''''''''
+Public Property Set TEXTBOXNAME(Value As MSForms.Textbox)
+    Set pNAME = Value
+End Property
+
+Public Property Get TEXTBOXNAME() As MSForms.Textbox
+    Set TEXTBOXNAME = pNAME
+End Property
+
+
+
+
+''''''''''''''''''''''''''''''
+' TEXTBOXNAME property
+''''''''''''''''''''''''''''''
+Public Property Set TEXTBOXNAME(Value As MSForms.Textbox)
+    Set pNAME = Value
+End Property
+
+Public Property Get TEXTBOXNAME() As MSForms.Textbox
+    Set TEXTBOXNAME = pNAME
+End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' FUNCTIONS
