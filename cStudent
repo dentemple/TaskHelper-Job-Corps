@@ -104,21 +104,21 @@ End Property
 ' FirstNameString property
 ''''''''''''''''''''''''''''''
 Public Property Get FirstNameString() As String
-    FirstNameString = Me.Userform.FirstNameTextbox
+    FirstNameString = FirstNameTextbox
 End Property
 
 ''''''''''''''''''''''''''''''
 ' MiddleNameString property
 ''''''''''''''''''''''''''''''
 Public Property Get MiddleNameString() As String
-    MiddleNameString = Me.Userform.MiddleNameTextbox
+    MiddleNameString = MiddleNameTextbox
 End Property
 
 ''''''''''''''''''''''''''''''
 ' LastNameString property
 ''''''''''''''''''''''''''''''
 Public Property Get LastNameString() As String
-    LastNameString = Me.Userform.LastNameTextbox
+    LastNameString = LastNameTextbox
 End Property
 
 ''''''''''''''''''''''''''''''
@@ -126,9 +126,9 @@ End Property
 ''''''''''''''''''''''''''''''
 Public Property Get MailingName() As String
     If Len(Trim(Me.MiddleNameString)) > 0 Then
-    	MailingName = Me.FirstNameString & Space(1) & Me.MiddleNameString & Space(1) & Me.LastNameString
+    	MailingName = FirstNameString & Space(1) & MiddleNameString & Space(1) & LastNameString
     Else
-    	MailingName = Me.FirstNameString & Space(1) & Me.LastNameString
+    	MailingName = FirstNameString & Space(1) & .LastNameString
     End If
 End Property
 
@@ -137,9 +137,9 @@ End Property
 ''''''''''''''''''''''''''''''
 Public Property Get AlphaName() As String
 	If Len(Trim(Me.MiddleNameString)) > 0 Then
-		AlphaName = Me.LastNameString & Space(1) & Me.FirstNameString & Space(1) & Me.MiddleNameString
+		AlphaName = LastNameString & Space(1) & FirstNameString & Space(1) & MiddleNameString
 	Else
-		AlphaName = Me.LastNameString & Space(1) & Me.FirstNameString
+		AlphaName = LastNameString & Space(1) & FirstNameString
 	End If
 End Property
 
