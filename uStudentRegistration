@@ -2,6 +2,8 @@
 ' uStudentRegistration (Userform)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
+'Notes: Add "speed" choice
+
 Option Explicit
 Option Compare Binary
 
