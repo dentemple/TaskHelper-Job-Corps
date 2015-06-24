@@ -1,0 +1,29 @@
+'
+' cErrorClass (Class)
+'
+' Relies on a call stack approach to help report the location of errors
+'
+
+' Note: MsgBox "Error: (" & Err.Number & ") " & Err.Description, vbCritical
+
+'Points to the array element of the call stack
+Private pStackPointer As Integer
+
+'Array of procedure names in the call stack
+Private pCallStack() As String
+
+'PushCallStack Function
+'Add to procedure name to the array
+
+'PopCallStack Function
+'Remove the procedure name from the array
+
+'LogErrorDescription Function
+'Accepts Err.Description
+
+'LogErrorNumberFunction
+Accepts Err.Number
+
+'Message property
+
+'WriteErrorToFile Function
