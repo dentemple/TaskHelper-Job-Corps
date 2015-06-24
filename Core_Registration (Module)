@@ -4,7 +4,7 @@
 
 'Notes:
 ' Main script
-' I: Passes in userform, workbook, and worksheet
+' I: Passes in userform, workbook (ThisWorkbook), and worksheet
 ' Automation 'style': Auto Fast, Auto Slow, Manual, Debug
 '	Auto Fast: Standard script (Wait 10)
 '	Auto Slow: Adds an extra wait command (Wait 100)
