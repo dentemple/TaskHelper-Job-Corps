@@ -7,6 +7,15 @@ Option Compare Binary
 
 ' GENERAL PROPERTIES
 
+' ERROR PROPERTIES
+Private pErrorFlag As Boolean
+Private pErrorMessage As String
+
+' "CONSTANT" PROPERTIES
+'Caution: True constants cannot be declared in a class module. These values are _
+	for internal use only so as to provide the class some additional modularity.
+Private MaxCharactersName As Integer
+
 ' FUNCTION PROPERTIES
 'By default, all of userform-based functions are declared as strings. This is _
 	both to standardize the outputs, as well as to provide a safe default _
@@ -63,12 +72,7 @@ Option Compare Binary
 '	GetEnrollmentType As String
 '	GetPaymentType As String
 
-' READ-ONLY PROPERTIES
-
-' INITIALIZED PROPERTIES
-
 ' OBJECT PROPERTIES
-'Stores various userform objects
 
 'Userform
 Private pUserform As MSForms.UserForm
@@ -132,11 +136,47 @@ Private pPayInFullOptionButton As MSForms.OptionButton
 Private pNoCostOptionButton As MSForms.OptionButton
 
 Private Sub Class_Initialize()
-' The Class_Initialize event allows for default values to be created
+
+pErrorFlag = False
+pErrorMessage = "The Student File has encountered the following issues:" & vbNewLine & vbNewLine
+MaxCharactersName = 38
+
+End Sub
+
+Private Sub Class_Terminate()
+'Empty
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' FUNCTIONS
+' GENERAL PROPERTIES
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ERROR PROPERTIES
+'By default, all of userform-based functions are declared as strings. This is _
+	both to standardize the outputs, as well as to provide a safe default _
+	data type for the AS/400 (which can always accept values as strings).
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ErrorFlag property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Get ErrorFlag() As Boolean
+    ErrorFlag = pErrorFlag
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ErrorMessage property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Get ErrorMessage() As String
+    ErrorMessage = pErrorMessage
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' FUNCTION PROPERTIES
+'By default, all of userform-based functions are declared as strings. This is _
+	both to standardize the outputs, as well as to provide a safe default _
+	data type for the AS/400 (which can always accept values as strings).
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -175,16 +215,326 @@ End Function
 ' GetAlphaName property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetAlphaName() As String
+	Dim str As String
 	If Len(Trim(GetMiddleName)) > 0 Then
-		GetAlphaName = GetLastname & Space(1) & GetFirstName & Space(1) & GetMiddleName
+		str = GetLastname & Space(1) & GetFirstName & Space(1) & GetMiddleName
 	Else
-		GetAlphaName = GetLastname & Space(1) & GetFirstName
+		str = GetLastname & Space(1) & GetFirstName
+	End If
+	If Len(str) < MaxCharactersName Then
+		GetAlphaName = str
+	Else
+		pErrorFlag = True
+		pErrorMessage = pErrorMessage & "* The student's combined Alpha Name must be less than 38 characters" & vbNewLine & vbTab & vbTab & str & vbNewLine
 	End If
 End Function
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' READ-ONLY PROPERTIES
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetSalesperson property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetSalesperson() As String
+	If IsNumeric(SalespersonTextbox) And Len(Trim(SalespersonTextbox)) = 4 Then
+		GetSalesperson = SalespersonTextbox
+	Else
+		pErrorFlag = True
+		pErrorMessage = pErrorMessage & "* The salesperson code must be 4 numbers" & vbNewLine
+	End If
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetStudentID property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetStudentID() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetAreaCode property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetAreaCode() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetPhoneNumber property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetPhoneNumber() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetEmail property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetEmail() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetAddressLine1 property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetAddressLine1() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetAddressLine2 property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetAddressLine2() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetAddressLine3 property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetAddressLine3() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetAddressLine4 property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetAddressLine4() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetCity property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetCity() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetState property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetState() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetZipCode property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetZipCode() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetProgramNumber property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetProgramNumber() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetProgramTuition property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetProgramTuition() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetClassMod1 property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetClassMod1() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetClassMod2 property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetClassMod2() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetClassMod3 property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetClassMod3() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetClassMod4 property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetClassMod4() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetClassMod5 property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetClassMod5() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetClassMod6 property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetClassMod6() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetClassMod7 property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetClassMod7() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GETNAME property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GETNAME() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GETNAME property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GETNAME() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GETNAME property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GETNAME() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GETNAME property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GETNAME() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GETNAME property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GETNAME() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GETNAME property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GETNAME() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GETNAME property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GETNAME() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GETNAME property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GETNAME() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GETNAME property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GETNAME() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GETNAME property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GETNAME() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GETNAME property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GETNAME() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GETNAME property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GETNAME() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GETNAME property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GETNAME() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GETNAME property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GETNAME() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GETNAME property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GETNAME() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GETNAME property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GETNAME() As String
+
+
+End Function
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GETNAME property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GETNAME() As String
+
+
+End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' OBJECT PROPERTIES
