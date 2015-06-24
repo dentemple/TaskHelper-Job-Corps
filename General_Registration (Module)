@@ -1,0 +1,23 @@
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' # General_Registration (Module)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+'Notes:
+' Main script
+' I: Passes in userform, workbook, and worksheet
+' Automation 'style': Auto Fast, Auto Slow, Manual, Debug
+'	Auto Fast: Standard script (Wait 10)
+'	Auto Slow: Adds an extra wait command (Wait 100)
+'	Manual: Creates a dialog box before each SendKeys command
+'	Debug: Turns off error handling
+' Classes instantiated within module
+' For AS400 Commands, loop through an array
+'	AS400 values should be converted to ULong
+'	Populate array from worksheet (first check for valid commands)
+'   Array: Command | Tag | Row | Column
+'	Commands: 	Input - calls to a case switch
+'				Home - Navigates to Home Screen
+'				Send - SendKeys
+'				Check - GetText, confirm screen
+'				Get - calls to a case switch
+' All environment-specific commands should be called from the Environment module
