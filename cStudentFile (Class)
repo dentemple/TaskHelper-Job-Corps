@@ -5,10 +5,16 @@
 Option Explicit
 Option Compare Binary
 
-' ERROR PROPERTIES
+' GENERAL PROPERTIES
+Private pStudentStatus As Boolean
+Private pParentStatus As Boolean
 
 ' OBJECT PROPERTIES
+'Stores various userform objects
+
+'Userform
 Private pUserform As MSForms.UserForm
+'Textboxes
 Private pFirstNameTextbox As MSForms.Textbox
 Private pMiddleNameTextbox As MSForms.Textbox
 Private pLastNameTextbox As MSForms.Textbox
@@ -47,13 +53,31 @@ Private pStudentInvoiceTextbox As MSForms.Textbox
 Private pDownPayTextbox As MSForms.Textbox
 Private pNumberOfMonthsTextbox As MSForms.Textbox
 Private pDollarPerMonthTextbox As MSForms.Textbox
+'ComboBoxes
 Private pSessionComboBox As MSForms.Combobox
 Private pParentNumberComboBox As MSForms.Combobox
 Private pPrefixCodeComboBox As MSForms.Combobox
 Private pAutomationComboBox As MSForms.Combobox
+'Checkbox
 Private pProofHSCheckbox As MSForms.Checkbox
+'Option Buttons
+Private pParentStatusOptionButton As MSForms.OptionButton
+Private pStudentStatusOptionButton As MSForms.OptionButton
+Private pMaleOptionButton As MSForms.OptionButton
+Private pFemaleOptionButton As MSForms.OptionButton
+Private pCalcByDollarPerMonthOptionButton As MSForms.OptionButton
+Private pIndividualCreditsOptionButton As MSForms.OptionButton
+Private pCareerProgramOptionButton As MSForms.OptionButton
+Private pCollegeSemesterOptionButton As MSForms.OptionButton
+Private pCalcByNumOfMonthsOptionButton As MSForms.OptionButton
+Private pPayInFullOptionButton As MSForms.OptionButton
+Private pNoCostOptionButton As MSForms.OptionButton
 
-' FUNCTIONS
+' FUNCTION PROPERTIES
+'By default, all of userform-based functions are declared as strings. This is _
+	both to standardize the outputs, as well as to provide a safe default _
+	data type for the AS/400 (which can always accept values as strings).
+
 '	GetFirstName As String
 '	GetMiddleName As String
 '	GetLastname As String
@@ -99,6 +123,7 @@ Private pProofHSCheckbox As MSForms.Checkbox
 '	GetPrefixCode As String
 '	GetAutomation As String
 '	GetProofHS As String
+'	GetParentStatus As String
 
 ' READ-ONLY PROPERTIES
 
@@ -109,7 +134,6 @@ Private pProofHSCheckbox As MSForms.Checkbox
 Private Sub Class_Initialize()
 ' The Class_Initialize event allows for default values to be created
 End Sub
-
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' OBJECT PROPERTIES
