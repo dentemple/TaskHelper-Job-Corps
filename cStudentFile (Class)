@@ -50,36 +50,60 @@ Private pDollarPerMonthTextbox As MSForms.Textbox
 Private pSessionComboBox As MSForms.Combobox
 Private pParentNumberComboBox As MSForms.Combobox
 Private pPrefixCodeComboBox As MSForms.Combobox
+Private pAutomationComboBox As MSForms.Combobox
 Private pProofHSCheckbox As MSForms.Checkbox
 
 ' FUNCTIONS
-' Name:
 '	GetFirstName As String
 '	GetMiddleName As String
 '	GetLastname As String
 '	GetMailingName As String
 '	GetAlphaName As String
-' Contact:
-'	AreaCodeString As String
-'	PhoneNumberString As String
-'	EmailString As String
-'	AddressLine1String As String
-'	AddressLine2String As String
-'	AddressLine3String As String
-'	AddressLine4String As String
-'	CityString As String
-'	StateAbbrevString As String
-'	ZipCodeString As String
+'	GetSalesperson As String
+'	GetStudentID As String
+'	GetAreaCode As String
+'	GetPhoneNumber As String
+'	GetEmail As String
+'	GetAddressLine1 As String
+'	GetAddressLine2 As String
+'	GetAddressLine3 As String
+'	GetAddressLine4 As String
+'	GetCity As String
+'	GetState As String
+'	GetZipCode As String
+'	GetProgramNumber As String
+'	GetProgramTuition As String
+'	GetClassMod1 As String
+'	GetClassMod2 As String
+'	GetClassMod3 As String
+'	GetClassMod4 As String
+'	GetClassMod5 As String
+'	GetClassMod6 As String
+'	GetClassMod7 As String
+'	GetClassTuition1 As String
+'	GetClassTuition2 As String
+'	GetClassTuition3 As String
+'	GetClassTuition4 As String
+'	GetClassTuition5 As String
+'	GetClassTuition6 As String
+'	GetClassTuition7 As String
+'	GetParentInvoice As String
+'	GetStudentTuition As String
+'	GetStudentFees As String
+'	GetStudentInvoice As String
+'	GetDownPay As String
+'	GetNumberOfMonths As String
+'	GetDollarPerMonth As String
+'	GetSession As String
+'	GetParentNumber As String
+'	GetPrefixCode As String
+'	GetAutomation As String
+'	GetProofHS As String
 
 ' READ-ONLY PROPERTIES
-'	FirstNameTag As String
-'	MiddleNameTag As String
-'	LastNameTag As String
+
 
 ' INITIALIZED PROPERTIES
-
-Private pITEM As MSForms.Textbox
-Private pITEM As TYPE
 
 
 Private Sub Class_Initialize()
@@ -211,26 +235,6 @@ End Function
 ' READ-ONLY PROPERTIES
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' FirstNameTag property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Get FirstNameTag() As String
-    FirstNameTag = "FirstName"
-End Property
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' MiddleNameTag property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Get MiddleNameString() As String
-    MiddleNameString = MiddleNameTextbox
-End Property
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' LastNameTag property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Get LastNameTag() As String
-    LastNameTag = LastNameTextbox
-End Property
 
 
 
