@@ -402,136 +402,193 @@ Public Function GetClassMod7() As String
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GETNAME property
+' GetClassTuition1 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GETNAME() As String
+Public Function GetClassTuition1() As String
 
 
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GETNAME property
+' GetClassTuition2 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GETNAME() As String
+Public Function GetClassTuition2() As String
 
 
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GETNAME property
+' GetClassTuition3 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GETNAME() As String
+Public Function GetClassTuition3() As String
 
 
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GETNAME property
+' GetClassTuition4 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GETNAME() As String
+Public Function GetClassTuition4() As String
 
 
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GETNAME property
+' GetClassTuition5 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GETNAME() As String
+Public Function GetClassTuition5() As String
 
 
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GETNAME property
+' GetClassTuition6 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GETNAME() As String
+Public Function GetClassTuition6() As String
 
 
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GETNAME property
+' GetClassTuition7 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GETNAME() As String
+Public Function GetClassTuition7() As String
 
 
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GETNAME property
+' GetParentInvoice property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GETNAME() As String
+Public Function GetParentInvoice() As String
 
 
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GETNAME property
+' GetStudentTuition property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GETNAME() As String
+Public Function GetStudentTuition() As String
 
 
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GETNAME property
+' GetStudentFees property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GETNAME() As String
+Public Function GetStudentFees() As String
 
 
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GETNAME property
+' GetStudentInvoice property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GETNAME() As String
+Public Function GetStudentInvoice() As String
 
 
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GETNAME property
+' GetDownPay property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GETNAME() As String
+Public Function GetDownPay() As String
 
 
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GETNAME property
+' GetNumberOfMonths property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GETNAME() As String
+Public Function GetNumberOfMonths() As String
 
 
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GETNAME property
+' GetDollarPerMonth property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GETNAME() As String
+Public Function GetDollarPerMonth() As String
 
 
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GETNAME property
+' GetSession property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GETNAME() As String
+Public Function GetSession() As String
 
 
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GETNAME property
+' GetParentNumber property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GETNAME() As String
+Public Function GetParentNumber() As String
 
 
 End Function
+
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GETNAME property
+' GetPrefixCode property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GETNAME() As String
+Public Function GetPrefixCode() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetAutomation property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetAutomation() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetProofHS property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetProofHS() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetParentStatus property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetParentStatus() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetStudentStatus property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetStudentStatus() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetGender property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetGender() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetEnrollmentType property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetEnrollmentType() As String
+
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetPaymentType property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetPaymentType() As String
 
 
 End Function
