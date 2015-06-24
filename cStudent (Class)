@@ -1,6 +1,6 @@
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' cStudent (Class)
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Option Explicit
 Option Compare Binary
@@ -87,13 +87,13 @@ Private Sub Class_Initialize()
 End Sub
 
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' OBJECT PROPERTIES
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Userform property
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Set Userform(Value As MSForms.UserForm)
     Set pUserform = Value
 End Property
@@ -102,9 +102,9 @@ Public Property Get Userform() As MSForms.UserForm
     Set Userform = pUserform
 End Property
 
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' FirstNameTextbox property
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Set FirstNameTextbox(Value As MSForms.Textbox)
     Set pFirstNameTextbox = Value
 End Property
@@ -113,9 +113,9 @@ Public Property Get FirstNameTextbox() As MSForms.Textbox
     Set FirstNameTextbox = pFirstNameTextbox
 End Property
 
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' MiddleNameTextbox property
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Set MiddleNameTextbox(Value As MSForms.Textbox)
     Set pMiddleNameTextbox = Value
 End Property
@@ -124,9 +124,9 @@ Public Property Get MiddleNameTextbox() As MSForms.Textbox
     Set MiddleNameTextbox = pMiddleNameTextbox
 End Property
 
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' LastNameTextbox property
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Set LastNameTextbox(Value As MSForms.Textbox)
     Set pLastNameTextbox = Value
 End Property
@@ -135,9 +135,9 @@ Public Property Get LastNameTextbox() As MSForms.Textbox
     Set LastNameTextbox = pLastNameTextbox
 End Property
 
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' TEXTBOXNAME property
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Set TEXTBOXNAME(Value As MSForms.Textbox)
     Set pNAME = Value
 End Property
@@ -148,46 +148,46 @@ End Property
 
 
 
-
-''''''''''''''''''''''''''''''
-' TEXTBOXNAME property
-''''''''''''''''''''''''''''''
-Public Property Set TEXTBOXNAME(Value As MSForms.Textbox)
-    Set pNAME = Value
-End Property
-
-Public Property Get TEXTBOXNAME() As MSForms.Textbox
-    Set TEXTBOXNAME = pNAME
-End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' TEXTBOXNAME property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Set TEXTBOXNAME(Value As MSForms.Textbox)
+    Set pNAME = Value
+End Property
+
+Public Property Get TEXTBOXNAME() As MSForms.Textbox
+    Set TEXTBOXNAME = pNAME
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' FUNCTIONS
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetFirstName property
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetFirstName() As String
     GetFirstName = FirstNameTextbox
 End Function
 
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetMiddleName property
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetMiddleName() As String
     GetMiddleName = MiddleNameTextbox
 End Function
 
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetLastname property
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetLastname() As String
     GetLastname = LastNameTextbox
 End Function
 
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetMailingName property
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetMailingName() As String
     If Len(Trim(GetMiddleName)) > 0 Then
     	GetMailingName = GetFirstName & Space(1) & GetMiddleName & Space(1) & GetLastname
@@ -196,9 +196,9 @@ Public Function GetMailingName() As String
     End If
 End Function
 
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetAlphaName property
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetAlphaName() As String
 	If Len(Trim(GetMiddleName)) > 0 Then
 		GetAlphaName = GetLastname & Space(1) & GetFirstName & Space(1) & GetMiddleName
@@ -207,27 +207,27 @@ Public Function GetAlphaName() As String
 	End If
 End Function
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' READ-ONLY PROPERTIES
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' FirstNameTag property
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Get FirstNameTag() As String
     FirstNameTag = "FirstName"
 End Property
 
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' MiddleNameTag property
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Get MiddleNameString() As String
     MiddleNameString = MiddleNameTextbox
 End Property
 
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' LastNameTag property
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Get LastNameTag() As String
     LastNameTag = LastNameTextbox
 End Property
@@ -236,16 +236,16 @@ End Property
 
 
 
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ITEM property
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Get ITEM() As TYPE
     ITEM = CODE
 End Property
 
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ITEM property
-''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Let ITEM(Value As TYPE)
     pItem = Value
 End Property
