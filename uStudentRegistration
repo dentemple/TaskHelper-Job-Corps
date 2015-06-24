@@ -94,6 +94,11 @@ With Help_Textbox
 End With
 
 ' Populates the selection boxes.
+With Automation_ComboBox
+    .Clear
+    .AddItem "--"
+    .Text = Automation_ComboBox.List(0)
+End With
 With Session_ComboBox
     .Clear
     .AddItem "--"
@@ -127,10 +132,47 @@ Firstname_Textbox.SetFocus
 
 End Sub
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Command Buttons / Actions to be called and performed.
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Private Sub Launch_Button_Click()
+
+End Sub
+
+Private Sub Confirm_Button_Click()
+
+End Sub
+
+Private Sub ClearUserform_Button_Click()
+
+Call UserForm_Initialize
+
+End Sub
+
+Private Sub Cancel_Button_Click()
+
+Unload Me
+
+End Sub
+
+Private Sub Test_Button_Click()
+
+End Sub
+
+Private Sub ClearCalculation_Button_Click()
+
+End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Control Settings.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Manages locks and unlocks based on the user's requirements.
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Restricts the fields to positive whole numbers using _
@@ -653,4 +695,10 @@ Call Pop_HelpText(Help_Textbox, "STRING")
     
 End Sub
 
+Automation_ComboBox
 
+Private Sub Automation_ComboBox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+
+Call Pop_HelpText(Help_Textbox, "[AUTO FAST] Less than 1 sec/screen || [AUTO SLOW] 1 sec/screen || [MANUAL] Stops every screen || [DEBUG] - No controls or error handling")
+    
+End Sub
