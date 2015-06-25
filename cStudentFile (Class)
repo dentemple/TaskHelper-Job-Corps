@@ -10,11 +10,14 @@ Option Compare Binary
 ' ERROR PROPERTIES
 Private pErrorFlag As Boolean
 Private pErrorMessage As String
+Private pModCheckFlag As Boolean
+Private pModCheckMessage As String
 
 ' "CONSTANT" PROPERTIES
 'Caution: True constants cannot be declared in a class module. These values are _
 	for internal use only so as to provide the class some additional modularity.
 Private MaxCharactersName As Integer
+Private StandardLength As Integer
 
 ' FUNCTION PROPERTIES
 'By default, all of userform-based functions are declared as strings. This is _
@@ -139,9 +142,20 @@ Private Sub Class_Initialize()
 
 pErrorFlag = False
 pErrorMessage = "The Student File has encountered the following issues:" & vbNewLine & vbNewLine
+pModCheckFlag = False
+pModCheckMessage = "The following class mods are less than 8 characters; please confirm before proceeding:" & vbNewLine & vbNewLine
 MaxCharactersName = 38
+StandardLength = 8
 
 End Sub
+
+Private Function ConvertCurrSign(ByVal passTextbox As String) As String
+
+	Dim str As String
+	str = passTextbox
+	ConvertCurrSign = Trim(Replace(str, "$", " "))
+	
+End Function
 
 Private Sub Class_Terminate()
 'Empty
@@ -172,6 +186,15 @@ Public Property Get ErrorMessage() As String
     ErrorMessage = pErrorMessage
 End Property
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ModCheckFlag property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ModCheckMessage property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' FUNCTION PROPERTIES
 'By default, all of userform-based functions are declared as strings. This is _
@@ -183,21 +206,21 @@ End Property
 ' GetFirstName property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetFirstName() As String
-    GetFirstName = FirstNameTextbox
+    GetFirstName = Trim(FirstNameTextbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetMiddleName property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetMiddleName() As String
-    GetMiddleName = MiddleNameTextbox
+    GetMiddleName = Trim(MiddleNameTextbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetLastname property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetLastname() As String
-    GetLastname = LastNameTextbox
+    GetLastname = Trim(LastNameTextbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -237,7 +260,7 @@ Public Function GetSalesperson() As String
 		GetSalesperson = SalespersonTextbox
 	Else
 		pErrorFlag = True
-		pErrorMessage = pErrorMessage & "* The salesperson code must be 4 numbers" & vbNewLine
+		pErrorMessage = pErrorMessage & "* The salesperson code must be numeric and 4 digits long" & vbNewLine
 	End If
 End Function
 
@@ -245,216 +268,275 @@ End Function
 ' GetStudentID property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetStudentID() As String
-
-
+	If IsNumeric(StudentIDTextbox) And Len(Trim(StudentIDTextbox)) = StandardLength Then
+		GetStudentID = StudentIDTextbox
+	Else
+		pErrorFlag = True
+		pErrorMessage = pErrorMessage & "* The Student ID# must be numeric and 8 digits long" & vbNewLine
+	End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetAreaCode property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetAreaCode() As String
-
-
+	If IsNumeric(AreaCodeTextbox) Then
+		GetAreaCode = Trim(AreaCodeTextbox)
+	Else
+		GetAreaCode = vbNullString
+	End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetPhoneNumber property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetPhoneNumber() As String
-
-
+	GetPhoneNumber = Trim(PhoneNumberTextbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetEmail property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetEmail() As String
-
-
+	GetEmail = Trim(EmailTextbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetAddressLine1 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetAddressLine1() As String
-
-
+	GetAddressLine1 = Trim(AddressLine1Textbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetAddressLine2 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetAddressLine2() As String
-
-
+	GetAddressLine2 = Trim(AddressLine2Textbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetAddressLine3 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetAddressLine3() As String
-
-
+	GetAddressLine3 = Trim(AddressLine3Textbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetAddressLine4 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetAddressLine4() As String
-
-
+	GetAddressLine4 = Trim(AddressLine4Textbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetCity property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetCity() As String
-
-
+	GetCity = Trim(CityTextbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetState property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetState() As String
-
-
+	GetState = Trim(StateTextbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetZipCode property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetZipCode() As String
-
-
+	If IsNumeric(ZipCodeTextbox) Then
+		GetZipCode = Trim(ZipCodeTextbox)
+	Else
+		GetZipcode = vbNullString
+	End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetProgramNumber property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetProgramNumber() As String
-
-
+	If IsNumeric(ProgramNumberTextbox) And Len(Trim(ProgramNumberTextbox)) = StandardLength Then
+		GetProgramNumber = ProgramNumberTextbox
+	Else
+		pErrorFlag = True
+		pErrorMessage = pErrorMessage & "* The Program Number must be numeric and 8 digits long" & vbNewLine
+	End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetProgramTuition property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetProgramTuition() As String
-
-
+	If IsNumeric(ConvertCurrSign(ProgramTuitionTextbox)) And Val(ConvertCurrSign(ProgramTuitionTextbox)) >= 0 Then
+		GetProgramTuition = ConvertCurrSign(ProgramTuitionTextbox)
+	Else
+		pErrorFlag = True
+		pErrorMessage = pErrorMessage & "* The Program Tuition must be a non-negative number"
+	End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassMod1 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassMod1() As String
-
-
+	GetClassMod1 = Trim(ClassMod1Textbox)
+	If Len(GetClassMod1) >= 1 And Len(ClassMod1Textbox) < StandardLength Then
+		pModCheckFlag = True
+		pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod1Textbox) & vbNewLine
+	End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassMod2 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassMod2() As String
-
-
+	GetClassMod2 = Trim(ClassMod2Textbox)
+	If Len(GetClassMod2) >= 1 And Len(ClassMod2Textbox) < StandardLength Then
+		pModCheckFlag = True
+		pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod2Textbox) & vbNewLine
+	End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassMod3 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassMod3() As String
-
-
+	GetClassMod3 = Trim(ClassMod3Textbox)
+	If Len(GetClassMod3) >= 1 And Len(ClassMod3Textbox) < StandardLength Then
+		pModCheckFlag = True
+		pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod3Textbox) & vbNewLine
+	End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassMod4 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassMod4() As String
-
-
+	GetClassMod4 = Trim(ClassMod4Textbox)
+	If Len(GetClassMod4) >= 1 And Len(ClassMod4Textbox) < StandardLength Then
+		pModCheckFlag = True
+		pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod4Textbox) & vbNewLine
+	End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassMod5 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassMod5() As String
-
-
+	GetClassMod5 = Trim(ClassMod5Textbox)
+	If Len(GetClassMod5) >= 1 And Len(ClassMod5Textbox) < StandardLength Then
+		pModCheckFlag = True
+		pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod5Textbox) & vbNewLine
+	End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassMod6 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassMod6() As String
-
-
+	GetClassMod6 = Trim(ClassMod6Textbox)
+	If Len(GetClassMod6) >= 1 And Len(ClassMod6Textbox) < StandardLength Then
+		pModCheckFlag = True
+		pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod6Textbox) & vbNewLine
+	End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassMod7 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassMod7() As String
-
-
+	GetClassMod7 = Trim(ClassMod7Textbox)
+	If Len(GetClassMod7) >= 1 And Len(ClassMod7Textbox) < StandardLength Then
+		pModCheckFlag = True
+		pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod7Textbox) & vbNewLine
+	End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassTuition1 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition1() As String
-
-
+	If IsNumeric(ConvertCurrSign(ClassTuition1Textbox)) And Val(ConvertCurrSign(ClassTuition1Textbox)) >= 0 Then
+		GetClassTuition1 = ConvertCurrSign(ClassTuition1Textbox)
+	Else
+		pErrorFlag = True
+		pErrorMessage = pErrorMessage & "* Class Tuition for Mod1 must be a non-negative number"
+	End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassTuition2 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition2() As String
-
-
+	If IsNumeric(ConvertCurrSign(ClassTuition2Textbox)) And Val(ConvertCurrSign(ClassTuition2Textbox)) >= 0 Then
+		GetClassTuition2 = ConvertCurrSign(ClassTuition2Textbox)
+	Else
+		pErrorFlag = True
+		pErrorMessage = pErrorMessage & "* Class Tuition for Mod2 must be a non-negative number"
+	End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassTuition3 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition3() As String
-
-
+	If IsNumeric(ConvertCurrSign(ClassTuition3Textbox)) And Val(ConvertCurrSign(ClassTuition3Textbox)) >= 0 Then
+		GetClassTuition3 = ConvertCurrSign(ClassTuition3Textbox)
+	Else
+		pErrorFlag = True
+		pErrorMessage = pErrorMessage & "* Class Tuition for Mod3 must be a non-negative number"
+	End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassTuition4 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition4() As String
-
-
+	If IsNumeric(ConvertCurrSign(ClassTuition4Textbox)) And Val(ConvertCurrSign(ClassTuition4Textbox)) >= 0 Then
+		GetClassTuition4 = ConvertCurrSign(ClassTuition4Textbox)
+	Else
+		pErrorFlag = True
+		pErrorMessage = pErrorMessage & "* Class Tuition for Mod4 must be a non-negative number"
+	End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassTuition5 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition5() As String
-
-
+	If IsNumeric(ConvertCurrSign(ClassTuition5Textbox)) And Val(ConvertCurrSign(ClassTuition5Textbox)) >= 0 Then
+		GetClassTuition5 = ConvertCurrSign(ClassTuition5Textbox)
+	Else
+		pErrorFlag = True
+		pErrorMessage = pErrorMessage & "* Class Tuition for Mod5 must be a non-negative number"
+	End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassTuition6 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition6() As String
-
-
+	If IsNumeric(ConvertCurrSign(ClassTuition6Textbox)) And Val(ConvertCurrSign(ClassTuition6Textbox)) >= 0 Then
+		GetClassTuition6 = ConvertCurrSign(ClassTuition6Textbox)
+	Else
+		pErrorFlag = True
+		pErrorMessage = pErrorMessage & "* Class Tuition for Mod6 must be a non-negative number"
+	End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassTuition7 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition7() As String
-
-
+	If IsNumeric(ConvertCurrSign(ClassTuition7Textbox)) And Val(ConvertCurrSign(ClassTuition7Textbox)) >= 0 Then
+		GetClassTuition7 = ConvertCurrSign(ClassTuition7Textbox)
+	Else
+		pErrorFlag = True
+		pErrorMessage = pErrorMessage & "* Class Tuition for Mod7 must be a non-negative number"
+	End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
