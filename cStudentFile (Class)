@@ -64,6 +64,9 @@ Private StandardLength As Integer
 '	GetDownPay As String
 '	GetNumberOfMonths As String
 '	GetDollarPerMonth As String
+'	CalcNumberOfMonths As String
+'	CalcDollarPerMonth As String
+'	CalcFinalPayment As String
 '	GetSession As String
 '	GetParentNumber As String
 '	GetPrefixCode As String
@@ -75,8 +78,8 @@ Private StandardLength As Integer
 '	GetEnrollmentType As String
 '	GetPaymentType As String
 
-' OBJECT PROPERTIES
 
+' OBJECT PROPERTIES
 'Userform
 Private pUserform As MSForms.UserForm
 'Textboxes
@@ -139,26 +142,24 @@ Private pPayInFullOptionButton As MSForms.OptionButton
 Private pNoCostOptionButton As MSForms.OptionButton
 
 Private Sub Class_Initialize()
-
-pErrorFlag = False
-pErrorMessage = "The Student File has encountered the following issues:" & vbNewLine & vbNewLine
-pModCheckFlag = False
-pModCheckMessage = "The following class mods are less than 8 characters; please confirm before proceeding:" & vbNewLine & vbNewLine
-MaxCharactersName = 38
-StandardLength = 8
-
+	pErrorFlag = False
+	pErrorMessage = "The Student File has encountered the following issues:" & vbNewLine & vbNewLine
+	pModCheckFlag = False
+	pModCheckMessage = "The following class mods are less than 8 characters; please confirm before proceeding:" & vbNewLine & vbNewLine
+	MaxCharactersName = 38
+	StandardLength = 8
 End Sub
 
-Private Function ConvertCurrSign(ByVal passTextbox As String) As String
-
+Private Function RemoveSym(ByVal passTextbox As String) As String
+	'Removes the currency symbol from the textbox output. The textboxes have event handlers _
+		that prevent entering non-numbers; however, copy/paste can bypass this restriction.
 	Dim str As String
 	str = passTextbox
-	ConvertCurrSign = Trim(Replace(str, "$", " "))
-	
+	RemoveSym = Trim(Replace(str, "$", " "))
 End Function
 
 Private Sub Class_Terminate()
-'Empty
+	'Empty
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -189,11 +190,16 @@ End Property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ModCheckFlag property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Get ModCheckFlag() As Boolean
+	ModCheckFlag = pModCheckFlag
+End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ModCheckMessage property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
+Public Property Get ModCheckMessage() As String
+	ModCheckMessage = pModCheckMessage
+End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' FUNCTION PROPERTIES
@@ -370,8 +376,8 @@ End Function
 ' GetProgramTuition property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetProgramTuition() As String
-	If IsNumeric(ConvertCurrSign(ProgramTuitionTextbox)) And Val(ConvertCurrSign(ProgramTuitionTextbox)) >= 0 Then
-		GetProgramTuition = ConvertCurrSign(ProgramTuitionTextbox)
+	If IsNumeric(RemoveSym(ProgramTuitionTextbox)) And Val(RemoveSym(ProgramTuitionTextbox)) >= 0 Then
+		GetProgramTuition = RemoveSym(ProgramTuitionTextbox)
 	Else
 		pErrorFlag = True
 		pErrorMessage = pErrorMessage & "* The Program Tuition must be a non-negative number"
@@ -459,8 +465,8 @@ End Function
 ' GetClassTuition1 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition1() As String
-	If IsNumeric(ConvertCurrSign(ClassTuition1Textbox)) And Val(ConvertCurrSign(ClassTuition1Textbox)) >= 0 Then
-		GetClassTuition1 = ConvertCurrSign(ClassTuition1Textbox)
+	If IsNumeric(RemoveSym(ClassTuition1Textbox)) And Val(RemoveSym(ClassTuition1Textbox)) >= 0 Then
+		GetClassTuition1 = RemoveSym(ClassTuition1Textbox)
 	Else
 		pErrorFlag = True
 		pErrorMessage = pErrorMessage & "* Class Tuition for Mod1 must be a non-negative number"
@@ -471,8 +477,8 @@ End Function
 ' GetClassTuition2 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition2() As String
-	If IsNumeric(ConvertCurrSign(ClassTuition2Textbox)) And Val(ConvertCurrSign(ClassTuition2Textbox)) >= 0 Then
-		GetClassTuition2 = ConvertCurrSign(ClassTuition2Textbox)
+	If IsNumeric(RemoveSym(ClassTuition2Textbox)) And Val(RemoveSym(ClassTuition2Textbox)) >= 0 Then
+		GetClassTuition2 = RemoveSym(ClassTuition2Textbox)
 	Else
 		pErrorFlag = True
 		pErrorMessage = pErrorMessage & "* Class Tuition for Mod2 must be a non-negative number"
@@ -483,8 +489,8 @@ End Function
 ' GetClassTuition3 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition3() As String
-	If IsNumeric(ConvertCurrSign(ClassTuition3Textbox)) And Val(ConvertCurrSign(ClassTuition3Textbox)) >= 0 Then
-		GetClassTuition3 = ConvertCurrSign(ClassTuition3Textbox)
+	If IsNumeric(RemoveSym(ClassTuition3Textbox)) And Val(RemoveSym(ClassTuition3Textbox)) >= 0 Then
+		GetClassTuition3 = RemoveSym(ClassTuition3Textbox)
 	Else
 		pErrorFlag = True
 		pErrorMessage = pErrorMessage & "* Class Tuition for Mod3 must be a non-negative number"
@@ -495,8 +501,8 @@ End Function
 ' GetClassTuition4 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition4() As String
-	If IsNumeric(ConvertCurrSign(ClassTuition4Textbox)) And Val(ConvertCurrSign(ClassTuition4Textbox)) >= 0 Then
-		GetClassTuition4 = ConvertCurrSign(ClassTuition4Textbox)
+	If IsNumeric(RemoveSym(ClassTuition4Textbox)) And Val(RemoveSym(ClassTuition4Textbox)) >= 0 Then
+		GetClassTuition4 = RemoveSym(ClassTuition4Textbox)
 	Else
 		pErrorFlag = True
 		pErrorMessage = pErrorMessage & "* Class Tuition for Mod4 must be a non-negative number"
@@ -507,8 +513,8 @@ End Function
 ' GetClassTuition5 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition5() As String
-	If IsNumeric(ConvertCurrSign(ClassTuition5Textbox)) And Val(ConvertCurrSign(ClassTuition5Textbox)) >= 0 Then
-		GetClassTuition5 = ConvertCurrSign(ClassTuition5Textbox)
+	If IsNumeric(RemoveSym(ClassTuition5Textbox)) And Val(RemoveSym(ClassTuition5Textbox)) >= 0 Then
+		GetClassTuition5 = RemoveSym(ClassTuition5Textbox)
 	Else
 		pErrorFlag = True
 		pErrorMessage = pErrorMessage & "* Class Tuition for Mod5 must be a non-negative number"
@@ -519,8 +525,8 @@ End Function
 ' GetClassTuition6 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition6() As String
-	If IsNumeric(ConvertCurrSign(ClassTuition6Textbox)) And Val(ConvertCurrSign(ClassTuition6Textbox)) >= 0 Then
-		GetClassTuition6 = ConvertCurrSign(ClassTuition6Textbox)
+	If IsNumeric(RemoveSym(ClassTuition6Textbox)) And Val(RemoveSym(ClassTuition6Textbox)) >= 0 Then
+		GetClassTuition6 = RemoveSym(ClassTuition6Textbox)
 	Else
 		pErrorFlag = True
 		pErrorMessage = pErrorMessage & "* Class Tuition for Mod6 must be a non-negative number"
@@ -531,8 +537,8 @@ End Function
 ' GetClassTuition7 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition7() As String
-	If IsNumeric(ConvertCurrSign(ClassTuition7Textbox)) And Val(ConvertCurrSign(ClassTuition7Textbox)) >= 0 Then
-		GetClassTuition7 = ConvertCurrSign(ClassTuition7Textbox)
+	If IsNumeric(RemoveSym(ClassTuition7Textbox)) And Val(RemoveSym(ClassTuition7Textbox)) >= 0 Then
+		GetClassTuition7 = RemoveSym(ClassTuition7Textbox)
 	Else
 		pErrorFlag = True
 		pErrorMessage = pErrorMessage & "* Class Tuition for Mod7 must be a non-negative number"
@@ -551,15 +557,25 @@ End Function
 ' GetStudentTuition property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetStudentTuition() As String
-
-
+	If IsNumeric(RemoveSym(StudentTuitionTextbox)) And Val(RemoveSym(StudentTuitionTextbox)) >= 0 Then
+		GetStudentTuition = RemoveSym(StudentTuitionTextbox)
+	Else
+		pErrorFlag = True
+		pErrorMessage = pErrorMessage & "* Student Tuition must be a non-negative number"
+	End If
+	
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetStudentFees property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetStudentFees() As String
-
+	If IsNumeric(RemoveSym(StudentFeesTextbox)) And Val(RemoveSym(StudentFeesTextbox)) >= 0 Then
+		GetStudentFees = RemoveSym(StudentFeesTextbox)
+	Else
+		pErrorFlag = True
+		pErrorMessage = pErrorMessage & "* Student Fees must be a non-negative number"
+	End If
 
 End Function
 
@@ -575,7 +591,12 @@ End Function
 ' GetDownPay property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetDownPay() As String
-
+	If IsNumeric(RemoveSym(DownPayTextbox)) And Val(RemoveSym(DownPayTextbox)) >= 0 Then
+		GetDownPay = RemoveSym(DownPayTextbox)
+	Else
+		pErrorFlag = True
+		pErrorMessage = pErrorMessage & "* Down Payment must be a non-negative number"
+	End If
 
 End Function
 
@@ -583,7 +604,12 @@ End Function
 ' GetNumberOfMonths property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetNumberOfMonths() As String
-
+	If IsNumeric(RemoveSym(NumberOfMonthsTextbox)) And Val(RemoveSym(NumberOfMonthsTextbox)) >= 0 Then
+		GetNumberOfMonths = RemoveSym(NumberOfMonthsTextbox)
+	Else
+		pErrorFlag = True
+		pErrorMessage = pErrorMessage & "* The number of months must be a non-negative integer"
+	End If
 
 End Function
 
@@ -591,7 +617,33 @@ End Function
 ' GetDollarPerMonth property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetDollarPerMonth() As String
+	If IsNumeric(RemoveSym(DollarPerMonthTextbox)) And Val(RemoveSym(DollarPerMonthTextbox)) >= 0 Then
+		GetDollarPerMonth = RemoveSym(DollarPerMonthTextbox)
+	Else
+		pErrorFlag = True
+		pErrorMessage = pErrorMessage & "* The monthly payment amount must be a non-negative number"
+	End If
 
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' CalcNumberOfMonths property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function CalcNumberOfMonths() As String
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' CalcDollarPerMonth property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function CalcDollarPerMonth() As String
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' CalcFinalPayment property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function CalcFinalPayment() As String
 
 End Function
 
@@ -599,8 +651,7 @@ End Function
 ' GetSession property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetSession() As String
-
-
+	GetSession = SessionComboBox
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -615,8 +666,7 @@ End Function
 ' GetPrefixCode property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetPrefixCode() As String
-
-
+	GetPrefixCode = PrefixCodeComboBox
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
