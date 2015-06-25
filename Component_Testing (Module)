@@ -1,0 +1,11 @@
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Component_Testing (Module)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Option Explicit
+
+Private Sub Compile_ClassModules()
+
+uStudentRegistration.Show
+
+End Sub
