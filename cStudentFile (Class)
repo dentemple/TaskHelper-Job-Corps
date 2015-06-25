@@ -3,9 +3,6 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Option Explicit
-Option Compare Binary
-
-' GENERAL PROPERTIES
 
 ' ERROR PROPERTIES
 Private pErrorFlag As Boolean
@@ -161,10 +158,6 @@ End Function
 Private Sub Class_Terminate()
 	'Empty
 End Sub
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GENERAL PROPERTIES
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ERROR PROPERTIES
