@@ -4,19 +4,46 @@
 
 
 Public Sub InitializeErrorClass(ByRef passException As cException)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 End Sub
 
 
-Public Sub LoadStudentFile(ByRef passStudent As cStudentFile, ByVal passUser As MSForms.Userform)
+Public Sub LoadStudentFile(ByRef passStudent As cStudentFile, ByVal passUser As MSForms.Userform, ByRef passException As cException)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 End Sub
 
 
-Public Sub LoadCommands(ByRef NewCommand As cCommand, ByRef passCommands As Collection, ByVal passTable As ListObject)
+Public Sub LoadCommands(ByRef Command As cCommand, ByRef passCommands As Collection, ByVal passTable As Excel.ListObject, ByRef passException As cException)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' 
+' Expected name of table columns: Action | Item | Row | Col | Len
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+
+Dim Lrow As Excel.ListRow
+
+For Each Lrow In passTable.ListRows
+  Set Command = New Command
+  Command.Action = Trim(passTable.ListColumn("Action").Value)
+  Command.Item = Trim(passTable.ListColumn("Item").Value)
+  Command.Row = Trim(passTable.ListColumn("Row").Value)
+  Command.Col = Trim(passTable.ListColumn("Col").Value)
+  Command.Len = Trim(passTable.ListColumn("Len").Value)
+  passCommands.Add Command
+Next Lrow
 
 End Sub
 
-Public Sub InitializeAS400(ByRef passAS400 As cAS400)
+
+Public Sub InitializeAS400(ByRef passAS400 As cAS400, ByRef passException As cException)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 End Sub
