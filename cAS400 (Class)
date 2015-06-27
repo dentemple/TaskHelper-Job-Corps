@@ -4,8 +4,115 @@
 
 Option Explicit
 
-' Error Properties
+' GENERAL PROPERTIES
+Private pSessionName As String
 
-' Function Properties
+' ERROR Properties
+Private pErrorFlag As Boolean
+Private pErrorMessage As String
 
-' Object Properties
+' READ-ONLY PROPERTIES
+'	Operator 		(Stores the autECLOIA automation object)
+'	Presentation	(Stores the autECLPS automation object)
+
+' OBJECT PROPERTIES
+Private pSession As Object
+Private pMetrics As Object
+Private pConnection As Object
+
+Private Sub Class_Initialize()
+	pErrorFlag = False
+	pErrorMessage = "The AS/400 has encountered the following issues:" & vbNewLine & vbNewLine
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GENERAL PROPERTIES
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' SessionName property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property SessionName(Value As String)
+  Set pSessionName = Value
+End Property
+Public Property Get SessionName As String
+  Set SessionName = pSessionName
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ERROR PROPERTIES
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ErrorFlag property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Get ErrorFlag() As Boolean
+    pErrorFlag = False
+     If Session.Started = False Then
+  		pErrorFlag = True
+		pErrorMessage = pErrorMessage & "* The AS/400 has failed to connect to Session " & SessionName & vbNewLine & vbNewLine
+	End If
+	If Session.CommStarted = False Then
+		pErrorFlag = True
+		pErrorMessage = pErrorMessage & "* The AS/400 has failed to enable communications" & vbNewLine & vbNewLine
+	End If
+	If Session.Ready = False Then 
+		pErrorFlag = True
+		pErrorMessage = pErrorMessage & "* The AS/400 is not in a state of 'Ready'" & vbNewLine & vbNewLine
+	End If
+	ErrorFlag = pErrorFlag
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ErrorMessage property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Get ErrorMessage() As String
+    ErrorMessage = pErrorMessage
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' OBJECT PROPERTIES
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Session property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Set Session(Value As Object)
+  Set pSession = Value
+End Property
+Public Property Get Session As Object
+ 	Set Session = pSession
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Metrics property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Set Metrics(Value As Object)
+  Set pMetrics = Value
+End Property
+Public Property Get Metrics As Object
+  Set Metrics = pMetrics
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Connection property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Set Connection(Value As Object)
+  Set pConnection = Value
+End Property
+Public Property Get Connection As Object
+  Set Connection = pConnection
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Operator property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Get Operator As Object
+  Set Operator = Session.autECLOIA
+ End Property
+ 
+ ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Presentation property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Get Presentation As Object
+  Set Presentation = Session.autECLPS
+ End Property
