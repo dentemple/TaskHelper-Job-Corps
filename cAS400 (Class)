@@ -6,8 +6,10 @@ Option Explicit
 
 ' GENERAL PROPERTIES
 Private pSessionName As String
+Private pMilliseconds As Long
+Private pAutomationType As String
 
-' ERROR Properties
+' ERROR PROPERTIES
 Private pErrorFlag As Boolean
 Private pErrorMessage As String
 
@@ -21,6 +23,7 @@ Private pMetrics As Object
 Private pConnection As Object
 
 Private Sub Class_Initialize()
+	IncrementArraySize = 20
 	pErrorFlag = False
 	pErrorMessage = "The AS/400 has encountered the following issues:" & vbNewLine & vbNewLine
 End Sub
@@ -28,6 +31,16 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GENERAL PROPERTIES
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Milliseconds property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Milliseconds(Value As Long)
+  Set pMilliseconds = Value
+End Property
+Public Property Get Milliseconds As Long
+  Set Milliseconds = pMilliseconds
+End Property
+
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' SessionName property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -37,6 +50,13 @@ End Property
 Public Property Get SessionName As String
   Set SessionName = pSessionName
 End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Automation Type property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+
+
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ERROR PROPERTIES
