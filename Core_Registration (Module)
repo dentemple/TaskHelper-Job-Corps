@@ -23,4 +23,20 @@
 ' All environment-specific commands should be called from the Environment module
 
 
-'
+Private Sub InitializeAS400(ByRef AS400 As cAS400)
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Sets the connections to the AS/400 Host Automation Library. _
+	The procedure assumes the intended AS/400 session has already
+	been stored within the class object. _
+	Success can also be checked by the class object's ErrorFlag property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Set AS400.Session = CreateObject("PCOMM.autECLSession")
+Set AS400.Metrics = CreateObject("PCOMM.autECLWinMetrics")
+Set AS400.Connection = CreateObject("PCOMM.autECLConnList")
+
+AS400.Session.SetConnectionByName (AS400.SessionName)
+AS400.Metrics.SetConnectionByName (AS400.SessionName)
+AS400.Metrics.Refresh
+
