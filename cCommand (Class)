@@ -1,0 +1,108 @@
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' cCommand (Class)
+'Stores the individual commands to be executed by the AS/400. _
+	(Note: The AS/400 only accepts number as Long.) _
+Required Input: _
+	Action | Item | Row | Col | Len
+Recognized Actions: _
+	Home, Set, Send, Check, Get (Stored within the RecognizedActions variable)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Option Explicit
+
+' GENERAL PROPERTIES
+Private pAction As String
+Private pItem As String
+Private pRow As Long
+Private pCol As Long
+Private pLen As Long
+
+' ERROR PROPERTIES
+Private pErrorFlag As Boolean
+Private pErrorMessage As String
+
+' "CONSTANT" PROPERTIES
+'Caution: True constants cannot be declared in a class module. These values are _
+	for internal use only so as to provide the class some additional modularity.
+Private RecognizedActions As String
+
+Private Sub Class_Initialize()
+	RecognizedActions = "home set send check get"
+	pErrorFlag = False
+	pErrorMessage = "The Command List has encountered the following issues:" & vbNewLine & vbNewLine
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GENERAL PROPERTIES
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Action property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Action(Value As String)
+	Set pAction = Value
+End Property
+Public Property Get Action As String
+	If InStr(RecognizedActions, pAction) >= 1 Then
+		Set Action = pAction
+	Else
+		pErrorFlag = True
+		pErrorMessage = pErrorMessage & "* The '" & pAction & "' action is not recognized." & vbNewLine
+	End If
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Item property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Item(Value As String)
+  Set pItem = Value
+End Property
+Public Property Get Item As String
+  Set Item = pItem
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Row property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Row(Value As Long)
+  Set pRow = Value
+End Property
+Public Property Get Row As Long
+  Set Row = pRow
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Col property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Col(Value As Long)
+  Set pCol = Value
+End Property
+Public Property Get Col As Long
+  Set Col = pCol
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Len property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Len(Value As Long)
+  Set pLen = Value
+End Property
+Public Property Get Len As Long
+  Set Len = pLen
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ERROR PROPERTIES
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ErrorFlag property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Get ErrorFlag() As Boolean
+	ErrorFlag = pErrorFlag
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ErrorMessage property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Get ErrorMessage() As String
+    ErrorMessage = pErrorMessage
+End Property
