@@ -1,8 +1,8 @@
-'
-' cErrorClass (Class)
+''''''''''''''''''''
+' cException (Class)
 '
 ' Relies on a call stack approach to help report the location of errors
-'
+''''''''''''''''''''
 
 ' Note: MsgBox "Error: (" & Err.Number & ") " & Err.Description, vbCritical
 
