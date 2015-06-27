@@ -14,9 +14,10 @@
 ' For AS400 Commands, loop through an array
 '	AS400 values should be converted to ULong
 '	Populate array from worksheet (first check for valid commands)
-'   Array: Command | Tag | Row | Column
+'   Array: Action | Item | Row | Column | Length
 '	Commands: 	Input - calls to a case switch
 '				Home - Navigates to Home Screen
+'				Set - SetKeys
 '				Send - SendKeys
 '				Check - GetText, confirm screen
 '				Get - calls to a case switch
@@ -40,3 +41,14 @@ AS400.Session.SetConnectionByName (AS400.SessionName)
 AS400.Metrics.SetConnectionByName (AS400.SessionName)
 AS400.Metrics.Refresh
 
+End Sub
+
+
+Private Sub WaitForReady (ByVal AS400 As cAS400)
+
+AS400.Presentation.Wait 10
+AS400.Operator.WaitForAppAvailable
+AS400.Operator.WaitForInputReady
+AS400.Presentation AS400.Milliseconds
+
+End Sub
