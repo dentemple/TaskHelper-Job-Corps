@@ -161,9 +161,6 @@ End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ERROR PROPERTIES
-'By default, all of userform-based functions are declared as strings. This is _
-	both to standardize the outputs, as well as to provide a safe default _
-	data type for the AS/400 (which can always accept values as strings).
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
