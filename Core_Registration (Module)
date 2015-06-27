@@ -3,25 +3,19 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 'Notes:
-' Main script
-' I: Passes in userform, workbook (ThisWorkbook), and worksheet
 ' Automation 'style': Auto Fast, Auto Slow, Manual, Debug
 '	Auto Fast: Standard script (Wait 10)
 '	Auto Slow: Adds an extra wait command (Wait 100)
 '	Manual: Creates a dialog box before each SendKeys command
 '	Debug: Turns off error handling
-' Classes instantiated within module
 ' For AS400 Commands, loop through an array
-'	AS400 values should be converted to ULong
-'	Populate array from worksheet (first check for valid commands)
-'   Array: Action | Item | Row | Column | Length
+'   Data: Action | Item | Row | Column | Length
 '	Commands: 	Input - calls to a case switch
 '				Home - Navigates to Home Screen
 '				Set - SetKeys
 '				Send - SendKeys
 '				Check - GetText, confirm screen
 '				Get - calls to a case switch
-' All environment-specific commands should be called from the Environment module
 
 
 Private Sub InitializeAS400(ByRef AS400 As cAS400)
@@ -67,7 +61,7 @@ AS400.Presentation AS400.Milliseconds
 End Sub
 
 
-Private Sub RunRegistration(ByVal User As MSForms.Userform, ByVal CommandTable As ListObject)
+Private Sub RunRegistration(ByVal User As MSForms.Userform, ByVal CommandTable As Excel.ListObject)
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Automates course registration within the B2B and Individual College Environment. _
@@ -96,19 +90,53 @@ Dim Commands As Collection
 Set Commands = New Collection
 Dim Command As cCommand
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' General variables
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Dim CommandCount As Integer
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Loads the class objects
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 InitializeErrorClass Exception
-LoadStudentFile Student, User
-LoadCommands Command, Commands, CommandTable
-InitializeAS400 AS400
+LoadStudentFile Student, User, Exception
+LoadCommands Command, Commands, CommandTable, Exception
+CommandCount = Commands.Count
+InitializeAS400 AS400, Exception
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Check for additional error or failures
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Primary Execution
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+For Each Command in Commands
+
+	'Recognized Actions: Home, Set, Send, Check, Get
+	Select Case Command.Action
+
+		Case Is "Home"
+	
+		Case Is "Set"
+	
+		Case Is "Send"
+	
+		Case Is "Check"
+	
+		Case Is "Get"
+	
+		Case Else
+	
+	End Select
+	
+	'Call Wait
+
+Next Command
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Output
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 
 End Sub
