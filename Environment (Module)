@@ -1,3 +1,22 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Environment (Module)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+
+Public Sub InitializeErrorClass(ByRef passException As cException)
+
+End Sub
+
+
+Public Sub LoadStudentFile(ByRef passStudent As cStudentFile, ByVal passUser As MSForms.Userform)
+
+End Sub
+
+
+Public Sub LoadCommands(ByRef NewCommand As cCommand, ByRef passCommands As Collection, ByVal passTable As ListObject)
+
+End Sub
+
+Public Sub InitializeAS400(ByRef passAS400 As cAS400)
+
+End Sub
