@@ -31,8 +31,10 @@ Private Sub InitializeAS400(ByRef AS400 As cAS400)
 	The procedure assumes the intended AS/400 session has already
 	been stored within the class object. _
 	Success can also be checked by the class object's ErrorFlag property
+	
+''Note: The "AS400.[Property] language are call to a custom AS400 class. _
+	This class is simply being used store the required AS/400 objects.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
 Set AS400.Session = CreateObject("PCOMM.autECLSession")
 Set AS400.Metrics = CreateObject("PCOMM.autECLWinMetrics")
 Set AS400.Connection = CreateObject("PCOMM.autECLConnList")
@@ -46,9 +48,67 @@ End Sub
 
 Private Sub WaitForReady (ByVal AS400 As cAS400)
 
-AS400.Presentation.Wait 10
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Prevents the script from overrunning the AS/400. _
+The Wait command accepts milliseconds as Long. _
+The second Wait command passes in the milliseconds determined _
+	by the user's requested automation speed; it assumes
+	the property is correct and valid.
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Dim lng As Long
+lng = 10
+
+AS400.Presentation.Wait lng
 AS400.Operator.WaitForAppAvailable
 AS400.Operator.WaitForInputReady
 AS400.Presentation AS400.Milliseconds
+
+End Sub
+
+
+Private Sub RunRegistration(ByVal User As MSForms.Userform, ByVal CommandTable As ListObject)
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Automates course registration within the B2B and Individual College Environment. _
+Relies on IBM's Host Automation Class Library to control the AS/400 from VBA.
+
+'Accepts the registration userform, as well as the CommandList table from the main worksheet. _
+Calls to external procedures to interpret the environment-specific data. _
+Executes the actions as listed by the interpreted CommandList table. _
+Outputs confirmation messageboxes as needed. _
+Exports the interpreted data to a separate data worksheet. _
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Set the required classes and collections
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Dim Student As cStudentFile
+Set Student = New cStudentFile
+
+Dim AS400 As cAS400
+Set AS400 = New cAS400
+
+Dim Exception As cException
+Set Exception = New cException
+
+Dim Commands As Collection
+Set Commands = New Collection
+Dim Command As cCommand
+
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Loads the class objects
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+InitializeErrorClass Exception
+LoadStudentFile Student, User
+LoadCommands Command, Commands, CommandTable
+InitializeAS400 AS400
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Check for additional error or failures
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+
 
 End Sub
