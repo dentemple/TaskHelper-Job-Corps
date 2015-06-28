@@ -52,6 +52,9 @@ End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Item property
+
+'To improve modularity, the validity of the input is checked _
+	by the enrollment code
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Item(Value As String)
   Set pItem = Value
@@ -64,10 +67,10 @@ End Property
 ' Row property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Row(Value As Long)
-  Set pRow = Value
+    Set pRow = Value
 End Property
 Public Property Get Row As Long
-  Set Row = pRow
+    Set Row = pRow
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
