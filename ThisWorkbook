@@ -7,8 +7,113 @@
 1 - Combine the four separate userforms into a single, master userform _
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
+'"""
+' GetSheetFromCodeName (Function)
+'
+'|wb| = [Workbook] Name of the Workbook. |CodeName| = [String] The worksheet's code/secret name
+'
+'Returns Worksheet As Excel.Worksheet
+
+'Referencing a worksheet's codename instead of the worksheet's regular name (or position)
+'   allows users to change the sheet's name (or position) without breaking the relevant macros.
+'This function allows worksheet codenames to be referenced even across separate workbooks.
+
+'(SOURCE) D Glancy. (2012, Feb 10). Using Worksheet CodeNames in Other Workbooks [Web log].
+'   Retrieved from http://yoursumbuddy.com/using-worksheet-codenames-in-other-workbooks/
+'"""
+Public Function GetSheetFromCodeName(wb As Workbook, CodeName As String) As Excel.Worksheet
+
+Dim wsCN As Excel.Worksheet
+
+If Not Debugger Then On Error Resume Next Else On Error GoTo 0
+
+For Each wsCN In wb.Worksheets
+
+     If wsCN.CodeName = CodeName Then
+         Set GetSheetFromCodeName = wsCN
+         Exit For
+     End If
+Next wsCN
+
+End Function
+
+'"""
+' NavigateSheets (Sub)
+'
+' |strStartSheetCodename| = [String] Name of worksheet to navigate from.
+' |strEndSheetCodename| = [String] Name of worksheet to naviage to.
+'
+'This sub streamlines the user experience by showing only one worksheet at a time.  When the user clicks the
+'   commandbutton to move to the next sheet, the previous one closes.
+'
+'Instead of referencing the sheets' public name, this sub references the sheets' codename.
+'"""
+Public Sub NavigateSheets(strStartSheetCodename As String, strEndSheetCodename As String)
+
+Dim wsStart As Excel.Worksheet  'Stores starting worksheet
+Dim wsEnd As Excel.Worksheet    'Stores ending worksheet
+
+If Not Debugger Then On Error Resume Next Else On Error GoTo 0
+
+'Calls the GetSheetFromCodeName function
+Set wsStart = GetSheetFromCodeName(Workbooks("TaskHelper VBA iSeries.xlsm"), strStartSheetCodename)
+Set wsEnd = GetSheetFromCodeName(Workbooks("TaskHelper VBA iSeries.xlsm"), strEndSheetCodename)
+
+wsEnd.Visible = xlSheetVisible
+wsEnd.Activate
+
+wsStart.Visible = xlSheetHidden
+
+End Sub
 
 
+'"""
+' ChangeLocks (Sub)
+'
+'Accepts an array of userform textboxes.  Locks or unlocks as needed.
+'
+'The color variables are dimensioned as variant so as to allow for different
+'   formatting options.
+'"""
+Public Sub ChangeLocks(PassArray() As Object, passBoolean As Boolean)
+
+Dim oppositeBoolean As Boolean
+Dim i As Integer
+Dim var_Selected_Color As Variant
+Dim var_Opposite_Color As Variant
+
+oppositeBoolean = Not passBoolean
+
+'Determines color selection based on passed bool value
+If passBoolean = True Then
+    var_Selected_Color = cWhite
+    var_Opposite_Color = cGrey
+Else:
+    var_Selected_Color = cGrey
+    var_Opposite_Color = cWhite
+End If
+
+For i = LBound(PassArray) To UBound(PassArray)
+
+    If i < 2 Then
+    
+        'Unlocks if passed bool is true; locks if false
+        PassArray(i).Locked = oppositeBoolean
+        PassArray(i).BackColor = var_Selected_Color
+        'PassArray(i) = vbNullString    'Necessary? [...]
+    
+    Else:
+
+        'Locks if passed bool is true; unlocks if false
+        PassArray(i).Locked = passBoolean
+        PassArray(i).BackColor = var_Opposite_Color
+        'PassArray(i) = vbNullString    'Necessary? [...]
+
+    End If
+
+Next i
+
+End Sub
 
 Sub HomepageButton_Click()
 
