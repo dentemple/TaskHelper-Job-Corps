@@ -3,7 +3,6 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Option Explicit
-Option Compare Binary
 
 Private Sub UserForm_Initialize()
 
@@ -167,7 +166,7 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Manages locks and unlocks based on the user's requirements.
+' Manages the locks and unlocks based on the user's requirements.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 
@@ -176,7 +175,6 @@ End Sub
 ' Restricts the fields to positive whole numbers using _
     a keypress event.  Calls a public subroutine.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
 
 Private Sub Salesperson_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
 
@@ -311,392 +309,390 @@ End Sub
 
 Private Sub Salesperson_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Account Info: Enter your 4-digit salesperson code."
+Help_Textbox = "Account Info: Enter your 4-digit salesperson code."
     
 End Sub
 
 Private Sub StudentID_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Account Info: Enter the returning student's 8-Digit Student ID#."
+Help_Textbox = "Account Info: Enter the returning student's 8-Digit Student ID#."
     
 End Sub
 
 Private Sub Areacode_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Student Info: Enter the prospect's 3-digit area code."
+Help_Textbox = "Student Info: Enter the prospect's 3-digit area code."
     
 End Sub
 
 Private Sub Phonenumber_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Student Info: Enter the prospect's 7-digit phone number."
+Help_Textbox = "Student Info: Enter the prospect's 7-digit phone number."
     
 End Sub
 
 Private Sub Email_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Student Info: Enter the prospect's email address."
+Help_Textbox = "Student Info: Enter the prospect's email address."
     
 End Sub
 
 Private Sub AddressLine1_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Address Line 1: Enter the first line of the prospect's street address."
+Help_Textbox = "Address Line 1: Enter the first line of the prospect's street address."
     
 End Sub
 
 Private Sub AddressLine2_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Address Line 2: Enter the second line of the prospect's street address. (Optional)"
+Help_Textbox = "Address Line 2: Enter the second line of the prospect's street address. (Optional)"
     
 End Sub
 
 Private Sub AddressLine3_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Address Line 3: Enter the third line of the prospect's street address. (Optional)"
+Help_Textbox = "Address Line 3: Enter the third line of the prospect's street address. (Optional)"
     
 End Sub
 
 Private Sub AddressLine4_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Address Line 4: Enter the fourth line of the prospect's street address. (Optional)"
+Help_Textbox = "Address Line 4: Enter the fourth line of the prospect's street address. (Optional)"
     
 End Sub
 
 Private Sub City_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Student Info: Enter the prospect's city."
+Help_Textbox = "Student Info: Enter the prospect's city."
     
 End Sub
 
 Private Sub StateAbbrev_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Student Info: Enter the prospect's two-letter state abbreviation."
+Help_Textbox = "Student Info: Enter the prospect's two-letter state abbreviation."
     
 End Sub
 
 Private Sub Zipcode_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Student Info: Enter the prospect's 5-digit zip code."
+Help_Textbox = "Student Info: Enter the prospect's 5-digit zip code."
     
 End Sub
 
 Private Sub Firstname_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Student Name: Enter the student's first name."
+Help_Textbox = "Student Name: Enter the student's first name."
     
 End Sub
 
 Private Sub Lastname_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Student Name: Enter the student's last name."
+Help_Textbox = "Student Name: Enter the student's last name."
     
 End Sub
 
 Private Sub Middlename_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Student Name: Enter the student's middle name/initial."
+Help_Textbox = "Student Name: Enter the student's middle name/initial."
     
 End Sub
 
 Private Sub ProgramNumber_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Enrollment: Enter the full program's 8-digit mod number."
+Help_Textbox = "Enrollment: Enter the full program's 8-digit mod number."
     
 End Sub
 
 Private Sub ProgramTuition_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Enrollment: Enter the full program's base tuition."
+Help_Textbox = "Enrollment: Enter the full program's base tuition."
     
 End Sub
 
 Private Sub ClassMod1_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Mod 1: Enter the class mod for the first individual college course enrollment."
+Help_Textbox = "Mod 1: Enter the class mod for the first individual college course enrollment."
     
 End Sub
 
 Private Sub ClassMod2_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Mod 2: Enter the class mod for the second individual college course enrollment."
+Help_Textbox = "Mod 2: Enter the class mod for the second individual college course enrollment."
     
 End Sub
 
 Private Sub ClassMod3_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Mod 3: Enter the class mod for the third individual college course enrollment."
+Help_Textbox = "Mod 3: Enter the class mod for the third individual college course enrollment."
     
 End Sub
 
 Private Sub ClassMod4_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Mod 4: Enter the class mod for the fourth individual college course enrollment."
+Help_Textbox = "Mod 4: Enter the class mod for the fourth individual college course enrollment."
     
 End Sub
 
 Private Sub ClassMod5_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Mod 5: Enter the class mod for the fifth individual college course enrollment."
+Help_Textbox = "Mod 5: Enter the class mod for the fifth individual college course enrollment."
     
 End Sub
 
 Private Sub ClassMod6_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Mod 6: Enter the class mod for the sixth individual college course enrollment."
+Help_Textbox = "Mod 6: Enter the class mod for the sixth individual college course enrollment."
     
 End Sub
 
 Private Sub ClassMod7_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Mod 7: Enter the class mod for the seventh individual college course enrollment."
+Help_Textbox = "Mod 7: Enter the class mod for the seventh individual college course enrollment."
     
 End Sub
 
 Private Sub ClassTuition1_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Mod 1: Enter the base tuition for the first individual college course enrollment."
+Help_Textbox = "Mod 1: Enter the base tuition for the first individual college course enrollment."
     
 End Sub
 
 Private Sub ClassTuition2_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Mod 2: Enter the base tuition for the second individual college course enrollment."
+Help_Textbox = "Mod 2: Enter the base tuition for the second individual college course enrollment."
     
 End Sub
 
 Private Sub ClassTuition3_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Mod 3: Enter the base tuition for the third individual college course enrollment."
+Help_Textbox = "Mod 3: Enter the base tuition for the third individual college course enrollment."
     
 End Sub
 
 Private Sub ClassTuition4_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Mod 4: Enter the base tuition for the fourth individual college course enrollment."
+Help_Textbox = "Mod 4: Enter the base tuition for the fourth individual college course enrollment."
     
 End Sub
 
 Private Sub ClassTuition5_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Mod 5: Enter the base tuition for the fifth individual college course enrollment."
+Help_Textbox = "Mod 5: Enter the base tuition for the fifth individual college course enrollment."
     
 End Sub
 
 Private Sub ClassTuition6_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Mod 6: Enter the base tuition for the sixth individual college course enrollment."
+Help_Textbox = "Mod 6: Enter the base tuition for the sixth individual college course enrollment."
     
 End Sub
 
 Private Sub ClassTuition7_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Mod 7: Enter the base tuition for the seventh individual college course enrollment."
+Help_Textbox = "Mod 7: Enter the base tuition for the seventh individual college course enrollment."
     
 End Sub
 
 Private Sub ParentInvoice_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Payment Info: If the parent option is selected, this is the tuition to be billed to the parent account.  This number must be greater than or equal to zero."
+Help_Textbox = "Payment Info: If the parent option is selected, this is the tuition to be billed to the parent account.  This number must be greater than or equal to zero."
     
 End Sub
 
 Private Sub StudentTuition_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Payment Info: Enter the student's out-of-pocket tuition amount.  This number must be greater than or equal to zero."
+Help_Textbox = "Payment Info: Enter the student's out-of-pocket tuition amount.  This number must be greater than or equal to zero."
     
 End Sub
 
 Private Sub StudentFees_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Payment Info: Enter the student's total out-of-pocket fees.  This number must be greater than or equal to zero."
+Help_Textbox = "Payment Info: Enter the student's total out-of-pocket fees.  This number must be greater than or equal to zero."
     
 End Sub
 
 Private Sub StudentInvoice_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Payment Info: The total amount to be billed to the student.  This number must be greater than or equal to zero."
+Help_Textbox = "Payment Info: The total amount to be billed to the student.  This number must be greater than or equal to zero."
     
 End Sub
 
 Private Sub EnterDownPay_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Payment Info: Enter the student's down payment amount. This number must be greater than or equal to zero."
+Help_Textbox = "Payment Info: Enter the student's down payment amount. This number must be greater than or equal to zero."
     
 End Sub
 
 Private Sub ShowDownPay_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Payment Info: Confirm the student's down payment amount."
+Help_Textbox = "Payment Info: Confirm the student's down payment amount."
     
 End Sub
 
 Private Sub EnterNumOfMonths_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Payment Info: Determine the student's payment plan based on a specific number of months."
+Help_Textbox = "Payment Info: Determine the student's payment plan based on a specific number of months."
     
 End Sub
 
 Private Sub ShowNumOfMonths_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Payment Info: Confirm the monthly payment plan (number of months, not counting the down pay or the final pay."
+Help_Textbox = "Payment Info: Confirm the monthly payment plan (number of months, not counting the down pay or the final pay."
     
 End Sub
 
 Private Sub EnterDollarPerMonth_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Payment Info: Determine the student's payment plan based on a specific dollar amount per month."
+Help_Textbox = "Payment Info: Determine the student's payment plan based on a specific dollar amount per month."
     
 End Sub
 
 Private Sub ShowDollarPerMonth_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Payment Info: Confirm the monthly payment plan (dollars per month)."
+Help_Textbox = "Payment Info: Confirm the monthly payment plan (dollars per month)."
     
 End Sub
 
 Private Sub ShowFinalPayment_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Payment Info: The student's approximated final payment."
+Help_Textbox = "Payment Info: The student's approximated final payment."
     
 End Sub
 
 Private Sub Help_Textbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Help Text: Provides additional information."
+Help_Textbox = "Help Text: Provides additional information."
     
 End Sub
 
 Private Sub Session_ComboBox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Account Info: Please select the AS/400 session to perform the enrollment in.  This session must be active."
+Help_Textbox = "Account Info: Please select the AS/400 session to perform the enrollment in.  This session must be active."
     
 End Sub
 
 Private Sub ParentNumber_ComboBox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Parent Info: Enter the parent's 6-digit LC#, or select it from the list."
+Help_Textbox = "Parent Info: Enter the parent's 6-digit LC#, or select it from the list."
     
 End Sub
 
 Private Sub PrefixCode_ComboBox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Parent Info: Enter the B2B Prefix code, or select it from the list."
+Help_Textbox = "Parent Info: Enter the B2B Prefix code, or select it from the list."
     
 End Sub
 
 Private Sub ProofHS_Checkbox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Student Info: Check this box if the student has provided Proof of HS completion."
+Help_Textbox = "Student Info: Check this box if the student has provided Proof of HS completion."
     
 End Sub
 
 Private Sub NoParent_Optionselect_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Parent Status: This account will NOT be associated with a parent agency."
+Help_Textbox = "Parent Status: This account will NOT be associated with a parent agency."
     
 End Sub
 
 Private Sub WithParent_Optionselect_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Parent Status: This account will be enrolled under a parent agency."
+Help_Textbox = "Parent Status: This account will be enrolled under a parent agency."
     
 End Sub
 
 Private Sub NewStudent_Optionselect_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Student Status: This will be a brand new student.  Creates a new SID#."
+Help_Textbox = "Student Status: This will be a brand new student.  Creates a new SID#."
     
 End Sub
 
 Private Sub ReturnStudent_Optionselect_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Student Status: This is a returning (previously enrolled) student.  Uses a previous SID#."
+Help_Textbox = "Student Status: This is a returning (previously enrolled) student.  Uses a previous SID#."
     
 End Sub
 
 Private Sub IndividualCredits_Optionselect_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Enrollment: The student is enrolling into individual college credits."
+Help_Textbox = "Enrollment: The student is enrolling into individual college credits."
     
 End Sub
 
 Private Sub CareerProgram_Optionselect_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Enrollment: The student is enrolling into a full career program."
+Help_Textbox = "Enrollment: The student is enrolling into a full career program."
     
 End Sub
 
 Private Sub CollegeSemester_Optionselect_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Enrollment: The student is enrolling into a college semester."
+Help_Textbox = "Enrollment: The student is enrolling into a college semester."
     
 End Sub
 
 Private Sub CalcByDollarPerMonth_Optionselect_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Payment Plan: Determine the payment plan by the monthly payment amount."
+Help_Textbox = "Payment Plan: Determine the payment plan by the monthly payment amount."
     
 End Sub
 
 Private Sub CalcByNumOfMonths_Optionselect_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Payment Plan: Determine the payment plan by the total amount of monthly payments (does not include the down pay or final pay)."
+Help_Textbox = "Payment Plan: Determine the payment plan by the total amount of monthly payments (does not include the down pay or final pay)."
     
 End Sub
 
 Private Sub PayInFull_Optionselect_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Payment Plan: The student or parent is paying in full."
+Help_Textbox = "Payment Plan: The student or parent is paying in full."
     
 End Sub
 
 Private Sub NoCost_Optionselect_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Payment Plan: Enroll the student without charging additional tuition/fees."
+Help_Textbox = "Payment Plan: Enroll the student without charging additional tuition/fees."
     
 End Sub
 
 Private Sub Test_Button_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Button: Checks the payment calculation for possible errors, then shows the results. This action is also performed by the enrollment script."
+Help_Textbox = "Button: Checks the payment calculation for possible errors, then shows the results. This action is also performed by the enrollment script."
     
 End Sub
 
 Private Sub ClearCalculation_Button_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "Button: Clears the calculation values.  Note: The enrollment script will still automatically perform the payment calculations."
+Help_Textbox = "Button: Clears the calculation values.  Note: The enrollment script will still automatically perform the payment calculations."
     
 End Sub
 
 Private Sub Launch_Button_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "STRING"
+Help_Textbox = "STRING"
     
 End Sub
 
 Private Sub Confirm_Button_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "STRING"
+Help_Textbox = "STRING"
     
 End Sub
 
 Private Sub ClearUserform_Button_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "STRING"
+Help_Textbox = "STRING"
     
 End Sub
 
 Private Sub Cancel_Button_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "STRING"
+Help_Textbox = "STRING"
     
 End Sub
 
-Automation_ComboBox
-
 Private Sub Automation_ComboBox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
 
-Show_HelpText Help_Textbox, "[AUTO FAST] Less than 1 sec/screen || [AUTO SLOW] 1 sec/screen || [MANUAL] Stops every screen || [DEBUG] - No controls or error handling"
+Help_Textbox = "[AUTO FAST] Less than 1 sec/screen || [AUTO SLOW] 1 sec/screen || [MANUAL] Stops every screen || [DEBUG] - No controls or error handling"
     
 End Sub
