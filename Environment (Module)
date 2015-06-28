@@ -32,42 +32,60 @@ End Sub
 Public Sub LoadStudentFile(ByRef passStudent As cStudentFile, ByVal passUser As MSForms.Userform, ByRef passException As cException)
 
 passStudent.Userform = passUser
-passStudent.FirstNameTextbox
-passStudent.MiddleNameTextbox
-passStudent.LastNameTextbox
-passStudent.SalespersonTextbox
-passStudent.StudentIDTextbox
-passStudent.AreaCodeTextbox
-passStudent.PhoneNumberTextbox
-passStudent.EmailTextbox
-passStudent.AddressLine1Textbox
-passStudent.AddressLine2Textbox
-passStudent.AddressLine3Textbox
-passStudent.AddressLine4Textbox
-passStudent.CityTextbox
-passStudent.StateTextbox
-passStudent.ZipCodeTextbox
-passStudent.ProgramNumberTextbox
-passStudent.ProgramTuitionTextbox
-passStudent.ClassMod1Textbox
-passStudent.ClassMod2Textbox
-passStudent.ClassMod3Textbox
-passStudent.ClassMod4Textbox
-passStudent.ClassMod5Textbox
-passStudent.ClassMod6Textbox
-passStudent.
-passStudent.
-passStudent.
-passStudent.
-passStudent.
-passStudent.
-passStudent.
-passStudent.
-passStudent.
-passStudent.
-passStudent.
-passStudent.
-passStudent.
+passStudent.FirstNameTextbox = passUser.Firstname_Textbox
+passStudent.MiddleNameTextbox = passUser.Middlename_Textbox
+passStudent.LastNameTextbox = passUser.Lastname_Textbox
+passStudent.SalespersonTextbox = passUser.Salesperson_Textbox
+passStudent.StudentIDTextbox = passUser.StudentID_Textbox
+passStudent.AreaCodeTextbox = passUser.Areacode_Textbox
+passStudent.PhoneNumberTextbox = passUser.Phonenumber_Textbox
+passStudent.EmailTextbox = passUser.Email_Textbox
+passStudent.AddressLine1Textbox = passUser.AddressLine1_Textbox
+passStudent.AddressLine2Textbox = passUser.AddressLine2_Textbox
+passStudent.AddressLine3Textbox = passUser.AddressLine3_Textbox
+passStudent.AddressLine4Textbox = passUser.AddressLine4_Textbox
+passStudent.CityTextbox = passUser.City_Textbox
+passStudent.StateTextbox = passUser.StateAbbrev_Textbox
+passStudent.ZipCodeTextbox = passUser.Zipcode_Textbox
+passStudent.ProgramNumberTextbox = passUser.ProgramNumber_Textbox
+passStudent.ProgramTuitionTextbox = passUser.ProgramTuition_Textbox
+passStudent.ClassMod1Textbox = passUser.ClassMod1_Textbox
+passStudent.ClassMod2Textbox = passUser.ClassMod2_Textbox
+passStudent.ClassMod3Textbox = passUser.ClassMod3_Textbox
+passStudent.ClassMod4Textbox = passUser.ClassMod4_Textbox
+passStudent.ClassMod5Textbox = passUser.ClassMod5_Textbox
+passStudent.ClassMod6Textbox = passUser.ClassMod6_Textbox
+passStudent.ClassMod7Textbox = passUser.ClassMod7_Textbox
+passStudent.ClassTuition1Textbox = passUser.ClassTuition1_Textbox
+passStudent.ClassTuition2Textbox = passUser.ClassTuition2_Textbox
+passStudent.ClassTuition3Textbox = passUser.ClassTuition3_Textbox
+passStudent.ClassTuition4Textbox = passUser.ClassTuition4_Textbox
+passStudent.ClassTuition5Textbox = passUser.ClassTuition5_Textbox
+passStudent.ClassTuition6Textbox = passUser.ClassTuition6_Textbox
+passStudent.ClassTuition7Textbox = passUser.ClassTuition7_Textbox
+passStudent.ParentInvoiceTextbox = passUser.ParentInvoice_Textbox
+passStudent.StudentTuitionTextbox = passUser.StudentTuition_Textbox
+passStudent.StudentFeesTextbox = passUser.StudentFees_Textbox
+passStudent.StudentInvoiceTextbox = passUser.StudentInvoice_Textbox
+passStudent.DownPayTextbox = passUser.EnterDownPay_Textbox
+passStudent.NumberOfMonthsTextbox = passUser.EnterNumOfMonths_Textbox
+passStudent.DollarPerMonthTextbox = passUser.EnterDollarPerMonth_Textbox
+passStudent.SessionComboBox = passUser.Session_ComboBox
+passStudent.ParentNumberComboBox = passUser.ParentNumber_ComboBox
+passStudent.PrefixCodeComboBox = passUser.PrefixCode_ComboBox
+passStudent.AutomationComboBox = passUser.Automation_ComboBox
+passStudent.ProofHSCheckbox = passUser.ProofHS_Checkbox
+passStudent.ParentStatusOptionButton = passUser.
+passStudent.StudentStatusOptionButton = passUser.
+passStudent.MaleOptionButton = passUser.
+passStudent.FemaleOptionButton = passUser.
+passStudent.CalcByDollarPerMonthOptionButton = passUser.
+passStudent.IndividualCreditsOptionButton = passUser.
+passStudent.CareerProgramOptionButton = passUser.
+passStudent.CollegeSemesterOptionButton = passUser.
+passStudent.CalcByNumOfMonthsOptionButton = passUser.
+passStudent.PayInFullOptionButton = passUser.
+passStudent.NoCostOptionButton = passUser.
 
 
 End Sub
