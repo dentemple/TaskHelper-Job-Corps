@@ -75,6 +75,7 @@ Set Exception = New cException
 
 Dim Commands As Collection
 Set Commands = New Collection
+
 Dim Command As cCommand
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -83,7 +84,7 @@ Dim Command As cCommand
 Dim CommandCount As Integer
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Loads the class objects
+' Loads the collection and class objects
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 LoadErrorClass Exception
 LoadStudentFile Student, User, Exception
@@ -94,6 +95,12 @@ LoadAS400 AS400, Exception
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Check for additional error or failures
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Final Checks/Confirmation
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+If FinalEnrollmentChecks(Student, AS400, Exception) = False Then
+End If
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Primary Execution
