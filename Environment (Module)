@@ -2,29 +2,42 @@
 ' Environment (Module)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
+Option Explicit
 
-Public Sub InitializeErrorClass(ByRef passException As cException)
+'Sets Debug Mode
+Public Const Debugger As Boolean = True
+
+'Sets color constants. The Variant type is used so as to accommodate different formats,
+Public Const cGrey As Variant = &H80000000
+Public Const cWhite As Variant = &H80000005
+
+
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' LoadErrorClass (Sub)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub LoadErrorClass(ByRef passException As cException)
+
 End Sub
 
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' LoadStudentFile (Sub)
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub LoadStudentFile(ByRef passStudent As cStudentFile, ByVal passUser As MSForms.Userform, ByRef passException As cException)
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 End Sub
 
-
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' LoadCommands (Sub)
+'Expected name of table columns: Action | Item | Row | Col | Len
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub LoadCommands(ByRef Command As cCommand, ByRef passCommands As Collection, ByVal passTable As Excel.ListObject, ByRef passException As cException)
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' 
-' Expected name of table columns: Action | Item | Row | Col | Len
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
 
 Dim Lrow As Excel.ListRow
 
@@ -40,10 +53,11 @@ Next Lrow
 
 End Sub
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' LoadAS400 (Sub)
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub LoadAS400(ByRef passAS400 As cAS400, ByRef passException As cException)
 
-Public Sub InitializeAS400(ByRef passAS400 As cAS400, ByRef passException As cException)
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 End Sub
