@@ -2,33 +2,19 @@
 ' # Core_Registration (Module)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-'Notes:
-' Automation 'style': Auto Fast, Auto Slow, Manual, Debug
-'	Auto Fast: Standard script (Wait 10)
-'	Auto Slow: Adds an extra wait command (Wait 100)
-'	Manual: Creates a dialog box before each SendKeys command
-'	Debug: Turns off error handling
-' For AS400 Commands, loop through an array
-'   Data: Action | Item | Row | Column | Length
-'	Commands: 	Input - calls to a case switch
-'				Home - Navigates to Home Screen
-'				Set - SetKeys
-'				Send - SendKeys
-'				Check - GetText, confirm screen
-'				Get - calls to a case switch
-
-
-Private Sub InitializeAS400(ByRef AS400 As cAS400)
-
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Sets the connections to the AS/400 Host Automation Library. _
+' InitializeAS400 (Sub)
+'
+'Sets the connections to the AS/400 Host Automation Library. _
 	The procedure assumes the intended AS/400 session has already
 	been stored within the class object. _
 	Success can also be checked by the class object's ErrorFlag property
-	
-''Note: The "AS400.[Property] language are call to a custom AS400 class. _
+'
+'Note: The "AS400.[Property] language are call to a custom AS400 class. _
 	This class is simply being used store the required AS/400 objects.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub InitializeAS400(ByRef AS400 As cAS400)
+
 Set AS400.Session = CreateObject("PCOMM.autECLSession")
 Set AS400.Metrics = CreateObject("PCOMM.autECLWinMetrics")
 Set AS400.Connection = CreateObject("PCOMM.autECLConnList")
@@ -39,16 +25,16 @@ AS400.Metrics.Refresh
 
 End Sub
 
-
-Private Sub WaitForReady (ByVal AS400 As cAS400)
-
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' WaitForReady (Sub)
+'
 ' Prevents the script from overrunning the AS/400. _
 The Wait command accepts milliseconds as Long. _
 The second Wait command passes in the milliseconds determined _
 	by the user's requested automation speed; it assumes
 	the property is correct and valid.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub WaitForReady (ByVal AS400 As cAS400)
 
 Dim lng As Long
 lng = 10
@@ -61,9 +47,9 @@ AS400.Presentation AS400.Milliseconds
 End Sub
 
 
-Private Sub RunRegistration(ByVal User As MSForms.Userform, ByVal CommandTable As Excel.ListObject)
-
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' RunRegistration (Sub)
+'
 ' Automates course registration within the B2B and Individual College Environment. _
 Relies on IBM's Host Automation Class Library to control the AS/400 from VBA.
 
@@ -73,6 +59,7 @@ Executes the actions as listed by the interpreted CommandList table. _
 Outputs confirmation messageboxes as needed. _
 Exports the interpreted data to a separate data worksheet. _
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub RunRegistration(ByVal User As MSForms.Userform, ByVal CommandTable As Excel.ListObject)
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Set the required classes and collections
@@ -98,11 +85,11 @@ Dim CommandCount As Integer
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Loads the class objects
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-InitializeErrorClass Exception
+LoadErrorClass Exception
 LoadStudentFile Student, User, Exception
 LoadCommands Command, Commands, CommandTable, Exception
 CommandCount = Commands.Count
-InitializeAS400 AS400, Exception
+LoadAS400 AS400, Exception
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Check for additional error or failures
