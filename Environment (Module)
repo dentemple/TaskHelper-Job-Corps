@@ -31,6 +31,45 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub LoadStudentFile(ByRef passStudent As cStudentFile, ByVal passUser As MSForms.Userform, ByRef passException As cException)
 
+passStudent.Userform = passUser
+passStudent.FirstNameTextbox
+passStudent.MiddleNameTextbox
+passStudent.LastNameTextbox
+passStudent.SalespersonTextbox
+passStudent.StudentIDTextbox
+passStudent.AreaCodeTextbox
+passStudent.PhoneNumberTextbox
+passStudent.EmailTextbox
+passStudent.AddressLine1Textbox
+passStudent.AddressLine2Textbox
+passStudent.AddressLine3Textbox
+passStudent.AddressLine4Textbox
+passStudent.CityTextbox
+passStudent.StateTextbox
+passStudent.ZipCodeTextbox
+passStudent.ProgramNumberTextbox
+passStudent.ProgramTuitionTextbox
+passStudent.ClassMod1Textbox
+passStudent.ClassMod2Textbox
+passStudent.ClassMod3Textbox
+passStudent.ClassMod4Textbox
+passStudent.ClassMod5Textbox
+passStudent.ClassMod6Textbox
+passStudent.
+passStudent.
+passStudent.
+passStudent.
+passStudent.
+passStudent.
+passStudent.
+passStudent.
+passStudent.
+passStudent.
+passStudent.
+passStudent.
+passStudent.
+
+
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -61,3 +100,11 @@ Public Sub LoadAS400(ByRef passAS400 As cAS400, ByRef passException As cExceptio
 
 
 End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' FinalEnrollmentChecks (Function)
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function FinalEnrollmentChecks(ByVal passStudent As cStudentFile, ByVal passAS400 As cAS400, ByVal passException As cException) As Boolean
+
+End Function
