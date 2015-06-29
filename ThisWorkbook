@@ -7,7 +7,7 @@
 1 - Combine the four separate userforms into a single, master userform _
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetSheetFromCodeName (Function)
 '
 '|wb| = [Workbook] Name of the Workbook. |CodeName| = [String] The worksheet's code/secret name
@@ -20,7 +20,7 @@
 
 '(SOURCE) D Glancy. (2012, Feb 10). Using Worksheet CodeNames in Other Workbooks [Web log].
 '   Retrieved from http://yoursumbuddy.com/using-worksheet-codenames-in-other-workbooks/
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetSheetFromCodeName(wb As Workbook, CodeName As String) As Excel.Worksheet
 
 Dim wsCN As Excel.Worksheet
@@ -37,7 +37,7 @@ Next wsCN
 
 End Function
 
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' NavigateSheets (Sub)
 '
 ' |strStartSheetCodename| = [String] Name of worksheet to navigate from.
@@ -47,7 +47,7 @@ End Function
 '   commandbutton to move to the next sheet, the previous one closes.
 '
 'Instead of referencing the sheets' public name, this sub references the sheets' codename.
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub NavigateSheets(strStartSheetCodename As String, strEndSheetCodename As String)
 
 Dim wsStart As Excel.Worksheet  'Stores starting worksheet
@@ -67,14 +67,14 @@ wsStart.Visible = xlSheetHidden
 End Sub
 
 
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ChangeLocks (Sub)
 '
 'Accepts an array of userform textboxes.  Locks or unlocks as needed.
 '
 'The color variables are dimensioned as variant so as to allow for different
 '   formatting options.
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub ChangeLocks(PassArray() As Object, passBoolean As Boolean)
 
 Dim oppositeBoolean As Boolean
@@ -115,19 +115,48 @@ Next i
 
 End Sub
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' PassCourseTextboxes
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub PassCourseTextboxes(ByRef passArr() As Object, ByVal passForm As MSForms.UserForm)
+Set passArr(0) = passForm.ProgramNumber_Textbox
+Set passArr(1) = passForm.ProgramTuition_Textbox
+Set passArr(2) = passForm.ClassMod1_Textbox
+Set passArr(3) = passForm.ClassMod2_Textbox
+Set passArr(4) = passForm.ClassMod3_Textbox
+Set passArr(5) = passForm.ClassMod4_Textbox
+Set passArr(6) = passForm.ClassMod5_Textbox
+Set passArr(7) = passForm.ClassMod6_Textbox
+Set passArr(8) = passForm.ClassMod7_Textbox
+Set passArr(9) = passForm.ClassTuition1_Textbox
+Set passArr(10) = passForm.ClassTuition2_Textbox
+Set passArr(11) = passForm.ClassTuition3_Textbox
+Set passArr(12) = passForm.ClassTuition4_Textbox
+Set passArr(13) = passForm.ClassTuition5_Textbox
+Set passArr(14) = passForm.ClassTuition6_Textbox
+Set passArr(15) = passForm.ClassTuition7_Textbox
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' PassStudentTextboxes
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub PassStudentTextboxes(ByRef passArr() As Object, ByVal passForm As MSForms.UserForm)
+
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Sub HomepageButton_Click()
 
 WelcomeForm.Show
 
 End Sub
 
-
-
-Sub HomeToData_Click()
-
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'Navigates from the Homepage to the Statistics sheet. Hides the former, shows the latter.
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Sub HomeToData_Click()
 
 Application.ScreenUpdating = False
 
@@ -137,13 +166,10 @@ Application.ScreenUpdating = True
 
 End Sub
 
-
-
-Sub HomeToEnroll_Click()
-
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'Navigates from the Homepage to the Registration sheet. Hides the former, shows the latter.
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Sub HomeToEnroll_Click()
 
 Application.ScreenUpdating = False
 
@@ -153,13 +179,10 @@ Application.ScreenUpdating = True
 
 End Sub
 
-
-
-Sub EnrollToHome_Click()
-
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'Navigates from the Registration sheet to the Homepage. Hides the former, shows the latter.
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Sub EnrollToHome_Click()
 
 Application.ScreenUpdating = False
 
@@ -169,13 +192,10 @@ Application.ScreenUpdating = True
 
 End Sub
 
-
-
-Sub EnrollToData_Click()
-
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'Navigates from the Registration sheet to the Statistics sheet. Hides the former, shows the latter.
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Sub EnrollToData_Click()
 
 Application.ScreenUpdating = False
 
@@ -186,12 +206,10 @@ Application.ScreenUpdating = True
 End Sub
 
 
-
-Sub DataToEnroll_Click()
-
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'Navigates from the Statistics sheet to the Registration sheet. Hides the former, shows the latter.
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Sub DataToEnroll_Click()
 
 Application.ScreenUpdating = False
 
@@ -202,12 +220,10 @@ Application.ScreenUpdating = True
 End Sub
 
 
-
-Sub DataToHome_Click()
-
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'Navigates from the Statistics sheet to the Homepage. Hides the former, shows the latter.
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Sub DataToHome_Click()
 
 Application.ScreenUpdating = False
 
@@ -218,59 +234,51 @@ Application.ScreenUpdating = True
 End Sub
 
 
-
-Sub NewStudentNoParent_Click()
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'Shows the userform selected by the user
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Sub NewStudentNoParent_Click()
 
 New_Student_No_Parent.Show
 
 End Sub
 
 
-
-Sub ReturnStudentNoParent_Click()
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'Shows the userform selected by the user
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Sub ReturnStudentNoParent_Click()
 
 Return_Student_No_Parent.Show
 
 End Sub
 
 
-
-Sub NewStudentWithParent_Click()
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'Shows the userform selected by the user
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Sub NewStudentWithParent_Click()
 
 New_Student_With_Parent.Show
 
 End Sub
 
-
-
-Sub ReturnStudentWithParent_Click()
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'Shows the userform selected by the user
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Sub ReturnStudentWithParent_Click()
 
 Return_Student_With_Parent.Show
 
 End Sub
 
-
-
-Sub ActivityButton_Click()
-
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'User selects whether they wish to have the enrollment process _
 in the foreground or the background.
 
 'This choice will later be passed into the relevant variable.
-'"""
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Sub ActivityButton_Click()
 
 Dim str As String
 Dim ws As Excel.Worksheet
