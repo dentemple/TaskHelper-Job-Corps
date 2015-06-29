@@ -4,6 +4,9 @@
 
 Option Explicit
 
+' GENERAL PROPERTIES
+Private pStudentID As String
+
 ' ERROR PROPERTIES
 Private pErrorFlag As Boolean
 Private pErrorMessage As String
@@ -75,7 +78,6 @@ Private StandardLength As Integer
 '	GetEnrollmentType As String
 '	GetPaymentType As String
 
-
 ' OBJECT PROPERTIES
 'Userform
 Private pUserform As MSForms.UserForm
@@ -138,6 +140,10 @@ Private pCalcByNumOfMonthsOptionButton As MSForms.OptionButton
 Private pPayInFullOptionButton As MSForms.OptionButton
 Private pNoCostOptionButton As MSForms.OptionButton
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' LOCAL PROCEDURES
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
 Private Sub Class_Initialize()
 	pErrorFlag = False
 	pErrorMessage = "The Student File has encountered the following issues:" & vbNewLine & vbNewLine
@@ -160,9 +166,21 @@ Private Sub Class_Terminate()
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GENERAL PROPERTIES
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' StudentID property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property StudentID(Value As String)
+    pStudentID = Value
+End Property
+Public Property StudentID() As String
+    StudentID = pStudentID
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ERROR PROPERTIES
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ErrorFlag property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -695,24 +713,47 @@ End Function
 ' GetGender property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetGender() As String
-
-
+    If Male_Optionselect.Value = True Then
+        GetGender = "M"
+    ElseIf Female_Optionselect.Value = True Then
+        GetGender = "F"
+    Else
+        GetGender = "U"
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetEnrollmentType property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetEnrollmentType() As String
-
-
+    If IndividualCredits_Optionselect.Value = True Then
+        GetEnrollmentType = "Credits"
+    ElseIf CareerProgram_Optionselect.Value = True Then
+        GetEnrollmentType = "Career"
+    ElseIf CollegeSemester_Optionselect.Value = True Then
+        GetEnrollmentType = "Semester"
+    Else
+        pErrorFlag = True
+		pErrorMessage = pErrorMessage & "* Please select an enrollment type"
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetPaymentType property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetPaymentType() As String
-
-
+    If CalcByDollarPerMonthOptionButton.Value = True Then
+        GetPaymentType = "PayByDollars"
+    ElseIf CalcByNumOfMonthsOptionButton = True Then
+        GetPaymentType = "PayByNumber"
+    ElseIf PayInFullOptionButton = True Then
+        GetPaymentType = "PayInFull"
+    ElseIf NoCostOptionButton = True Then
+        GetPaymentType = "NoCost"
+    Else
+        pErrorFlag = True
+		pErrorMessage = pErrorMessage & "* Please select a payment type"
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
