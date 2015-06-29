@@ -4,8 +4,35 @@
 
 Option Explicit
 
-Private Sub Compile_ClassModules()
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' TestAS400
+'
+' This script simply attempts to connect to the AS/400's _
+    Host Access Class Library.  Activate with [F5]
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub TestAS400()
 
-uStudentRegistration.Show
+On Error GoTo TestFailure
+Dim objAS400 As Object
+Set objAS400 = CreateObject("PCOMM.autECLSession")
+MsgBox "Success :D"
+
+Set objAS400 = Nothing
+Exit Sub
+TestFailure: MsgBox Err.Description
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ConfirmStudentFile
+'
+' Tests the cStudentFile Class Module
+'
+' Set an object on the uStudentRegistration userform to call _
+    this subroutine. _
+  Required Input: The userform object
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub TestStudentFile(user As MSForms.UserForm)
+
+LoadStudentFile Student, User, Exception
 
 End Sub
