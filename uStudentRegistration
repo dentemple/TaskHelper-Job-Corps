@@ -176,7 +176,49 @@ Dim arr(15) As Object
 'Assigns textboxes to the array
 PassCourseTextboxes arr, uStudentRegistration
 
-If CareerProgram_Optionselect = True Then ChangeLocks(arr, True)
+If CareerProgram_Optionselect = True Then 
+    ChangeProgramLocks(arr, True)
+End If
+
+End Sub
+
+Private Sub CollegeSemester_Optionselect_Click()
+
+'Stores the selected textboxes
+Dim arr(15) As Object
+
+'Assigns textboxes to the array
+PassCourseTextboxes arr, uStudentRegistration
+
+If CollegeSemester_Optionselect = True Then
+    ChangeProgramLocks(arr, True)
+End If
+
+End Sub
+
+Private Sub IndividualCredits_Optionselect_Click()
+
+'Stores the selected textboxes
+Dim arr(15) As Object
+
+'Assigns textboxes to the array
+PassProgramTextboxes arr, uStudentRegistration
+
+If IndividualCredits_Optionselect = True Then
+    ChangeProgramLocks(arr, Fasle)
+End If
+
+Private Sub ReturnStudent_Optionselect_Click()
+
+'Stores the selected textboxes
+Dim arr(10) As Object
+
+'Assigns textboxes to the array
+PassStudentTextboxes arr, uStudentRegistration
+
+If ReturnStudent_Optionselect = True Then
+    Change
+End If
 
 End Sub
 
