@@ -168,8 +168,17 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Manages the locks and unlocks based on the user's requirements.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub CareerProgram_Optionselect_Click()
 
+'Stores the selected textboxes
+Dim arr(15) As Object
 
+'Assigns textboxes to the array
+PassCourseTextboxes arr, uStudentRegistration
+
+If CareerProgram_Optionselect = True Then ChangeLocks(arr, True)
+
+End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Restricts the fields to positive whole numbers using _
