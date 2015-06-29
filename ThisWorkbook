@@ -68,14 +68,14 @@ End Sub
 
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' ChangeLocks (Sub)
+' ChangeProgramLocks (Sub)
 '
 'Accepts an array of userform textboxes.  Locks or unlocks as needed.
 '
 'The color variables are dimensioned as variant so as to allow for different
 '   formatting options.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub ChangeLocks(PassArray() As Object, passBoolean As Boolean)
+Public Sub ChangeProgramLocks(PassArray() As Object, passBoolean As Boolean)
 
 Dim oppositeBoolean As Boolean
 Dim i As Integer
@@ -116,9 +116,9 @@ Next i
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' PassCourseTextboxes
+' PassProgramTextboxes
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub PassCourseTextboxes(ByRef passArr() As Object, ByVal passForm As MSForms.UserForm)
+Public Sub PassProgramTextboxes(ByRef passArr() As Object, ByVal passForm As MSForms.UserForm)
 Set passArr(0) = passForm.ProgramNumber_Textbox
 Set passArr(1) = passForm.ProgramTuition_Textbox
 Set passArr(2) = passForm.ClassMod1_Textbox
@@ -141,7 +141,17 @@ End Sub
 ' PassStudentTextboxes
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub PassStudentTextboxes(ByRef passArr() As Object, ByVal passForm As MSForms.UserForm)
-
+Set passArr(0) = passForm.StudentID_Textbox
+Set passArr(1) = passForm.Areacode_Textbox
+Set passArr(2) = passForm.Phonenumber_Textbox
+Set passArr(3) = passForm.Email_Textbox
+Set passArr(4) = passForm.AddressLine1_Textbox
+Set passArr(5) = passForm.AddressLine2_Textbox
+Set passArr(6) = passForm.AddressLine3_Textbox
+Set passArr(7) = passForm.AddressLine4_Textbox
+Set passArr(8) = passForm.City_Textbox
+Set passArr(9) = passForm.StateAbbrev_Textbox
+Set passArr(10) = passForm.Zipcode_Textbox
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
