@@ -26,6 +26,10 @@ Private pErrorMessage As String
 	for internal use only so as to provide the class some additional modularity.
 Private RecognizedActions As String
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' LOCAL PROCEDURES
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
 Private Sub Class_Initialize()
 	RecognizedActions = "home set send check get"
 	pErrorFlag = False
