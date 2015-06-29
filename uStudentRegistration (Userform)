@@ -7,7 +7,7 @@ Option Explicit
 Private Sub UserForm_Initialize()
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Initialization event.
+' Initialization event
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 ' Empties the textboxes.
@@ -55,8 +55,8 @@ ShowDollarPerMonth_Textbox = vbNullString
 ShowFinalPayment_Textbox = vbNullString
 Help_Textbox = vbNullString
 
-' Certain textboxes are defaulted to Read-Only (respective to the user). _
-    This section locks and greys those fields (using a color constant).
+' Certain textboxes are defaulted to Read-Only (respective to the user); _
+    this section locks and greys those fields (using a color constant).
 With StudentID_Textbox
     .Locked = True
     .BackColor = cGrey
@@ -90,7 +90,7 @@ With Help_Textbox
     .BackColor = cGrey
 End With
 
-' Populates the selection boxes.
+' Populates the selection boxes
 With Automation_ComboBox
     .Clear
     .AddItem "--"
@@ -120,16 +120,16 @@ With PrefixCode_ComboBox
     .Text = PrefixCode_ComboBox.List(0)
 End With
 
-' Unchecks the checkbox.
+' Unchecks the checkbox
 ProofHS_Checkbox.Value = False
 
-' Sets the initial focus.
+' Sets the initial focus
 Firstname_Textbox.SetFocus
 
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Command Buttons / Actions to be called and performed.
+' Command Buttons / Actions to be called and performed
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Private Sub Launch_Button_Click()
@@ -175,7 +175,7 @@ Dim arr(15) As Object
 'Assigns textboxes to the array
 PassProgramTextboxes arr, uStudentRegistration
 
-If CareerProgram_Optionselect = True Then 
+If CareerProgram_Optionselect = True Then
     ChangeLocks arr, True, 2
 End If
 
@@ -232,7 +232,7 @@ Dim arr(10) As Object
 PassStudentTextboxes arr, uStudentRegistration
 
 If NewStudent_Optionselect = True Then
-    ChangeLocks arr, False, 1 
+    ChangeLocks arr, False, 1
 End If
 
 End Sub
@@ -243,13 +243,13 @@ Private Sub CalcByNumOfMonths_Optionselect_Click()
 EnterDollarPerMonth_Textbox.Value = vbNullString
 ShowDollarPerMonth_Textbox.Value = vbNullString
 'To be unlocked
-EnterDownPay_Textbox.Locked = False 
+EnterDownPay_Textbox.Locked = False
 EnterDownPay_Textbox.BackColor = cWhite
 'To be unlocked
 EnterNumOfMonths_Textbox.Locked = False
 EnterNumOfMonths_Textbox.BackColor = cWhite
 'To be locked
-EnterDollarPerMonth_Textbox.Locked = True 
+EnterDollarPerMonth_Textbox.Locked = True
 EnterDollarPerMonth_Textbox.BackColor = cGrey
 
 End Sub
