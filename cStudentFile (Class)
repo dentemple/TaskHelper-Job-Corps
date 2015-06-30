@@ -4,7 +4,7 @@
 ' Note: Unlike a true OOP language, VBA lacks class inheritance.  As a result, _
     cStudentFile is a frankensteined mish-mash of properties that really should be _
     split among several, similarly-themed custom objects, but, for the sake of _
-    modularity, have been combined.  Sorry.
+    modularity, have been combined.  My apologies.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Option Explicit
@@ -21,119 +21,124 @@ Private pModCheckMessage As String
 
 ' "CONSTANT" PROPERTIES
 'Caution: Real constants cannot be declared in a class module. These values are _
-	for internal use only so as to provide the class some additional modularity.
+    for internal use only so as to provide the class some additional modularity.
 Private MaxCharactersName As Integer
 Private StandardLength As Integer
 
 ' FUNCTION PROPERTIES
 'By default, most of userform-based functions are declared as strings. This is _
-	both to standardize the outputs, as well as to provide a safe default _
-	data type for the AS/400 (which only accepts SetText/SendKeys as strings). _
-	The exception are boolean values (which normally refer to values that _
-	aren't directly input into the AS/400.
+    both to standardize the outputs, as well as to provide a safe default _
+    data type for the AS/400 (which only accepts SetText/SendKeys as strings). _
+    The exception are boolean values (which normally refer to values that _
+    aren't directly input into the AS/400.
 
-'	GetFirstName As String
-'	GetMiddleName As String
-'	GetLastname As String
-'	GetMailingName As String
-'	GetAlphaName As String
-'	GetSalesperson As String
-'	GetStudentID As String
-'	GetAreaCode As String
-'	GetPhoneNumber As String
-'	GetEmail As String
-'	GetAddressLine1 As String
-'	GetAddressLine2 As String
-'	GetAddressLine3 As String
-'	GetAddressLine4 As String
-'	GetCity As String
-'	GetState As String
-'	GetZipCode As String
-'	GetProgramNumber As String
-'	GetProgramTuition As String
-'	GetClassMod1 As String
-'	GetClassMod2 As String
-'	GetClassMod3 As String
-'	GetClassMod4 As String
-'	GetClassMod5 As String
-'	GetClassMod6 As String
-'	GetClassMod7 As String
-'	GetClassTuition1 As String
-'	GetClassTuition2 As String
-'	GetClassTuition3 As String
-'	GetClassTuition4 As String
-'	GetClassTuition5 As String
-'	GetClassTuition6 As String
-'	GetClassTuition7 As String
-'	GetParentInvoice As String
-'	GetStudentTuition As String
-'	GetStudentFees As String
-'	GetStudentInvoice As String
-'	GetDownPay As String
-'	GetNumberOfMonths As String
-'	GetDollarPerMonth As String
-'	CalcNumberOfMonths As String
-'	CalcDollarPerMonth As String
-'	GetSession As String
-'	GetParentNumber As String
-'	GetPrefixCode As String
-'	GetAutomation As String
-'	GetProofHS As String
-'	GetParentStatus As Boolean
-'	GetStudentStatus As Boolean
-'	GetGender As String
-'	GetEnrollmentType As String
-'	GetPaymentType As String
+'(Userform-to-Object) _
+The following is a list of glue functions used to interpret the information taken _
+    from the cStudentRegistration userform intended for the registration script
+    
+'   GetFirstName As String
+'   GetMiddleName As String
+'   GetLastname As String
+'   GetMailingName As String
+'   GetAlphaName As String
+'   GetSalesperson As String
+'   GetStudentID As String
+'   GetAreaCode As String
+'   GetPhoneNumber As String
+'   GetEmail As String
+'   GetAddressLine1 As String
+'   GetAddressLine2 As String
+'   GetAddressLine3 As String
+'   GetAddressLine4 As String
+'   GetCity As String
+'   GetState As String
+'   GetZipCode As String
+'   GetProgramNumber As String
+'   GetProgramTuition As String
+'   GetClassMod1 As String
+'   GetClassMod2 As String
+'   GetClassMod3 As String
+'   GetClassMod4 As String
+'   GetClassMod5 As String
+'   GetClassMod6 As String
+'   GetClassMod7 As String
+'   GetClassTuition1 As String
+'   GetClassTuition2 As String
+'   GetClassTuition3 As String
+'   GetClassTuition4 As String
+'   GetClassTuition5 As String
+'   GetClassTuition6 As String
+'   GetClassTuition7 As String
+'   GetParentInvoice As String
+'   GetStudentTuition As String
+'   GetStudentFees As String
+'   GetStudentInvoice As String
+'   GetDownPay As String
+'   GetNumberOfMonths As String
+'   GetDollarPerMonth As String
+'   CalcNumberOfMonths As String
+'   CalcDollarPerMonth As String
+'   GetSession As String
+'   GetParentNumber As String
+'   GetPrefixCode As String
+'   GetAutomation As String
+'   GetProofHS As String
+'   GetParentStatus As Boolean
+'   GetStudentStatus As Boolean
+'   GetGender As String
+'   GetEnrollmentType As String
+'   GetPaymentType As String
 
 ' OBJECT PROPERTIES
+'Stores the cStudentFile objects
 'Userform
 Private pUserform As MSForms.UserForm
 'Textboxes
-Private pFirstNameTextbox As MSForms.Textbox
-Private pMiddleNameTextbox As MSForms.Textbox
-Private pLastNameTextbox As MSForms.Textbox
-Private pSalespersonTextbox As MSForms.Textbox
-Private pStudentIDTextbox As MSForms.Textbox
-Private pAreaCodeTextbox As MSForms.Textbox
-Private pPhoneNumberTextbox As MSForms.Textbox
-Private pEmailTextbox As MSForms.Textbox
-Private pAddressLine1Textbox As MSForms.Textbox
-Private pAddressLine2Textbox As MSForms.Textbox
-Private pAddressLine3Textbox As MSForms.Textbox
-Private pAddressLine4Textbox As MSForms.Textbox
-Private pCityTextbox As MSForms.Textbox
-Private pStateTextbox As MSForms.Textbox
-Private pZipCodeTextbox As MSForms.Textbox
-Private pProgramNumberTextbox As MSForms.Textbox
-Private pProgramTuitionTextbox As MSForms.Textbox
-Private pClassMod1Textbox As MSForms.Textbox
-Private pClassMod2Textbox As MSForms.Textbox
-Private pClassMod3Textbox As MSForms.Textbox
-Private pClassMod4Textbox As MSForms.Textbox
-Private pClassMod5Textbox As MSForms.Textbox
-Private pClassMod6Textbox As MSForms.Textbox
-Private pClassMod7Textbox As MSForms.Textbox
-Private pClassTuition1Textbox As MSForms.Textbox
-Private pClassTuition2Textbox As MSForms.Textbox
-Private pClassTuition3Textbox As MSForms.Textbox
-Private pClassTuition4Textbox As MSForms.Textbox
-Private pClassTuition5Textbox As MSForms.Textbox
-Private pClassTuition6Textbox As MSForms.Textbox
-Private pClassTuition7Textbox As MSForms.Textbox
-Private pParentInvoiceTextbox As MSForms.Textbox
-Private pStudentTuitionTextbox As MSForms.Textbox
-Private pStudentFeesTextbox As MSForms.Textbox
-Private pStudentInvoiceTextbox As MSForms.Textbox
-Private pDownPayTextbox As MSForms.Textbox
-Private pNumberOfMonthsTextbox As MSForms.Textbox
-Private pDollarPerMonthTextbox As MSForms.Textbox
+Private pFirstNameTextbox As MSForms.TextBox
+Private pMiddleNameTextbox As MSForms.TextBox
+Private pLastNameTextbox As MSForms.TextBox
+Private pSalespersonTextbox As MSForms.TextBox
+Private pStudentIDTextbox As MSForms.TextBox
+Private pAreaCodeTextbox As MSForms.TextBox
+Private pPhoneNumberTextbox As MSForms.TextBox
+Private pEmailTextbox As MSForms.TextBox
+Private pAddressLine1Textbox As MSForms.TextBox
+Private pAddressLine2Textbox As MSForms.TextBox
+Private pAddressLine3Textbox As MSForms.TextBox
+Private pAddressLine4Textbox As MSForms.TextBox
+Private pCityTextbox As MSForms.TextBox
+Private pStateTextbox As MSForms.TextBox
+Private pZipCodeTextbox As MSForms.TextBox
+Private pProgramNumberTextbox As MSForms.TextBox
+Private pProgramTuitionTextbox As MSForms.TextBox
+Private pClassMod1Textbox As MSForms.TextBox
+Private pClassMod2Textbox As MSForms.TextBox
+Private pClassMod3Textbox As MSForms.TextBox
+Private pClassMod4Textbox As MSForms.TextBox
+Private pClassMod5Textbox As MSForms.TextBox
+Private pClassMod6Textbox As MSForms.TextBox
+Private pClassMod7Textbox As MSForms.TextBox
+Private pClassTuition1Textbox As MSForms.TextBox
+Private pClassTuition2Textbox As MSForms.TextBox
+Private pClassTuition3Textbox As MSForms.TextBox
+Private pClassTuition4Textbox As MSForms.TextBox
+Private pClassTuition5Textbox As MSForms.TextBox
+Private pClassTuition6Textbox As MSForms.TextBox
+Private pClassTuition7Textbox As MSForms.TextBox
+Private pParentInvoiceTextbox As MSForms.TextBox
+Private pStudentTuitionTextbox As MSForms.TextBox
+Private pStudentFeesTextbox As MSForms.TextBox
+Private pStudentInvoiceTextbox As MSForms.TextBox
+Private pDownPayTextbox As MSForms.TextBox
+Private pNumberOfMonthsTextbox As MSForms.TextBox
+Private pDollarPerMonthTextbox As MSForms.TextBox
 'ComboBoxes
-Private pSessionComboBox As MSForms.Combobox
-Private pParentNumberComboBox As MSForms.Combobox
-Private pPrefixCodeComboBox As MSForms.Combobox
-Private pAutomationComboBox As MSForms.Combobox
+Private pSessionComboBox As MSForms.ComboBox
+Private pParentNumberComboBox As MSForms.ComboBox
+Private pPrefixCodeComboBox As MSForms.ComboBox
+Private pAutomationComboBox As MSForms.ComboBox
 'Checkboxes
-Private pProofHSCheckbox As MSForms.Checkbox
+Private pProofHSCheckbox As MSForms.CheckBox
 'Option Buttons
 Private pParentStatusOptionButton As MSForms.OptionButton
 Private pStudentStatusOptionButton As MSForms.OptionButton
@@ -152,24 +157,24 @@ Private pNoCostOptionButton As MSForms.OptionButton
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Private Sub Class_Initialize()
-	pErrorFlag = False
-	pErrorMessage = "The Student File has encountered the following issues:" & vbNewLine & vbNewLine
-	pModCheckFlag = False
-	pModCheckMessage = "The following class mods are less than 8 characters; please confirm before proceeding:" & vbNewLine & vbNewLine
-	MaxCharactersName = 38
-	StandardLength = 8
+    pErrorFlag = False
+    pErrorMessage = "The Student File has encountered the following issues:" & vbNewLine & vbNewLine
+    pModCheckFlag = False
+    pModCheckMessage = "The following class mods are less than 8 characters; please confirm before proceeding:" & vbNewLine & vbNewLine
+    MaxCharactersName = 38
+    StandardLength = 8
 End Sub
 
 Private Function RemoveSym(ByVal passTextbox As String) As String
-	'Removes the currency symbol from the textbox output. The textboxes have event handlers _
-		that prevent entering non-numbers; however, copy/paste can bypass this restriction.
-	Dim str As String
-	str = passTextbox
-	RemoveSym = Trim(Replace(str, "$", " "))
+    'Removes the currency symbol from the textbox output. The textboxes have event handlers _
+        that prevent entering non-numbers; however, copy/paste can bypass this restriction.
+    Dim str As String
+    str = passTextbox
+    RemoveSym = Trim(Replace(str, "$", " "))
 End Function
 
 Private Sub Class_Terminate()
-	'Empty
+    'Empty
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -178,10 +183,10 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' StudentID property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property StudentID(Value As String)
+Public Property Let StudentID(Value As String)
     pStudentID = Value
 End Property
-Public Property StudentID() As String
+Public Property Get StudentID() As String
     StudentID = pStudentID
 End Property
 
@@ -218,21 +223,21 @@ End Property
 ' ModCheckFlag property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Get ModCheckFlag() As Boolean
-	ModCheckFlag = pModCheckFlag
+    ModCheckFlag = pModCheckFlag
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ModCheckMessage property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Get ModCheckMessage() As String
-	ModCheckMessage = pModCheckMessage
+    ModCheckMessage = pModCheckMessage
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' FUNCTION PROPERTIES
 'By default, all of userform-based functions are declared as strings. This is _
-	both to standardize the outputs, as well as to provide a safe default _
-	data type for the AS/400 (which can always accept values as strings).
+    both to standardize the outputs, as well as to provide a safe default _
+    data type for the AS/400 (which can always accept values as strings).
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -261,9 +266,9 @@ End Function
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetMailingName() As String
     If Len(Trim(GetMiddleName)) > 0 Then
-    	GetMailingName = GetFirstName & Space(1) & GetMiddleName & Space(1) & GetLastname
+        GetMailingName = GetFirstName & Space(1) & GetMiddleName & Space(1) & GetLastname
     Else
-    	GetMailingName = GetFirstName & Space(1) & GetLastname
+        GetMailingName = GetFirstName & Space(1) & GetLastname
     End If
 End Function
 
@@ -271,324 +276,324 @@ End Function
 ' GetAlphaName property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetAlphaName() As String
-	Dim str As String
-	If Len(Trim(GetMiddleName)) > 0 Then
-		str = GetLastname & Space(1) & GetFirstName & Space(1) & GetMiddleName
-	Else
-		str = GetLastname & Space(1) & GetFirstName
-	End If
-	If Len(str) < MaxCharactersName Then
-		GetAlphaName = str
-	Else
-	    GetAlphaName = vbNullString
-		pErrorFlag = True
-		pErrorMessage = pErrorMessage & "* The student's combined Alpha Name must be less than 38 characters" & vbNewLine & vbTab & vbTab & str & vbNewLine
-	End If
+    Dim str As String
+    If Len(Trim(GetMiddleName)) > 0 Then
+        str = GetLastname & Space(1) & GetFirstName & Space(1) & GetMiddleName
+    Else
+        str = GetLastname & Space(1) & GetFirstName
+    End If
+    If Len(str) < MaxCharactersName Then
+        GetAlphaName = str
+    Else
+        GetAlphaName = vbNullString
+        pErrorFlag = True
+        pErrorMessage = pErrorMessage & "* The student's combined Alpha Name must be less than 38 characters" & vbNewLine & vbTab & vbTab & str & vbNewLine
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetSalesperson property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetSalesperson() As String
-	If IsNumeric(SalespersonTextbox) And Len(Trim(SalespersonTextbox)) = 4 Then
-		GetSalesperson = SalespersonTextbox
-	Else
-	    GetSalesperson = vbNullString
-		pErrorFlag = True
-		pErrorMessage = pErrorMessage & "* The salesperson code must be numeric and 4 digits long" & vbNewLine
-	End If
+    If IsNumeric(SalespersonTextbox) And Len(Trim(SalespersonTextbox)) = 4 Then
+        GetSalesperson = SalespersonTextbox
+    Else
+        GetSalesperson = vbNullString
+        pErrorFlag = True
+        pErrorMessage = pErrorMessage & "* The salesperson code must be numeric and 4 digits long" & vbNewLine
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetStudentID property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetStudentID() As String
-	If IsNumeric(StudentIDTextbox) And Len(Trim(StudentIDTextbox)) = StandardLength Then
-		GetStudentID = StudentIDTextbox
-	Else
-	    GetStudentID = vbNullString
-		pErrorFlag = True
-		pErrorMessage = pErrorMessage & "* The Student ID# must be numeric and 8 digits long" & vbNewLine
-	End If
+    If IsNumeric(StudentIDTextbox) And Len(Trim(StudentIDTextbox)) = StandardLength Then
+        GetStudentID = StudentIDTextbox
+    Else
+        GetStudentID = vbNullString
+        pErrorFlag = True
+        pErrorMessage = pErrorMessage & "* The Student ID# must be numeric and 8 digits long" & vbNewLine
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetAreaCode property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetAreaCode() As String
-	If IsNumeric(AreaCodeTextbox) Then
-		GetAreaCode = Trim(AreaCodeTextbox)
-	Else
-		GetAreaCode = vbNullString
-	End If
+    If IsNumeric(AreaCodeTextbox) Then
+        GetAreaCode = Trim(AreaCodeTextbox)
+    Else
+        GetAreaCode = vbNullString
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetPhoneNumber property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetPhoneNumber() As String
-	GetPhoneNumber = Trim(PhoneNumberTextbox)
+    GetPhoneNumber = Trim(PhoneNumberTextbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetEmail property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetEmail() As String
-	GetEmail = Trim(EmailTextbox)
+    GetEmail = Trim(EmailTextbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetAddressLine1 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetAddressLine1() As String
-	GetAddressLine1 = Trim(AddressLine1Textbox)
+    GetAddressLine1 = Trim(AddressLine1Textbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetAddressLine2 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetAddressLine2() As String
-	GetAddressLine2 = Trim(AddressLine2Textbox)
+    GetAddressLine2 = Trim(AddressLine2Textbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetAddressLine3 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetAddressLine3() As String
-	GetAddressLine3 = Trim(AddressLine3Textbox)
+    GetAddressLine3 = Trim(AddressLine3Textbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetAddressLine4 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetAddressLine4() As String
-	GetAddressLine4 = Trim(AddressLine4Textbox)
+    GetAddressLine4 = Trim(AddressLine4Textbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetCity property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetCity() As String
-	GetCity = Trim(CityTextbox)
+    GetCity = Trim(CityTextbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetState property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetState() As String
-	GetState = Trim(StateTextbox)
+    GetState = Trim(StateTextbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetZipCode property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetZipCode() As String
-	If IsNumeric(ZipCodeTextbox) Then
-		GetZipCode = Trim(ZipCodeTextbox)
-	Else
-		GetZipcode = vbNullString
-	End If
+    If IsNumeric(ZipCodeTextbox) Then
+        GetZipCode = Trim(ZipCodeTextbox)
+    Else
+        GetZipCode = vbNullString
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetProgramNumber property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetProgramNumber() As String
-	If IsNumeric(ProgramNumberTextbox) And Len(Trim(ProgramNumberTextbox)) = StandardLength Then
-		GetProgramNumber = ProgramNumberTextbox
-	Else
-	    GetProgramNumber = vbNullString
-		pErrorFlag = True
-		pErrorMessage = pErrorMessage & "* The Program Number must be numeric and 8 digits long" & vbNewLine
-	End If
+    If IsNumeric(ProgramNumberTextbox) And Len(Trim(ProgramNumberTextbox)) = StandardLength Then
+        GetProgramNumber = ProgramNumberTextbox
+    Else
+        GetProgramNumber = vbNullString
+        pErrorFlag = True
+        pErrorMessage = pErrorMessage & "* The Program Number must be numeric and 8 digits long" & vbNewLine
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetProgramTuition property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetProgramTuition() As String
-	If IsNumeric(RemoveSym(ProgramTuitionTextbox)) And Val(RemoveSym(ProgramTuitionTextbox)) >= 0 Then
-		GetProgramTuition = RemoveSym(ProgramTuitionTextbox)
-	Else
-	    GetProgramTuition = vbNullString
-		pErrorFlag = True
-		pErrorMessage = pErrorMessage & "* The Program Tuition must be a non-negative number"
-	End If
+    If IsNumeric(RemoveSym(ProgramTuitionTextbox)) And Val(RemoveSym(ProgramTuitionTextbox)) >= 0 Then
+        GetProgramTuition = RemoveSym(ProgramTuitionTextbox)
+    Else
+        GetProgramTuition = vbNullString
+        pErrorFlag = True
+        pErrorMessage = pErrorMessage & "* The Program Tuition must be a non-negative number"
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassMod1 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassMod1() As String
-	GetClassMod1 = Trim(ClassMod1Textbox)
-	If Len(GetClassMod1) >= 1 And Len(ClassMod1Textbox) < StandardLength Then
-	    GetClassMod1 = vbNullString
-		pModCheckFlag = True
-		pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod1Textbox) & vbNewLine
-	End If
+    GetClassMod1 = Trim(ClassMod1Textbox)
+    If Len(GetClassMod1) >= 1 And Len(ClassMod1Textbox) < StandardLength Then
+        GetClassMod1 = vbNullString
+        pModCheckFlag = True
+        pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod1Textbox) & vbNewLine
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassMod2 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassMod2() As String
-	GetClassMod2 = Trim(ClassMod2Textbox)
-	If Len(GetClassMod2) >= 1 And Len(ClassMod2Textbox) < StandardLength Then
-	    GetClassMod2 = vbNullString
-		pModCheckFlag = True
-		pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod2Textbox) & vbNewLine
-	End If
+    GetClassMod2 = Trim(ClassMod2Textbox)
+    If Len(GetClassMod2) >= 1 And Len(ClassMod2Textbox) < StandardLength Then
+        GetClassMod2 = vbNullString
+        pModCheckFlag = True
+        pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod2Textbox) & vbNewLine
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassMod3 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassMod3() As String
-	GetClassMod3 = Trim(ClassMod3Textbox)
-	If Len(GetClassMod3) >= 1 And Len(ClassMod3Textbox) < StandardLength Then
-	    GetClassMod3 = vbNullString
-		pModCheckFlag = True
-		pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod3Textbox) & vbNewLine
-	End If
+    GetClassMod3 = Trim(ClassMod3Textbox)
+    If Len(GetClassMod3) >= 1 And Len(ClassMod3Textbox) < StandardLength Then
+        GetClassMod3 = vbNullString
+        pModCheckFlag = True
+        pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod3Textbox) & vbNewLine
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassMod4 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassMod4() As String
-	GetClassMod4 = Trim(ClassMod4Textbox)
-	If Len(GetClassMod4) >= 1 And Len(ClassMod4Textbox) < StandardLength Then
-	    GetClassMod4 = vbNullString
-		pModCheckFlag = True
-		pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod4Textbox) & vbNewLine
-	End If
+    GetClassMod4 = Trim(ClassMod4Textbox)
+    If Len(GetClassMod4) >= 1 And Len(ClassMod4Textbox) < StandardLength Then
+        GetClassMod4 = vbNullString
+        pModCheckFlag = True
+        pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod4Textbox) & vbNewLine
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassMod5 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassMod5() As String
-	GetClassMod5 = Trim(ClassMod5Textbox)
-	If Len(GetClassMod5) >= 1 And Len(ClassMod5Textbox) < StandardLength Then
-	    GetClassMod5 = vbNullString
-		pModCheckFlag = True
-		pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod5Textbox) & vbNewLine
-	End If
+    GetClassMod5 = Trim(ClassMod5Textbox)
+    If Len(GetClassMod5) >= 1 And Len(ClassMod5Textbox) < StandardLength Then
+        GetClassMod5 = vbNullString
+        pModCheckFlag = True
+        pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod5Textbox) & vbNewLine
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassMod6 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassMod6() As String
-	GetClassMod6 = Trim(ClassMod6Textbox)
-	If Len(GetClassMod6) >= 1 And Len(ClassMod6Textbox) < StandardLength Then
-	    GetClassMod6 = vbNullString
-		pModCheckFlag = True
-		pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod6Textbox) & vbNewLine
-	End If
+    GetClassMod6 = Trim(ClassMod6Textbox)
+    If Len(GetClassMod6) >= 1 And Len(ClassMod6Textbox) < StandardLength Then
+        GetClassMod6 = vbNullString
+        pModCheckFlag = True
+        pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod6Textbox) & vbNewLine
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassMod7 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassMod7() As String
-	GetClassMod7 = Trim(ClassMod7Textbox)
-	If Len(GetClassMod7) >= 1 And Len(ClassMod7Textbox) < StandardLength Then
-	    GetClassMod7 = vbNullString
-		pModCheckFlag = True
-		pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod7Textbox) & vbNewLine
-	End If
+    GetClassMod7 = Trim(ClassMod7Textbox)
+    If Len(GetClassMod7) >= 1 And Len(ClassMod7Textbox) < StandardLength Then
+        GetClassMod7 = vbNullString
+        pModCheckFlag = True
+        pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod7Textbox) & vbNewLine
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassTuition1 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition1() As String
-	If IsNumeric(RemoveSym(ClassTuition1Textbox)) And Val(RemoveSym(ClassTuition1Textbox)) >= 0 Then
-		GetClassTuition1 = RemoveSym(ClassTuition1Textbox)
-	Else
-	    GetClassTuition1 = vbNullString
-		pErrorFlag = True
-		pErrorMessage = pErrorMessage & "* Class Tuition for Mod1 must be a non-negative number"
-	End If
+    If IsNumeric(RemoveSym(ClassTuition1Textbox)) And Val(RemoveSym(ClassTuition1Textbox)) >= 0 Then
+        GetClassTuition1 = RemoveSym(ClassTuition1Textbox)
+    Else
+        GetClassTuition1 = vbNullString
+        pErrorFlag = True
+        pErrorMessage = pErrorMessage & "* Class Tuition for Mod1 must be a non-negative number"
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassTuition2 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition2() As String
-	If IsNumeric(RemoveSym(ClassTuition2Textbox)) And Val(RemoveSym(ClassTuition2Textbox)) >= 0 Then
-		GetClassTuition2 = RemoveSym(ClassTuition2Textbox)
-	Else
-	    GetClassTuition2 = vbNullString
-		pErrorFlag = True
-		pErrorMessage = pErrorMessage & "* Class Tuition for Mod2 must be a non-negative number"
-	End If
+    If IsNumeric(RemoveSym(ClassTuition2Textbox)) And Val(RemoveSym(ClassTuition2Textbox)) >= 0 Then
+        GetClassTuition2 = RemoveSym(ClassTuition2Textbox)
+    Else
+        GetClassTuition2 = vbNullString
+        pErrorFlag = True
+        pErrorMessage = pErrorMessage & "* Class Tuition for Mod2 must be a non-negative number"
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassTuition3 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition3() As String
-	If IsNumeric(RemoveSym(ClassTuition3Textbox)) And Val(RemoveSym(ClassTuition3Textbox)) >= 0 Then
-		GetClassTuition3 = RemoveSym(ClassTuition3Textbox)
-	Else
-	    GetClassTuition3 = vbNullString
-		pErrorFlag = True
-		pErrorMessage = pErrorMessage & "* Class Tuition for Mod3 must be a non-negative number"
-	End If
+    If IsNumeric(RemoveSym(ClassTuition3Textbox)) And Val(RemoveSym(ClassTuition3Textbox)) >= 0 Then
+        GetClassTuition3 = RemoveSym(ClassTuition3Textbox)
+    Else
+        GetClassTuition3 = vbNullString
+        pErrorFlag = True
+        pErrorMessage = pErrorMessage & "* Class Tuition for Mod3 must be a non-negative number"
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassTuition4 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition4() As String
-	If IsNumeric(RemoveSym(ClassTuition4Textbox)) And Val(RemoveSym(ClassTuition4Textbox)) >= 0 Then
-		GetClassTuition4 = RemoveSym(ClassTuition4Textbox)
-	Else
-	    GetClassTuition4 = vbNullString
-		pErrorFlag = True
-		pErrorMessage = pErrorMessage & "* Class Tuition for Mod4 must be a non-negative number"
-	End If
+    If IsNumeric(RemoveSym(ClassTuition4Textbox)) And Val(RemoveSym(ClassTuition4Textbox)) >= 0 Then
+        GetClassTuition4 = RemoveSym(ClassTuition4Textbox)
+    Else
+        GetClassTuition4 = vbNullString
+        pErrorFlag = True
+        pErrorMessage = pErrorMessage & "* Class Tuition for Mod4 must be a non-negative number"
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassTuition5 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition5() As String
-	If IsNumeric(RemoveSym(ClassTuition5Textbox)) And Val(RemoveSym(ClassTuition5Textbox)) >= 0 Then
-		GetClassTuition5 = RemoveSym(ClassTuition5Textbox)
-	Else
-	    GetClassTuition5 = vbNullString
-		pErrorFlag = True
-		pErrorMessage = pErrorMessage & "* Class Tuition for Mod5 must be a non-negative number"
-	End If
+    If IsNumeric(RemoveSym(ClassTuition5Textbox)) And Val(RemoveSym(ClassTuition5Textbox)) >= 0 Then
+        GetClassTuition5 = RemoveSym(ClassTuition5Textbox)
+    Else
+        GetClassTuition5 = vbNullString
+        pErrorFlag = True
+        pErrorMessage = pErrorMessage & "* Class Tuition for Mod5 must be a non-negative number"
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassTuition6 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition6() As String
-	If IsNumeric(RemoveSym(ClassTuition6Textbox)) And Val(RemoveSym(ClassTuition6Textbox)) >= 0 Then
-		GetClassTuition6 = RemoveSym(ClassTuition6Textbox)
-	Else
-	    GetClassTuition6 = vbNullString
-		pErrorFlag = True
-		pErrorMessage = pErrorMessage & "* Class Tuition for Mod6 must be a non-negative number"
-	End If
+    If IsNumeric(RemoveSym(ClassTuition6Textbox)) And Val(RemoveSym(ClassTuition6Textbox)) >= 0 Then
+        GetClassTuition6 = RemoveSym(ClassTuition6Textbox)
+    Else
+        GetClassTuition6 = vbNullString
+        pErrorFlag = True
+        pErrorMessage = pErrorMessage & "* Class Tuition for Mod6 must be a non-negative number"
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassTuition7 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition7() As String
-	If IsNumeric(RemoveSym(ClassTuition7Textbox)) And Val(RemoveSym(ClassTuition7Textbox)) >= 0 Then
-		GetClassTuition7 = RemoveSym(ClassTuition7Textbox)
-	Else
-	    GetClassTuition7 = vbNullString
-		pErrorFlag = True
-		pErrorMessage = pErrorMessage & "* Class Tuition for Mod7 must be a non-negative number"
-	End If
+    If IsNumeric(RemoveSym(ClassTuition7Textbox)) And Val(RemoveSym(ClassTuition7Textbox)) >= 0 Then
+        GetClassTuition7 = RemoveSym(ClassTuition7Textbox)
+    Else
+        GetClassTuition7 = vbNullString
+        pErrorFlag = True
+        pErrorMessage = pErrorMessage & "* Class Tuition for Mod7 must be a non-negative number"
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -596,7 +601,7 @@ End Function
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetParentInvoice() As String
     If GetParentStatus = True And GetEnrollmentType = "Credits" Then
-        GetParentInvoice = CStr(CCur(GetClassTuition1) + CCur(GetClassTuition2) + CCur(GetClassTuition3)) + _
+        GetParentInvoice = CStr(CCur(GetClassTuition1) + CCur(GetClassTuition2) + CCur(GetClassTuition3) + _
                 CCur(GetClassTuition4) + CCur(GetClassTuition5) + CCur(GetClassTuition6) + CCur(GetClassTuition7))
     ElseIf GetParentStatus = True And (GetEnrollmentType = "Career" Or GetEnrollmentType = "Semester") Then
         GetParentInvoice = GetProgramTuition
@@ -609,26 +614,26 @@ End Function
 ' GetStudentTuition property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetStudentTuition() As String
-	If IsNumeric(RemoveSym(StudentTuitionTextbox)) And Val(RemoveSym(StudentTuitionTextbox)) >= 0 Then
-		GetStudentTuition = RemoveSym(StudentTuitionTextbox)
-	Else
-	    GetStudentTuition = vbNullString
-		pErrorFlag = True
-		pErrorMessage = pErrorMessage & "* Student Tuition must be a non-negative number"
-	End If
+    If IsNumeric(RemoveSym(StudentTuitionTextbox)) And Val(RemoveSym(StudentTuitionTextbox)) >= 0 Then
+        GetStudentTuition = RemoveSym(StudentTuitionTextbox)
+    Else
+        GetStudentTuition = vbNullString
+        pErrorFlag = True
+        pErrorMessage = pErrorMessage & "* Student Tuition must be a non-negative number"
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetStudentFees property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetStudentFees() As String
-	If IsNumeric(RemoveSym(StudentFeesTextbox)) And Val(RemoveSym(StudentFeesTextbox)) >= 0 Then
-		GetStudentFees = RemoveSym(StudentFeesTextbox)
-	Else
-	    GetStudentFees = vbNullString
-		pErrorFlag = True
-		pErrorMessage = pErrorMessage & "* Student Fees must be a non-negative number"
-	End If
+    If IsNumeric(RemoveSym(StudentFeesTextbox)) And Val(RemoveSym(StudentFeesTextbox)) >= 0 Then
+        GetStudentFees = RemoveSym(StudentFeesTextbox)
+    Else
+        GetStudentFees = vbNullString
+        pErrorFlag = True
+        pErrorMessage = pErrorMessage & "* Student Fees must be a non-negative number"
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -642,26 +647,26 @@ End Function
 ' GetDownPay property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetDownPay() As String
-	If IsNumeric(RemoveSym(DownPayTextbox)) And Val(RemoveSym(DownPayTextbox)) >= 0 Then
-		GetDownPay = RemoveSym(DownPayTextbox)
-	Else
-	    GetDownPay = vbNullString
-		pErrorFlag = True
-		pErrorMessage = pErrorMessage & "* Down Payment must be a non-negative number"
-	End If
+    If IsNumeric(RemoveSym(DownPayTextbox)) And Val(RemoveSym(DownPayTextbox)) >= 0 Then
+        GetDownPay = RemoveSym(DownPayTextbox)
+    Else
+        GetDownPay = vbNullString
+        pErrorFlag = True
+        pErrorMessage = pErrorMessage & "* Down Payment must be a non-negative number"
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetNumberOfMonths property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetNumberOfMonths() As String
-	If IsNumeric(RemoveSym(NumberOfMonthsTextbox)) And Val(RemoveSym(NumberOfMonthsTextbox)) >= 0 Then
-		GetNumberOfMonths = RemoveSym(NumberOfMonthsTextbox)
-	Else
-	    GetNumberOfMonths = vbNullString
-		pErrorFlag = True
-		pErrorMessage = pErrorMessage & "* The number of months must be a non-negative integer"
-	End If
+    If IsNumeric(RemoveSym(NumberOfMonthsTextbox)) And Val(RemoveSym(NumberOfMonthsTextbox)) >= 0 Then
+        GetNumberOfMonths = RemoveSym(NumberOfMonthsTextbox)
+    Else
+        GetNumberOfMonths = vbNullString
+        pErrorFlag = True
+        pErrorMessage = pErrorMessage & "* The number of months must be a non-negative integer"
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -680,22 +685,22 @@ Public Function CalcDollarPerMonth() As String
         If Installment < 1 Then
             CalcDollarPerMonth = vbNullString
             pErrorFlag = True
-		    pErrorMessage = pErrorMessage & "* Calculation Error: The number of installments cannot be less than 1"
-		ElseIf Temporary < 1 Then
+            pErrorMessage = pErrorMessage & "* Calculation Error: The number of installments cannot be less than 1"
+        ElseIf Temporary < 1 Then
             CalcDollarPerMonth = vbNullString
             pErrorFlag = True
-		    pErrorMessage = pErrorMessage & "* Calculation Error: The Student Invoice minus the Down Payment cannot be less than 1"
-		Else
-		    'Note: Backslash indicates integer division
-		    'Technical Debt Note: Integer division seems to be the closest approximation to the AS/400's monthly payment _
-		        calculation, barring the creation of a more extensive custom division operator.
-		    CalcDollarPerMonth = CStr(Temporary \ Installment)
-		    pFinalPayment = CStr(Temporary - Installment * Monthly)
-		End If
+            pErrorMessage = pErrorMessage & "* Calculation Error: The Student Invoice minus the Down Payment cannot be less than 1"
+        Else
+            'Note: Backslash indicates integer division
+            '(Technical Debt Note): Integer division seems to be the closest approximation to the AS/400's monthly payment _
+                calculation, barring the creation of a more extensive custom division operator.
+            CalcDollarPerMonth = CStr(Temporary \ Installment)
+            pFinalPayment = CStr(Temporary - Installment * Monthly)
+        End If
     Else
         CalcDollarPerMonth = vbNullString
         pErrorFlag = True
-		pErrorMessage = pErrorMessage & "SCRIPT ERROR: The monthly payments are being calculated without the correct user entry"
+        pErrorMessage = pErrorMessage & "SCRIPT ERROR: The monthly payments are being calculated without the correct user entry"
     End If
 End Function
 
@@ -703,13 +708,13 @@ End Function
 ' GetDollarPerMonth property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetDollarPerMonth() As String
-	If IsNumeric(RemoveSym(DollarPerMonthTextbox)) And Val(RemoveSym(DollarPerMonthTextbox)) >= 0 Then
-		GetDollarPerMonth = RemoveSym(DollarPerMonthTextbox)
-	Else
-	    GetDollarPerMonth = vbNullString
-		pErrorFlag = True
-		pErrorMessage = pErrorMessage & "* The monthly payment amount must be a non-negative number"
-	End If
+    If IsNumeric(RemoveSym(DollarPerMonthTextbox)) And Val(RemoveSym(DollarPerMonthTextbox)) >= 0 Then
+        GetDollarPerMonth = RemoveSym(DollarPerMonthTextbox)
+    Else
+        GetDollarPerMonth = vbNullString
+        pErrorFlag = True
+        pErrorMessage = pErrorMessage & "* The monthly payment amount must be a non-negative number"
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -728,20 +733,20 @@ Public Function CalcNumberOfMonths() As String
         If Monthly < 1 Then
             CalcNumberOfMonths = vbNullString
             pErrorFlag = True
-		    pErrorMessage = pErrorMessage & "* Calculation Error: The monthly payment amount cannot be less than 1"
+            pErrorMessage = pErrorMessage & "* Calculation Error: The monthly payment amount cannot be less than 1"
         ElseIf Temporary < 1 Then
             CalcNumberOfMonths = vbNullString
             pErrorFlag = True
-		    pErrorMessage = pErrorMessage & "* Calculation Error: The Student Invoice minus the Down Payment cannot be less than 1"
-		Else
-		    'Note: Backslash indicates integer division
-		    CalcNumberOfMonths = CStr(Temporary \ Monthly)
-		    pFinalPayment = CStr(Temporary - CInt(CalcNumberOfMonths) * Monthly)
-		End If
+            pErrorMessage = pErrorMessage & "* Calculation Error: The Student Invoice minus the Down Payment cannot be less than 1"
+        Else
+            'Note: Backslash indicates integer division
+            CalcNumberOfMonths = CStr(Temporary \ Monthly)
+            pFinalPayment = CStr(Temporary - CInt(CalcNumberOfMonths) * Monthly)
+        End If
     Else
         CalcNumberOfMonths = vbNullString
         pErrorFlag = True
-		pErrorMessage = pErrorMessage & "SCRIPT ERROR: The number of months is being calculated without the correct user entry"
+        pErrorMessage = pErrorMessage & "SCRIPT ERROR: The number of months is being calculated without the correct user entry"
     End If
 End Function
 
@@ -749,7 +754,7 @@ End Function
 ' GetSession property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetSession() As String
-	GetSession = SessionComboBox
+    GetSession = SessionComboBox
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -763,7 +768,7 @@ Public Function GetParentNumber() As String
     Else
         If GetParentStatus = True Then
             pErrorFlag = True
-		    pErrorMessage = pErrorMessage & "* '" & str & "' is not recognized as a parent number"
+            pErrorMessage = pErrorMessage & "* '" & str & "' is not recognized as a parent number"
         End If
     End If
 End Function
@@ -772,7 +777,7 @@ End Function
 ' GetPrefixCode property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetPrefixCode() As String
-	GetPrefixCode = PrefixCodeComboBox
+    GetPrefixCode = PrefixCodeComboBox
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -840,7 +845,7 @@ Public Function GetEnrollmentType() As String
         GetEnrollmentType = "Semester"
     Else
         pErrorFlag = True
-		pErrorMessage = pErrorMessage & "* Please select an enrollment type"
+        pErrorMessage = pErrorMessage & "* Please select an enrollment type"
     End If
 End Function
 
@@ -858,7 +863,7 @@ Public Function GetPaymentType() As String
         GetPaymentType = "NoCost"
     Else
         pErrorFlag = True
-		pErrorMessage = pErrorMessage & "* Please select a payment type"
+        pErrorMessage = pErrorMessage & "* Please select a payment type"
     End If
 End Function
 
@@ -869,429 +874,429 @@ End Function
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Userform property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set Userform(Value As MSForms.UserForm)
+Public Property Set UserForm(Value As MSForms.UserForm)
     Set pUserform = Value
 End Property
 
-Public Property Get Userform() As MSForms.UserForm
-    Set Userform = pUserform
+Public Property Get UserForm() As MSForms.UserForm
+    Set UserForm = pUserform
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' FirstNameTextbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set FirstNameTextbox(Value As MSForms.Textbox)
+Public Property Set FirstNameTextbox(Value As MSForms.TextBox)
     Set pFirstNameTextbox = Value
 End Property
 
-Public Property Get FirstNameTextbox() As MSForms.Textbox
+Public Property Get FirstNameTextbox() As MSForms.TextBox
     Set FirstNameTextbox = pFirstNameTextbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' MiddleNameTextbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set MiddleNameTextbox(Value As MSForms.Textbox)
+Public Property Set MiddleNameTextbox(Value As MSForms.TextBox)
     Set pMiddleNameTextbox = Value
 End Property
 
-Public Property Get MiddleNameTextbox() As MSForms.Textbox
+Public Property Get MiddleNameTextbox() As MSForms.TextBox
     Set MiddleNameTextbox = pMiddleNameTextbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' LastNameTextbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set LastNameTextbox(Value As MSForms.Textbox)
+Public Property Set LastNameTextbox(Value As MSForms.TextBox)
     Set pLastNameTextbox = Value
 End Property
 
-Public Property Get LastNameTextbox() As MSForms.Textbox
+Public Property Get LastNameTextbox() As MSForms.TextBox
     Set LastNameTextbox = pLastNameTextbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' SalespersonTextbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set SalespersonTextbox(Value As MSForms.Textbox)
+Public Property Set SalespersonTextbox(Value As MSForms.TextBox)
     Set pSalespersonTextbox = Value
 End Property
 
-Public Property Get SalespersonTextbox() As MSForms.Textbox
+Public Property Get SalespersonTextbox() As MSForms.TextBox
     Set SalespersonTextbox = pSalespersonTextbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' StudentIDTextbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set StudentIDTextbox(Value As MSForms.Textbox)
+Public Property Set StudentIDTextbox(Value As MSForms.TextBox)
     Set pStudentIDTextbox = Value
 End Property
 
-Public Property Get StudentIDTextbox() As MSForms.Textbox
+Public Property Get StudentIDTextbox() As MSForms.TextBox
     Set StudentIDTextbox = pStudentIDTextbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' AreaCodeTextbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set AreaCodeTextbox(Value As MSForms.Textbox)
+Public Property Set AreaCodeTextbox(Value As MSForms.TextBox)
     Set pAreaCodeTextbox = Value
 End Property
 
-Public Property Get AreaCodeTextbox() As MSForms.Textbox
+Public Property Get AreaCodeTextbox() As MSForms.TextBox
     Set AreaCodeTextbox = pAreaCodeTextbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' PhoneNumberTextbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set PhoneNumberTextbox(Value As MSForms.Textbox)
+Public Property Set PhoneNumberTextbox(Value As MSForms.TextBox)
     Set pPhoneNumberTextbox = Value
 End Property
 
-Public Property Get PhoneNumberTextbox() As MSForms.Textbox
+Public Property Get PhoneNumberTextbox() As MSForms.TextBox
     Set PhoneNumberTextbox = pPhoneNumberTextbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' EmailTextbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set EmailTextbox(Value As MSForms.Textbox)
+Public Property Set EmailTextbox(Value As MSForms.TextBox)
     Set pEmailTextbox = Value
 End Property
 
-Public Property Get EmailTextbox() As MSForms.Textbox
+Public Property Get EmailTextbox() As MSForms.TextBox
     Set EmailTextbox = pEmailTextbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' AddressLine1Textbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set AddressLine1Textbox(Value As MSForms.Textbox)
+Public Property Set AddressLine1Textbox(Value As MSForms.TextBox)
     Set pAddressLine1Textbox = Value
 End Property
 
-Public Property Get AddressLine1Textbox() As MSForms.Textbox
+Public Property Get AddressLine1Textbox() As MSForms.TextBox
     Set AddressLine1Textbox = pAddressLine1Textbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' AddressLine2Textbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set AddressLine2Textbox(Value As MSForms.Textbox)
+Public Property Set AddressLine2Textbox(Value As MSForms.TextBox)
     Set pAddressLine2Textbox = Value
 End Property
 
-Public Property Get AddressLine2Textbox() As MSForms.Textbox
+Public Property Get AddressLine2Textbox() As MSForms.TextBox
     Set AddressLine2Textbox = pAddressLine2Textbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' AddressLine3Textbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set AddressLine3Textbox(Value As MSForms.Textbox)
+Public Property Set AddressLine3Textbox(Value As MSForms.TextBox)
     Set pAddressLine3Textbox = Value
 End Property
 
-Public Property Get AddressLine3Textbox() As MSForms.Textbox
+Public Property Get AddressLine3Textbox() As MSForms.TextBox
     Set AddressLine3Textbox = pAddressLine3Textbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' AddressLine4Textbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set AddressLine4Textbox(Value As MSForms.Textbox)
+Public Property Set AddressLine4Textbox(Value As MSForms.TextBox)
     Set pAddressLine4Textbox = Value
 End Property
 
-Public Property Get AddressLine4Textbox() As MSForms.Textbox
+Public Property Get AddressLine4Textbox() As MSForms.TextBox
     Set AddressLine4Textbox = pAddressLine4Textbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' CityTextbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set CityTextbox(Value As MSForms.Textbox)
+Public Property Set CityTextbox(Value As MSForms.TextBox)
     Set pCityTextbox = Value
 End Property
 
-Public Property Get CityTextbox() As MSForms.Textbox
+Public Property Get CityTextbox() As MSForms.TextBox
     Set CityTextbox = pCityTextbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' StateTextbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set StateTextbox(Value As MSForms.Textbox)
+Public Property Set StateTextbox(Value As MSForms.TextBox)
     Set pStateTextbox = Value
 End Property
 
-Public Property Get StateTextbox() As MSForms.Textbox
+Public Property Get StateTextbox() As MSForms.TextBox
     Set StateTextbox = pStateTextbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ZipCodeTextbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ZipCodeTextbox(Value As MSForms.Textbox)
+Public Property Set ZipCodeTextbox(Value As MSForms.TextBox)
     Set pZipCodeTextbox = Value
 End Property
 
-Public Property Get ZipCodeTextbox() As MSForms.Textbox
+Public Property Get ZipCodeTextbox() As MSForms.TextBox
     Set ZipCodeTextbox = pZipCodeTextbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ProgramNumberTextbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ProgramNumberTextbox(Value As MSForms.Textbox)
+Public Property Set ProgramNumberTextbox(Value As MSForms.TextBox)
     Set pProgramNumberTextbox = Value
 End Property
 
-Public Property Get ProgramNumberTextbox() As MSForms.Textbox
+Public Property Get ProgramNumberTextbox() As MSForms.TextBox
     Set ProgramNumberTextbox = pProgramNumberTextbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ProgramTuitionTextbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ProgramTuitionTextbox(Value As MSForms.Textbox)
+Public Property Set ProgramTuitionTextbox(Value As MSForms.TextBox)
     Set pProgramTuitionTextbox = Value
 End Property
 
-Public Property Get ProgramTuitionTextbox() As MSForms.Textbox
+Public Property Get ProgramTuitionTextbox() As MSForms.TextBox
     Set ProgramTuitionTextbox = pProgramTuitionTextbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassMod1Textbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassMod1Textbox(Value As MSForms.Textbox)
+Public Property Set ClassMod1Textbox(Value As MSForms.TextBox)
     Set pClassMod1Textbox = Value
 End Property
 
-Public Property Get ClassMod1Textbox() As MSForms.Textbox
+Public Property Get ClassMod1Textbox() As MSForms.TextBox
     Set ClassMod1Textbox = pClassMod1Textbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassMod2Textbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassMod2Textbox(Value As MSForms.Textbox)
+Public Property Set ClassMod2Textbox(Value As MSForms.TextBox)
     Set pClassMod2Textbox = Value
 End Property
 
-Public Property Get ClassMod2Textbox() As MSForms.Textbox
+Public Property Get ClassMod2Textbox() As MSForms.TextBox
     Set ClassMod2Textbox = pClassMod2Textbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassMod3Textbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassMod3Textbox(Value As MSForms.Textbox)
+Public Property Set ClassMod3Textbox(Value As MSForms.TextBox)
     Set pClassMod3Textbox = Value
 End Property
 
-Public Property Get ClassMod3Textbox() As MSForms.Textbox
+Public Property Get ClassMod3Textbox() As MSForms.TextBox
     Set ClassMod3Textbox = pClassMod3Textbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassMod4Textbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassMod4Textbox(Value As MSForms.Textbox)
+Public Property Set ClassMod4Textbox(Value As MSForms.TextBox)
     Set pClassMod4Textbox = Value
 End Property
 
-Public Property Get ClassMod4Textbox() As MSForms.Textbox
+Public Property Get ClassMod4Textbox() As MSForms.TextBox
     Set ClassMod4Textbox = pClassMod4Textbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassMod5Textbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassMod5Textbox(Value As MSForms.Textbox)
+Public Property Set ClassMod5Textbox(Value As MSForms.TextBox)
     Set pClassMod5Textbox = Value
 End Property
 
-Public Property Get ClassMod5Textbox() As MSForms.Textbox
+Public Property Get ClassMod5Textbox() As MSForms.TextBox
     Set ClassMod5Textbox = pClassMod5Textbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassMod6Textbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassMod6Textbox(Value As MSForms.Textbox)
+Public Property Set ClassMod6Textbox(Value As MSForms.TextBox)
     Set pClassMod6Textbox = Value
 End Property
 
-Public Property Get ClassMod6Textbox() As MSForms.Textbox
+Public Property Get ClassMod6Textbox() As MSForms.TextBox
     Set ClassMod6Textbox = pClassMod6Textbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassMod7Textbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassMod7Textbox(Value As MSForms.Textbox)
+Public Property Set ClassMod7Textbox(Value As MSForms.TextBox)
     Set pClassMod7Textbox = Value
 End Property
 
-Public Property Get ClassMod7Textbox() As MSForms.Textbox
+Public Property Get ClassMod7Textbox() As MSForms.TextBox
     Set ClassMod7Textbox = pClassMod7Textbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassTuition1Textbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassTuition1Textbox(Value As MSForms.Textbox)
+Public Property Set ClassTuition1Textbox(Value As MSForms.TextBox)
     Set pClassTuition1Textbox = Value
 End Property
 
-Public Property Get ClassTuition1Textbox() As MSForms.Textbox
+Public Property Get ClassTuition1Textbox() As MSForms.TextBox
     Set ClassTuition1Textbox = pClassTuition1Textbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassTuition2Textbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassTuition2Textbox(Value As MSForms.Textbox)
+Public Property Set ClassTuition2Textbox(Value As MSForms.TextBox)
     Set pClassTuition2Textbox = Value
 End Property
 
-Public Property Get ClassTuition2Textbox() As MSForms.Textbox
+Public Property Get ClassTuition2Textbox() As MSForms.TextBox
     Set ClassTuition2Textbox = pClassTuition2Textbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassTuition3Textbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassTuition3Textbox(Value As MSForms.Textbox)
+Public Property Set ClassTuition3Textbox(Value As MSForms.TextBox)
     Set pClassTuition3Textbox = Value
 End Property
 
-Public Property Get ClassTuition3Textbox() As MSForms.Textbox
+Public Property Get ClassTuition3Textbox() As MSForms.TextBox
     Set ClassTuition3Textbox = pClassTuition3Textbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassTuition4Textbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassTuition4Textbox(Value As MSForms.Textbox)
+Public Property Set ClassTuition4Textbox(Value As MSForms.TextBox)
     Set pClassTuition4Textbox = Value
 End Property
 
-Public Property Get ClassTuition4Textbox() As MSForms.Textbox
+Public Property Get ClassTuition4Textbox() As MSForms.TextBox
     Set ClassTuition4Textbox = pClassTuition4Textbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassTuition5Textbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassTuition5Textbox(Value As MSForms.Textbox)
+Public Property Set ClassTuition5Textbox(Value As MSForms.TextBox)
     Set pClassTuition5Textbox = Value
 End Property
 
-Public Property Get ClassTuition5Textbox() As MSForms.Textbox
+Public Property Get ClassTuition5Textbox() As MSForms.TextBox
     Set ClassTuition5Textbox = pClassTuition5Textbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassTuition6Textbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassTuition6Textbox(Value As MSForms.Textbox)
+Public Property Set ClassTuition6Textbox(Value As MSForms.TextBox)
     Set pClassTuition6Textbox = Value
 End Property
 
-Public Property Get ClassTuition6Textbox() As MSForms.Textbox
+Public Property Get ClassTuition6Textbox() As MSForms.TextBox
     Set ClassTuition6Textbox = pClassTuition6Textbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassTuition7Textbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassTuition7Textbox(Value As MSForms.Textbox)
+Public Property Set ClassTuition7Textbox(Value As MSForms.TextBox)
     Set pClassTuition7Textbox = Value
 End Property
 
-Public Property Get ClassTuition7Textbox() As MSForms.Textbox
+Public Property Get ClassTuition7Textbox() As MSForms.TextBox
     Set ClassTuition7Textbox = pClassTuition7Textbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ParentInvoiceTextbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ParentInvoiceTextbox(Value As MSForms.Textbox)
+Public Property Set ParentInvoiceTextbox(Value As MSForms.TextBox)
     Set pParentInvoiceTextbox = Value
 End Property
 
-Public Property Get ParentInvoiceTextbox() As MSForms.Textbox
+Public Property Get ParentInvoiceTextbox() As MSForms.TextBox
     Set ParentInvoiceTextbox = pParentInvoiceTextbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' StudentTuitionTextbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set StudentTuitionTextbox(Value As MSForms.Textbox)
+Public Property Set StudentTuitionTextbox(Value As MSForms.TextBox)
     Set pStudentTuitionTextbox = Value
 End Property
 
-Public Property Get StudentTuitionTextbox() As MSForms.Textbox
+Public Property Get StudentTuitionTextbox() As MSForms.TextBox
     Set StudentTuitionTextbox = pStudentTuitionTextbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' StudentFeesTextbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set StudentFeesTextbox(Value As MSForms.Textbox)
+Public Property Set StudentFeesTextbox(Value As MSForms.TextBox)
     Set pStudentFeesTextbox = Value
 End Property
 
-Public Property Get StudentFeesTextbox() As MSForms.Textbox
+Public Property Get StudentFeesTextbox() As MSForms.TextBox
     Set StudentFeesTextbox = pStudentFeesTextbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' StudentInvoiceTextbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set StudentInvoiceTextbox(Value As MSForms.Textbox)
+Public Property Set StudentInvoiceTextbox(Value As MSForms.TextBox)
     Set pStudentInvoiceTextbox = Value
 End Property
 
-Public Property Get StudentInvoiceTextbox() As MSForms.Textbox
+Public Property Get StudentInvoiceTextbox() As MSForms.TextBox
     Set StudentInvoiceTextbox = pStudentInvoiceTextbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' DownPayTextbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set DownPayTextbox(Value As MSForms.Textbox)
+Public Property Set DownPayTextbox(Value As MSForms.TextBox)
     Set pDownPayTextbox = Value
 End Property
 
-Public Property Get DownPayTextbox() As MSForms.Textbox
+Public Property Get DownPayTextbox() As MSForms.TextBox
     Set DownPayTextbox = pDownPayTextbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' NumberOfMonthsTextbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set NumberOfMonthsTextbox(Value As MSForms.Textbox)
+Public Property Set NumberOfMonthsTextbox(Value As MSForms.TextBox)
     Set pNumberOfMonthsTextbox = Value
 End Property
 
-Public Property Get NumberOfMonthsTextbox() As MSForms.Textbox
+Public Property Get NumberOfMonthsTextbox() As MSForms.TextBox
     Set NumberOfMonthsTextbox = pNumberOfMonthsTextbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' DollarPerMonthTextbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set DollarPerMonthTextbox(Value As MSForms.Textbox)
+Public Property Set DollarPerMonthTextbox(Value As MSForms.TextBox)
     Set pDollarPerMonthTextbox = Value
 End Property
 
-Public Property Get DollarPerMonthTextbox() As MSForms.Textbox
+Public Property Get DollarPerMonthTextbox() As MSForms.TextBox
     Set DollarPerMonthTextbox = pDollarPerMonthTextbox
 End Property
 
@@ -1470,4 +1475,8 @@ End Property
 Public Property Get NoCostOptionButton() As MSForms.OptionButton
     Set NoCostOptionButton = pNoCostOptionButton
 End Property
+
+
+
+
 
