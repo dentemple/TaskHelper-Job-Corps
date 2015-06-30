@@ -31,8 +31,54 @@ End Sub
     this subroutine. _
   Required Input: The userform object
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Private Sub TestStudentFile(user As MSForms.UserForm)
+Public Sub TestStudentFile(User As MSForms.UserForm)
 
-LoadStudentFile Student, User, Exception
+Dim DebugCheck As Boolean
+Dim PassInfo1 As String
 
+Dim Stu As cStudentFile
+Set Stu = New cStudentFile
+Dim Exception As cException
+Set Exception = New cException
+
+DebugCheck = True
+
+If DebugCheck = True Then On Error GoTo 0 Else On Error GoTo Error_LoadStudentFile
+LoadStudentFile Stu, User, Exception
+
+If DebugCheck = True Then On Error GoTo 0 Else On Error GoTo Error_PassInfo
+
+PassInfo1 = "NAME INFORMATION" & vbNewLine & vbNewLine & _
+    "FirstName:" & vbTab & vbTab & Stu.GetFirstName & vbNewLine & _
+    "MiddleName:" & vbTab & vbTab & Stu.GetMiddleName & vbNewLine & _
+    "LastName:" & vbTab & vbTab & Stu.GetLastname & vbNewLine & _
+    "MailingName:" & vbTab & vbTab & Stu.GetMailingName & vbNewLine & _
+    "AlphaName:" & vbTab & vbTab & Stu.GetAlphaName & vbNewLine & vbNewLine & _
+    "ADVISOR INFORMATION" & vbNewLine & vbNewLine & _
+    "Salesperson:" & vbTab & vbTab & Stu.GetSalesperson & vbNewLine & _
+    "StudentID:" & vbTab & vbTab & Stu.GetStudentID & vbNewLine & vbNewLine & _
+    "ADDRESS INFORMATION" & vbNewLine & vbNewLine & _
+    "AreaCode:" & vbTab & vbTab & Stu.GetAreaCode & vbNewLine & _
+    "PhoneNumber:" & vbTab & Stu.GetPhoneNumber & vbNewLine & _
+    "Email:" & vbTab & vbTab & Stu.GetEmail & vbNewLine & _
+    "AddressL1:" & vbTab & Stu.GetAddressLine1 & vbNewLine & _
+    "AddressL2:" & vbTab & Stu.GetAddressLine2 & vbNewLine & _
+    "AddressL3:" & vbTab & Stu.GetAddressLine3 & vbNewLine & _
+    "AddressL4:" & vbTab & Stu.GetAddressLine4 & vbNewLine & _
+    "City:" & vbTab & vbTab & Stu.GetCity & vbNewLine & _
+    "State:" & vbTab & vbTab & Stu.GetState & vbNewLine & _
+    "ZipCode:" & vbTab & vbTab & Stu.GetZipCode & vbNewLine
+
+'    ":" & vbTab & vbTab & Stu & vbNewLine & _
+
+MsgBox PassInfo1
+
+Cleanup:
+Set Stu = Nothing
+Set Exception = Nothing
+
+Exit Sub
+Error_LoadStudentFile: MsgBox "Error on LoadStudentFile": Resume Cleanup
+Error_PassInfo: MsgBox "Error on passing values": Resume Cleanup
 End Sub
+
