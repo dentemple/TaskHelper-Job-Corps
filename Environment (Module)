@@ -160,7 +160,7 @@ End Sub
 
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' 
+'
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 
@@ -175,65 +175,65 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' LoadStudentFile (Sub)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub LoadStudentFile(ByRef passStudent As cStudentFile, ByVal passUser As MSForms.Userform, ByRef passException As cException)
+Public Sub LoadStudentFile(ByRef passStudent As cStudentFile, ByVal passUser As MSForms.UserForm, ByRef passException As cException)
 
 'On Error GoTo handle_if_textbox_fails_to_pass
 
-passStudent.Userform = passUser
-passStudent.FirstNameTextbox = passUser.Firstname_Textbox
-passStudent.MiddleNameTextbox = passUser.Middlename_Textbox
-passStudent.LastNameTextbox = passUser.Lastname_Textbox
-passStudent.SalespersonTextbox = passUser.Salesperson_Textbox
-passStudent.StudentIDTextbox = passUser.StudentID_Textbox
-passStudent.AreaCodeTextbox = passUser.Areacode_Textbox
-passStudent.PhoneNumberTextbox = passUser.Phonenumber_Textbox
-passStudent.EmailTextbox = passUser.Email_Textbox
-passStudent.AddressLine1Textbox = passUser.AddressLine1_Textbox
-passStudent.AddressLine2Textbox = passUser.AddressLine2_Textbox
-passStudent.AddressLine3Textbox = passUser.AddressLine3_Textbox
-passStudent.AddressLine4Textbox = passUser.AddressLine4_Textbox
-passStudent.CityTextbox = passUser.City_Textbox
-passStudent.StateTextbox = passUser.StateAbbrev_Textbox
-passStudent.ZipCodeTextbox = passUser.Zipcode_Textbox
-passStudent.ProgramNumberTextbox = passUser.ProgramNumber_Textbox
-passStudent.ProgramTuitionTextbox = passUser.ProgramTuition_Textbox
-passStudent.ClassMod1Textbox = passUser.ClassMod1_Textbox
-passStudent.ClassMod2Textbox = passUser.ClassMod2_Textbox
-passStudent.ClassMod3Textbox = passUser.ClassMod3_Textbox
-passStudent.ClassMod4Textbox = passUser.ClassMod4_Textbox
-passStudent.ClassMod5Textbox = passUser.ClassMod5_Textbox
-passStudent.ClassMod6Textbox = passUser.ClassMod6_Textbox
-passStudent.ClassMod7Textbox = passUser.ClassMod7_Textbox
-passStudent.ClassTuition1Textbox = passUser.ClassTuition1_Textbox
-passStudent.ClassTuition2Textbox = passUser.ClassTuition2_Textbox
-passStudent.ClassTuition3Textbox = passUser.ClassTuition3_Textbox
-passStudent.ClassTuition4Textbox = passUser.ClassTuition4_Textbox
-passStudent.ClassTuition5Textbox = passUser.ClassTuition5_Textbox
-passStudent.ClassTuition6Textbox = passUser.ClassTuition6_Textbox
-passStudent.ClassTuition7Textbox = passUser.ClassTuition7_Textbox
-passStudent.ParentInvoiceTextbox = passUser.ParentInvoice_Textbox
-passStudent.StudentTuitionTextbox = passUser.StudentTuition_Textbox
-passStudent.StudentFeesTextbox = passUser.StudentFees_Textbox
-passStudent.StudentInvoiceTextbox = passUser.StudentInvoice_Textbox
-passStudent.DownPayTextbox = passUser.EnterDownPay_Textbox
-passStudent.NumberOfMonthsTextbox = passUser.EnterNumOfMonths_Textbox
-passStudent.DollarPerMonthTextbox = passUser.EnterDollarPerMonth_Textbox
-passStudent.SessionComboBox = passUser.Session_ComboBox
-passStudent.ParentNumberComboBox = passUser.ParentNumber_ComboBox
-passStudent.PrefixCodeComboBox = passUser.PrefixCode_ComboBox
-passStudent.AutomationComboBox = passUser.Automation_ComboBox
-passStudent.ProofHSCheckbox = passUser.ProofHS_Checkbox
-passStudent.ParentStatusOptionButton = passUser.
-passStudent.StudentStatusOptionButton = passUser.
-passStudent.MaleOptionButton = passUser.
-passStudent.FemaleOptionButton = passUser.
-passStudent.CalcByDollarPerMonthOptionButton = passUser.
-passStudent.IndividualCreditsOptionButton = passUser.
-passStudent.CareerProgramOptionButton = passUser.
-passStudent.CollegeSemesterOptionButton = passUser.
-passStudent.CalcByNumOfMonthsOptionButton = passUser.
-passStudent.PayInFullOptionButton = passUser.
-passStudent.NoCostOptionButton = passUser.
+Set passStudent.UserForm = passUser
+Set passStudent.FirstNameTextbox = passUser.Firstname_Textbox
+Set passStudent.MiddleNameTextbox = passUser.Middlename_Textbox
+Set passStudent.LastNameTextbox = passUser.Lastname_Textbox
+Set passStudent.SalespersonTextbox = passUser.Salesperson_Textbox
+Set passStudent.StudentIDTextbox = passUser.StudentID_Textbox
+Set passStudent.AreaCodeTextbox = passUser.Areacode_Textbox
+Set passStudent.PhoneNumberTextbox = passUser.Phonenumber_Textbox
+Set passStudent.EmailTextbox = passUser.Email_Textbox
+Set passStudent.AddressLine1Textbox = passUser.AddressLine1_Textbox
+Set passStudent.AddressLine2Textbox = passUser.AddressLine2_Textbox
+Set passStudent.AddressLine3Textbox = passUser.AddressLine3_Textbox
+Set passStudent.AddressLine4Textbox = passUser.AddressLine4_Textbox
+Set passStudent.CityTextbox = passUser.City_Textbox
+Set passStudent.StateTextbox = passUser.StateAbbrev_Textbox
+Set passStudent.ZipCodeTextbox = passUser.Zipcode_Textbox
+Set passStudent.ProgramNumberTextbox = passUser.ProgramNumber_Textbox
+Set passStudent.ProgramTuitionTextbox = passUser.ProgramTuition_Textbox
+Set passStudent.ClassMod1Textbox = passUser.ClassMod1_Textbox
+Set passStudent.ClassMod2Textbox = passUser.ClassMod2_Textbox
+Set passStudent.ClassMod3Textbox = passUser.ClassMod3_Textbox
+Set passStudent.ClassMod4Textbox = passUser.ClassMod4_Textbox
+Set passStudent.ClassMod5Textbox = passUser.ClassMod5_Textbox
+Set passStudent.ClassMod6Textbox = passUser.ClassMod6_Textbox
+Set passStudent.ClassMod7Textbox = passUser.ClassMod7_Textbox
+Set passStudent.ClassTuition1Textbox = passUser.ClassTuition1_Textbox
+Set passStudent.ClassTuition2Textbox = passUser.ClassTuition2_Textbox
+Set passStudent.ClassTuition3Textbox = passUser.ClassTuition3_Textbox
+Set passStudent.ClassTuition4Textbox = passUser.ClassTuition4_Textbox
+Set passStudent.ClassTuition5Textbox = passUser.ClassTuition5_Textbox
+Set passStudent.ClassTuition6Textbox = passUser.ClassTuition6_Textbox
+Set passStudent.ClassTuition7Textbox = passUser.ClassTuition7_Textbox
+Set passStudent.ParentInvoiceTextbox = passUser.ParentInvoice_Textbox
+Set passStudent.StudentTuitionTextbox = passUser.StudentTuition_Textbox
+Set passStudent.StudentFeesTextbox = passUser.StudentFees_Textbox
+Set passStudent.StudentInvoiceTextbox = passUser.StudentInvoice_Textbox
+Set passStudent.DownPayTextbox = passUser.EnterDownPay_Textbox
+Set passStudent.NumberOfMonthsTextbox = passUser.EnterNumOfMonths_Textbox
+Set passStudent.DollarPerMonthTextbox = passUser.EnterDollarPerMonth_Textbox
+Set passStudent.SessionComboBox = passUser.Session_ComboBox
+Set passStudent.ParentNumberComboBox = passUser.ParentNumber_ComboBox
+Set passStudent.PrefixCodeComboBox = passUser.PrefixCode_ComboBox
+Set passStudent.AutomationComboBox = passUser.Automation_ComboBox
+Set passStudent.ProofHSCheckbox = passUser.ProofHS_Checkbox
+Set passStudent.ParentStatusOptionButton = passUser.WithParent_Optionselect
+Set passStudent.StudentStatusOptionButton = passUser.ReturnStudent_Optionselect
+Set passStudent.MaleOptionButton = passUser.Male_Optionselect
+Set passStudent.FemaleOptionButton = passUser.Female_Optionselect
+Set passStudent.CalcByDollarPerMonthOptionButton = passUser.CalcByDollarPerMonth_Optionselect
+Set passStudent.IndividualCreditsOptionButton = passUser.IndividualCredits_Optionselect
+Set passStudent.CareerProgramOptionButton = passUser.CareerProgram_Optionselect
+Set passStudent.CollegeSemesterOptionButton = passUser.CollegeSemester_Optionselect
+Set passStudent.CalcByNumOfMonthsOptionButton = passUser.CalcByNumOfMonths_Optionselect
+Set passStudent.PayInFullOptionButton = passUser.PayInFull_Optionselect
+Set passStudent.NoCostOptionButton = passUser.NoCost_Optionselect
 
 'Check flags for failures
 
@@ -250,9 +250,9 @@ Dim Lrow As Excel.ListRow
 For Each Lrow In passTable.ListRows
   Set Command = New Command
   Command.Action = Trim(passTable.ListColumn("Action").Value)
-  Command.Item = Trim(passTable.ListColumn("Item").Value)
-  Command.Row = Trim(passTable.ListColumn("Row").Value)
-  Command.Col = Trim(passTable.ListColumn("Col").Value)
+  Command.ITEM = Trim(passTable.ListColumn("Item").Value)
+  Command.row = Trim(passTable.ListColumn("Row").Value)
+  Command.col = Trim(passTable.ListColumn("Col").Value)
   Command.Len = Trim(passTable.ListColumn("Len").Value)
   passCommands.Add Command
 Next Lrow
@@ -277,3 +277,5 @@ End Sub
 Public Function FinalEnrollmentChecks(ByVal passStudent As cStudentFile, ByVal passAS400 As cAS400, ByVal passException As cException) As Boolean
 
 End Function
+
+
