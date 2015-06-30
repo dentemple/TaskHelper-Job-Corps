@@ -20,9 +20,11 @@ Private MaxCharactersName As Integer
 Private StandardLength As Integer
 
 ' FUNCTION PROPERTIES
-'By default, all of userform-based functions are declared as strings. This is _
+'By default, most of userform-based functions are declared as strings. This is _
 	both to standardize the outputs, as well as to provide a safe default _
-	data type for the AS/400 (which can always accept values as strings).
+	data type for the AS/400 (which only accepts SetText/SendKeys as strings). _
+	The exception are boolean values (which normally refer to values that _
+	aren't directly input into the AS/400.
 
 '	GetFirstName As String
 '	GetMiddleName As String
@@ -72,8 +74,8 @@ Private StandardLength As Integer
 '	GetPrefixCode As String
 '	GetAutomation As String
 '	GetProofHS As String
-'	GetParentStatus As String
-'	GetStudentStatus As String
+'	GetParentStatus As Boolean
+'	GetStudentStatus As Boolean
 '	GetGender As String
 '	GetEnrollmentType As String
 '	GetPaymentType As String
@@ -666,8 +668,16 @@ End Function
 ' GetParentNumber property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetParentNumber() As String
-
-
+    Dim str
+    str = Left(Trim(ParentNumberComboBox.Value), 8)
+    If IsNumeric(str) Then
+        GetParentNumber = str
+    Else
+        If GetParentStatus = True Then
+            pErrorFlag = True
+		    pErrorMessage = pErrorMessage & "* '" & str & "' is not recognized as a parent number"
+        End If
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -681,32 +691,40 @@ End Function
 ' GetAutomation property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetAutomation() As String
-
-
+    GetAutomation = AutomationComboBox
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetProofHS property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetProofHS() As String
-
-
+    If ProofHSCheckbox.Value = True Then
+        GetProofHS = "Y"
+    Else
+        GetProofHS = "N"
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetParentStatus property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GetParentStatus() As String
-
-
+Public Function GetParentStatus() As Boolean
+    If ParentStatusOptionButton.Value = True Then
+        GetParentStatus = True
+    Else
+        GetParentStatus = False
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetStudentStatus property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GetStudentStatus() As String
-
-
+Public Function GetStudentStatus() As Boolean
+    If StudentStatusOptionButton.Value = True Then
+        GetStudentStatus = True
+    Else
+        GetStudentStatus = False
+    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
