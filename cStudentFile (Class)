@@ -185,6 +185,18 @@ Public Property StudentID() As String
     StudentID = pStudentID
 End Property
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetFinalPayment property
+'Set by the payment calculations
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Get GetFinalPayment() As Boolean
+    If Val(pFinalPayment) >= 1 Then
+        GetFinalPayment = pFinalPayment
+    Else
+        GetFinalPayment = "0"
+    End If
+End Property
+
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ERROR PROPERTIES
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -732,18 +744,6 @@ Public Function CalcNumberOfMonths() As String
 		pErrorMessage = pErrorMessage & "SCRIPT ERROR: The number of months is being calculated without the correct user entry"
     End If
 End Function
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GetFinalPayment property
-'Set by the payment calculations
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Get GetFinalPayment() As Boolean
-    If Val(pFinalPayment) >= 1 Then
-        GetFinalPayment = pFinalPayment
-    Else
-        GetFinalPayment = "0"
-    End If
-End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetSession property
