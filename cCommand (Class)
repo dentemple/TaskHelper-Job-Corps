@@ -11,6 +11,7 @@ Recognized Actions: _
 Option Explicit
 
 ' GENERAL PROPERTIES
+Private pPath As String
 Private pAction As String
 Private pItem As String
 Private pRow As Long
@@ -25,12 +26,14 @@ Private pErrorMessage As String
 'Caution: True constants cannot be declared in a class module. These values are _
 	for internal use only so as to provide the class some additional modularity.
 Private RecognizedActions As String
+Private RecognizedPaths As String
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' LOCAL PROCEDURES
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Private Sub Class_Initialize()
+	RecognizedPaths = "addressbook"
 	RecognizedActions = "home set send check get"
 	pErrorFlag = False
 	pErrorMessage = "The Command List has encountered the following issues:" & vbNewLine & vbNewLine
@@ -40,17 +43,32 @@ End Sub
 ' GENERAL PROPERTIES
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Path property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Path(Value As String)
+	pPath = Value
+End Property
+Public Property Get Path As String
+	If InStr(RecognizedPaths, LCase(pPath)) >= 1 Then
+		Path = LCase(pPath)
+	Else
+		pErrorFlag = True
+		pErrorMessage = pErrorMessage & "* The '" & LCase(pPath) & "' path is not recognized." & vbNewLine
+	End If
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Action property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Action(Value As String)
-	Set pAction = Value
+	pAction = Value
 End Property
 Public Property Get Action As String
-	If InStr(RecognizedActions, pAction) >= 1 Then
-		Set Action = pAction
+	If InStr(RecognizedActions, LCase(pAction)) >= 1 Then
+		Action = LCase(pAction)
 	Else
 		pErrorFlag = True
-		pErrorMessage = pErrorMessage & "* The '" & pAction & "' action is not recognized." & vbNewLine
+		pErrorMessage = pErrorMessage & "* The '" & LCase(pAction) & "' action is not recognized." & vbNewLine
 	End If
 End Property
 
@@ -61,40 +79,40 @@ End Property
 	by the enrollment code
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Item(Value As String)
-  Set pItem = Value
+  pItem = Value
 End Property
 Public Property Get Item As String
-  Set Item = pItem
+  Item = LCase(pItem)
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Row property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Row(Value As Long)
-    Set pRow = Value
+    pRow = Value
 End Property
 Public Property Get Row As Long
-    Set Row = pRow
+    Row = pRow
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Col property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Col(Value As Long)
-  Set pCol = Value
+  pCol = Value
 End Property
 Public Property Get Col As Long
-  Set Col = pCol
+  Col = pCol
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Len property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Len(Value As Long)
-  Set pLen = Value
+  pLen = Value
 End Property
 Public Property Get Len As Long
-  Set Len = pLen
+  Len = pLen
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
