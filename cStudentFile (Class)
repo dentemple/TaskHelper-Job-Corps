@@ -26,15 +26,15 @@ Private MaxCharactersName As Integer
 Private StandardLength As Integer
 
 ' FUNCTION PROPERTIES
-'By default, most of userform-based functions are declared as strings. This is _
+'By default, most of UserFormObject-based functions are declared as strings. This is _
     both to standardize the outputs, as well as to provide a safe default _
     data type for the AS/400 (which only accepts SetText/SendKeys as strings). _
     The exception are boolean values (which normally refer to values that _
     aren't directly input into the AS/400.
 
-'(Userform-to-Object) _
+'(UserFormObject-to-Object) _
 The following is a list of glue functions used to interpret the information taken _
-    from the cStudentRegistration userform intended for the registration script
+    from the cStudentRegistration UserFormObject intended for the registration script
     
 '   GetFirstName As String
 '   GetMiddleName As String
@@ -91,8 +91,8 @@ The following is a list of glue functions used to interpret the information take
 
 ' OBJECT PROPERTIES
 'Stores the cStudentFile objects
-'Userform
-Private pUserform As MSForms.UserForm
+'UserFormObject
+Private pUserFormObject As MSForms.UserForm
 'Textboxes
 Private pFirstNameTextbox As MSForms.TextBox
 Private pMiddleNameTextbox As MSForms.TextBox
@@ -235,7 +235,7 @@ End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' FUNCTION PROPERTIES
-'By default, all of userform-based functions are declared as strings. This is _
+'By default, all of UserFormObject-based functions are declared as strings. This is _
     both to standardize the outputs, as well as to provide a safe default _
     data type for the AS/400 (which can always accept values as strings).
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -417,7 +417,7 @@ Public Function GetProgramTuition() As String
     Else
         GetProgramTuition = vbNullString
         pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* The Program Tuition must be a non-negative number"
+        pErrorMessage = pErrorMessage & "* The Program Tuition must be a non-negative number" & vbNewLine
     End If
 End Function
 
@@ -514,7 +514,7 @@ Public Function GetClassTuition1() As String
     Else
         GetClassTuition1 = vbNullString
         pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* Class Tuition for Mod1 must be a non-negative number"
+        pErrorMessage = pErrorMessage & "* Class Tuition for Mod1 must be a non-negative number" & vbNewLine
     End If
 End Function
 
@@ -527,7 +527,7 @@ Public Function GetClassTuition2() As String
     Else
         GetClassTuition2 = vbNullString
         pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* Class Tuition for Mod2 must be a non-negative number"
+        pErrorMessage = pErrorMessage & "* Class Tuition for Mod2 must be a non-negative number" & vbNewLine
     End If
 End Function
 
@@ -540,7 +540,7 @@ Public Function GetClassTuition3() As String
     Else
         GetClassTuition3 = vbNullString
         pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* Class Tuition for Mod3 must be a non-negative number"
+        pErrorMessage = pErrorMessage & "* Class Tuition for Mod3 must be a non-negative number" & vbNewLine
     End If
 End Function
 
@@ -553,7 +553,7 @@ Public Function GetClassTuition4() As String
     Else
         GetClassTuition4 = vbNullString
         pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* Class Tuition for Mod4 must be a non-negative number"
+        pErrorMessage = pErrorMessage & "* Class Tuition for Mod4 must be a non-negative number" & vbNewLine
     End If
 End Function
 
@@ -566,7 +566,7 @@ Public Function GetClassTuition5() As String
     Else
         GetClassTuition5 = vbNullString
         pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* Class Tuition for Mod5 must be a non-negative number"
+        pErrorMessage = pErrorMessage & "* Class Tuition for Mod5 must be a non-negative number" & vbNewLine
     End If
 End Function
 
@@ -579,7 +579,7 @@ Public Function GetClassTuition6() As String
     Else
         GetClassTuition6 = vbNullString
         pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* Class Tuition for Mod6 must be a non-negative number"
+        pErrorMessage = pErrorMessage & "* Class Tuition for Mod6 must be a non-negative number" & vbNewLine
     End If
 End Function
 
@@ -592,7 +592,7 @@ Public Function GetClassTuition7() As String
     Else
         GetClassTuition7 = vbNullString
         pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* Class Tuition for Mod7 must be a non-negative number"
+        pErrorMessage = pErrorMessage & "* Class Tuition for Mod7 must be a non-negative number" & vbNewLine
     End If
 End Function
 
@@ -619,7 +619,7 @@ Public Function GetStudentTuition() As String
     Else
         GetStudentTuition = vbNullString
         pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* Student Tuition must be a non-negative number"
+        pErrorMessage = pErrorMessage & "* Student Tuition must be a non-negative number" & vbNewLine
     End If
 End Function
 
@@ -632,7 +632,7 @@ Public Function GetStudentFees() As String
     Else
         GetStudentFees = vbNullString
         pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* Student Fees must be a non-negative number"
+        pErrorMessage = pErrorMessage & "* Student Fees must be a non-negative number" & vbNewLine
     End If
 End Function
 
@@ -652,7 +652,7 @@ Public Function GetDownPay() As String
     Else
         GetDownPay = vbNullString
         pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* Down Payment must be a non-negative number"
+        pErrorMessage = pErrorMessage & "* Down Payment must be a non-negative number" & vbNewLine
     End If
 End Function
 
@@ -665,7 +665,7 @@ Public Function GetNumberOfMonths() As String
     Else
         GetNumberOfMonths = vbNullString
         pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* The number of months must be a non-negative integer"
+        pErrorMessage = pErrorMessage & "* The number of months must be a non-negative integer" & vbNewLine
     End If
 End Function
 
@@ -685,11 +685,11 @@ Public Function CalcDollarPerMonth() As String
         If Installment < 1 Then
             CalcDollarPerMonth = vbNullString
             pErrorFlag = True
-            pErrorMessage = pErrorMessage & "* Calculation Error: The number of installments cannot be less than 1"
+            pErrorMessage = pErrorMessage & "* Calculation Error: The number of installments cannot be less than 1" & vbNewLine
         ElseIf Temporary < 1 Then
             CalcDollarPerMonth = vbNullString
             pErrorFlag = True
-            pErrorMessage = pErrorMessage & "* Calculation Error: The Student Invoice minus the Down Payment cannot be less than 1"
+            pErrorMessage = pErrorMessage & "* Calculation Error: The Student Invoice minus the Down Payment cannot be less than 1" & vbNewLine
         Else
             'Note: Backslash indicates integer division
             '(Technical Debt Note): Integer division seems to be the closest approximation to the AS/400's monthly payment _
@@ -700,7 +700,7 @@ Public Function CalcDollarPerMonth() As String
     Else
         CalcDollarPerMonth = vbNullString
         pErrorFlag = True
-        pErrorMessage = pErrorMessage & "SCRIPT ERROR: The monthly payments are being calculated without the correct user entry"
+        pErrorMessage = pErrorMessage & "SCRIPT ERROR: The monthly payments are being calculated without the correct user entry" & vbNewLine
     End If
 End Function
 
@@ -713,7 +713,7 @@ Public Function GetDollarPerMonth() As String
     Else
         GetDollarPerMonth = vbNullString
         pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* The monthly payment amount must be a non-negative number"
+        pErrorMessage = pErrorMessage & "* The monthly payment amount must be a non-negative number" & vbNewLine
     End If
 End Function
 
@@ -733,11 +733,11 @@ Public Function CalcNumberOfMonths() As String
         If Monthly < 1 Then
             CalcNumberOfMonths = vbNullString
             pErrorFlag = True
-            pErrorMessage = pErrorMessage & "* Calculation Error: The monthly payment amount cannot be less than 1"
+            pErrorMessage = pErrorMessage & "* Calculation Error: The monthly payment amount cannot be less than 1" & vbNewLine
         ElseIf Temporary < 1 Then
             CalcNumberOfMonths = vbNullString
             pErrorFlag = True
-            pErrorMessage = pErrorMessage & "* Calculation Error: The Student Invoice minus the Down Payment cannot be less than 1"
+            pErrorMessage = pErrorMessage & "* Calculation Error: The Student Invoice minus the Down Payment cannot be less than 1" & vbNewLine
         Else
             'Note: Backslash indicates integer division
             CalcNumberOfMonths = CStr(Temporary \ Monthly)
@@ -746,7 +746,7 @@ Public Function CalcNumberOfMonths() As String
     Else
         CalcNumberOfMonths = vbNullString
         pErrorFlag = True
-        pErrorMessage = pErrorMessage & "SCRIPT ERROR: The number of months is being calculated without the correct user entry"
+        pErrorMessage = pErrorMessage & "SCRIPT ERROR: The number of months is being calculated without the correct user entry" & vbNewLine
     End If
 End Function
 
@@ -768,7 +768,7 @@ Public Function GetParentNumber() As String
     Else
         If GetParentStatus = True Then
             pErrorFlag = True
-            pErrorMessage = pErrorMessage & "* '" & str & "' is not recognized as a parent number"
+            pErrorMessage = pErrorMessage & "* '" & str & "' is not recognized as a parent number" & vbNewLine
         End If
     End If
 End Function
@@ -824,9 +824,9 @@ End Function
 ' GetGender property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetGender() As String
-    If Male_Optionselect.Value = True Then
+    If UserFormObject.Male_Optionselect = True Then
         GetGender = "M"
-    ElseIf Female_Optionselect.Value = True Then
+    ElseIf UserFormObject.Female_Optionselect = True Then
         GetGender = "F"
     Else
         GetGender = "U"
@@ -837,15 +837,15 @@ End Function
 ' GetEnrollmentType property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetEnrollmentType() As String
-    If IndividualCredits_Optionselect.Value = True Then
+    If UserFormObject.IndividualCredits_Optionselect = True Then
         GetEnrollmentType = "Credits"
-    ElseIf CareerProgram_Optionselect.Value = True Then
+    ElseIf UserFormObject.CareerProgram_Optionselect = True Then
         GetEnrollmentType = "Career"
-    ElseIf CollegeSemester_Optionselect.Value = True Then
+    ElseIf UserFormObject.CollegeSemester_Optionselect = True Then
         GetEnrollmentType = "Semester"
     Else
         pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* Please select an enrollment type"
+        pErrorMessage = pErrorMessage & "* Please select an enrollment type" & vbNewLine
     End If
 End Function
 
@@ -863,7 +863,7 @@ Public Function GetPaymentType() As String
         GetPaymentType = "NoCost"
     Else
         pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* Please select a payment type"
+        pErrorMessage = pErrorMessage & "* Please select a payment type" & vbNewLine
     End If
 End Function
 
@@ -872,13 +872,13 @@ End Function
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Userform property
+' UserFormObject property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set UserForm(Value As MSForms.UserForm)
-    Set pUserform = Value
+Public Property Set UserFormObject(Value As MSForms.UserForm)
+    Set pUserFormObject = Value
 End Property
-Public Property Get UserForm() As MSForms.UserForm
-    Set UserForm = pUserform
+Public Property Get UserFormObject() As MSForms.UserForm
+    Set UserFormObject = pUserFormObject
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -1420,8 +1420,3 @@ End Property
 Public Property Get NoCostOptionButton() As MSForms.OptionButton
     Set NoCostOptionButton = pNoCostOptionButton
 End Property
-
-
-
-
-
