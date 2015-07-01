@@ -1,29 +1,90 @@
-''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' cException (Class)
 '
 ' Relies on a call stack approach to help report the location of errors
-''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'GENERAL PROPERTIES
+Private pErrNumber As Integer
+Private pErrDescription As String
+Private pMessage As String
 
-' Note: MsgBox "Error: (" & Err.Number & ") " & Err.Description, vbCritical
+'CALL STACK PROPERTIES
+Private TopItem As StackItem
 
 'Points to the array element of the call stack
 Private pStackPointer As Integer
-
 'Array of procedure names in the call stack
 Private pCallStack() As String
 
 'PushCallStack Function
-'Add to procedure name to the array
-
 'PopCallStack Function
-'Remove the procedure name from the array
-
 'LogErrorDescription Function
-'Accepts Err.Description
-
 'LogErrorNumberFunction
-Accepts Err.Number
-
-'Message property
-
 'WriteErrorToFile Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' STACK PROPERTIES AND PROCEDURES
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Public Sub Push(ByVal str As String)
+'Pushes a new stack item to a stack
+Dim NewTop As StackItem
+Set NewTop = New StackItem
+
+NewTop.Value = str
+Set NewTop.NextItem = TopItem
+Set TopItem = NewTop
+End Sub
+
+Private Property Get StackIsEmpty() As Boolean
+  StackIsEmpty = (TopItem Is Nothing)
+End Property
+
+Public Function Pop() As String
+  If Not StackIsEmpty Then
+    Pop = TopItem.Value
+    Set TopItem = TopItem.NextItem
+  End If
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ErrNumber property
+'To log the Err.Number
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Let ErrNumber(Value As Integer)
+    pErrNumber = Value
+End Property
+Public Property Get ErrNumber() As Integer
+    ErrNumber = pErrNumber
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ErrDescription property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Let ErrDescription(Value As String)
+    pErrDescription = Value
+End Property
+Public Property Get ErrDescription() As String
+    ErrDescription = pErrDescription
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Message property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Let Message(Value As String)
+    pMessage = Value
+End Property
+Public Property Get Message() As String
+    Message = pMessage
+End Property
+
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' NAME property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Let NAME(Value As String)
+    pVAR = Value
+End Property
+Public Property Get NAME() As String
+    NAME = pVAR
+End Property
