@@ -30,17 +30,17 @@ Dim Exception As cException
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetSheetFromCodeName(wb As Workbook, CodeName As String) As Excel.Worksheet
 
-Dim wsCN As Excel.Worksheet
+    Dim wsCN As Excel.Worksheet
 
-If Not Debugger Then On Error Resume Next Else On Error GoTo 0
+    If Not Debugger Then On Error Resume Next Else On Error GoTo 0
 
-For Each wsCN In wb.Worksheets
+    For Each wsCN In wb.Worksheets
 
-     If wsCN.CodeName = CodeName Then
-         Set GetSheetFromCodeName = wsCN
-         Exit For
-     End If
-Next wsCN
+        If wsCN.CodeName = CodeName Then
+            Set GetSheetFromCodeName = wsCN
+            Exit For
+         End If
+    Next wsCN
 
 End Function
 
@@ -57,19 +57,19 @@ End Function
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub NavigateSheets(strStartSheetCodename As String, strEndSheetCodename As String)
 
-Dim wsStart As Excel.Worksheet  'Stores starting worksheet
-Dim wsEnd As Excel.Worksheet    'Stores ending worksheet
+    Dim wsStart As Excel.Worksheet  'Stores starting worksheet
+    Dim wsEnd As Excel.Worksheet    'Stores ending worksheet
 
-If Not Debugger Then On Error Resume Next Else On Error GoTo 0
+    If Not Debugger Then On Error Resume Next Else On Error GoTo 0
 
-'Calls the GetSheetFromCodeName function
-Set wsStart = GetSheetFromCodeName(Workbooks("TaskHelper VBA iSeries.xlsm"), strStartSheetCodename)
-Set wsEnd = GetSheetFromCodeName(Workbooks("TaskHelper VBA iSeries.xlsm"), strEndSheetCodename)
+    'Calls the GetSheetFromCodeName function
+    Set wsStart = GetSheetFromCodeName(Workbooks("TaskHelper VBA iSeries.xlsm"), strStartSheetCodename)
+    Set wsEnd = GetSheetFromCodeName(Workbooks("TaskHelper VBA iSeries.xlsm"), strEndSheetCodename)
 
-wsEnd.Visible = xlSheetVisible
-wsEnd.Activate
+    wsEnd.Visible = xlSheetVisible
+    wsEnd.Activate
 
-wsStart.Visible = xlSheetHidden
+    wsStart.Visible = xlSheetHidden
 
 End Sub
 
@@ -84,41 +84,41 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub ChangeLocks(PassArray() As Object, passBoolean As Boolean, changeover As Integer)
 
-Dim oppositeBoolean As Boolean
-Dim i As Integer
-Dim var_Selected_Color As Variant
-Dim var_Opposite_Color As Variant
+    Dim oppositeBoolean As Boolean
+    Dim i As Integer
+    Dim var_Selected_Color As Variant
+    Dim var_Opposite_Color As Variant
 
-oppositeBoolean = Not passBoolean
+    oppositeBoolean = Not passBoolean
 
-'Determines color selection based on passed bool value
-If passBoolean = True Then
-    var_Selected_Color = cWhite
-    var_Opposite_Color = cGrey
-Else:
-    var_Selected_Color = cGrey
-    var_Opposite_Color = cWhite
-End If
-
-For i = LBound(PassArray) To UBound(PassArray)
-
-    If i < changeover Then
-    
-        'Unlocks if passed bool is true; locks if false
-        PassArray(i).Locked = oppositeBoolean
-        PassArray(i).BackColor = var_Selected_Color
-        'PassArray(i) = vbNullString    'Necessary? [...]
-    
+    'Determines color selection based on passed bool value
+    If passBoolean = True Then
+        var_Selected_Color = cWhite
+        var_Opposite_Color = cGrey
     Else:
-
-        'Locks if passed bool is true; unlocks if false
-        PassArray(i).Locked = passBoolean
-        PassArray(i).BackColor = var_Opposite_Color
-        'PassArray(i) = vbNullString    'Necessary? [...]
-
+        var_Selected_Color = cGrey
+        var_Opposite_Color = cWhite
     End If
 
-Next i
+    For i = LBound(PassArray) To UBound(PassArray)
+
+        If i < changeover Then
+    
+            'Unlocks if passed bool is true; locks if false
+            PassArray(i).Locked = oppositeBoolean
+            PassArray(i).BackColor = var_Selected_Color
+            'PassArray(i) = vbNullString    'Necessary? [...]
+    
+        Else:
+
+            'Locks if passed bool is true; unlocks if false
+            PassArray(i).Locked = passBoolean
+            PassArray(i).BackColor = var_Opposite_Color
+            'PassArray(i) = vbNullString    'Necessary? [...]
+
+        End If
+
+    Next i
 
 End Sub
 
@@ -126,39 +126,39 @@ End Sub
 ' PassProgramTextboxes
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub PassProgramTextboxes(ByRef passArr() As Object, ByVal passForm As MSForms.UserForm)
-Set passArr(0) = passForm.ProgramNumber_Textbox
-Set passArr(1) = passForm.ProgramTuition_Textbox
-Set passArr(2) = passForm.ClassMod1_Textbox
-Set passArr(3) = passForm.ClassMod2_Textbox
-Set passArr(4) = passForm.ClassMod3_Textbox
-Set passArr(5) = passForm.ClassMod4_Textbox
-Set passArr(6) = passForm.ClassMod5_Textbox
-Set passArr(7) = passForm.ClassMod6_Textbox
-Set passArr(8) = passForm.ClassMod7_Textbox
-Set passArr(9) = passForm.ClassTuition1_Textbox
-Set passArr(10) = passForm.ClassTuition2_Textbox
-Set passArr(11) = passForm.ClassTuition3_Textbox
-Set passArr(12) = passForm.ClassTuition4_Textbox
-Set passArr(13) = passForm.ClassTuition5_Textbox
-Set passArr(14) = passForm.ClassTuition6_Textbox
-Set passArr(15) = passForm.ClassTuition7_Textbox
+    Set passArr(0) = passForm.ProgramNumber_Textbox
+    Set passArr(1) = passForm.ProgramTuition_Textbox
+    Set passArr(2) = passForm.ClassMod1_Textbox
+    Set passArr(3) = passForm.ClassMod2_Textbox
+    Set passArr(4) = passForm.ClassMod3_Textbox
+    Set passArr(5) = passForm.ClassMod4_Textbox
+    Set passArr(6) = passForm.ClassMod5_Textbox
+    Set passArr(7) = passForm.ClassMod6_Textbox
+    Set passArr(8) = passForm.ClassMod7_Textbox
+    Set passArr(9) = passForm.ClassTuition1_Textbox
+    Set passArr(10) = passForm.ClassTuition2_Textbox
+    Set passArr(11) = passForm.ClassTuition3_Textbox
+    Set passArr(12) = passForm.ClassTuition4_Textbox
+    Set passArr(13) = passForm.ClassTuition5_Textbox
+    Set passArr(14) = passForm.ClassTuition6_Textbox
+    Set passArr(15) = passForm.ClassTuition7_Textbox
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' PassStudentTextboxes
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub PassStudentTextboxes(ByRef passArr() As Object, ByVal passForm As MSForms.UserForm)
-Set passArr(0) = passForm.StudentID_Textbox
-Set passArr(1) = passForm.Areacode_Textbox
-Set passArr(2) = passForm.Phonenumber_Textbox
-Set passArr(3) = passForm.Email_Textbox
-Set passArr(4) = passForm.AddressLine1_Textbox
-Set passArr(5) = passForm.AddressLine2_Textbox
-Set passArr(6) = passForm.AddressLine3_Textbox
-Set passArr(7) = passForm.AddressLine4_Textbox
-Set passArr(8) = passForm.City_Textbox
-Set passArr(9) = passForm.StateAbbrev_Textbox
-Set passArr(10) = passForm.Zipcode_Textbox
+    Set passArr(0) = passForm.StudentID_Textbox
+    Set passArr(1) = passForm.Areacode_Textbox
+    Set passArr(2) = passForm.Phonenumber_Textbox
+    Set passArr(3) = passForm.Email_Textbox
+    Set passArr(4) = passForm.AddressLine1_Textbox
+    Set passArr(5) = passForm.AddressLine2_Textbox
+    Set passArr(6) = passForm.AddressLine3_Textbox
+    Set passArr(7) = passForm.AddressLine4_Textbox
+    Set passArr(8) = passForm.City_Textbox
+    Set passArr(9) = passForm.StateAbbrev_Textbox
+    Set passArr(10) = passForm.Zipcode_Textbox
 End Sub
 
 
@@ -171,7 +171,9 @@ End Sub
 ' LoadErrorClass (Sub)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub LoadErrorClass(ByRef passException As cException)
+    Exception.Push "Environment.LoadErrorClass"
 
+    Exception.Pop
 End Sub
 
 
@@ -179,67 +181,69 @@ End Sub
 ' LoadStudentFile (Sub)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub LoadStudentFile(ByRef passStudent As cStudentFile, ByVal passUser As MSForms.UserForm, ByRef passException As cException)
+    Exception.Push "Environment.LoadStudentFile"
 
-'On Error GoTo handle_if_textbox_fails_to_pass
+    'On Error GoTo handle_if_textbox_fails_to_pass
 
-Set passStudent.UserForm = passUser
-Set passStudent.FirstNameTextbox = passUser.Firstname_Textbox
-Set passStudent.MiddleNameTextbox = passUser.Middlename_Textbox
-Set passStudent.LastNameTextbox = passUser.Lastname_Textbox
-Set passStudent.SalespersonTextbox = passUser.Salesperson_Textbox
-Set passStudent.StudentIDTextbox = passUser.StudentID_Textbox
-Set passStudent.AreaCodeTextbox = passUser.Areacode_Textbox
-Set passStudent.PhoneNumberTextbox = passUser.Phonenumber_Textbox
-Set passStudent.EmailTextbox = passUser.Email_Textbox
-Set passStudent.AddressLine1Textbox = passUser.AddressLine1_Textbox
-Set passStudent.AddressLine2Textbox = passUser.AddressLine2_Textbox
-Set passStudent.AddressLine3Textbox = passUser.AddressLine3_Textbox
-Set passStudent.AddressLine4Textbox = passUser.AddressLine4_Textbox
-Set passStudent.CityTextbox = passUser.City_Textbox
-Set passStudent.StateTextbox = passUser.StateAbbrev_Textbox
-Set passStudent.ZipCodeTextbox = passUser.Zipcode_Textbox
-Set passStudent.ProgramNumberTextbox = passUser.ProgramNumber_Textbox
-Set passStudent.ProgramTuitionTextbox = passUser.ProgramTuition_Textbox
-Set passStudent.ClassMod1Textbox = passUser.ClassMod1_Textbox
-Set passStudent.ClassMod2Textbox = passUser.ClassMod2_Textbox
-Set passStudent.ClassMod3Textbox = passUser.ClassMod3_Textbox
-Set passStudent.ClassMod4Textbox = passUser.ClassMod4_Textbox
-Set passStudent.ClassMod5Textbox = passUser.ClassMod5_Textbox
-Set passStudent.ClassMod6Textbox = passUser.ClassMod6_Textbox
-Set passStudent.ClassMod7Textbox = passUser.ClassMod7_Textbox
-Set passStudent.ClassTuition1Textbox = passUser.ClassTuition1_Textbox
-Set passStudent.ClassTuition2Textbox = passUser.ClassTuition2_Textbox
-Set passStudent.ClassTuition3Textbox = passUser.ClassTuition3_Textbox
-Set passStudent.ClassTuition4Textbox = passUser.ClassTuition4_Textbox
-Set passStudent.ClassTuition5Textbox = passUser.ClassTuition5_Textbox
-Set passStudent.ClassTuition6Textbox = passUser.ClassTuition6_Textbox
-Set passStudent.ClassTuition7Textbox = passUser.ClassTuition7_Textbox
-Set passStudent.ParentInvoiceTextbox = passUser.ParentInvoice_Textbox
-Set passStudent.StudentTuitionTextbox = passUser.StudentTuition_Textbox
-Set passStudent.StudentFeesTextbox = passUser.StudentFees_Textbox
-Set passStudent.StudentInvoiceTextbox = passUser.StudentInvoice_Textbox
-Set passStudent.DownPayTextbox = passUser.EnterDownPay_Textbox
-Set passStudent.NumberOfMonthsTextbox = passUser.EnterNumOfMonths_Textbox
-Set passStudent.DollarPerMonthTextbox = passUser.EnterDollarPerMonth_Textbox
-Set passStudent.SessionComboBox = passUser.Session_ComboBox
-Set passStudent.ParentNumberComboBox = passUser.ParentNumber_ComboBox
-Set passStudent.PrefixCodeComboBox = passUser.PrefixCode_ComboBox
-Set passStudent.AutomationComboBox = passUser.Automation_ComboBox
-Set passStudent.ProofHSCheckbox = passUser.ProofHS_Checkbox
-Set passStudent.ParentStatusOptionButton = passUser.WithParent_Optionselect
-Set passStudent.StudentStatusOptionButton = passUser.ReturnStudent_Optionselect
-Set passStudent.MaleOptionButton = passUser.Male_Optionselect
-Set passStudent.FemaleOptionButton = passUser.Female_Optionselect
-Set passStudent.CalcByDollarPerMonthOptionButton = passUser.CalcByDollarPerMonth_Optionselect
-Set passStudent.IndividualCreditsOptionButton = passUser.IndividualCredits_Optionselect
-Set passStudent.CareerProgramOptionButton = passUser.CareerProgram_Optionselect
-Set passStudent.CollegeSemesterOptionButton = passUser.CollegeSemester_Optionselect
-Set passStudent.CalcByNumOfMonthsOptionButton = passUser.CalcByNumOfMonths_Optionselect
-Set passStudent.PayInFullOptionButton = passUser.PayInFull_Optionselect
-Set passStudent.NoCostOptionButton = passUser.NoCost_Optionselect
+    Set passStudent.UserForm = passUser
+    Set passStudent.FirstNameTextbox = passUser.Firstname_Textbox
+    Set passStudent.MiddleNameTextbox = passUser.Middlename_Textbox
+    Set passStudent.LastNameTextbox = passUser.Lastname_Textbox
+    Set passStudent.SalespersonTextbox = passUser.Salesperson_Textbox
+    Set passStudent.StudentIDTextbox = passUser.StudentID_Textbox
+    Set passStudent.AreaCodeTextbox = passUser.Areacode_Textbox
+    Set passStudent.PhoneNumberTextbox = passUser.Phonenumber_Textbox
+    Set passStudent.EmailTextbox = passUser.Email_Textbox
+    Set passStudent.AddressLine1Textbox = passUser.AddressLine1_Textbox
+    Set passStudent.AddressLine2Textbox = passUser.AddressLine2_Textbox
+    Set passStudent.AddressLine3Textbox = passUser.AddressLine3_Textbox
+    Set passStudent.AddressLine4Textbox = passUser.AddressLine4_Textbox
+    Set passStudent.CityTextbox = passUser.City_Textbox
+    Set passStudent.StateTextbox = passUser.StateAbbrev_Textbox
+    Set passStudent.ZipCodeTextbox = passUser.Zipcode_Textbox
+    Set passStudent.ProgramNumberTextbox = passUser.ProgramNumber_Textbox
+    Set passStudent.ProgramTuitionTextbox = passUser.ProgramTuition_Textbox
+    Set passStudent.ClassMod1Textbox = passUser.ClassMod1_Textbox
+    Set passStudent.ClassMod2Textbox = passUser.ClassMod2_Textbox
+    Set passStudent.ClassMod3Textbox = passUser.ClassMod3_Textbox
+    Set passStudent.ClassMod4Textbox = passUser.ClassMod4_Textbox
+    Set passStudent.ClassMod5Textbox = passUser.ClassMod5_Textbox
+    Set passStudent.ClassMod6Textbox = passUser.ClassMod6_Textbox
+    Set passStudent.ClassMod7Textbox = passUser.ClassMod7_Textbox
+    Set passStudent.ClassTuition1Textbox = passUser.ClassTuition1_Textbox
+    Set passStudent.ClassTuition2Textbox = passUser.ClassTuition2_Textbox
+    Set passStudent.ClassTuition3Textbox = passUser.ClassTuition3_Textbox
+    Set passStudent.ClassTuition4Textbox = passUser.ClassTuition4_Textbox
+    Set passStudent.ClassTuition5Textbox = passUser.ClassTuition5_Textbox
+    Set passStudent.ClassTuition6Textbox = passUser.ClassTuition6_Textbox
+    Set passStudent.ClassTuition7Textbox = passUser.ClassTuition7_Textbox
+    Set passStudent.ParentInvoiceTextbox = passUser.ParentInvoice_Textbox
+    Set passStudent.StudentTuitionTextbox = passUser.StudentTuition_Textbox
+    Set passStudent.StudentFeesTextbox = passUser.StudentFees_Textbox
+    Set passStudent.StudentInvoiceTextbox = passUser.StudentInvoice_Textbox
+    Set passStudent.DownPayTextbox = passUser.EnterDownPay_Textbox
+    Set passStudent.NumberOfMonthsTextbox = passUser.EnterNumOfMonths_Textbox
+    Set passStudent.DollarPerMonthTextbox = passUser.EnterDollarPerMonth_Textbox
+    Set passStudent.SessionComboBox = passUser.Session_ComboBox
+    Set passStudent.ParentNumberComboBox = passUser.ParentNumber_ComboBox
+    Set passStudent.PrefixCodeComboBox = passUser.PrefixCode_ComboBox
+    Set passStudent.AutomationComboBox = passUser.Automation_ComboBox
+    Set passStudent.ProofHSCheckbox = passUser.ProofHS_Checkbox
+    Set passStudent.ParentStatusOptionButton = passUser.WithParent_Optionselect
+    Set passStudent.StudentStatusOptionButton = passUser.ReturnStudent_Optionselect
+    Set passStudent.MaleOptionButton = passUser.Male_Optionselect
+    Set passStudent.FemaleOptionButton = passUser.Female_Optionselect
+    Set passStudent.CalcByDollarPerMonthOptionButton = passUser.CalcByDollarPerMonth_Optionselect
+    Set passStudent.IndividualCreditsOptionButton = passUser.IndividualCredits_Optionselect
+    Set passStudent.CareerProgramOptionButton = passUser.CareerProgram_Optionselect
+    Set passStudent.CollegeSemesterOptionButton = passUser.CollegeSemester_Optionselect
+    Set passStudent.CalcByNumOfMonthsOptionButton = passUser.CalcByNumOfMonths_Optionselect
+    Set passStudent.PayInFullOptionButton = passUser.PayInFull_Optionselect
+    Set passStudent.NoCostOptionButton = passUser.NoCost_Optionselect
 
-'Check flags for failures
+    'Check flags for failures
 
+    Exception.Pop
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -247,21 +251,23 @@ End Sub
 'Expected name of table columns: Action | Item | Row | Col | Len
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub LoadCommands(ByRef Command As cCommand, ByRef passCommands As Collection, ByVal passTable As Excel.ListObject, ByRef passException As cException)
+    Exception.Push "Environment.LoadCommands"
 
-Dim Lrow As Excel.ListRow
+    Dim Lrow As Excel.ListRow
 
-For Each Lrow In passTable.ListRows
-  Set Command = New Command
-  Command.Action = Trim(passTable.ListColumn("Action").Value)
-  Command.ITEM = Trim(passTable.ListColumn("Item").Value)
-  Command.row = Trim(passTable.ListColumn("Row").Value)
-  Command.col = Trim(passTable.ListColumn("Col").Value)
-  Command.Len = Trim(passTable.ListColumn("Len").Value)
-  passCommands.Add Command
-Next Lrow
+    For Each Lrow In passTable.ListRows
+        Set Command = New Command
+        Command.Action = Trim(passTable.ListColumn("Action").Value)
+        Command.ITEM = Trim(passTable.ListColumn("Item").Value)
+        Command.row = Trim(passTable.ListColumn("Row").Value)
+        Command.col = Trim(passTable.ListColumn("Col").Value)
+        Command.Len = Trim(passTable.ListColumn("Len").Value)
+        passCommands.Add Command
+    Next Lrow
 
-'Check flags for failures
+    'Check flags for failures
 
+    Exception.Pop
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -269,8 +275,9 @@ End Sub
 '
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub LoadAS400(ByRef passAS400 As cAS400, ByRef passException As cException)
+    Exception.Push "Environment.LoadAS400"
 
-
+    Exception.Pop
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -278,7 +285,9 @@ End Sub
 '
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function FinalEnrollmentChecks(ByVal passStudent As cStudentFile, ByVal passAS400 As cAS400, ByVal passException As cException) As Boolean
+    Exception.Push "Environment.FinalEnrollmentChecks"
 
+    Exception.Pop
 End Function
 
 
