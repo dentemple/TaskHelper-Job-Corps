@@ -130,17 +130,17 @@ Private Sub RunRegistration(ByVal User As MSForms.Userform, ByVal CommandTable A
 	    'Recognized Actions: Home, Set, Send, Check, Get
 	    Select Case Command.Action
 
-		    Case Is "Home"
+		    'Case Is "Home"
 	
-		    Case Is "Set"
+		    'Case Is "Set"
 	
-		    Case Is "Send"
+		    'Case Is "Send"
 	
-		    Case Is "Check"
+		    'Case Is "Check"
 	
-		    Case Is "Get"
+		    'Case Is "Get"
 	
-		    Case Else
+		    'Case Else
 	
 	    End Select
 	
