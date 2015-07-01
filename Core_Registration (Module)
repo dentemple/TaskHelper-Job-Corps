@@ -6,7 +6,7 @@
 ' InitializeAS400 (Sub)
 '
 'Sets the connections to the AS/400 Host Automation Library. _
-	The procedure assumes the intended AS/400 session has already
+	The procedure assumes the intended AS/400 session has already _
 	been stored within the class object. _
 	Success can also be checked by the class object's ErrorFlag property
 '
