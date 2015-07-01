@@ -12,7 +12,7 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Sub HomepageButton_Click()
 
-WelcomeForm.Show
+    WelcomeForm.Show
 
 End Sub
 
@@ -21,11 +21,11 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Sub HomeToData_Click()
 
-Application.ScreenUpdating = False
+    Application.ScreenUpdating = False
 
-Call NavigateSheets("HomeSheet", "DataSheet")
+    Call NavigateSheets("HomeSheet", "DataSheet")
 
-Application.ScreenUpdating = True
+    Application.ScreenUpdating = True
 
 End Sub
 
@@ -34,11 +34,11 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Sub HomeToEnroll_Click()
 
-Application.ScreenUpdating = False
+    Application.ScreenUpdating = False
 
-Call NavigateSheets("HomeSheet", "EnrollSheet")
+    Call NavigateSheets("HomeSheet", "EnrollSheet")
 
-Application.ScreenUpdating = True
+    Application.ScreenUpdating = True
 
 End Sub
 
@@ -47,11 +47,11 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Sub EnrollToHome_Click()
 
-Application.ScreenUpdating = False
+    Application.ScreenUpdating = False
 
-Call NavigateSheets("EnrollSheet", "HomeSheet")
+    Call NavigateSheets("EnrollSheet", "HomeSheet")
 
-Application.ScreenUpdating = True
+    Application.ScreenUpdating = True
 
 End Sub
 
@@ -60,11 +60,11 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Sub EnrollToData_Click()
 
-Application.ScreenUpdating = False
+    Application.ScreenUpdating = False
 
-Call NavigateSheets("EnrollSheet", "DataSheet")
+    Call NavigateSheets("EnrollSheet", "DataSheet")
 
-Application.ScreenUpdating = True
+    Application.ScreenUpdating = True
 
 End Sub
 
@@ -74,11 +74,11 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Sub DataToEnroll_Click()
 
-Application.ScreenUpdating = False
+    Application.ScreenUpdating = False
 
-Call NavigateSheets("DataSheet", "EnrollSheet")
+    Call NavigateSheets("DataSheet", "EnrollSheet")
 
-Application.ScreenUpdating = True
+    Application.ScreenUpdating = True
 
 End Sub
 
@@ -88,11 +88,11 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Sub DataToHome_Click()
 
-Application.ScreenUpdating = False
+    Application.ScreenUpdating = False
 
-Call NavigateSheets("DataSheet", "HomeSheet")
+    Call NavigateSheets("DataSheet", "HomeSheet")
 
-Application.ScreenUpdating = True
+    Application.ScreenUpdating = True
 
 End Sub
 
@@ -102,7 +102,7 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Sub NewStudentNoParent_Click()
 
-New_Student_No_Parent.Show
+    New_Student_No_Parent.Show
 
 End Sub
 
@@ -112,7 +112,7 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Sub ReturnStudentNoParent_Click()
 
-Return_Student_No_Parent.Show
+    Return_Student_No_Parent.Show
 
 End Sub
 
@@ -122,7 +122,7 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Sub NewStudentWithParent_Click()
 
-New_Student_With_Parent.Show
+    New_Student_With_Parent.Show
 
 End Sub
 
@@ -131,7 +131,7 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Sub ReturnStudentWithParent_Click()
 
-Return_Student_With_Parent.Show
+    Return_Student_With_Parent.Show
 
 End Sub
 
@@ -143,25 +143,25 @@ in the foreground or the background.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Sub ActivityButton_Click()
 
-Dim str As String
-Dim ws As Excel.Worksheet
+    Dim str As String
+    Dim ws As Excel.Worksheet
 
-str = vbNullString
+    str = vbNullString
 
-Application.ScreenUpdating = False
+    Application.ScreenUpdating = False
 
-Set ws = GetSheetFromCodeName(Workbooks("TaskHelper VBA iSeries.xlsm"), "EnrollSheet")
-str = ws.Range("ActivityDecision").Text
+    Set ws = GetSheetFromCodeName(Workbooks("TaskHelper VBA iSeries.xlsm"), "EnrollSheet")
+    str = ws.Range("ActivityDecision").Text
 
-If str = "Show" Then
-    ws.Range("ActivityDecision") = "Hide"
+    If str = "Show" Then
+        ws.Range("ActivityDecision") = "Hide"
 
-ElseIf str = "Hide" Then
-    ws.Range("ActivityDecision") = "Show"
+    ElseIf str = "Hide" Then
+        ws.Range("ActivityDecision") = "Show"
     
-End If
+    End If
 
-Application.ScreenUpdating = True
+    Application.ScreenUpdating = True
     
 End Sub
 
