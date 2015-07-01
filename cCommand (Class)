@@ -69,7 +69,7 @@ Public Property Get Action As String
 	Else
 		pErrorFlag = True
 		pErrorMessage = pErrorMessage & "* The '" & LCase(pAction) & "' action is not recognized." & vbNewLine
-	End If
+    End If
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -79,10 +79,10 @@ End Property
 	by the enrollment code
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Item(Value As String)
-  pItem = Value
+    pItem = Value
 End Property
 Public Property Get Item As String
-  Item = LCase(pItem)
+    Item = LCase(pItem)
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -99,20 +99,20 @@ End Property
 ' Col property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Col(Value As Long)
-  pCol = Value
+    pCol = Value
 End Property
 Public Property Get Col As Long
-  Col = pCol
+    Col = pCol
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Len property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Len(Value As Long)
-  pLen = Value
+    pLen = Value
 End Property
 Public Property Get Len As Long
-  Len = pLen
+    Len = pLen
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -122,7 +122,7 @@ End Property
 ' ErrorFlag property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Get ErrorFlag() As Boolean
-	ErrorFlag = pErrorFlag
+    ErrorFlag = pErrorFlag
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
