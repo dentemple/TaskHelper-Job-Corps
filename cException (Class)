@@ -11,13 +11,6 @@ Private pMessage As String
 'CALL STACK PROPERTIES
 Private TopItem As StackItem
 
-'Points to the array element of the call stack
-Private pStackPointer As Integer
-'Array of procedure names in the call stack
-Private pCallStack() As String
-
-'PushCallStack Function
-'PopCallStack Function
 'LogErrorDescription Function
 'LogErrorNumberFunction
 'WriteErrorToFile Function
@@ -27,13 +20,12 @@ Private pCallStack() As String
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Public Sub Push(ByVal str As String)
-'Pushes a new stack item to a stack
-Dim NewTop As StackItem
-Set NewTop = New StackItem
-
-NewTop.Value = str
-Set NewTop.NextItem = TopItem
-Set TopItem = NewTop
+    'Pushes a new stack item to a stack
+    Dim NewTop As StackItem
+    Set NewTop = New StackItem
+    NewTop.Value = str
+    Set NewTop.NextItem = TopItem
+    Set TopItem = NewTop
 End Sub
 
 Private Property Get StackIsEmpty() As Boolean
@@ -45,6 +37,14 @@ Public Function Pop() As String
     Pop = TopItem.Value
     Set TopItem = TopItem.NextItem
   End If
+End Function
+
+Public Function Unwind() As String
+    Dim str As String
+    Do Until StackIsEmpty
+    str = Pop & vbNewLine & str
+    Loop
+    Unwind = str
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
