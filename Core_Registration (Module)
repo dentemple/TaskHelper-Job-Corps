@@ -26,6 +26,25 @@ AS400.Metrics.Refresh
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Excel Defaults
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub TurnOffExcelDefaults()
+
+Application.ScreenUpdating = False
+Application.DisplayAlerts = False
+Application.Calculation = xlCalculationManual
+
+End Sub
+
+Public Sub TurnOnExcelDefaults()
+
+Application.Calculation = xlCalculationAutomatic
+Application.DisplayAlerts = True
+Application.ScreenUpdating = True
+
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' WaitForReady (Sub)
 '
 ' Prevents the script from overrunning the AS/400. _
@@ -64,14 +83,14 @@ Private Sub RunRegistration(ByVal User As MSForms.Userform, ByVal CommandTable A
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Set the required classes and collections
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Set Exception = New cException
+Exception.Push "Core_Registration.RunRegistration"
+
 Dim Student As cStudentFile
 Set Student = New cStudentFile
 
 Dim AS400 As cAS400
 Set AS400 = New cAS400
-
-Dim Exception As cException
-Set Exception = New cException
 
 Dim Commands As Collection
 Set Commands = New Collection
@@ -86,6 +105,7 @@ Dim CommandCount As Integer
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Loads the collection and class objects
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+TurnOffExcelDefaults
 LoadErrorClass Exception
 LoadStudentFile Student, User, Exception
 LoadCommands Command, Commands, CommandTable, Exception
@@ -132,5 +152,15 @@ Next Command
 ' Output
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Cleanup:
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+TurnOnExcelDefaults
+Exception.Pop
+
+Exit Sub
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Error Handlers
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 End Sub
