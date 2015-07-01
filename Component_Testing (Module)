@@ -35,6 +35,7 @@ Public Sub TestStudentFile(User As MSForms.UserForm)
 
 Dim DebugCheck As Boolean
 Dim PassInfo1 As String
+Dim PassInfo2 As String
 
 Dim Stu As cStudentFile
 Set Stu = New cStudentFile
@@ -68,10 +69,22 @@ PassInfo1 = "NAME INFORMATION" & vbNewLine & vbNewLine & _
     "City:" & vbTab & vbTab & Stu.GetCity & vbNewLine & _
     "State:" & vbTab & vbTab & Stu.GetState & vbNewLine & _
     "ZipCode:" & vbTab & vbTab & Stu.GetZipCode & vbNewLine
+    
+PassInfo2 = "OPTION BUTTONS" & vbNewLine & vbNewLine & _
+    "Student Status:" & vbTab & Stu.GetStudentStatus & vbNewLine & _
+    "Parent Status:" & vbTab & Stu.GetParentStatus & vbNewLine & _
+    "Gender:" & vbTab & vbTab & Stu.GetGender & vbNewLine & _
+    "Enrollment Type:" & vbTab & Stu.GetEnrollmentType & vbNewLine & _
+    "Payment Type:" & vbTab & Stu.GetPaymentType & vbNewLine & vbNewLine & _
+    "PROGRAM INFORMATION" & vbNewLine & vbNewLine & _
+    "Program Number:" & vbTab & Stu.GetProgramNumber & vbNewLine & _
+    "Program Tuition:" & vbTab & vbTab & Stu.GetProgramTuition & vbNewLine & _
+    "Class Mod 1:" & vbTab & vbTab & Stu.GetClassMod1 & vbNewLine & _
+    "Class Tuition 1:" & vbTab & vbTab & Stu.GetClassTuition1 & vbNewLine
 
 '    ":" & vbTab & vbTab & Stu & vbNewLine & _
 
-MsgBox PassInfo1
+MsgBox Stu.ErrorMessage & PassInfo2
 
 Cleanup:
 Set Stu = Nothing
@@ -81,4 +94,6 @@ Exit Sub
 Error_LoadStudentFile: MsgBox "Error on LoadStudentFile": Resume Cleanup
 Error_PassInfo: MsgBox "Error on passing values": Resume Cleanup
 End Sub
+
+
 
