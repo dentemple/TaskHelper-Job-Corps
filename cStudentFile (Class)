@@ -877,7 +877,6 @@ End Function
 Public Property Set UserForm(Value As MSForms.UserForm)
     Set pUserform = Value
 End Property
-
 Public Property Get UserForm() As MSForms.UserForm
     Set UserForm = pUserform
 End Property
@@ -888,7 +887,6 @@ End Property
 Public Property Set FirstNameTextbox(Value As MSForms.TextBox)
     Set pFirstNameTextbox = Value
 End Property
-
 Public Property Get FirstNameTextbox() As MSForms.TextBox
     Set FirstNameTextbox = pFirstNameTextbox
 End Property
@@ -899,7 +897,6 @@ End Property
 Public Property Set MiddleNameTextbox(Value As MSForms.TextBox)
     Set pMiddleNameTextbox = Value
 End Property
-
 Public Property Get MiddleNameTextbox() As MSForms.TextBox
     Set MiddleNameTextbox = pMiddleNameTextbox
 End Property
@@ -910,7 +907,6 @@ End Property
 Public Property Set LastNameTextbox(Value As MSForms.TextBox)
     Set pLastNameTextbox = Value
 End Property
-
 Public Property Get LastNameTextbox() As MSForms.TextBox
     Set LastNameTextbox = pLastNameTextbox
 End Property
@@ -921,7 +917,6 @@ End Property
 Public Property Set SalespersonTextbox(Value As MSForms.TextBox)
     Set pSalespersonTextbox = Value
 End Property
-
 Public Property Get SalespersonTextbox() As MSForms.TextBox
     Set SalespersonTextbox = pSalespersonTextbox
 End Property
@@ -932,7 +927,6 @@ End Property
 Public Property Set StudentIDTextbox(Value As MSForms.TextBox)
     Set pStudentIDTextbox = Value
 End Property
-
 Public Property Get StudentIDTextbox() As MSForms.TextBox
     Set StudentIDTextbox = pStudentIDTextbox
 End Property
@@ -943,7 +937,6 @@ End Property
 Public Property Set AreaCodeTextbox(Value As MSForms.TextBox)
     Set pAreaCodeTextbox = Value
 End Property
-
 Public Property Get AreaCodeTextbox() As MSForms.TextBox
     Set AreaCodeTextbox = pAreaCodeTextbox
 End Property
@@ -954,7 +947,6 @@ End Property
 Public Property Set PhoneNumberTextbox(Value As MSForms.TextBox)
     Set pPhoneNumberTextbox = Value
 End Property
-
 Public Property Get PhoneNumberTextbox() As MSForms.TextBox
     Set PhoneNumberTextbox = pPhoneNumberTextbox
 End Property
@@ -965,7 +957,6 @@ End Property
 Public Property Set EmailTextbox(Value As MSForms.TextBox)
     Set pEmailTextbox = Value
 End Property
-
 Public Property Get EmailTextbox() As MSForms.TextBox
     Set EmailTextbox = pEmailTextbox
 End Property
@@ -976,7 +967,6 @@ End Property
 Public Property Set AddressLine1Textbox(Value As MSForms.TextBox)
     Set pAddressLine1Textbox = Value
 End Property
-
 Public Property Get AddressLine1Textbox() As MSForms.TextBox
     Set AddressLine1Textbox = pAddressLine1Textbox
 End Property
@@ -987,7 +977,6 @@ End Property
 Public Property Set AddressLine2Textbox(Value As MSForms.TextBox)
     Set pAddressLine2Textbox = Value
 End Property
-
 Public Property Get AddressLine2Textbox() As MSForms.TextBox
     Set AddressLine2Textbox = pAddressLine2Textbox
 End Property
@@ -998,7 +987,6 @@ End Property
 Public Property Set AddressLine3Textbox(Value As MSForms.TextBox)
     Set pAddressLine3Textbox = Value
 End Property
-
 Public Property Get AddressLine3Textbox() As MSForms.TextBox
     Set AddressLine3Textbox = pAddressLine3Textbox
 End Property
@@ -1009,7 +997,6 @@ End Property
 Public Property Set AddressLine4Textbox(Value As MSForms.TextBox)
     Set pAddressLine4Textbox = Value
 End Property
-
 Public Property Get AddressLine4Textbox() As MSForms.TextBox
     Set AddressLine4Textbox = pAddressLine4Textbox
 End Property
@@ -1020,7 +1007,6 @@ End Property
 Public Property Set CityTextbox(Value As MSForms.TextBox)
     Set pCityTextbox = Value
 End Property
-
 Public Property Get CityTextbox() As MSForms.TextBox
     Set CityTextbox = pCityTextbox
 End Property
@@ -1031,7 +1017,6 @@ End Property
 Public Property Set StateTextbox(Value As MSForms.TextBox)
     Set pStateTextbox = Value
 End Property
-
 Public Property Get StateTextbox() As MSForms.TextBox
     Set StateTextbox = pStateTextbox
 End Property
@@ -1042,7 +1027,6 @@ End Property
 Public Property Set ZipCodeTextbox(Value As MSForms.TextBox)
     Set pZipCodeTextbox = Value
 End Property
-
 Public Property Get ZipCodeTextbox() As MSForms.TextBox
     Set ZipCodeTextbox = pZipCodeTextbox
 End Property
@@ -1053,7 +1037,6 @@ End Property
 Public Property Set ProgramNumberTextbox(Value As MSForms.TextBox)
     Set pProgramNumberTextbox = Value
 End Property
-
 Public Property Get ProgramNumberTextbox() As MSForms.TextBox
     Set ProgramNumberTextbox = pProgramNumberTextbox
 End Property
@@ -1064,7 +1047,6 @@ End Property
 Public Property Set ProgramTuitionTextbox(Value As MSForms.TextBox)
     Set pProgramTuitionTextbox = Value
 End Property
-
 Public Property Get ProgramTuitionTextbox() As MSForms.TextBox
     Set ProgramTuitionTextbox = pProgramTuitionTextbox
 End Property
@@ -1075,7 +1057,6 @@ End Property
 Public Property Set ClassMod1Textbox(Value As MSForms.TextBox)
     Set pClassMod1Textbox = Value
 End Property
-
 Public Property Get ClassMod1Textbox() As MSForms.TextBox
     Set ClassMod1Textbox = pClassMod1Textbox
 End Property
@@ -1086,7 +1067,6 @@ End Property
 Public Property Set ClassMod2Textbox(Value As MSForms.TextBox)
     Set pClassMod2Textbox = Value
 End Property
-
 Public Property Get ClassMod2Textbox() As MSForms.TextBox
     Set ClassMod2Textbox = pClassMod2Textbox
 End Property
@@ -1097,7 +1077,6 @@ End Property
 Public Property Set ClassMod3Textbox(Value As MSForms.TextBox)
     Set pClassMod3Textbox = Value
 End Property
-
 Public Property Get ClassMod3Textbox() As MSForms.TextBox
     Set ClassMod3Textbox = pClassMod3Textbox
 End Property
@@ -1108,7 +1087,6 @@ End Property
 Public Property Set ClassMod4Textbox(Value As MSForms.TextBox)
     Set pClassMod4Textbox = Value
 End Property
-
 Public Property Get ClassMod4Textbox() As MSForms.TextBox
     Set ClassMod4Textbox = pClassMod4Textbox
 End Property
@@ -1119,7 +1097,6 @@ End Property
 Public Property Set ClassMod5Textbox(Value As MSForms.TextBox)
     Set pClassMod5Textbox = Value
 End Property
-
 Public Property Get ClassMod5Textbox() As MSForms.TextBox
     Set ClassMod5Textbox = pClassMod5Textbox
 End Property
@@ -1130,7 +1107,6 @@ End Property
 Public Property Set ClassMod6Textbox(Value As MSForms.TextBox)
     Set pClassMod6Textbox = Value
 End Property
-
 Public Property Get ClassMod6Textbox() As MSForms.TextBox
     Set ClassMod6Textbox = pClassMod6Textbox
 End Property
@@ -1141,7 +1117,6 @@ End Property
 Public Property Set ClassMod7Textbox(Value As MSForms.TextBox)
     Set pClassMod7Textbox = Value
 End Property
-
 Public Property Get ClassMod7Textbox() As MSForms.TextBox
     Set ClassMod7Textbox = pClassMod7Textbox
 End Property
@@ -1152,7 +1127,6 @@ End Property
 Public Property Set ClassTuition1Textbox(Value As MSForms.TextBox)
     Set pClassTuition1Textbox = Value
 End Property
-
 Public Property Get ClassTuition1Textbox() As MSForms.TextBox
     Set ClassTuition1Textbox = pClassTuition1Textbox
 End Property
@@ -1163,7 +1137,6 @@ End Property
 Public Property Set ClassTuition2Textbox(Value As MSForms.TextBox)
     Set pClassTuition2Textbox = Value
 End Property
-
 Public Property Get ClassTuition2Textbox() As MSForms.TextBox
     Set ClassTuition2Textbox = pClassTuition2Textbox
 End Property
@@ -1174,7 +1147,6 @@ End Property
 Public Property Set ClassTuition3Textbox(Value As MSForms.TextBox)
     Set pClassTuition3Textbox = Value
 End Property
-
 Public Property Get ClassTuition3Textbox() As MSForms.TextBox
     Set ClassTuition3Textbox = pClassTuition3Textbox
 End Property
@@ -1185,7 +1157,6 @@ End Property
 Public Property Set ClassTuition4Textbox(Value As MSForms.TextBox)
     Set pClassTuition4Textbox = Value
 End Property
-
 Public Property Get ClassTuition4Textbox() As MSForms.TextBox
     Set ClassTuition4Textbox = pClassTuition4Textbox
 End Property
@@ -1196,7 +1167,6 @@ End Property
 Public Property Set ClassTuition5Textbox(Value As MSForms.TextBox)
     Set pClassTuition5Textbox = Value
 End Property
-
 Public Property Get ClassTuition5Textbox() As MSForms.TextBox
     Set ClassTuition5Textbox = pClassTuition5Textbox
 End Property
@@ -1207,7 +1177,6 @@ End Property
 Public Property Set ClassTuition6Textbox(Value As MSForms.TextBox)
     Set pClassTuition6Textbox = Value
 End Property
-
 Public Property Get ClassTuition6Textbox() As MSForms.TextBox
     Set ClassTuition6Textbox = pClassTuition6Textbox
 End Property
@@ -1218,7 +1187,6 @@ End Property
 Public Property Set ClassTuition7Textbox(Value As MSForms.TextBox)
     Set pClassTuition7Textbox = Value
 End Property
-
 Public Property Get ClassTuition7Textbox() As MSForms.TextBox
     Set ClassTuition7Textbox = pClassTuition7Textbox
 End Property
@@ -1229,7 +1197,6 @@ End Property
 Public Property Set ParentInvoiceTextbox(Value As MSForms.TextBox)
     Set pParentInvoiceTextbox = Value
 End Property
-
 Public Property Get ParentInvoiceTextbox() As MSForms.TextBox
     Set ParentInvoiceTextbox = pParentInvoiceTextbox
 End Property
@@ -1240,7 +1207,6 @@ End Property
 Public Property Set StudentTuitionTextbox(Value As MSForms.TextBox)
     Set pStudentTuitionTextbox = Value
 End Property
-
 Public Property Get StudentTuitionTextbox() As MSForms.TextBox
     Set StudentTuitionTextbox = pStudentTuitionTextbox
 End Property
@@ -1251,7 +1217,6 @@ End Property
 Public Property Set StudentFeesTextbox(Value As MSForms.TextBox)
     Set pStudentFeesTextbox = Value
 End Property
-
 Public Property Get StudentFeesTextbox() As MSForms.TextBox
     Set StudentFeesTextbox = pStudentFeesTextbox
 End Property
@@ -1262,7 +1227,6 @@ End Property
 Public Property Set StudentInvoiceTextbox(Value As MSForms.TextBox)
     Set pStudentInvoiceTextbox = Value
 End Property
-
 Public Property Get StudentInvoiceTextbox() As MSForms.TextBox
     Set StudentInvoiceTextbox = pStudentInvoiceTextbox
 End Property
@@ -1273,7 +1237,6 @@ End Property
 Public Property Set DownPayTextbox(Value As MSForms.TextBox)
     Set pDownPayTextbox = Value
 End Property
-
 Public Property Get DownPayTextbox() As MSForms.TextBox
     Set DownPayTextbox = pDownPayTextbox
 End Property
@@ -1284,7 +1247,6 @@ End Property
 Public Property Set NumberOfMonthsTextbox(Value As MSForms.TextBox)
     Set pNumberOfMonthsTextbox = Value
 End Property
-
 Public Property Get NumberOfMonthsTextbox() As MSForms.TextBox
     Set NumberOfMonthsTextbox = pNumberOfMonthsTextbox
 End Property
@@ -1295,7 +1257,6 @@ End Property
 Public Property Set DollarPerMonthTextbox(Value As MSForms.TextBox)
     Set pDollarPerMonthTextbox = Value
 End Property
-
 Public Property Get DollarPerMonthTextbox() As MSForms.TextBox
     Set DollarPerMonthTextbox = pDollarPerMonthTextbox
 End Property
@@ -1306,7 +1267,6 @@ End Property
 Public Property Set SessionComboBox(Value As MSForms.ComboBox)
     Set pSessionComboBox = Value
 End Property
-
 Public Property Get SessionComboBox() As MSForms.ComboBox
     Set SessionComboBox = pSessionComboBox
 End Property
@@ -1317,7 +1277,6 @@ End Property
 Public Property Set ParentNumberComboBox(Value As MSForms.ComboBox)
     Set pParentNumberComboBox = Value
 End Property
-
 Public Property Get ParentNumberComboBox() As MSForms.ComboBox
     Set ParentNumberComboBox = pParentNumberComboBox
 End Property
@@ -1328,7 +1287,6 @@ End Property
 Public Property Set PrefixCodeComboBox(Value As MSForms.ComboBox)
     Set pPrefixCodeComboBox = Value
 End Property
-
 Public Property Get PrefixCodeComboBox() As MSForms.ComboBox
     Set PrefixCodeComboBox = pPrefixCodeComboBox
 End Property
@@ -1339,7 +1297,6 @@ End Property
 Public Property Set AutomationComboBox(Value As MSForms.ComboBox)
     Set pAutomationComboBox = Value
 End Property
-
 Public Property Get AutomationComboBox() As MSForms.ComboBox
     Set AutomationComboBox = pAutomationComboBox
 End Property
@@ -1350,7 +1307,6 @@ End Property
 Public Property Set ProofHSCheckbox(Value As MSForms.CheckBox)
     Set pProofHSCheckbox = Value
 End Property
-
 Public Property Get ProofHSCheckbox() As MSForms.CheckBox
     Set ProofHSCheckbox = pProofHSCheckbox
 End Property
@@ -1361,7 +1317,6 @@ End Property
 Public Property Set ParentStatusOptionButton(Value As MSForms.OptionButton)
     Set pParentStatusOptionButton = Value
 End Property
-
 Public Property Get ParentStatusOptionButton() As MSForms.OptionButton
     Set ParentStatusOptionButton = pParentStatusOptionButton
 End Property
@@ -1372,7 +1327,6 @@ End Property
 Public Property Set StudentStatusOptionButton(Value As MSForms.OptionButton)
     Set pStudentStatusOptionButton = Value
 End Property
-
 Public Property Get StudentStatusOptionButton() As MSForms.OptionButton
     Set StudentStatusOptionButton = pStudentStatusOptionButton
 End Property
@@ -1383,7 +1337,6 @@ End Property
 Public Property Set MaleOptionButton(Value As MSForms.OptionButton)
     Set pMaleOptionButton = Value
 End Property
-
 Public Property Get MaleOptionButton() As MSForms.OptionButton
     Set MaleOptionButton = pMaleOptionButton
 End Property
@@ -1394,7 +1347,6 @@ End Property
 Public Property Set FemaleOptionButton(Value As MSForms.OptionButton)
     Set pFemaleOptionButton = Value
 End Property
-
 Public Property Get FemaleOptionButton() As MSForms.OptionButton
     Set FemaleOptionButton = pFemaleOptionButton
 End Property
@@ -1405,7 +1357,6 @@ End Property
 Public Property Set CalcByDollarPerMonthOptionButton(Value As MSForms.OptionButton)
     Set pCalcByDollarPerMonthOptionButton = Value
 End Property
-
 Public Property Get CalcByDollarPerMonthOptionButton() As MSForms.OptionButton
     Set CalcByDollarPerMonthOptionButton = pCalcByDollarPerMonthOptionButton
 End Property
@@ -1416,7 +1367,6 @@ End Property
 Public Property Set IndividualCreditsOptionButton(Value As MSForms.OptionButton)
     Set pIndividualCreditsOptionButton = Value
 End Property
-
 Public Property Get IndividualCreditsOptionButton() As MSForms.OptionButton
     Set IndividualCreditsOptionButton = pIndividualCreditsOptionButton
 End Property
@@ -1427,7 +1377,6 @@ End Property
 Public Property Set CareerProgramOptionButton(Value As MSForms.OptionButton)
     Set pCareerProgramOptionButton = Value
 End Property
-
 Public Property Get CareerProgramOptionButton() As MSForms.OptionButton
     Set CareerProgramOptionButton = pCareerProgramOptionButton
 End Property
@@ -1438,7 +1387,6 @@ End Property
 Public Property Set CollegeSemesterOptionButton(Value As MSForms.OptionButton)
     Set pCollegeSemesterOptionButton = Value
 End Property
-
 Public Property Get CollegeSemesterOptionButton() As MSForms.OptionButton
     Set CollegeSemesterOptionButton = pCollegeSemesterOptionButton
 End Property
@@ -1449,7 +1397,6 @@ End Property
 Public Property Set CalcByNumOfMonthsOptionButton(Value As MSForms.OptionButton)
     Set pCalcByNumOfMonthsOptionButton = Value
 End Property
-
 Public Property Get CalcByNumOfMonthsOptionButton() As MSForms.OptionButton
     Set CalcByNumOfMonthsOptionButton = pCalcByNumOfMonthsOptionButton
 End Property
@@ -1460,7 +1407,6 @@ End Property
 Public Property Set PayInFullOptionButton(Value As MSForms.OptionButton)
     Set pPayInFullOptionButton = Value
 End Property
-
 Public Property Get PayInFullOptionButton() As MSForms.OptionButton
     Set PayInFullOptionButton = pPayInFullOptionButton
 End Property
@@ -1471,7 +1417,6 @@ End Property
 Public Property Set NoCostOptionButton(Value As MSForms.OptionButton)
     Set pNoCostOptionButton = Value
 End Property
-
 Public Property Get NoCostOptionButton() As MSForms.OptionButton
     Set NoCostOptionButton = pNoCostOptionButton
 End Property
