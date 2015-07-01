@@ -1,11 +1,11 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' cCommand (Class)
 'Stores the individual commands to be executed by the AS/400. _
-	(Note: The AS/400 only accepts number as Long.) _
+    (Note: The AS/400 only accepts number as Long.) _
 Required Input: _
-	Action | Item | Row | Col | Len
+    Action | Item | Row | Col | Length _
 Recognized Actions: _
-	Home, Set, Send, Check, Get (Stored within the RecognizedActions variable)
+    Home, Set, Send, Check, Get (Stored within the RecognizedActions variable)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Option Explicit
@@ -16,7 +16,7 @@ Private pAction As String
 Private pItem As String
 Private pRow As Long
 Private pCol As Long
-Private pLen As Long
+Private pLength As Long
 
 ' ERROR PROPERTIES
 Private pErrorFlag As Boolean
@@ -24,7 +24,7 @@ Private pErrorMessage As String
 
 ' "CONSTANT" PROPERTIES
 'Caution: True constants cannot be declared in a class module. These values are _
-	for internal use only so as to provide the class some additional modularity.
+    for internal use only so as to provide the class some additional modularity.
 Private RecognizedActions As String
 Private RecognizedPaths As String
 
@@ -33,10 +33,10 @@ Private RecognizedPaths As String
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Private Sub Class_Initialize()
-	RecognizedPaths = "addressbook"
-	RecognizedActions = "home set send check get"
-	pErrorFlag = False
-	pErrorMessage = "The Command List has encountered the following issues:" & vbNewLine & vbNewLine
+    RecognizedPaths = "addressbook"
+    RecognizedActions = "home set send check get"
+    pErrorFlag = False
+    pErrorMessage = "The Command List has encountered the following issues:" & vbNewLine & vbNewLine
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -45,30 +45,30 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Path property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Path(Value As String)
-	pPath = Value
+Public Property Let Path(Value As String)
+    pPath = Value
 End Property
-Public Property Get Path As String
-	If InStr(RecognizedPaths, LCase(pPath)) >= 1 Then
-		Path = LCase(pPath)
-	Else
-		pErrorFlag = True
-		pErrorMessage = pErrorMessage & "* The '" & LCase(pPath) & "' path is not recognized." & vbNewLine
-	End If
+Public Property Get Path() As String
+    If InStr(RecognizedPaths, LCase(pPath)) >= 1 Then
+        Path = LCase(pPath)
+    Else
+        pErrorFlag = True
+        pErrorMessage = pErrorMessage & "* The '" & LCase(pPath) & "' path is not recognized." & vbNewLine
+    End If
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Action property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Action(Value As String)
-	pAction = Value
+Public Property Let Action(Value As String)
+    pAction = Value
 End Property
-Public Property Get Action As String
-	If InStr(RecognizedActions, LCase(pAction)) >= 1 Then
-		Action = LCase(pAction)
-	Else
-		pErrorFlag = True
-		pErrorMessage = pErrorMessage & "* The '" & LCase(pAction) & "' action is not recognized." & vbNewLine
+Public Property Get Action() As String
+    If InStr(RecognizedActions, LCase(pAction)) >= 1 Then
+        Action = LCase(pAction)
+    Else
+        pErrorFlag = True
+        pErrorMessage = pErrorMessage & "* The '" & LCase(pAction) & "' action is not recognized." & vbNewLine
     End If
 End Property
 
@@ -76,43 +76,43 @@ End Property
 ' Item property
 
 'To improve modularity, the validity of the input is checked _
-	by the enrollment code
+    by the enrollment code
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Item(Value As String)
+Public Property Let Item(Value As String)
     pItem = Value
 End Property
-Public Property Get Item As String
+Public Property Get Item() As String
     Item = LCase(pItem)
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Row property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Row(Value As Long)
+Public Property Let Row(Value As Long)
     pRow = Value
 End Property
-Public Property Get Row As Long
+Public Property Get Row() As Long
     Row = pRow
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Col property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Col(Value As Long)
+Public Property Let Col(Value As Long)
     pCol = Value
 End Property
-Public Property Get Col As Long
+Public Property Get Col() As Long
     Col = pCol
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Len property
+' Length property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Len(Value As Long)
-    pLen = Value
+Public Property Let Length(Value As Long)
+    pLength = Value
 End Property
-Public Property Get Len As Long
-    Len = pLen
+Public Property Get Length() As Long
+    Length = pLength
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -131,3 +131,5 @@ End Property
 Public Property Get ErrorMessage() As String
     ErrorMessage = pErrorMessage
 End Property
+
+
