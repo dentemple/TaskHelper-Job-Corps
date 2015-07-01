@@ -1,0 +1,8 @@
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' StackItem (Class)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+' Keep track of the next stack item,
+' and the value of this item.
+Public Value As Variant
+Public NextItem As StackItem
