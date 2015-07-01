@@ -39,20 +39,20 @@ End Sub
 ' Milliseconds property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Milliseconds(Value As Long)
-  Set pMilliseconds = Value
+    Set pMilliseconds = Value
 End Property
 Public Property Get Milliseconds As Long
-  Set Milliseconds = pMilliseconds
+    Set Milliseconds = pMilliseconds
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' SessionName property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property SessionName(Value As String)
-  Set pSessionName = Value
+    Set pSessionName = Value
 End Property
 Public Property Get SessionName As String
-  Set SessionName = pSessionName
+    Set SessionName = pSessionName
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -101,42 +101,42 @@ End Property
 ' Session property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Set Session(Value As Object)
-  Set pSession = Value
+    Set pSession = Value
 End Property
 Public Property Get Session As Object
- 	Set Session = pSession
+    Set Session = pSession
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Metrics property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Set Metrics(Value As Object)
-  Set pMetrics = Value
+    Set pMetrics = Value
 End Property
 Public Property Get Metrics As Object
-  Set Metrics = pMetrics
+    Set Metrics = pMetrics
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Connection property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Set Connection(Value As Object)
-  Set pConnection = Value
+    Set pConnection = Value
 End Property
 Public Property Get Connection As Object
-  Set Connection = pConnection
+    Set Connection = pConnection
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Operator property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Get Operator As Object
-  Set Operator = Session.autECLOIA
+    Set Operator = Session.autECLOIA
  End Property
  
  ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Presentation property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Get Presentation As Object
-  Set Presentation = Session.autECLPS
- End Property
+    Set Presentation = Session.autECLPS
+End Property
