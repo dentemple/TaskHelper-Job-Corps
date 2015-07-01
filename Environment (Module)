@@ -11,9 +11,6 @@ Public Const Debugger As Boolean = True
 Public Const cGrey As Variant = &H80000000
 Public Const cWhite As Variant = &H80000005
 
-'Dimensions the global Exception and Call Stack class
-Dim Exception As cException
-
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetSheetFromCodeName (Function)
 '
@@ -171,9 +168,7 @@ End Sub
 ' LoadErrorClass (Sub)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub LoadErrorClass(ByRef passException As cException)
-    Exception.Push "Environment.LoadErrorClass"
 
-    Exception.Pop
 End Sub
 
 
@@ -181,7 +176,6 @@ End Sub
 ' LoadStudentFile (Sub)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub LoadStudentFile(ByRef passStudent As cStudentFile, ByVal passUser As MSForms.UserForm, ByRef passException As cException)
-    Exception.Push "Environment.LoadStudentFile"
 
     'On Error GoTo handle_if_textbox_fails_to_pass
 
@@ -243,7 +237,6 @@ Public Sub LoadStudentFile(ByRef passStudent As cStudentFile, ByVal passUser As 
 
     'Check flags for failures
 
-    Exception.Pop
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -251,23 +244,21 @@ End Sub
 'Expected name of table columns: Action | Item | Row | Col | Len
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub LoadCommands(ByRef Command As cCommand, ByRef passCommands As Collection, ByVal passTable As Excel.ListObject, ByRef passException As cException)
-    Exception.Push "Environment.LoadCommands"
 
     Dim Lrow As Excel.ListRow
 
     For Each Lrow In passTable.ListRows
         Set Command = New Command
         Command.Action = Trim(passTable.ListColumn("Action").Value)
-        Command.ITEM = Trim(passTable.ListColumn("Item").Value)
-        Command.row = Trim(passTable.ListColumn("Row").Value)
-        Command.col = Trim(passTable.ListColumn("Col").Value)
+        Command.Item = Trim(passTable.ListColumn("Item").Value)
+        Command.Row = Trim(passTable.ListColumn("Row").Value)
+        Command.Col = Trim(passTable.ListColumn("Col").Value)
         Command.Len = Trim(passTable.ListColumn("Len").Value)
         passCommands.Add Command
     Next Lrow
 
     'Check flags for failures
 
-    Exception.Pop
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -275,9 +266,7 @@ End Sub
 '
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub LoadAS400(ByRef passAS400 As cAS400, ByRef passException As cException)
-    Exception.Push "Environment.LoadAS400"
 
-    Exception.Pop
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -285,9 +274,8 @@ End Sub
 '
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function FinalEnrollmentChecks(ByVal passStudent As cStudentFile, ByVal passAS400 As cAS400, ByVal passException As cException) As Boolean
-    Exception.Push "Environment.FinalEnrollmentChecks"
 
-    Exception.Pop
 End Function
+
 
 
