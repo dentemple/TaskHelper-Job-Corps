@@ -15,13 +15,13 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Private Sub InitializeAS400(ByRef AS400 As cAS400)
 
-Set AS400.Session = CreateObject("PCOMM.autECLSession")
-Set AS400.Metrics = CreateObject("PCOMM.autECLWinMetrics")
-Set AS400.Connection = CreateObject("PCOMM.autECLConnList")
+    Set AS400.Session = CreateObject("PCOMM.autECLSession")
+    Set AS400.Metrics = CreateObject("PCOMM.autECLWinMetrics")
+    Set AS400.Connection = CreateObject("PCOMM.autECLConnList")
 
-AS400.Session.SetConnectionByName (AS400.SessionName)
-AS400.Metrics.SetConnectionByName (AS400.SessionName)
-AS400.Metrics.Refresh
+    AS400.Session.SetConnectionByName (AS400.SessionName)
+    AS400.Metrics.SetConnectionByName (AS400.SessionName)
+    AS400.Metrics.Refresh
 
 End Sub
 
@@ -30,17 +30,17 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub TurnOffExcelDefaults()
 
-Application.ScreenUpdating = False
-Application.DisplayAlerts = False
-Application.Calculation = xlCalculationManual
+    Application.ScreenUpdating = False
+    Application.DisplayAlerts = False
+    Application.Calculation = xlCalculationManual
 
 End Sub
 
 Public Sub TurnOnExcelDefaults()
 
-Application.Calculation = xlCalculationAutomatic
-Application.DisplayAlerts = True
-Application.ScreenUpdating = True
+    Application.Calculation = xlCalculationAutomatic
+    Application.DisplayAlerts = True
+    Application.ScreenUpdating = True
 
 End Sub
 
@@ -55,13 +55,13 @@ The second Wait command passes in the milliseconds determined _
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Private Sub WaitForReady (ByVal AS400 As cAS400)
 
-Dim lng As Long
-lng = 10
+    Dim lng As Long
+    lng = 10
 
-AS400.Presentation.Wait lng
-AS400.Operator.WaitForAppAvailable
-AS400.Operator.WaitForInputReady
-AS400.Presentation AS400.Milliseconds
+    AS400.Presentation.Wait lng
+    AS400.Operator.WaitForAppAvailable
+    AS400.Operator.WaitForInputReady
+    AS400.Presentation AS400.Milliseconds
 
 End Sub
 
@@ -80,87 +80,87 @@ Exports the interpreted data to a separate data worksheet. _
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Private Sub RunRegistration(ByVal User As MSForms.Userform, ByVal CommandTable As Excel.ListObject)
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Set the required classes and collections
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Set Exception = New cException
-Exception.Push "Core_Registration.RunRegistration"
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    ' Set the required classes and collections
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    Set Exception = New cException
+    Exception.Push "Core_Registration.RunRegistration"
 
-Dim Student As cStudentFile
-Set Student = New cStudentFile
+    Dim Student As cStudentFile
+    Set Student = New cStudentFile
 
-Dim AS400 As cAS400
-Set AS400 = New cAS400
+    Dim AS400 As cAS400
+    Set AS400 = New cAS400
 
-Dim Commands As Collection
-Set Commands = New Collection
+    Dim Commands As Collection
+    Set Commands = New Collection
 
-Dim Command As cCommand
+    Dim Command As cCommand
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' General variables
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Dim CommandCount As Integer
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    ' General variables
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    Dim CommandCount As Integer
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Loads the collection and class objects
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-TurnOffExcelDefaults
-LoadErrorClass Exception
-LoadStudentFile Student, User, Exception
-LoadCommands Command, Commands, CommandTable, Exception
-CommandCount = Commands.Count
-LoadAS400 AS400, Exception
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    ' Loads the collection and class objects
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    TurnOffExcelDefaults
+    LoadErrorClass Exception
+    LoadStudentFile Student, User, Exception
+    LoadCommands Command, Commands, CommandTable, Exception
+    CommandCount = Commands.Count
+    LoadAS400 AS400, Exception
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Check for additional error or failures
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    ' Check for additional error or failures
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Final Checks/Confirmation
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-If FinalEnrollmentChecks(Student, AS400, Exception) = False Then
-End If
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    ' Final Checks/Confirmation
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    If FinalEnrollmentChecks(Student, AS400, Exception) = False Then
+    End If
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Primary Execution
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-For Each Command in Commands
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    ' Primary Execution
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    For Each Command in Commands
 
-	'Recognized Actions: Home, Set, Send, Check, Get
-	Select Case Command.Action
+	    'Recognized Actions: Home, Set, Send, Check, Get
+	    Select Case Command.Action
 
-		Case Is "Home"
+		    Case Is "Home"
 	
-		Case Is "Set"
+		    Case Is "Set"
 	
-		Case Is "Send"
+		    Case Is "Send"
 	
-		Case Is "Check"
+		    Case Is "Check"
 	
-		Case Is "Get"
+		    Case Is "Get"
 	
-		Case Else
+		    Case Else
 	
-	End Select
+	    End Select
 	
-	'Call Wait
+	    'Call Wait
 
-Next Command
+    Next Command
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Output
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    ' Output
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Cleanup:
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-TurnOnExcelDefaults
-Exception.Pop
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    Cleanup:
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    TurnOnExcelDefaults
+    Exception.Pop
 
 Exit Sub
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Error Handlers
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    ' Error Handlers
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 End Sub
