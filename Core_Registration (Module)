@@ -6,12 +6,12 @@
 ' InitializeAS400 (Sub)
 '
 'Sets the connections to the AS/400 Host Automation Library. _
-	The procedure assumes the intended AS/400 session has already _
-	been stored within the class object. _
-	Success can also be checked by the class object's ErrorFlag property
+    The procedure assumes the intended AS/400 session has already _
+    been stored within the class object. _
+    Success can also be checked by the class object's ErrorFlag property
 '
 'Note: The "AS400.[Property] language are call to a custom AS400 class. _
-	This class is simply being used store the required AS/400 objects.
+    This class is simply being used store the required AS/400 objects.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Private Sub InitializeAS400(ByRef AS400 As cAS400)
 
@@ -50,10 +50,10 @@ End Sub
 ' Prevents the script from overrunning the AS/400. _
 The Wait command accepts milliseconds as Long. _
 The second Wait command passes in the milliseconds determined _
-	by the user's requested automation speed; it assumes
-	the property is correct and valid.
+    by the user's requested automation speed; it assumes
+    the property is correct and valid.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Private Sub WaitForReady (ByVal AS400 As cAS400)
+Private Sub WaitForReady(ByVal AS400 As cAS400)
 
     Dim lng As Long
     lng = 10
@@ -78,13 +78,13 @@ Executes the actions as listed by the interpreted CommandList table. _
 Outputs confirmation messageboxes as needed. _
 Exports the interpreted data to a separate data worksheet. _
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Private Sub RunRegistration(ByVal User As MSForms.Userform, ByVal CommandTable As Excel.ListObject)
+Private Sub RunRegistration(ByVal User As MSForms.UserForm, ByVal CommandTable As Excel.ListObject)
 
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ' Set the required classes and collections
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    Dim Exception As cException
     Set Exception = New cException
-    Exception.Push "Core_Registration.RunRegistration"
 
     Dim Student As cStudentFile
     Set Student = New cStudentFile
@@ -109,7 +109,7 @@ Private Sub RunRegistration(ByVal User As MSForms.Userform, ByVal CommandTable A
     LoadErrorClass Exception
     LoadStudentFile Student, User, Exception
     LoadCommands Command, Commands, CommandTable, Exception
-    CommandCount = Commands.Count
+    CommandCount = Commands.count
     LoadAS400 AS400, Exception
 
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -125,26 +125,26 @@ Private Sub RunRegistration(ByVal User As MSForms.Userform, ByVal CommandTable A
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ' Primary Execution
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    For Each Command in Commands
+    For Each Command In Commands
 
-	    'Recognized Actions: Home, Set, Send, Check, Get
-	    Select Case Command.Action
+        'Recognized Actions: Home, Set, Send, Check, Get
+        Select Case Command.Action
 
-		    'Case Is "Home"
-	
-		    'Case Is "Set"
-	
-		    'Case Is "Send"
-	
-		    'Case Is "Check"
-	
-		    'Case Is "Get"
-	
-		    'Case Else
-	
-	    End Select
-	
-	    'Call Wait
+            'Case Is "Home"
+    
+            'Case Is "Set"
+    
+            'Case Is "Send"
+    
+            'Case Is "Check"
+    
+            'Case Is "Get"
+    
+            'Case Else
+    
+        End Select
+    
+        'Call Wait
 
     Next Command
 
@@ -152,15 +152,16 @@ Private Sub RunRegistration(ByVal User As MSForms.Userform, ByVal CommandTable A
     ' Output
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    Cleanup:
-    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Cleanup:
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     TurnOnExcelDefaults
-    Exception.Pop
 
 Exit Sub
-    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    ' Error Handlers
-    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Error Handlers
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 End Sub
+
+
