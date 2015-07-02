@@ -93,7 +93,10 @@ Private Sub UserForm_Initialize()
     ' Populates the selection boxes
     With Automation_ComboBox
         .Clear
-        .AddItem "--"
+        .AddItem "Fast"
+        .AddItem "Slow"
+        .AddItem "StopEach"
+        .AddItem "Debug"
         .Text = Automation_ComboBox.List(0)
     End With
     With Session_ComboBox
@@ -133,6 +136,7 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Private Sub Launch_Button_Click()
+    TestStudentFile uStudentRegistration
 End Sub
 
 Private Sub Confirm_Button_Click()
@@ -663,5 +667,7 @@ Private Sub Cancel_Button_MouseMove(ByVal Button As Integer, ByVal Shift As Inte
 End Sub
 
 Private Sub Automation_ComboBox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
-    Help_Textbox = "[AUTO FAST] Less than 1 sec/screen || [AUTO SLOW] 1 sec/screen || [MANUAL] Stops every screen || [DEBUG] - No controls or error handling"
+    Help_Textbox = "[Fast] 0.1-0.5 sec/screen || [Slow] ~1 sec/screen || [StopEach] Stops on every screen || [Debug] - No controls or error handling"
 End Sub
+
+
