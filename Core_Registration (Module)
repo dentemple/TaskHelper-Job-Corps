@@ -108,6 +108,21 @@ Private Sub RunRegistration(ByVal RegForm As MSForms.UserForm, ByVal wSheet As E
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     TurnOffExcelDefaults
     LoadUserformObjects StudentFile, RegForm, Exception
+    
+    'Set the subsequent error handling based on user selection
+    Select Case Exception.Handling
+        Case "Fast"
+            On Error GoTo FinalEnrollmentCheck
+        Case "Slow"
+            On Error GoTo FinalEnrollmentCheck
+        Case "StopEach"
+            On Error GoTo FinalEnrollmentCheck
+        Case "Debug"
+            On Error GoTo 0
+        Case Else
+            On Error GoTo 0
+    End Select
+    
     LoadAS400 AS400, Exception
     
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -118,14 +133,10 @@ Private Sub RunRegistration(ByVal RegForm As MSForms.UserForm, ByVal wSheet As E
     CommandCount = Commands.count
 
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    ' Check for additional error or failures
+    ' Final confirmations
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    ' Final Checks/Confirmation
-    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    If FinalEnrollmentChecks(StudentFile, AS400, Exception) = False Then
-    End If
+    FinalEnrollmentCheck:
+    If ApproveRegistration(StudentFile, AS400, Exception) = False Then GoTo Cleanup
 
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ' Primary Execution
@@ -166,7 +177,6 @@ Exit Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Error Handlers
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
 End Sub
 
 
