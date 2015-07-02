@@ -323,19 +323,39 @@ End Function
 Public Sub LoadCommands(ByRef Command As cCommand, ByRef CommandList As Collection, ByVal CommandTable As Excel.ListObject, ByRef Exception As cException)
 
     Dim Lrow As Excel.ListRow
+    
+    'Set Error Handling
+    Select Case Exception.Handling
+        Case "Fast"
+            On Error GoTo StandardErrorHandler
+        Case "Slow"
+            On Error GoTo StandardErrorHandler
+        Case "StopEach"
+            On Error GoTo StandardErrorHandler
+        Case "Debug"
+            On Error GoTo 0
+        Case Else
+            On Error GoTo 0
+    End Select
 
     For Each Lrow In CommandTable.ListRows
         Set Command = New Command
         Command.Action = Trim(CommandTable.ListColumn("Action").Value)
         Command.Item = Trim(CommandTable.ListColumn("Item").Value)
         Command.Row = Trim(CommandTable.ListColumn("Row").Value)
-        Command.Col = Trim(CommandTable.ListColumn("Col").Value)
-        Command.Len = Trim(CommandTable.ListColumn("Len").Value)
+        Command.Col = Trim(CommandTable.ListColumn("Column").Value)
+        Command.Length = Trim(CommandTable.ListColumn("Length").Value)
         CommandList.Add Command
     Next Lrow
 
-    'Check flags for failures
-
+Exit Sub
+StandardErrorHandler:
+    Exception.ErrFlag = True
+    Exception.ErrNumber = Err.Number
+    Exception.ErrDescription = Err.Description
+    Exception.Message = Exception.Message & vbNewLine & vbNewLine "* The command list includes an invalid command  " & _
+        "(Error #" & Err.Number & ")"
+Resume Next
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -347,11 +367,43 @@ Public Sub LoadAS400(ByRef AS400 As cAS400, ByRef Exception As cException)
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' FinalEnrollmentChecks (Function)
+' ApproveRegistration (Function)
 '
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function FinalEnrollmentChecks(ByVal StudentFile As cStudentFile, ByVal AS400 As cAS400, ByVal Exception As cException) As Boolean
+Public Function ApproveRegistration(ByVal StudentFile As cStudentFile, ByVal AS400 As cAS400, ByVal Exception As cException) As Boolean
 
+    'Set error handling
+    Select Case Exception.Handling
+        Case "Fast"
+            On Error GoTo StandardErrorHandler
+        Case "Slow"
+            On Error GoTo StandardErrorHandler
+        Case "StopEach"
+            On Error GoTo StandardErrorHandler
+        Case "Debug"
+            On Error GoTo 0
+        Case Else
+            On Error GoTo 0
+    End Select
+
+    ApproveRegistration = True
+    If Exception.ErrFlag = True Then
+        ApproveRegistration = False
+        MsgBox "One or more errors have occurred that prevent the script from proceeding:" & vbNewLine & vbNewLine & _
+            Err.Description & vbNewLine & vbNewLine & Exception.Message
+    End If
+    
+    'if red message on studentfile
+    'else bluemessage on studentfile
+    
+    'if red message on as400
+    'else bluemessage on as400
+
+Exit Function
+StandardErrorHandler:
+    ApproveRegistration = False
+    MsgBox "An issue occurred while attempting to confirm the userform information." & vbNewLine & vbNewLine & _
+        "If resetting the userform fails to resolve the issue, please contact your VBA support team."
 End Function
 
 
