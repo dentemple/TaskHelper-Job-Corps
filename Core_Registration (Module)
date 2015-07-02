@@ -65,7 +65,6 @@ Private Sub WaitForReady(ByVal AS400 As cAS400)
 
 End Sub
 
-
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' RunRegistration (Sub)
 '
@@ -78,7 +77,7 @@ Executes the actions as listed by the interpreted CommandList table. _
 Outputs confirmation messageboxes as needed. _
 Exports the interpreted data to a separate data worksheet. _
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Private Sub RunRegistration(ByVal User As MSForms.UserForm, ByVal CommandTable As Excel.ListObject)
+Private Sub RunRegistration(ByVal RegForm As MSForms.UserForm, ByVal wSheet As Excel.Worksheet)
 
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ' Set the required classes and collections
@@ -86,8 +85,8 @@ Private Sub RunRegistration(ByVal User As MSForms.UserForm, ByVal CommandTable A
     Dim Exception As cException
     Set Exception = New cException
 
-    Dim Student As cStudentFile
-    Set Student = New cStudentFile
+    Dim StudentFile As cStudentFile
+    Set StudentFile = New cStudentFile
 
     Dim AS400 As cAS400
     Set AS400 = New cAS400
@@ -100,17 +99,23 @@ Private Sub RunRegistration(ByVal User As MSForms.UserForm, ByVal CommandTable A
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ' General variables
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    Dim passTable As Excel.ListObject
     Dim CommandCount As Integer
+    CommandCount = 0
 
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    ' Loads the collection and class objects
+    ' Loads the class objects
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     TurnOffExcelDefaults
-    LoadErrorClass Exception
-    LoadStudentFile Student, User, Exception
-    LoadCommands Command, Commands, CommandTable, Exception
-    CommandCount = Commands.count
+    LoadUserformObjects StudentFile, RegForm, Exception
     LoadAS400 AS400, Exception
+    
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    ' Loads the command list
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    passTable = DetermineTable(StudentFile, wSheet, Exception)
+    LoadCommands Command, Commands, passTable, Exception
+    CommandCount = Commands.count
 
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ' Check for additional error or failures
@@ -119,7 +124,7 @@ Private Sub RunRegistration(ByVal User As MSForms.UserForm, ByVal CommandTable A
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ' Final Checks/Confirmation
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    If FinalEnrollmentChecks(Student, AS400, Exception) = False Then
+    If FinalEnrollmentChecks(StudentFile, AS400, Exception) = False Then
     End If
 
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
