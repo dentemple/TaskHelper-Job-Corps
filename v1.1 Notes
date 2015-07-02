@@ -4,43 +4,4 @@ Also: Public Event / RaiseEvent / With Event
 http://www.cpearson.com/excel/Events.aspx
 
 COMMAND LIST
-Path  |  Action  |  Tag  |  Row  |  Column  |  Length
-
-Path: AddBook
-Set - "1" - 19, 7
-Send - "[Enter]"
-Check - 
-
-Path: Parent
-Set - "3" - 19, 7
-Send - "[Enter]"
-Set - "A" - 3,19
-Set - "#MailingName" - 4, 19
-Set - "#AlphaName" - 6, 19
-Set - "#AddressL1" - 8,19
-Set - "#AddressL2" - 9,19
-Set - "#AddressL3" - 10,19
-Set - "#AddressL4" - 11,19
-Set - "#Zip" - 12,19
-Set - "#City" - 12,55 
-Set - "#State" - 13,55
-Set - "TR" - 14,19
-Set - "#ParentNumber" - 17,55
-Set - "#PrefixCode" - 23,19 
-
-Path: Self
-Set - "23" - 19, 7
-Send - "[Enter]"
-Set - "A" - 4,19
-Set - "#AlphaName" - 7,19
-Set - "TR" - 7,77
-Set - "#AreaCode" - 9,19
-Set - "#Phone" - 9,26
-Set - "#MailingName" - 12,19
-Set - "#AddressL1" - 14,19
-Set - "#AddressL2" - 15,19
-Set - "#AddressL3" - 16,19
-Set - "#AddressL4" - 17,19
-Set - "#Zip" - 18,19
-Set - "#City" - 18,55
-Set - "#State" - 19,55
+Action  |  Tag  |  Row  |  Column  |  Length
