@@ -4,9 +4,11 @@
 ' Relies on a call stack approach to help report the location of errors
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'GENERAL PROPERTIES
+Private pErrFlag As Boolean
 Private pErrNumber As Integer
 Private pErrDescription As String
 Private pMessage As String
+Private pHandling As String
 
 'CALL STACK PROPERTIES
 Private TopItem As StackItem
@@ -14,6 +16,13 @@ Private TopItem As StackItem
 'LogErrorDescription Function
 'LogErrorNumberFunction
 'WriteErrorToFile Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' LOCAL PROCEDURES
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub Class_Initialize()
+    pErrFlag = False
+End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' STACK PROPERTIES AND PROCEDURES
@@ -48,14 +57,23 @@ Public Function Unwind() As String
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' ErrNumber property
-'To log the Err.Number
+' ErrFlag property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Let ErrNumber(Value As Integer)
-    pErrNumber = Value
+Public Property Let ErrFlag(Value As Boolean)
+    pErrFlag = Value
 End Property
-Public Property Get ErrNumber() As Integer
-    ErrNumber = pErrNumber
+Public Property Get ErrFlag() As Boolean
+    ErrFlag = pErrFlag
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ErrDescription property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Let ErrDescription(Value As String)
+    pErrDescription = Value
+End Property
+Public Property Get ErrDescription() As String
+    ErrDescription = pErrDescription
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -80,11 +98,11 @@ End Property
 
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' NAME property
+' Handling property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Let NAME(Value As String)
-    pVAR = Value
+Public Property Let Handling(Value As String)
+    pHandling = Value
 End Property
-Public Property Get NAME() As String
-    NAME = pVAR
+Public Property Get Handling() As String
+    Handling = pHandling
 End Property
