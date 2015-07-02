@@ -11,7 +11,6 @@ Recognized Actions: _
 Option Explicit
 
 ' GENERAL PROPERTIES
-Private pPath As String
 Private pAction As String
 Private pItem As String
 Private pRow As Long
@@ -42,21 +41,6 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GENERAL PROPERTIES
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Path property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Let Path(Value As String)
-    pPath = Value
-End Property
-Public Property Get Path() As String
-    If InStr(RecognizedPaths, LCase(pPath)) >= 1 Then
-        Path = LCase(pPath)
-    Else
-        pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* The '" & LCase(pPath) & "' path is not recognized." & vbNewLine
-    End If
-End Property
-
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Action property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
