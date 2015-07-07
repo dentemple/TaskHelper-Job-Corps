@@ -7,7 +7,7 @@ Option Explicit
 ' GENERAL PROPERTIES
 Private pSessionName As String
 Private pMilliseconds As Long
-Private pAutomationType As String
+Private pHandling As String
 
 ' ERROR PROPERTIES
 Private pErrorFlag As Boolean
@@ -56,11 +56,14 @@ Public Property Get SessionName As String
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Automation Type property
+' Handling property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-
-
+Public Property Let Handling(Value As String)
+    pHandling = Value
+End Property
+Public Property Get Handling() As String
+    Handling = pHandling
+End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ERROR PROPERTIES
