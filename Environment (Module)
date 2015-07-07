@@ -12,7 +12,7 @@ Public Const cGrey As Variant = &H80000000
 Public Const cWhite As Variant = &H80000005
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GetSheetFromCodeName (Function)
+' GetSheetFromCodeName (Public Function)
 '
 '|wb| = [Workbook] Name of the Workbook. |CodeName| = [String] The worksheet's code/secret name
 '
@@ -42,7 +42,7 @@ Public Function GetSheetFromCodeName(wb As Workbook, CodeName As String) As Exce
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' NavigateSheets (Sub)
+' NavigateSheets (Public Sub)
 '
 ' |strStartSheetCodename| = [String] Name of worksheet to navigate from.
 ' |strEndSheetCodename| = [String] Name of worksheet to naviage to.
@@ -72,7 +72,7 @@ End Sub
 
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' ChangeLocks
+' ChangeLocks (Public Sub)
 '
 'Accepts an array of userform textboxes.  Locks or unlocks as needed.
 '
@@ -120,7 +120,7 @@ Public Sub ChangeLocks(PassArray() As Object, passBoolean As Boolean, changeover
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' PassProgramTextboxes
+' PassProgramTextboxes (Public Sub)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub PassProgramTextboxes(ByRef passArray() As Object, ByVal RegForm As MSForms.UserForm)
     Set passArray(0) = RegForm.ProgramNumber_Textbox
@@ -142,7 +142,7 @@ Public Sub PassProgramTextboxes(ByRef passArray() As Object, ByVal RegForm As MS
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' PassStudentTextboxes
+' PassStudentTextboxes (Public Sub)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub PassStudentTextboxes(ByRef passArr() As Object, ByVal RegForm As MSForms.UserForm)
     Set passArr(0) = RegForm.StudentID_Textbox
@@ -164,7 +164,7 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' LoadUserformObjects (Sub)
+' LoadUserformObjects (Public Sub)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub LoadUserformObjects(ByRef StudentFile As cStudentFile, ByVal RegForm As MSForms.UserForm, ByRef Exception As cException)
 
@@ -271,13 +271,15 @@ Resume Next
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' DetermineTable (Function)
+' DetermineTable (Public Function)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function DetermineTable(ByVal StudentFile As cStudentFile, ByVal wSheet As Excel.Worksheet, ByVal Exception As cException) As Excel.ListObject
 
     'Used for component testing only
     Dim TestFlag As Boolean
     TestFlag = True
+    
+    Exception.Push "Environment.DetermineTable"
     
     'Set Error Handling
     Select Case Exception.Handling
@@ -310,7 +312,10 @@ Public Function DetermineTable(ByVal StudentFile As cStudentFile, ByVal wSheet A
             vbNewLine & "If resetting the userform fails to resolve the issue, please contact your VBA support team."
     End If
     
+Cleanup:
+    Exception.Pop
 Exit Function
+
 StandardErrorHandler:
     Exception.ErrFlag = True
     Exception.ErrNumber = Err.Number
@@ -321,7 +326,7 @@ Resume Next
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' LoadCommands (Sub)
+' LoadCommands (Public Sub)
 'Expected name of table columns: Action | Item | Row | Col | Len
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub LoadCommands(ByRef Command As cCommand, ByRef CommandList As Collection, ByVal CommandTable As Excel.ListObject, ByRef Exception As cException)
@@ -369,12 +374,18 @@ Resume Next
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' LoadAS400 (Sub)
+' LoadAS400 (Public Sub)
 '
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub LoadAS400(ByRef AS400 As cAS400, ByRef Exception As cException)
+Public Sub LoadAS400(ByRef AS400 As cAS400, ByVal StudentFile As cStudentFile, ByRef Exception As cException)
 
     Exception.Push "Environment.LoadAS400"
+    
+    AS400.SessionName = StudentFile.GetSession
+    
+    Exception.Push "Core_Registration.InitializeAS400"
+        InitializeAS400 AS400
+    Exception.Pop
 
 Cleanup:
     Exception.Pop
@@ -382,7 +393,7 @@ Exit Sub
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' ApproveRegistration (Function)
+' ApproveRegistration (Public Function)
 '
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function ApproveRegistration(ByVal StudentFile As cStudentFile, ByVal AS400 As cAS400, ByVal Exception As cException) As Boolean
