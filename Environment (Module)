@@ -456,7 +456,12 @@ End Function
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' AbortRegistration (Public Function)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function AbortRegistration(ByVal AS400 As cAS400, ByRef StopEachScreen As Boolean) As Boolean
+Public Function AbortRegistration(ByVal AS400 As cAS400, ByRef StopEachScreen As Boolean, ByRef Exception As cException) As Boolean
+    
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    
+    Exception.Push "Environment.AbortRegistration"
     
     Dim str As String
     str = "Please confirm the current screen, then select an option below." & vbNewLine & vbNewLine & _
@@ -480,5 +485,23 @@ Public Function AbortRegistration(ByVal AS400 As cAS400, ByRef StopEachScreen As
             AbortRegistration = False
             
     End Select
+    
+    Exception.Pop
 
 End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ExecuteSendCommand (Public Sub)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub ExecuteSendCommand(ByVal Command As cCommand, ByVal AS400 As cAS400, ByRef Exception As cException)
+
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    
+    Exception.Push "Environment.ExecuteSendCommand"
+
+    AS400.Presentation.SendKeys (Command.Item)
+    
+    Exception.Pop
+    
+End Sub
