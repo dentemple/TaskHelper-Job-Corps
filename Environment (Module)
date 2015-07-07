@@ -328,6 +328,8 @@ Public Sub LoadCommands(ByRef Command As cCommand, ByRef CommandList As Collecti
 
     Dim Lrow As Excel.ListRow
     
+    Exception.Push "Environment.LoadCommands"
+    
     'Set Error Handling
     Select Case Exception.Handling
         Case "Fast"
@@ -352,7 +354,10 @@ Public Sub LoadCommands(ByRef Command As cCommand, ByRef CommandList As Collecti
         CommandList.Add Command
     Next Lrow
 
+Cleanup:
+    Exception.Pop
 Exit Sub
+
 StandardErrorHandler:
     Exception.ErrFlag = True
     Exception.ErrNumber = Err.Number
@@ -360,6 +365,7 @@ StandardErrorHandler:
     Exception.Message = Exception.Message & vbNewLine & vbNewLine "* The command list includes an invalid command  " & _
         "(Error #" & Err.Number & ")"
 Resume Next
+
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -368,6 +374,11 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub LoadAS400(ByRef AS400 As cAS400, ByRef Exception As cException)
 
+    Exception.Push "Environment.LoadAS400"
+
+Cleanup:
+    Exception.Pop
+Exit Sub
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -376,6 +387,8 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function ApproveRegistration(ByVal StudentFile As cStudentFile, ByVal AS400 As cAS400, ByVal Exception As cException) As Boolean
 
+    Exception.Push "Environment.ApproveRegistration"
+    
     'Set error handling
     Select Case Exception.Handling
         Case "Fast"
@@ -403,12 +416,11 @@ Public Function ApproveRegistration(ByVal StudentFile As cStudentFile, ByVal AS4
     'if red message on as400
     'else bluemessage on as400
 
+Cleanup:
+    Exception.Pop
 Exit Function
 StandardErrorHandler:
     ApproveRegistration = False
     MsgBox "An issue occurred while attempting to confirm the userform information." & vbNewLine & vbNewLine & _
         "If resetting the userform fails to resolve the issue, please contact your VBA support team."
 End Function
-
-
-
