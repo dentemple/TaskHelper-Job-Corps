@@ -385,10 +385,10 @@ End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' LoadAS400 (Public Sub)
-'
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub LoadAS400(ByRef AS400 As cAS400, ByVal StudentFile As cStudentFile, ByRef Exception As cException)
 
+    On Error GoTo ErrHandler
     Exception.Push "Environment.LoadAS400"
     
     AS400.SessionName = StudentFile.GetSession
@@ -400,11 +400,18 @@ Public Sub LoadAS400(ByRef AS400 As cAS400, ByVal StudentFile As cStudentFile, B
 Cleanup:
     Exception.Pop
 Exit Sub
+
+ErrHandler:
+    Exception.ErrFlag = True
+    Exception.ErrNumber = Err.Number
+    Exception.ErrDescription = Err.Description
+    Exception.Message = Exception.Message & vbNewLine & vbNewLine "* The AS/400 has failed to initialize  " & _
+        "(Error #" & Err.Number & ")"
+Resume Cleanup
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ApproveRegistration (Public Function)
-'
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function ApproveRegistration(ByVal StudentFile As cStudentFile, ByVal AS400 As cAS400, ByVal Exception As cException) As Boolean
 
@@ -444,4 +451,34 @@ StandardErrorHandler:
     ApproveRegistration = False
     MsgBox "An issue occurred while attempting to confirm the userform information." & vbNewLine & vbNewLine & _
         "If resetting the userform fails to resolve the issue, please contact your VBA support team."
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' AbortRegistration (Public Function)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function AbortRegistration(ByVal AS400 As cAS400, ByRef StopEachScreen As Boolean) As Boolean
+    
+    Dim str As String
+    str = "Please confirm the current screen, then select an option below." & vbNewLine & vbNewLine & _
+            vbTab & "Press YES to continue to the next screen." & vbNewLine & _
+            vbTab & "Press NO to turn off the confirmation messages." & vbNewLine & _
+            vbTab & "Press CANCEL to abort the registration."
+    
+    Select Case MsgBox str, vbYesNoCancel, "StopEach / Debug"
+    
+        Case vbYes
+            AbortRegistration = False
+            
+        Case vbNo
+            StopEachScreen = False
+            AbortRegistration = False
+        
+        Case vbCancel
+            AbortRegistration = True
+        
+        Case Else
+            AbortRegistration = False
+            
+    End Select
+
 End Function
