@@ -1,10 +1,5 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' cStudentFile (Class)
-'
-' Note: Unlike a true OOP language, VBA lacks class inheritance.  As a result, _
-    cStudentFile is a frankensteined mish-mash of properties that really should be _
-    split among several, similarly-themed custom objects, but, for the sake of _
-    modularity, have been combined.  My apologies.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Option Explicit
@@ -12,7 +7,9 @@ Option Explicit
 ' GENERAL PROPERTIES
 Private pStudentID As String
 Private pFinalPayment As String
+'Path flags
 Private pAddressBookListingExists As Boolean
+Private pFullProgramFlag As Boolean
 
 ' ERROR PROPERTIES
 Private pErrorFlag As Boolean
@@ -164,6 +161,8 @@ Private Sub Class_Initialize()
     pModCheckMessage = "The following class mods are less than 8 characters; please confirm before proceeding:" & vbNewLine & vbNewLine
     MaxCharactersName = 38
     StandardLength = 8
+    pAddressBookListingExists = False
+    pFullProgramFlag = False
 End Sub
 
 Private Function RemoveSym(ByVal passTextbox As String) As String
@@ -211,6 +210,16 @@ Public Property Let AddressBookListingExists(Value As Boolean)
 End Property
 Public Property Get AddressBookListingExists() As Boolean
     AddressBookListingExists = pAddressBookListingExists
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' FullProgramFlag property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Let FullProgramFlag(Value As Boolean)
+    pFullProgramFlag = Value
+End Property
+Public Property Get FullProgramFlag() As Boolean
+    FullProgramFlag = pFullProgramFlag
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
