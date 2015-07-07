@@ -3,7 +3,7 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' InitializeAS400 (Sub)
+' InitializeAS400 (Public Sub)
 '
 'Sets the connections to the AS/400 Host Automation Library. _
     The procedure assumes the intended AS/400 session has already _
@@ -13,7 +13,9 @@
 'Note: The "AS400.[Property] language are call to a custom AS400 class. _
     This class is simply being used store the required AS/400 objects.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Private Sub InitializeAS400(ByRef AS400 As cAS400)
+Public Sub InitializeAS400(ByRef AS400 As cAS400)
+
+    On Error GoTo ErrHandler
 
     Set AS400.Session = CreateObject("PCOMM.autECLSession")
     Set AS400.Metrics = CreateObject("PCOMM.autECLWinMetrics")
@@ -22,6 +24,10 @@ Private Sub InitializeAS400(ByRef AS400 As cAS400)
     AS400.Session.SetConnectionByName (AS400.SessionName)
     AS400.Metrics.SetConnectionByName (AS400.SessionName)
     AS400.Metrics.Refresh
+
+Exit Sub
+
+ErrHandler: AS400.ErrorFlag = True
 
 End Sub
 
@@ -45,7 +51,7 @@ Public Sub TurnOnExcelDefaults()
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' WaitForReady (Sub)
+' WaitForReady (Public Sub)
 '
 ' Prevents the script from overrunning the AS/400. _
 The Wait command accepts milliseconds as Long. _
@@ -53,12 +59,12 @@ The second Wait command passes in the milliseconds determined _
     by the user's requested automation speed; it assumes
     the property is correct and valid.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Private Sub WaitForReady(ByVal AS400 As cAS400)
+Public Sub WaitForReady(ByVal AS400 As cAS400)
 
-    Dim lng As Long
-    lng = 10
+    Dim ms As Long
+    ms = 10
 
-    AS400.Presentation.Wait lng
+    AS400.Presentation.Wait ms
     AS400.Operator.WaitForAppAvailable
     AS400.Operator.WaitForInputReady
     AS400.Presentation AS400.Milliseconds
@@ -66,7 +72,7 @@ Private Sub WaitForReady(ByVal AS400 As cAS400)
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' RunRegistration (Sub)
+' RunRegistration (Private Sub)
 '
 ' Automates course registration within the B2B and Individual College Environment. _
 Relies on IBM's Host Automation Class Library to control the AS/400 from VBA.
@@ -107,24 +113,27 @@ Private Sub RunRegistration(ByVal RegForm As MSForms.UserForm, ByVal wSheet As E
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ' Loads the class objects
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    TurnOffExcelDefaults
+    Exception.Push "Core_Registration.TurnOffExcelDefaults"
+        TurnOffExcelDefaults
+    Exception.Pop
+    
     LoadUserformObjects StudentFile, RegForm, Exception
     
     'Set the subsequent error handling based on user selection
     Select Case Exception.Handling
         Case "Fast"
-            On Error GoTo FinalEnrollmentCheck
+            On Error GoTo AcknowledgeError
         Case "Slow"
-            On Error GoTo FinalEnrollmentCheck
+            On Error GoTo AcknowledgeError
         Case "StopEach"
-            On Error GoTo FinalEnrollmentCheck
+            On Error GoTo AcknowledgeError
         Case "Debug"
             On Error GoTo 0
         Case Else
             On Error GoTo 0
     End Select
     
-    LoadAS400 AS400, Exception
+    LoadAS400 AS400, StudentFile, Exception
     
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ' Loads the command list
@@ -172,12 +181,20 @@ Private Sub RunRegistration(ByVal RegForm As MSForms.UserForm, ByVal wSheet As E
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Cleanup:
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    TurnOnExcelDefaults
+    Exception.Push "Core_Registration.TurnOnExcelDefaults"
+        TurnOnExcelDefaults
+    Exception.Pop
     Exception.Pop
 Exit Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Error Handlers
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+AcknowledgeError:
+    Exception.ErrFlag = True
+    Exception.ErrNumber = Err.Number
+    Exception.ErrDescription = Err.Description
+Resume FinalEnrollmentCheck
+
 End Sub
 
 
