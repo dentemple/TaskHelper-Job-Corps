@@ -9,9 +9,6 @@
     The procedure assumes the intended AS/400 session has already _
     been stored within the class object. _
     Success can also be checked by the class object's ErrorFlag property
-'
-'Note: The "AS400.[Property] language are call to a custom AS400 class. _
-    This class is simply being used store the required AS/400 objects.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub InitializeAS400(ByRef AS400 As cAS400)
 
@@ -61,10 +58,10 @@ The second Wait command passes in the milliseconds determined _
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub WaitForReady(ByVal AS400 As cAS400)
 
-    Dim ms As Long
-    ms = 10
+    Dim InitialWaitTime As Long
+    InitialWaitTime = 10
 
-    AS400.Presentation.Wait ms
+    AS400.Presentation.Wait InitialWaitTime
     AS400.Operator.WaitForAppAvailable
     AS400.Operator.WaitForInputReady
     AS400.Presentation AS400.Milliseconds
