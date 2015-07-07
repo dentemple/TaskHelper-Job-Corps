@@ -11,7 +11,7 @@ Private pMessage As String
 Private pHandling As String
 
 'CALL STACK PROPERTIES
-Private TopItem As StackItem
+Public siTop As StackItem
 
 'LogErrorDescription Function
 'LogErrorNumberFunction
@@ -26,35 +26,39 @@ End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' STACK PROPERTIES AND PROCEDURES
+'The following code is courtesy of the MSDN
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-Public Sub Push(ByVal str As String)
-    'Pushes a new stack item to a stack
-    Dim NewTop As StackItem
-    Set NewTop = New StackItem
-    NewTop.Value = str
-    Set NewTop.NextItem = TopItem
-    Set TopItem = NewTop
+Public Sub Push(ByVal varText As Variant)
+    ' Add a new item to the top of the stack.
+    Dim siNewTop As New StackItem
+    siNewTop.Value = varText
+    Set siNewTop.NextItem = siTop
+    Set siTop = siNewTop
 End Sub
 
-Private Property Get StackIsEmpty() As Boolean
-  StackIsEmpty = (TopItem Is Nothing)
+Public Function Pop() As Variant
+    If Not StackEmpty Then
+        ' Get the value from the current top stack element.
+        ' Then, get a reference to the new stack top.
+        Pop = siTop.Value
+        Set siTop = siTop.NextItem
+    End If
+End Function
+
+Property Get StackEmpty() As Boolean
+    ' Is the stack empty?  It can
+    ' only be empty if siTop is Nothing.
+    StackEmpty = (siTop Is Nothing)
 End Property
 
-Public Function Pop() As String
-  If Not StackIsEmpty Then
-    Pop = TopItem.Value
-    Set TopItem = TopItem.NextItem
-  End If
-End Function
-
-Public Function Unwind() As String
-    Dim str As String
-    Do Until StackIsEmpty
-    str = Pop & vbNewLine & str
-    Loop
-    Unwind = str
-End Function
+Property Get StackTop() As Variant
+    If StackEmpty Then
+        StackTop = Null
+    Else
+        StackTop = siTop.Value
+    End If
+End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ErrFlag property
@@ -76,15 +80,7 @@ Public Property Get ErrDescription() As String
     ErrDescription = pErrDescription
 End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' ErrDescription property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Let ErrDescription(Value As String)
-    pErrDescription = Value
-End Property
-Public Property Get ErrDescription() As String
-    ErrDescription = pErrDescription
-End Property
+
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Message property
@@ -106,3 +102,5 @@ End Property
 Public Property Get Handling() As String
     Handling = pHandling
 End Property
+
+
