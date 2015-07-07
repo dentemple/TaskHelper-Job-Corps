@@ -168,6 +168,7 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub LoadUserformObjects(ByRef StudentFile As cStudentFile, ByVal RegForm As MSForms.UserForm, ByRef Exception As cException)
 
+    Exception.Push "Environment.LoadUserformObjects"
     On Error GoTo Handle_if_userform_fails_to_pass
 
     'Pass userform
@@ -245,6 +246,9 @@ Public Sub LoadUserformObjects(ByRef StudentFile As cStudentFile, ByVal RegForm 
     Set StudentFile.NoCostOptionButton = RegForm.NoCost_Optionselect
     
 Cleanup:
+
+    Exception.Pop
+    
 Exit Sub
 
 Handle_if_userform_fails_to_pass:
