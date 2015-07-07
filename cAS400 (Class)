@@ -38,21 +38,21 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Milliseconds property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Milliseconds(Value As Long)
-    Set pMilliseconds = Value
+Public Property Let Milliseconds(Value As Long)
+    pMilliseconds = Value
 End Property
 Public Property Get Milliseconds As Long
-    Set Milliseconds = pMilliseconds
+    Milliseconds = pMilliseconds
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' SessionName property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property SessionName(Value As String)
-    Set pSessionName = Value
+Public Property Let SessionName(Value As String)
+    pSessionName = Value
 End Property
 Public Property Get SessionName As String
-    Set SessionName = pSessionName
+    SessionName = pSessionName
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -69,21 +69,23 @@ End Property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ErrorFlag property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Let ErrorFlag(Value As Boolean)
+    pErrorFlag = Value
+End Property
 Public Property Get ErrorFlag() As Boolean
-    pErrorFlag = False
+    pErrorFlag = True
      If Session.Started = False Then
-  		pErrorFlag = True
 		pErrorMessage = pErrorMessage & "* The AS/400 has failed to connect to Session " & SessionName & vbNewLine & vbNewLine
 	End If
-	If Session.CommStarted = False Then
-		pErrorFlag = True
+    If Session.CommStarted = False Then
 		pErrorMessage = pErrorMessage & "* The AS/400 has failed to enable communications" & vbNewLine & vbNewLine
 	End If
 	If Session.Ready = False Then 
-		pErrorFlag = True
 		pErrorMessage = pErrorMessage & "* The AS/400 is not in a state of 'Ready'" & vbNewLine & vbNewLine
 	End If
-	ErrorFlag = pErrorFlag
+	If Session.Started = True And Session.CommStarted = True And Session.Ready = True Then
+	    pErrorMessage = pErrorMessage "* The AS/400 has encountered an unknown error"
+    End If
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
