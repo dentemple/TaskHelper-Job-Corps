@@ -275,6 +275,9 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function DetermineTable(ByVal StudentFile As cStudentFile, ByVal wSheet As Excel.Worksheet, ByVal Exception As cException) As Excel.ListObject
 
+    Dim StandardLength As Integer
+    StandardLength = 8
+    
     'Used for component testing only
     Dim TestFlag As Boolean
     TestFlag = True
@@ -295,16 +298,23 @@ Public Function DetermineTable(ByVal StudentFile As cStudentFile, ByVal wSheet A
             On Error GoTo 0
     End Select
     
+    If StudentFile.GetStudentStatus = True Then
+        StudentFile.AddressBookListingExists = True
+    End If
+    If Len(Trim(StudentFile.GetProgramNumber)) = StandardLength Then
+        StudentFile.FullProgramFlag = True
+    End If
+    
     If TestFlag = True Then
         DetermineTable = wSheet.TestCommandList
-    ElseIf StudentFile.GetStudentStatus = False And StudentFile.GetParentStatus = False Then
-        DetermineTable = wSheet.NewStudentNoParent
-    ElseIf StudentFile.GetStudentStatus = False And StudentFile.GetParentStatus = True Then
-        DetermineTable = wSheet.NewStudentWithParent
-    ElseIf StudentFile.GetStudentStatus = True And StudentFile.GetParentStatus = False Then
-        DetermineTable = wSheet.ReturnStudentNoParent
-    ElseIf StudentFile.GetStudentStatus = True And StudentFile.GetParentStatus = True Then
-        DetermineTable = wSheet.ReturnStudentWithParent
+    ElseIf StudentFile.AddressBookListingExists = False And StudentFile.GetParentStatus = False Then
+        DetermineTable = wSheet.AddressBookNoParent
+    ElseIf StudentFile.AddressBookListingExists = False And StudentFile.GetParentStatus = True Then
+        DetermineTable = wSheet.AddressBookWithParent
+    ElseIf StudentFile.AddressBookListingExists = True And StudentFile.FullProgramFlag = False Then
+        DetermineTable = wSheet.RegistrationIndividualCredits
+    ElseIf StudentFile.AddressBookListingExists = True And StudentFile.FullProgramFlag = True Then
+        DetermineTable = wSheet.RegistrationFullProgram
     Else
         DetermineTable = wSheet.TestCommandList
         Exception.ErrFlag = True
