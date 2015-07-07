@@ -84,6 +84,7 @@ Private Sub RunRegistration(ByVal RegForm As MSForms.UserForm, ByVal wSheet As E
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     Dim Exception As cException
     Set Exception = New cException
+    Exception.Push "Core_Registration.RunRegistration"
 
     Dim StudentFile As cStudentFile
     Set StudentFile = New cStudentFile
@@ -172,7 +173,7 @@ Private Sub RunRegistration(ByVal RegForm As MSForms.UserForm, ByVal wSheet As E
 Cleanup:
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     TurnOnExcelDefaults
-
+    Exception.Pop
 Exit Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Error Handlers
