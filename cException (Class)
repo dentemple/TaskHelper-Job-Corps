@@ -8,7 +8,6 @@ Private pErrFlag As Boolean
 Private pErrNumber As Integer
 Private pErrDescription As String
 Private pMessage As String
-Private pHandling As String
 
 'CALL STACK PROPERTIES
 Public siTop As StackItem
@@ -80,8 +79,6 @@ Public Property Get ErrDescription() As String
     ErrDescription = pErrDescription
 End Property
 
-
-
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Message property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -92,15 +89,5 @@ Public Property Get Message() As String
     Message = pMessage
 End Property
 
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Handling property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Let Handling(Value As String)
-    pHandling = Value
-End Property
-Public Property Get Handling() As String
-    Handling = pHandling
-End Property
 
 
