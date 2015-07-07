@@ -4,8 +4,8 @@
     (Note: The AS/400 only accepts number as Long.) _
 Required Input: _
     Action | Item | Row | Col | Length _
-Recognized Actions: _
-    Home, Set, Send, Check, Get (Stored within the RecognizedActions variable)
+Recognized Actions (Stored within the RecognizedActions variable): _
+    || home send set search get table ||
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Option Explicit
@@ -25,15 +25,13 @@ Private pErrorMessage As String
 'Caution: True constants cannot be declared in a class module. These values are _
     for internal use only so as to provide the class some additional modularity.
 Private RecognizedActions As String
-Private RecognizedPaths As String
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' LOCAL PROCEDURES
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Private Sub Class_Initialize()
-    RecognizedPaths = "addressbook"
-    RecognizedActions = "home set send check get"
+    RecognizedActions = "home send set search get table"
     pErrorFlag = False
     pErrorMessage = "The Command List has encountered the following issues:" & vbNewLine & vbNewLine
 End Sub
@@ -52,7 +50,7 @@ Public Property Get Action() As String
         Action = LCase(pAction)
     Else
         pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* The '" & LCase(pAction) & "' action is not recognized." & vbNewLine
+        pErrorMessage = pErrorMessage & "* '" & LCase(pAction) & "' is not a recognized action." & vbNewLine
     End If
 End Property
 
