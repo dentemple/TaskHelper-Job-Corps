@@ -106,6 +106,7 @@ Private Sub RunRegistration(ByVal RegForm As MSForms.UserForm, ByVal wSheet As E
     Dim passTable As Excel.ListObject
     Dim CommandCount As Integer
     CommandCount = 0
+    Dim StopEachScreen As Boolean
 
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ' Loads the class objects
@@ -116,21 +117,27 @@ Private Sub RunRegistration(ByVal RegForm As MSForms.UserForm, ByVal wSheet As E
     
     LoadUserformObjects StudentFile, RegForm, Exception
     
-    'Set the subsequent error handling based on user selection
-    Select Case Exception.Handling
+    LoadAS400 AS400, StudentFile, Exception
+    AS400.Handling = Trim(StudentFile.GetAutomation)
+    
+    'Set subsequent settings based on user selection
+    Select Case AS400.Handling
         Case "Fast"
             On Error GoTo AcknowledgeError
+            StopEachScreen = False
         Case "Slow"
             On Error GoTo AcknowledgeError
+            StopEachScreen = False
         Case "StopEach"
             On Error GoTo AcknowledgeError
+            StopEachScreen = True
         Case "Debug"
             On Error GoTo 0
+            StopEachScreen = True
         Case Else
             On Error GoTo 0
+            StopEachScreen = True
     End Select
-    
-    LoadAS400 AS400, StudentFile, Exception
     
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ' Loads the command list
@@ -143,31 +150,44 @@ Private Sub RunRegistration(ByVal RegForm As MSForms.UserForm, ByVal wSheet As E
     ' Final confirmations
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     FinalEnrollmentCheck:
-    If ApproveRegistration(StudentFile, AS400, Exception) = False Then GoTo Cleanup
+    If ApproveRegistration(StudentFile, AS400, Exception) = False Then 
+        GoTo Cleanup
+    End If
 
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ' Primary Execution
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     For Each Command In Commands
 
-        'Recognized Actions: Home, Set, Send, Check, Get
+        'Recognized Actions: || home send set search get table ||
         Select Case Command.Action
 
-            'Case Is "Home"
+            'Case "home"
+            
+                ExecuteHomeCommand AS400, Exception
+                WaitForReady AS400
+                
+                If StopEachScreen = True Then If AbortRegistration(AS400, StopEachScreen) = True Then GoTo Cleanup
     
-            'Case Is "Set"
+            'Case "send"
+            
+                If StopEachScreen = True Then If AbortRegistration(AS400, StopEachScreen) = True Then GoTo Cleanup
+                ExecuteSendCommand AS400, Exception
+                WaitForReady AS400
     
-            'Case Is "Send"
+            'Case "set"
     
-            'Case Is "Check"
+            'Case "search"
     
-            'Case Is "Get"
+            'Case "get"
+            
+            'Case "table"
     
             'Case Else
+            
+                If StopEachScreen = True Then If AbortRegistration(AS400, StopEachScreen) = True Then GoTo Cleanup
     
         End Select
-    
-        'Call Wait
 
     Next Command
 
