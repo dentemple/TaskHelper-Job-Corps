@@ -12,6 +12,7 @@ Option Explicit
 ' GENERAL PROPERTIES
 Private pStudentID As String
 Private pFinalPayment As String
+Private pAddressBookListingExists As Boolean
 
 ' ERROR PROPERTIES
 Private pErrorFlag As Boolean
@@ -200,6 +201,16 @@ Public Property Get GetFinalPayment() As Boolean
     Else
         GetFinalPayment = "0"
     End If
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' AddressBookListingExists property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Let AddressBookListingExists(Value As Boolean)
+    pAddressBookListingExists = Value
+End Property
+Public Property Get AddressBookListingExists() As Boolean
+    AddressBookListingExists = pAddressBookListingExists
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
