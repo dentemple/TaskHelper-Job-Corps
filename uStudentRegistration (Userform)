@@ -136,7 +136,7 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Private Sub Launch_Button_Click()
-    TestStudentFile uStudentRegistration
+    TestRunRegistration uStudentRegistration, Application.ActiveSheet
 End Sub
 
 Private Sub Confirm_Button_Click()
@@ -669,5 +669,7 @@ End Sub
 Private Sub Automation_ComboBox_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
     Help_Textbox = "[Fast] 0.1-0.5 sec/screen || [Slow] ~1 sec/screen || [StopEach] Stops on every screen || [Debug] - No controls or error handling"
 End Sub
+
+
 
 
