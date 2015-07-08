@@ -22,6 +22,21 @@ Exit Sub
 TestFailure: MsgBox Err.Description
 End Sub
 
+Private Sub PullFromTable()
+
+Dim lRow As Excel.ListRow
+Dim myArray As Variant
+
+Dim ws As Excel.Worksheet
+Set ws = ActiveWorkbook.Worksheets("Enrollment")
+Dim passTable As Excel.ListObject
+Set passTable = ws.ListObjects("TestCommandList")
+
+myArray = passTable.DataBodyRange.Value
+
+
+End Sub
+
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ConfirmStudentFile
 '
