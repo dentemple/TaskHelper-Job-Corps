@@ -3393,3 +3393,389 @@ End Sub
 
 
 
+Option Explicit 'Forces explicit declaration of all variables
+
+'===============================
+' # NavigateB2B (Module)
+'
+'Navigates through the AS400's most common PS screens to reach the _
+BNIMAIN homescreen.  True if success; False if failure.
+'
+'Warning: Implementation of this script requires testing before _
+applying to a new application.
+'
+' To-Do List: _
+1 - This approach is terribly inefficient; must re-write _
+2 - Find a better approach to handling non-B2B screens; encountering _
+a non-B2B screen not handled by the CASE switch may crash Excel _
+3 - Align procedures with Best Practices
+'==================================================================================
+
+Public Function Nav_To_Home_Screen(objAS400 As Object) As Boolean
+
+'Note: The AS/400 will only accept variable numbers as long
+Dim byt_Counter, byt_Maximum As Byte    'Stores loop information
+Dim get_text As String        'Stores search string
+Dim str_date As String           'Stores current date
+Dim Milliseconds As Long
+
+Milliseconds = 30
+
+'Maximum number of attempts
+byt_Maximum = 5
+
+byt_Counter = 0
+get_text = vbNullString
+str_date = vbNullString
+
+'This date string helps identify certain B2C PS screens
+str_date = Format(Now, "m/dd/yy")
+
+'Sets the overall function to False
+If Not Debugger Then On Error GoTo PathError Else On Error GoTo 0
+
+Call WaitForReady(objAS400, Milliseconds)
+
+If objAS400.autECLPS.SearchText(str_date, 2, 2, 80) Then
+    GoTo SkipLoop
+ElseIf objAS400.autECLPS.SearchText("dialer", 1, 9, 50) Then
+    GoTo SkipLoop
+End If
+
+Do
+    Call WaitForReady(objAS400, Milliseconds)
+    get_text = objAS400.autECLPS.GetText(1, 2, 8)
+    Call WaitForReady(objAS400, Milliseconds)
+        
+    Select Case get_text
+        
+        Case " BNIMAIN"     'PS: BNIMAIN (Destination)
+            Nav_To_Home_Screen = True
+            Exit Do
+                
+        Case " BNICS  "     'PS: BNICS
+            objAS400.autECLPS.SendKeys ("[pf12]")
+            Nav_To_Home_Screen = True
+            Exit Do
+                
+        Case "603131_B"     'PS: Student Service Inquiry (1.14.)
+            objAS400.autECLPS.SendKeys ("[pf3]")
+            Call WaitForReady(objAS400, Milliseconds)
+                
+        Case "603132_B"     'PS: (1.14.), Education Services Inquiry
+            objAS400.autECLPS.SendKeys ("[pf3]")
+            Call WaitForReady(objAS400, Milliseconds)
+                
+        Case "01051   "     'Address Book Information
+            objAS400.autECLPS.SendKeys ("[pf3]")
+            Call WaitForReady(objAS400, Milliseconds)
+                
+        Case " 032002 "     'PS: (1.14.), Customer Ledger Inquiry
+            objAS400.autECLPS.SendKeys ("[pf3]")
+            Call WaitForReady(objAS400, Milliseconds)
+                
+        Case "631001  "     'PS: (1.14.), ICS Cancellation Maintenance
+            objAS400.autECLPS.SendKeys ("[pf3]")
+            Call WaitForReady(objAS400, Milliseconds)
+                
+        Case "60110   "     'PS: (1.14.), Student Supplemental
+            objAS400.autECLPS.SendKeys ("[pf3]")
+            Call WaitForReady(objAS400, Milliseconds)
+                
+        Case "60210   "     'PS: (1.14.), Student Course Master
+            objAS400.autECLPS.SendKeys ("[pf3]")
+            Call WaitForReady(objAS400, Milliseconds)
+                
+        Case "42045   "     'PS: (1.14.), Shipping Screen
+            objAS400.autECLPS.SendKeys ("[pf3]")
+            Call WaitForReady(objAS400, Milliseconds)
+                
+        Case " ICSACCT"     'PS: ICS Accounting Main Menu
+            objAS400.autECLPS.SendKeys ("[pf12]")
+            Call WaitForReady(objAS400, Milliseconds)
+                
+        Case "ICSMAIN "     'PS: Main Menu
+            objAS400.autECLPS.SetText "6", 20, 7
+            objAS400.autECLPS.SendKeys ("[Enter]")
+            Call WaitForReady(objAS400, Milliseconds)
+                
+        Case " 98VL   "     'Library List Selection
+            objAS400.autECLPS.SetText "1", 6, 10
+            objAS400.autECLPS.SendKeys ("[Enter]")
+            Call WaitForReady(objAS400, Milliseconds)
+                
+        Case " BNIPROD"
+            objAS400.autECLPS.SendKeys ("[pf12]")
+            Call WaitForReady(objAS400, Milliseconds)
+            objAS400.autECLPS.SendKeys ("[pf12]")
+            Call WaitForReady(objAS400, Milliseconds)
+                
+        Case "        "     'No tag
+            objAS400.autECLPS.SendKeys ("[Enter]")
+            Call WaitForReady(objAS400, Milliseconds)
+            objAS400.autECLPS.SendKeys ("[Enter]")
+            Call WaitForReady(objAS400, Milliseconds)
+            objAS400.autECLPS.SendKeys ("[Enter]")
+            Call WaitForReady(objAS400, Milliseconds)
+                
+            If objAS400.autECLPS.SearchText("ICSMAIN", 1, 2) Then
+                objAS400.autECLPS.SetText "6", 20, 7
+                Call WaitForReady(objAS400, Milliseconds)
+            End If
+                
+        End Select
+        
+    byt_Counter = byt_Counter + 1
+        
+Loop Until byt_Counter >= byt_Maximum
+    
+If byt_Counter >= byt_Maximum Then Nav_To_Home_Screen = False
+
+Cleanup:
+
+Exit Function
+
+'///////////////////
+'Error/GoTo Handlers
+'///////////////////
+
+SkipLoop:
+Nav_To_Home_Screen = False
+GoTo Cleanup
+
+PathError:
+Nav_To_Home_Screen = False
+Resume Cleanup
+
+End Function
+
+
+
+'==================================================================================
+' # Global_Procedures (Module)
+'
+' Contains global subs and variables for use across multiple modules and worksheets
+
+' To-Do List: _
+1 - Evaluate variable and procedure names _
+2 - Improve comments (provide better context for procedures/actions) _
+3 - Further move actions/calculations to separate modules _
+5 - Add Outlook functionality _
+6 - Add Github functionality _
+7 - Align procedures with a Best Practices approach
+
+'==================================================================================
+
+
+
+Private Sub WaitForReady(passAS400 As Object, Milliseconds As Long)
+
+'"""
+'Commands the AS/400 to wait until the application is ready for additional input
+'
+'The ECLOIA object can be accessed as a dot method to the ECLPSession object
+'"""
+
+If Not Debugger Then On Error Resume Next Else On Error GoTo 0
+
+passAS400.autECLPS.Wait 10
+passAS400.autECLOIA.WaitForAppAvailable
+passAS400.autECLOIA.WaitForInputReady
+passAS400.autECLPS.Wait Milliseconds
+
+End Sub
+
+
+
+Private Sub Defaults_Off()
+
+Application.ScreenUpdating = False
+Application.DisplayAlerts = False
+Application.Calculation = xlCalculationManual
+
+End Sub
+
+
+
+Private Sub Defaults_On()
+
+Application.Calculation = xlCalculationAutomatic
+Application.DisplayAlerts = True
+Application.ScreenUpdating = True
+
+End Sub
+
+
+
+Private Function GetSheetFromCodeName(wb As Workbook, CodeName As String) As Excel.Worksheet
+
+'"""
+'|wb| = [Workbook] Name of the Workbook. |CodeName| = [String] The worksheet's code/secret name
+'
+'Returns Worksheet As Excel.Worksheet
+
+'Referencing a worksheet's codename instead of the worksheet's regular name (or position)
+'   allows users to change the sheet's name (or position) without breaking the relevant macros.
+'This function allows worksheet codenames to be referenced even across separate workbooks.
+
+'(SOURCE) D Glancy. (2012, Feb 10). Using Worksheet CodeNames in Other Workbooks [Web log].
+'   Retrieved from http://yoursumbuddy.com/using-worksheet-codenames-in-other-workbooks/
+'"""
+
+Dim wsCN As Excel.Worksheet
+
+If Not Debugger Then On Error Resume Next Else On Error GoTo 0
+
+For Each wsCN In wb.Worksheets
+
+     If wsCN.CodeName = CodeName Then
+         Set GetSheetFromCodeName = wsCN
+         Exit For
+     End If
+Next wsCN
+
+End Function
+
+
+
+Private Sub NavigateSheets(strStartSheetCodename As String, strEndSheetCodename As String)
+
+'"""
+' |strStartSheetCodename| = [String] Name of worksheet to navigate from.
+' |strEndSheetCodename| = [String] Name of worksheet to naviage to.
+'
+'This sub streamlines the user experience by showing only one worksheet at a time.  When the user clicks the
+'   commandbutton to move to the next sheet, the previous one closes.
+'
+'Instead of referencing the sheets' public name, this sub references the sheets' codename.
+'"""
+
+Dim wsStart As Excel.Worksheet  'Stores starting worksheet
+Dim wsEnd As Excel.Worksheet    'Stores ending worksheet
+
+If Not Debugger Then On Error Resume Next Else On Error GoTo 0
+
+'Calls the GetSheetFromCodeName function
+Set wsStart = GetSheetFromCodeName(Workbooks("TaskHelper VBA iSeries.xlsm"), strStartSheetCodename)
+Set wsEnd = GetSheetFromCodeName(Workbooks("TaskHelper VBA iSeries.xlsm"), strEndSheetCodename)
+
+wsEnd.Visible = xlSheetVisible
+wsEnd.Activate
+
+wsStart.Visible = xlSheetHidden
+
+End Sub
+
+
+
+Private Sub RestrictToPostiveWholeNumbers(KeyAscii As MSForms.ReturnInteger)
+
+'"""
+'Restricts the textbox to accept only numerals
+'"""
+
+Select Case KeyAscii
+     Case Asc("0") To Asc("9")
+     Case Else
+         KeyAscii = 0
+ End Select
+
+End Sub
+
+
+
+Private Sub RestrictToPostiveFloatNumbers(KeyAscii As MSForms.ReturnInteger, str_textbox As String)
+
+'"""
+'Restricts the textbox to accept only real numbers
+'"""
+
+Select Case KeyAscii
+     Case Asc("0") To Asc("9")
+     Case Asc(".")
+         If InStr(1, str_textbox, ".") > 0 Then
+             KeyAscii = 0
+         End If
+     Case Else
+         KeyAscii = 0
+ End Select
+
+End Sub
+
+
+
+Private Function TextEntry(str_label As String, v_variable As Variant) As String
+
+'Depreciated
+
+'"""
+'Formats entries for use on error reports. Takes an entry's "label" and
+'   appends a colon and two tab returns.  Takes a variable, checks to see
+'   if it's a string, then converts it to a string if it's not.
+'"""
+
+Dim strTypeName As String
+
+TextEntry = str_label & ":" & vbTab & vbTab
+
+'Note: The TypeName function returns the variable's type as a string
+strTypeName = TypeName(v_variable)
+
+If strTypeName = "Empty" Then
+    TextEntry = TextEntry & ""
+    
+ElseIf strTypeName = "String" Then
+    TextEntry = TextEntry & v_variable
+
+Else
+    TextEntry = TextEntry & CStr(v_variable)
+End If
+
+End Function
+
+
+
+Private Sub Initialize_AS400(ByRef blueMessage As String, ByRef redMessage As String, passSession As String, _
+    ByRef passAS400 As Object, ByRef obj_AS400_Focus As Object, ByRef PassConnList As Object)
+
+If Not Debugger Then On Error GoTo GoToScript Else On Error GoTo 0
+
+'Sets the main AS/400 objects
+Set passAS400 = CreateObject("PCOMM.autECLSession")
+Set obj_AS400_Focus = CreateObject("PCOMM.autECLWinMetrics")
+Set PassConnList = CreateObject("PCOMM.autECLConnList")
+
+'Sets the connection to the AS400 Presentation Space
+passAS400.SetConnectionByName (passSession)
+obj_AS400_Focus.SetConnectionByName (passSession)    'Used only for setting the focus
+
+'Checks to see if the AS400 Session is connected
+If passAS400.Started = False Then GoTo GoToScript
+blueMessage = blueMessage & vbNewLine & "AS400 Session: " & vbTab & passSession & vbNewLine
+
+'Checks to see if communications are enabled
+If passAS400.CommStarted = False Then GoTo GoToScript
+blueMessage = blueMessage & "AS400 Host:" & vbTab & "Connection Enabled" & vbNewLine
+
+'Checks to see if the AS400 is ready
+If passAS400.Ready = False Then GoTo GoToScript
+blueMessage = blueMessage & "AS400 Pres Space:" & vbTab & "Ready" & vbNewLine & vbNewLine
+
+'Refreshes the AS/400's Connection List (Recommended for autECLWinMetrics)
+PassConnList.Refresh
+
+Cleanup:
+Exit Sub
+
+ErrorScript:
+redMessage = vbNewLine & redMessage & "* Error (Gate 01): THE AS400 SESSION HAS FAILED TO CONNECT" & vbNewLine
+Resume Cleanup
+
+GoToScript:
+redMessage = vbNewLine & redMessage & "* Error (Gate 01): THE AS400 SESSION HAS FAILED TO CONNECT" & vbNewLine
+GoTo Cleanup
+
+End Sub
+
+
+
