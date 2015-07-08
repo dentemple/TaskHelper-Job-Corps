@@ -1,1 +1,115 @@
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' uStudentRegistration (Userform)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Option Explicit
+
+Private Sub UserForm_Initialize()
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Initialization event
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     
+    'Sets default value
+    PrefixCode_Textbox = "HJC"
+    Salesperson_Textbox = Range("DefaultSalesperson")
+
+    'Empties the textboxes
+    ParentCode_Textbox = vbNullString
+    Firstname_Textbox = vbNullString
+    Lastname_Textbox = vbNullString
+    Middlename_Textbox = vbNullString
+    ProgramNumber_Textbox = vbNullString
+    ProgramTuition_Textbox = vbNullString
+    AddressL1_Textbox = vbNullString
+    AddressL2_Textbox = vbNullString
+    AddressL3_Textbox = vbNullString
+    AddressL4_Textbox = vbNullString
+    City_Textbox = vbNullString
+    StateAbbrev_Textbox = vbNullString
+    Zipcode_Textbox = vbNullString
+    Areacode_Textbox = vbNullString
+    Phonenumber_Textbox = vbNullString
+    Email_Textbox = vbNullString
+
+    'Populates the selection boxes
+    With Automation_ComboBox
+        .Clear
+        .AddItem "Fast"
+        .AddItem "Slow"
+        .AddItem "StopEach"
+        .AddItem "Debug"
+        .Text = Automation_ComboBox.List(0)
+    End With
+    With Session_ComboBox
+        .Clear
+        .AddItem Range("DefaultSession")
+        .AddItem "A"
+        .AddItem "B"
+        .AddItem "C"
+        .AddItem "D"
+        .AddItem "E"
+        .Text = Session_ComboBox.List(0)
+    End With
+    
+    'Unchecks the checkbox
+    ProofHS_Checkbox.Value = False
+    
+    'Sets the initial focus
+    ParentCode_Textbox.SetFocus
+
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' COMMAND BUTTON / Actions to be called and performed
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub Launch_Button_Click()
+    'EMPTY
+End Sub
+
+Private Sub Confirm_Button_Click()
+    'EMPTY
+End Sub
+
+Private Sub Clear_Button_Click()
+    UserForm_Initialize
+End Sub
+
+Private Sub Cancel_Button_Click()
+    Unload Me
+End Sub
+
+Private Sub StudentSearch_Button_Click()
+    'EMPTY
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' CONTROL SETTINGS
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'Restrict to whole numbers
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub Salesperson_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+    RestrictToPostiveWholeNumbers KeyAscii
+End Sub
+Private Sub Areacode_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+    RestrictToPostiveWholeNumbers KeyAscii
+End Sub
+Private Sub Phonenumber_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+    RestrictToPostiveWholeNumbers KeyAscii
+End Sub
+
+Private Sub Zipcode_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+    RestrictToPostiveWholeNumbers KeyAscii
+End Sub
+
+Private Sub ProgramNumber_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+    RestrictToPostiveWholeNumbers KeyAscii
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'Restrict to floats
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub ProgramTuition_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+    RestrictToPostiveFloatNumbers KeyAscii, ProgramTuition_Textbox
+End Sub
