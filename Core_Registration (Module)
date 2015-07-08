@@ -53,7 +53,7 @@ End Sub
 ' Prevents the script from overrunning the AS/400. _
 The Wait command accepts milliseconds as Long. _
 The second Wait command passes in the milliseconds determined _
-    by the user's requested automation speed; it assumes
+    by the user's requested automation speed; it assumes _
     the property is correct and valid.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub WaitForReady(ByVal AS400 As cAS400)
@@ -80,7 +80,7 @@ Executes the actions as listed by the interpreted CommandList table. _
 Outputs confirmation messageboxes as needed. _
 Exports the interpreted data to a separate data worksheet. _
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Private Sub RunRegistration(ByVal RegForm As MSForms.UserForm, ByVal wSheet As Excel.Worksheet)
+Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm, ByVal wSheet As Excel.Worksheet)
 
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ' Set the required classes and collections
@@ -124,7 +124,7 @@ Private Sub RunRegistration(ByVal RegForm As MSForms.UserForm, ByVal wSheet As E
     'Set subsequent settings based on user selection
     Select Case AS400.Handling
         Case "Fast"
-            On Error GoTo AcknowledgeError
+            On Error GoTo 0
             AS400.Milliseconds = 75
         Case "Slow"
             On Error GoTo AcknowledgeError
@@ -142,18 +142,18 @@ Private Sub RunRegistration(ByVal RegForm As MSForms.UserForm, ByVal wSheet As E
             AS400.Milliseconds = 400
     End Select
     
-    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    ' Loads the command list
-    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 LoadCommandList:
-    passTable = DetermineTable(StudentFile, wSheet, Exception)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+    Set passTable = DetermineTable(StudentFile, wSheet, Exception)
     LoadCommands Command, Commands, passTable, Exception
     CommandCount = Commands.count
 
-    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    ' Final confirmations
-    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 FinalEnrollmentCheck:
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
     If ApproveRegistration(StudentFile, AS400, Exception) = False Then
         GoTo Cleanup
     End If
@@ -161,7 +161,7 @@ FinalEnrollmentCheck:
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ' Primary Execution
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    If Case AS400.Handling = "Fast" Or AS400.Handling = "Slow" Or AS400.Handling = "StopEach" Then
+    If AS400.Handling = "Fast" Or AS400.Handling = "Slow" Or AS400.Handling = "StopEach" Then
         On Error GoTo ErrorOnPrimaryExecution
     Else
         On Error GoTo 0
@@ -229,6 +229,7 @@ Cleanup:
     Exception.Pop
     Exception.Pop
 Exit Sub
+
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Error Handlers
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
