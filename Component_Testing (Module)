@@ -42,6 +42,9 @@ Set Stu = New cStudentFile
 Dim Exception As cException
 Set Exception = New cException
 
+Exception.Push "Procedure Test 1"
+Exception.Push "Procedure Test 2"
+
 DebugCheck = True
 
 If DebugCheck = True Then On Error GoTo 0 Else On Error GoTo Error_LoadStudentFile
@@ -84,7 +87,13 @@ PassInfo2 = "OPTION BUTTONS" & vbNewLine & vbNewLine & _
 
 '    ":" & vbTab & vbTab & Stu & vbNewLine & _
 
-MsgBox Stu.ErrorMessage & PassInfo2
+MsgBox Exception.StackTop
+
+Exception.Pop
+
+MsgBox Exception.StackTop
+
+Exception.Pop
 
 Cleanup:
 Set Stu = Nothing
