@@ -169,7 +169,9 @@ End Sub
 Public Sub LoadUserformObjects(ByRef StudentFile As cStudentFile, ByVal RegForm As MSForms.UserForm, ByRef Exception As cException)
 
     Exception.Push "Environment.LoadUserformObjects"
-    On Error GoTo Handle_if_userform_fails_to_pass
+    
+    'Pass error handling up the call stack
+    On Error GoTo 0
 
     'Pass userform
     Set StudentFile.UserFormObject = RegForm
@@ -248,25 +250,6 @@ Cleanup:
 
     Exception.Pop
     
-Exit Sub
-
-Handle_if_userform_fails_to_pass:
-    Exception.ErrFlag = True
-    Exception.ErrNumber = Err.Number
-    Exception.ErrDescription = Err.Description
-    Exception.Message = "The userform object has failed to load. " & _
-        "If resetting the userform fails to resolve the issue, please contact your VBA support team." & _
-        vbNewLine & vbNewLine & "Error #" & Err.Number & Space(2) & Err.Description
-Resume Cleanup
-
-StandardErrorHandler:
-    Exception.ErrFlag = True
-    Exception.ErrNumber = Err.Number
-    Exception.ErrDescription = Err.Description
-    Exception.Message = Exception.Message & vbNewLine & vbNewLine & "* The userform failed to load" & _
-        "- Error #" & Err.Number & vbNewLine & "Please confirm that no critical information is missing before proceeding"
-Resume Next
-
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -281,10 +264,13 @@ Public Function DetermineTable(ByVal StudentFile As cStudentFile, ByVal wSheet A
     Dim TestFlag As Boolean
     TestFlag = True
     
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    
     Exception.Push "Environment.DetermineTable"
     
     'Set Error Handling
-    Select Case Exception.Handling
+    Select Case StudentFile.GetAutomation
         Case "Fast"
             On Error GoTo StandardErrorHandler
         Case "Slow"
@@ -305,33 +291,24 @@ Public Function DetermineTable(ByVal StudentFile As cStudentFile, ByVal wSheet A
     End If
     
     If TestFlag = True Then
-        DetermineTable = wSheet.TestCommandList
+        Set DetermineTable = wSheet.ListObjects("TestCommandList")
     ElseIf StudentFile.AddressBookListingExists = False And StudentFile.GetParentStatus = False Then
-        DetermineTable = wSheet.AddressBookNoParent
+        'Set DetermineTable = wSheet.AddressBookNoParent
     ElseIf StudentFile.AddressBookListingExists = False And StudentFile.GetParentStatus = True Then
-        DetermineTable = wSheet.AddressBookWithParent
+        'Set DetermineTable = wSheet.AddressBookWithParent
     ElseIf StudentFile.AddressBookListingExists = True And StudentFile.FullProgramFlag = False Then
-        DetermineTable = wSheet.RegistrationIndividualCredits
+        'Set DetermineTable = wSheet.RegistrationIndividualCredits
     ElseIf StudentFile.AddressBookListingExists = True And StudentFile.FullProgramFlag = True Then
-        DetermineTable = wSheet.RegistrationFullProgram
+        'Set DetermineTable = wSheet.RegistrationFullProgram
     Else
-        DetermineTable = wSheet.TestCommandList
+        Set DetermineTable = wSheet.Range("TestCommandList")
         Exception.ErrFlag = True
-        Exception.Message = Exception.Message & vbNewLine & vbNewLine "* The correct command list table has failed to load  " & _
+        Exception.Message = Exception.Message & vbNewLine & vbNewLine & "* The correct command list table has failed to load  " & _
             vbNewLine & "If resetting the userform fails to resolve the issue, please contact your VBA support team."
     End If
     
 Cleanup:
     Exception.Pop
-Exit Function
-
-StandardErrorHandler:
-    Exception.ErrFlag = True
-    Exception.ErrNumber = Err.Number
-    Exception.ErrDescription = Err.Description
-    Exception.Message = Exception.Message & vbNewLine & vbNewLine "* The correct command list table has failed to load  " & _
-        "(Error #" & Err.Number & ")" & vbNewLine & "If resetting the userform fails to resolve the issue, please contact your VBA support team."
-Resume Next
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -344,42 +321,21 @@ Public Sub LoadCommands(ByRef Command As cCommand, ByRef CommandList As Collecti
     
     Exception.Push "Environment.LoadCommands"
     
-    'Set Error Handling
-    Select Case Exception.Handling
-        Case "Fast"
-            On Error GoTo StandardErrorHandler
-        Case "Slow"
-            On Error GoTo StandardErrorHandler
-        Case "StopEach"
-            On Error GoTo StandardErrorHandler
-        Case "Debug"
-            On Error GoTo 0
-        Case Else
-            On Error GoTo 0
-    End Select
+    'Pass error handling up the call stack
+    On Error GoTo 0
 
     For Each lRow In CommandTable.ListRows
-        Set Command = New Command
-        Command.Action = Trim(CommandTable.ListColumn("Action").Value)
-        Command.Item = Trim(CommandTable.ListColumn("Item").Value)
-        Command.Row = Trim(CommandTable.ListColumn("Row").Value)
-        Command.Col = Trim(CommandTable.ListColumn("Column").Value)
-        Command.Length = Trim(CommandTable.ListColumn("Length").Value)
+        Set Command = New cCommand
+        Command.Action = Trim(CommandTable.ListColumns("Action"))
+        Command.Item = Trim(CommandTable.ListColumns("Item"))
+        Command.Row = CommandTable.ListColumns("Row").DataBodyRange.Value
+        Command.Column = CommandTable.ListColumns("Column")
+        Command.Length = CommandTable.ListColumns("Length")
         CommandList.Add Command
     Next lRow
 
 Cleanup:
     Exception.Pop
-Exit Sub
-
-StandardErrorHandler:
-    Exception.ErrFlag = True
-    Exception.ErrNumber = Err.Number
-    Exception.ErrDescription = Err.Description
-    Exception.Message = Exception.Message & vbNewLine & vbNewLine "* The command list includes an invalid command  " & _
-        "(Error #" & Err.Number & ")"
-Resume Next
-
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -387,7 +343,9 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub LoadAS400(ByRef AS400 As cAS400, ByVal StudentFile As cStudentFile, ByRef Exception As cException)
 
-    On Error GoTo ErrHandler
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    
     Exception.Push "Environment.LoadAS400"
     
     AS400.SessionName = StudentFile.GetSession
@@ -398,15 +356,6 @@ Public Sub LoadAS400(ByRef AS400 As cAS400, ByVal StudentFile As cStudentFile, B
 
 Cleanup:
     Exception.Pop
-Exit Sub
-
-ErrHandler:
-    Exception.ErrFlag = True
-    Exception.ErrNumber = Err.Number
-    Exception.ErrDescription = Err.Description
-    Exception.Message = Exception.Message & vbNewLine & vbNewLine "* The AS/400 has failed to initialize  " & _
-        "(Error #" & Err.Number & ")"
-Resume Cleanup
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -414,21 +363,10 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function ApproveRegistration(ByVal StudentFile As cStudentFile, ByVal AS400 As cAS400, ByVal Exception As cException) As Boolean
 
-    Exception.Push "Environment.ApproveRegistration"
+    'Pass error handling up the call stack
+    On Error GoTo 0
     
-    'Set error handling
-    Select Case Exception.Handling
-        Case "Fast"
-            On Error GoTo StandardErrorHandler
-        Case "Slow"
-            On Error GoTo StandardErrorHandler
-        Case "StopEach"
-            On Error GoTo StandardErrorHandler
-        Case "Debug"
-            On Error GoTo 0
-        Case Else
-            On Error GoTo 0
-    End Select
+    Exception.Push "Environment.ApproveRegistration"
 
     ApproveRegistration = True
     If Exception.ErrFlag = True Then
@@ -445,11 +383,6 @@ Public Function ApproveRegistration(ByVal StudentFile As cStudentFile, ByVal AS4
 
 Cleanup:
     Exception.Pop
-Exit Function
-StandardErrorHandler:
-    ApproveRegistration = False
-    MsgBox "An issue occurred while attempting to confirm the userform information." & vbNewLine & vbNewLine & _
-        "If resetting the userform fails to resolve the issue, please contact your VBA support team."
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -588,7 +521,7 @@ Public Sub ExecuteSetCommand(ByVal Command As cCommand, ByVal AS400 As cAS400, B
     
     Else
     
-        Case Select KeyString
+        Select Case KeyString
         
             Case "#MailingName"
                 AS400.Presentation.SetText StudentFile.GetMiddleName, lRow, lCol
@@ -665,4 +598,14 @@ Public Sub ExecuteSetCommand(ByVal Command As cCommand, ByVal AS400 As cAS400, B
     End If
 
     Exception.Pop
+End Sub
+
+Public Sub ExecuteHomeCommand(ByVal AS400 As cAS400, ByRef Exception As cException)
+
+
+End Sub
+
+Public Sub AdjustTableVariables(ByVal Command As cCommand, ByVal AS400 As cAS400, ByVal StudentFile As cStudentFile, ByRef Exception As cException)
+
+
 End Sub
