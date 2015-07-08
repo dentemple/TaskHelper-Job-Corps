@@ -178,18 +178,6 @@ Public Sub LoadUserformObjects(ByRef StudentFile As cStudentFile, ByVal RegForm 
     
     'Pass and set error handling
     Set StudentFile.AutomationComboBox = RegForm.Automation_ComboBox
-    Select Case StudentFile.GetAutomation
-        Case "Fast"
-            On Error GoTo StandardErrorHandler
-        Case "Slow"
-            On Error GoTo StandardErrorHandler
-        Case "StopEach"
-            On Error GoTo StandardErrorHandler
-        Case "Debug"
-            On Error GoTo 0
-        Case Else
-            On Error GoTo 0
-    End Select
     
     'Pass objects
     Set StudentFile.FirstNameTextbox = RegForm.Firstname_Textbox
@@ -269,20 +257,6 @@ Public Function DetermineTable(ByVal StudentFile As cStudentFile, ByVal wSheet A
     
     Exception.Push "Environment.DetermineTable"
     
-    'Set Error Handling
-    Select Case StudentFile.GetAutomation
-        Case "Fast"
-            On Error GoTo StandardErrorHandler
-        Case "Slow"
-            On Error GoTo StandardErrorHandler
-        Case "StopEach"
-            On Error GoTo StandardErrorHandler
-        Case "Debug"
-            On Error GoTo 0
-        Case Else
-            On Error GoTo 0
-    End Select
-    
     If StudentFile.GetStudentStatus = True Then
         StudentFile.AddressBookListingExists = True
     End If
@@ -328,7 +302,7 @@ Public Sub LoadCommands(ByRef Command As cCommand, ByRef CommandList As Collecti
         Set Command = New cCommand
         Command.Action = Trim(CommandTable.ListColumns("Action"))
         Command.Item = Trim(CommandTable.ListColumns("Item"))
-        Command.Row = CommandTable.ListColumns("Row").DataBodyRange.Value
+        Command.Row = Val(CommandTable.ListColumns("Row").DataBodyRange)
         Command.Column = CommandTable.ListColumns("Column")
         Command.Length = CommandTable.ListColumns("Length")
         CommandList.Add Command
@@ -401,7 +375,7 @@ Public Function AbortRegistration(ByVal AS400 As cAS400, ByRef StopEachScreen As
             vbTab & "Press NO to turn off the confirmation messages." & vbNewLine & _
             vbTab & "Press CANCEL to abort the registration."
     
-    Select Case MsgBox str, vbYesNoCancel, "StopEach / Debug"
+    Select Case MsgBox(str, vbYesNoCancel, "StopEach / Debug")
     
         Case vbYes
             AbortRegistration = False
@@ -488,7 +462,7 @@ Public Sub ExecuteGetCommand(ByVal Command As cCommand, ByVal AS400 As cAS400, B
     
     ExtractText = AS400.Presentation.GetText(lRow, lCol, lLen)
     
-    Case Select KeyString
+    Select Case KeyString
         'Empty
     End Select
 
