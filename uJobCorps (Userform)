@@ -64,7 +64,7 @@ End Sub
 ' COMMAND BUTTON / Actions to be called and performed
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Private Sub Launch_Button_Click()
-    'EMPTY
+    RunRegistration cJobCorps
 End Sub
 
 Private Sub Confirm_Button_Click()
