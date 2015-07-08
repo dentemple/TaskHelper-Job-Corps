@@ -70,6 +70,16 @@ Public Property Get ErrFlag() As Boolean
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ErrNumber property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Let ErrNumber(Value As Integer)
+    pErrNumber = Value
+End Property
+Public Property Get ErrNumber() As Integer
+    ErrNumber = pErrNumber
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ErrDescription property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Let ErrDescription(Value As String)
@@ -88,6 +98,3 @@ End Property
 Public Property Get Message() As String
     Message = pMessage
 End Property
-
-
-
