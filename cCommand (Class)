@@ -3,7 +3,7 @@
 'Stores the individual commands to be executed by the AS/400. _
     (Note: The AS/400 only accepts number as Long.) _
 Required Input: _
-    Action | Item | Row | Col | Length _
+    Action | Item | Row | Column | Length _
 Recognized Actions (Stored within the RecognizedActions variable): _
     || home send set search get table ||
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -14,7 +14,7 @@ Option Explicit
 Private pAction As String
 Private pItem As String
 Private pRow As Long
-Private pCol As Long
+Private pColumn As Long
 Private pLength As Long
 
 ' ERROR PROPERTIES
@@ -78,13 +78,13 @@ Public Property Get Row() As Long
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Col property
+' Column property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Let Col(Value As Long)
-    pCol = Value
+Public Property Let Column(Value As Long)
+    pColumn = Value
 End Property
-Public Property Get Col() As Long
-    Col = pCol
+Public Property Get Column() As Long
+    Column = pColumn
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
