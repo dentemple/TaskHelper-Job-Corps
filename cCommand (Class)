@@ -1,11 +1,7 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' cCommand (Class)
-'Stores the individual commands to be executed by the AS/400. _
-    (Note: The AS/400 only accepts number as Long.) _
-Required Input: _
-    Action | Item | Row | Column | Length _
-Recognized Actions (Stored within the RecognizedActions variable): _
-    || home send set search get table ||
+
+'||| Under Construction |||
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Option Explicit
