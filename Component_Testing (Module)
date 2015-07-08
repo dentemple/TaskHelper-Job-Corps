@@ -103,3 +103,9 @@ Exit Sub
 Error_LoadStudentFile: MsgBox "Error on LoadStudentFile": Resume Cleanup
 Error_PassInfo: MsgBox "Error on passing values": Resume Cleanup
 End Sub
+
+Public Sub TestRunRegistration(RegForm As MSForms.UserForm, wSheet)
+
+RunRegistration RegForm, wSheet
+
+End Sub
