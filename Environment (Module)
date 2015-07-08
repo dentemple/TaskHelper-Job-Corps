@@ -4,194 +4,34 @@
 
 Option Explicit
 
-'Dimensions the Debug Mode
-Public Const Debugger As Boolean = True
-
-'Dimensions the color constants. The Variant type is used so as to accommodate different formats,
-Public Const cGrey As Variant = &H80000000
-Public Const cWhite As Variant = &H80000005
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GetSheetFromCodeName (Public Function)
-'
-'|wb| = [Workbook] Name of the Workbook. |CodeName| = [String] The worksheet's code/secret name
-'
-'Returns Worksheet As Excel.Worksheet
-
-'Referencing a worksheet's codename instead of the worksheet's regular name (or position)
-'   allows users to change the sheet's name (or position) without breaking the relevant macros.
-'This function allows worksheet codenames to be referenced even across separate workbooks.
-
-'(SOURCE) D Glancy. (2012, Feb 10). Using Worksheet CodeNames in Other Workbooks [Web log].
-'   Retrieved from http://yoursumbuddy.com/using-worksheet-codenames-in-other-workbooks/
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GetSheetFromCodeName(wb As Workbook, CodeName As String) As Excel.Worksheet
-
-    Dim wsCN As Excel.Worksheet
-
-    If Not Debugger Then On Error Resume Next Else On Error GoTo 0
-
-    For Each wsCN In wb.Worksheets
-
-        If wsCN.CodeName = CodeName Then
-            Set GetSheetFromCodeName = wsCN
-            Exit For
-         End If
-    Next wsCN
-
-End Function
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' NavigateSheets (Public Sub)
-'
-' |strStartSheetCodename| = [String] Name of worksheet to navigate from.
-' |strEndSheetCodename| = [String] Name of worksheet to naviage to.
-'
-'This sub streamlines the user experience by showing only one worksheet at a time.  When the user clicks the
-'   commandbutton to move to the next sheet, the previous one closes.
-'
-'Instead of referencing the sheets' public name, this sub references the sheets' codename.
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub NavigateSheets(strStartSheetCodename As String, strEndSheetCodename As String)
-
-    Dim wsStart As Excel.Worksheet  'Stores starting worksheet
-    Dim wsEnd As Excel.Worksheet    'Stores ending worksheet
-
-    If Not Debugger Then On Error Resume Next Else On Error GoTo 0
-
-    'Calls the GetSheetFromCodeName function
-    Set wsStart = GetSheetFromCodeName(Workbooks("TaskHelper VBA iSeries.xlsm"), strStartSheetCodename)
-    Set wsEnd = GetSheetFromCodeName(Workbooks("TaskHelper VBA iSeries.xlsm"), strEndSheetCodename)
-
-    wsEnd.Visible = xlSheetVisible
-    wsEnd.Activate
-
-    wsStart.Visible = xlSheetHidden
-
-End Sub
-
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' ChangeLocks (Public Sub)
-'
-'Accepts an array of userform textboxes.  Locks or unlocks as needed.
-'
-'The color variables are dimensioned as variant so as to allow for different
-'   formatting options.
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub ChangeLocks(passArray() As Object, passBoolean As Boolean, changeover As Integer)
-
-    Dim oppositeBoolean As Boolean
-    Dim i As Integer
-    Dim var_Selected_Color As Variant
-    Dim var_Opposite_Color As Variant
-
-    oppositeBoolean = Not passBoolean
-
-    'Determines color selection based on passed bool value
-    If passBoolean = True Then
-        var_Selected_Color = cWhite
-        var_Opposite_Color = cGrey
-    Else:
-        var_Selected_Color = cGrey
-        var_Opposite_Color = cWhite
-    End If
-
-    For i = LBound(passArray) To UBound(passArray)
-
-        If i < changeover Then
-    
-            'Unlocks if passed bool is true; locks if false
-            passArray(i).Locked = oppositeBoolean
-            passArray(i).BackColor = var_Selected_Color
-            'PassArray(i) = vbNullString    'Necessary? [...]
-    
-        Else:
-
-            'Locks if passed bool is true; unlocks if false
-            passArray(i).Locked = passBoolean
-            passArray(i).BackColor = var_Opposite_Color
-            'PassArray(i) = vbNullString    'Necessary? [...]
-
-        End If
-
-    Next i
-
-End Sub
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' PassProgramTextboxes (Public Sub)
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub PassProgramTextboxes(ByRef passArray() As Object, ByVal RegForm As MSForms.UserForm)
-    Set passArray(0) = RegForm.ProgramNumber_Textbox
-    Set passArray(1) = RegForm.ProgramTuition_Textbox
-    Set passArray(2) = RegForm.ClassMod1_Textbox
-    Set passArray(3) = RegForm.ClassMod2_Textbox
-    Set passArray(4) = RegForm.ClassMod3_Textbox
-    Set passArray(5) = RegForm.ClassMod4_Textbox
-    Set passArray(6) = RegForm.ClassMod5_Textbox
-    Set passArray(7) = RegForm.ClassMod6_Textbox
-    Set passArray(8) = RegForm.ClassMod7_Textbox
-    Set passArray(9) = RegForm.ClassTuition1_Textbox
-    Set passArray(10) = RegForm.ClassTuition2_Textbox
-    Set passArray(11) = RegForm.ClassTuition3_Textbox
-    Set passArr(12) = RegForm.ClassTuition4_Textbox
-    Set passArr(13) = RegForm.ClassTuition5_Textbox
-    Set passArr(14) = RegForm.ClassTuition6_Textbox
-    Set passArr(15) = RegForm.ClassTuition7_Textbox
-End Sub
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' PassStudentTextboxes (Public Sub)
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub PassStudentTextboxes(ByRef passArr() As Object, ByVal RegForm As MSForms.UserForm)
-    Set passArr(0) = RegForm.StudentID_Textbox
-    Set passArr(1) = RegForm.Areacode_Textbox
-    Set passArr(2) = RegForm.Phonenumber_Textbox
-    Set passArr(3) = RegForm.Email_Textbox
-    Set passArr(4) = RegForm.AddressLine1_Textbox
-    Set passArr(5) = RegForm.AddressLine2_Textbox
-    Set passArr(6) = RegForm.AddressLine3_Textbox
-    Set passArr(7) = RegForm.AddressLine4_Textbox
-    Set passArr(8) = RegForm.City_Textbox
-    Set passArr(9) = RegForm.StateAbbrev_Textbox
-    Set passArr(10) = RegForm.Zipcode_Textbox
-End Sub
-
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' LoadUserformObjects (Public Sub)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub LoadUserformObjects(ByRef StudentFile As cStudentFile, ByVal RegForm As MSForms.UserForm, ByRef Exception As cException)
 
     Exception.Push "Environment.LoadUserformObjects"
-    
+
     'Pass error handling up the call stack
     On Error GoTo 0
 
     'Pass userform
     Set StudentFile.UserFormObject = RegForm
-    
+
     'Pass and set error handling
     Set StudentFile.AutomationComboBox = RegForm.Automation_ComboBox
-    
+
     'Pass objects
     Set StudentFile.FirstNameTextbox = RegForm.Firstname_Textbox
     Set StudentFile.MiddleNameTextbox = RegForm.Middlename_Textbox
     Set StudentFile.LastNameTextbox = RegForm.Lastname_Textbox
     Set StudentFile.SalespersonTextbox = RegForm.Salesperson_Textbox
-    Set StudentFile.StudentIDTextbox = RegForm.StudentID_Textbox
     Set StudentFile.AreaCodeTextbox = RegForm.Areacode_Textbox
     Set StudentFile.PhoneNumberTextbox = RegForm.Phonenumber_Textbox
     Set StudentFile.EmailTextbox = RegForm.Email_Textbox
-    Set StudentFile.AddressLine1Textbox = RegForm.AddressLine1_Textbox
-    Set StudentFile.AddressLine2Textbox = RegForm.AddressLine2_Textbox
-    Set StudentFile.AddressLine3Textbox = RegForm.AddressLine3_Textbox
-    Set StudentFile.AddressLine4Textbox = RegForm.AddressLine4_Textbox
+    Set StudentFile.AddressLine1Textbox = RegForm.AddressL1_Textbox
+    Set StudentFile.AddressLine2Textbox = RegForm.AddressL2_Textbox
+    Set StudentFile.AddressLine3Textbox = RegForm.AddressL3_Textbox
+    Set StudentFile.AddressLine4Textbox = RegForm.AddressL4_Textbox
     Set StudentFile.CityTextbox = RegForm.City_Textbox
     Set StudentFile.StateTextbox = RegForm.StateAbbrev_Textbox
     Set StudentFile.ZipCodeTextbox = RegForm.Zipcode_Textbox
