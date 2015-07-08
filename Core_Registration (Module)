@@ -4,15 +4,13 @@
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' InitializeAS400 (Public Sub)
-'
-'Sets the connections to the AS/400 Host Automation Library. _
-    The procedure assumes the intended AS/400 session has already _
-    been stored within the class object. _
-    Success can also be checked by the class object's ErrorFlag property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub InitializeAS400(ByRef AS400 As cAS400)
 
-    On Error GoTo ErrHandler
+    'Call Stack
+
+    'Pass error handling up the call stack
+    On Error GoTo 0
 
     Set AS400.Session = CreateObject("PCOMM.autECLSession")
     Set AS400.Metrics = CreateObject("PCOMM.autECLWinMetrics")
@@ -22,16 +20,15 @@ Public Sub InitializeAS400(ByRef AS400 As cAS400)
     AS400.Metrics.SetConnectionByName (AS400.SessionName)
     AS400.Metrics.Refresh
 
-Exit Sub
-
-ErrHandler: AS400.ErrorFlag = True
-
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Excel Defaults
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub TurnOffExcelDefaults()
+
+    'Pass error handling up the call stack
+    On Error GoTo 0
 
     Application.ScreenUpdating = False
     Application.DisplayAlerts = False
@@ -41,6 +38,9 @@ End Sub
 
 Public Sub TurnOnExcelDefaults()
 
+    'Pass error handling up the call stack
+    On Error GoTo 0
+
     Application.Calculation = xlCalculationAutomatic
     Application.DisplayAlerts = True
     Application.ScreenUpdating = True
@@ -49,14 +49,11 @@ End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' WaitForReady (Public Sub)
-'
-' Prevents the script from overrunning the AS/400. _
-The Wait command accepts milliseconds as Long. _
-The second Wait command passes in the milliseconds determined _
-    by the user's requested automation speed; it assumes _
-    the property is correct and valid.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub WaitForReady(ByVal AS400 As cAS400)
+
+    'Pass error handling up the call stack
+    On Error GoTo 0
 
     Dim InitialWaitTime As Long
     InitialWaitTime = 10
@@ -70,17 +67,8 @@ End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' RunRegistration (Private Sub)
-'
-' Automates course registration within the B2B and Individual College Environment. _
-Relies on IBM's Host Automation Class Library to control the AS/400 from VBA.
-
-'Accepts the registration userform, as well as the CommandList table from the main worksheet. _
-Calls to external procedures to interpret the environment-specific data. _
-Executes the actions as listed by the interpreted CommandList table. _
-Outputs confirmation messageboxes as needed. _
-Exports the interpreted data to a separate data worksheet. _
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm, ByVal wSheet As Excel.Worksheet)
+Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
 
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ' Set the required classes and collections
@@ -95,17 +83,9 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm, ByVal wSheet As Ex
     Dim AS400 As cAS400
     Set AS400 = New cAS400
 
-    Dim Commands As Collection
-    Set Commands = New Collection
-
-    Dim Command As cCommand
-
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ' General variables
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    Dim passTable As Excel.ListObject
-    Dim CommandCount As Integer
-    CommandCount = 0
     Dim StopEachScreen As Boolean
     StopEachScreen = False
 
