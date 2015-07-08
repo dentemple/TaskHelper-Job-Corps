@@ -145,7 +145,7 @@ Private Sub RunRegistration(ByVal RegForm As MSForms.UserForm, ByVal wSheet As E
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ' Loads the command list
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    LoadCommandList:
+LoadCommandList:
     passTable = DetermineTable(StudentFile, wSheet, Exception)
     LoadCommands Command, Commands, passTable, Exception
     CommandCount = Commands.count
@@ -153,8 +153,8 @@ Private Sub RunRegistration(ByVal RegForm As MSForms.UserForm, ByVal wSheet As E
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ' Final confirmations
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    FinalEnrollmentCheck:
-    If ApproveRegistration(StudentFile, AS400, Exception) = False Then 
+FinalEnrollmentCheck:
+    If ApproveRegistration(StudentFile, AS400, Exception) = False Then
         GoTo Cleanup
     End If
 
@@ -201,7 +201,7 @@ Private Sub RunRegistration(ByVal RegForm As MSForms.UserForm, ByVal wSheet As E
             
             Case "table"
             
-                If Command.Item = "End" Then 
+                If Command.Item = "End" Then
                     GoTo Cleanup
                 Else
                     AdjustTableVariables Command, AS400, StudentFile, Exception
@@ -243,5 +243,3 @@ ErrorOnPrimaryExecution:
 Resume Next
 
 End Sub
-
-
