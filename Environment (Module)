@@ -79,7 +79,7 @@ End Sub
 'The color variables are dimensioned as variant so as to allow for different
 '   formatting options.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub ChangeLocks(PassArray() As Object, passBoolean As Boolean, changeover As Integer)
+Public Sub ChangeLocks(passArray() As Object, passBoolean As Boolean, changeover As Integer)
 
     Dim oppositeBoolean As Boolean
     Dim i As Integer
@@ -97,20 +97,20 @@ Public Sub ChangeLocks(PassArray() As Object, passBoolean As Boolean, changeover
         var_Opposite_Color = cWhite
     End If
 
-    For i = LBound(PassArray) To UBound(PassArray)
+    For i = LBound(passArray) To UBound(passArray)
 
         If i < changeover Then
     
             'Unlocks if passed bool is true; locks if false
-            PassArray(i).Locked = oppositeBoolean
-            PassArray(i).BackColor = var_Selected_Color
+            passArray(i).Locked = oppositeBoolean
+            passArray(i).BackColor = var_Selected_Color
             'PassArray(i) = vbNullString    'Necessary? [...]
     
         Else:
 
             'Locks if passed bool is true; unlocks if false
-            PassArray(i).Locked = passBoolean
-            PassArray(i).BackColor = var_Opposite_Color
+            passArray(i).Locked = passBoolean
+            passArray(i).BackColor = var_Opposite_Color
             'PassArray(i) = vbNullString    'Necessary? [...]
 
         End If
@@ -172,12 +172,11 @@ Public Sub LoadUserformObjects(ByRef StudentFile As cStudentFile, ByVal RegForm 
     On Error GoTo Handle_if_userform_fails_to_pass
 
     'Pass userform
-    Set StudentFile.UserForm = RegForm
+    Set StudentFile.UserFormObject = RegForm
     
     'Pass and set error handling
     Set StudentFile.AutomationComboBox = RegForm.Automation_ComboBox
-    Exception.Handling = StudentFile.GetAutomation
-    Select Case Exception.Handling
+    Select Case StudentFile.GetAutomation
         Case "Fast"
             On Error GoTo StandardErrorHandler
         Case "Slow"
@@ -257,15 +256,15 @@ Handle_if_userform_fails_to_pass:
     Exception.ErrDescription = Err.Description
     Exception.Message = "The userform object has failed to load. " & _
         "If resetting the userform fails to resolve the issue, please contact your VBA support team." & _
-        vbNewLine & vbNewLine & "Error #" & Err.Number & space(2) & Err.Description
+        vbNewLine & vbNewLine & "Error #" & Err.Number & Space(2) & Err.Description
 Resume Cleanup
 
 StandardErrorHandler:
     Exception.ErrFlag = True
     Exception.ErrNumber = Err.Number
     Exception.ErrDescription = Err.Description
-    Exception.Message = Exception.Message & vbNewLine & vbNewLine "* A userform object has failed to load" & _
-        "(Error #" & Err.Number & ")" & vbNewLine & "Please confirm that no critical information is missing before proceeding"
+    Exception.Message = Exception.Message & vbNewLine & vbNewLine & "* The userform failed to load" & _
+        "- Error #" & Err.Number & vbNewLine & "Please confirm that no critical information is missing before proceeding"
 Resume Next
 
 End Sub
@@ -341,7 +340,7 @@ End Function
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub LoadCommands(ByRef Command As cCommand, ByRef CommandList As Collection, ByVal CommandTable As Excel.ListObject, ByRef Exception As cException)
 
-    Dim Lrow As Excel.ListRow
+    Dim lRow As Excel.ListRow
     
     Exception.Push "Environment.LoadCommands"
     
@@ -359,7 +358,7 @@ Public Sub LoadCommands(ByRef Command As cCommand, ByRef CommandList As Collecti
             On Error GoTo 0
     End Select
 
-    For Each Lrow In CommandTable.ListRows
+    For Each lRow In CommandTable.ListRows
         Set Command = New Command
         Command.Action = Trim(CommandTable.ListColumn("Action").Value)
         Command.Item = Trim(CommandTable.ListColumn("Item").Value)
@@ -367,7 +366,7 @@ Public Sub LoadCommands(ByRef Command As cCommand, ByRef CommandList As Collecti
         Command.Col = Trim(CommandTable.ListColumn("Column").Value)
         Command.Length = Trim(CommandTable.ListColumn("Length").Value)
         CommandList.Add Command
-    Next Lrow
+    Next lRow
 
 Cleanup:
     Exception.Pop
@@ -594,41 +593,41 @@ Public Sub ExecuteSetCommand(ByVal Command As cCommand, ByVal AS400 As cAS400, B
             Case "#MailingName"
                 AS400.Presentation.SetText StudentFile.GetMiddleName, lRow, lCol
             Case "#AlphaName"
-                AS400.Presentation.SetText StudentFile.GetAlphaName, lRow, lCol  
+                AS400.Presentation.SetText StudentFile.GetAlphaName, lRow, lCol
             Case "#AreaCode"
-                AS400.Presentation.SetText StudentFile.GetAreaCode, lRow, lCol  
+                AS400.Presentation.SetText StudentFile.GetAreaCode, lRow, lCol
             Case "#PhoneNum"
-                AS400.Presentation.SetText StudentFile.GetPhoneNumber, lRow, lCol  
+                AS400.Presentation.SetText StudentFile.GetPhoneNumber, lRow, lCol
             Case "#AddressLN1"
-                AS400.Presentation.SetText StudentFile.GetAddressLine1, lRow, lCol  
+                AS400.Presentation.SetText StudentFile.GetAddressLine1, lRow, lCol
             Case "#AddressLN2"
-                AS400.Presentation.SetText StudentFile.GetAddressLine2, lRow, lCol  
+                AS400.Presentation.SetText StudentFile.GetAddressLine2, lRow, lCol
             Case "#AddressLN3"
-                AS400.Presentation.SetText StudentFile.GetAddressLine3, lRow, lCol  
+                AS400.Presentation.SetText StudentFile.GetAddressLine3, lRow, lCol
             Case "#AddressLN4"
-                AS400.Presentation.SetText StudentFile.GetAddressLine4, lRow, lCol  
+                AS400.Presentation.SetText StudentFile.GetAddressLine4, lRow, lCol
             Case "#ZipCode"
-                AS400.Presentation.SetText StudentFile.GetZipCode, lRow, lCol  
+                AS400.Presentation.SetText StudentFile.GetZipCode, lRow, lCol
             Case "#City"
-                AS400.Presentation.SetText StudentFile.GetCity, lRow, lCol  
+                AS400.Presentation.SetText StudentFile.GetCity, lRow, lCol
             Case "#State"
-                AS400.Presentation.SetText StudentFile.GetState, lRow, lCol  
+                AS400.Presentation.SetText StudentFile.GetState, lRow, lCol
             Case "#StudentID"
-                AS400.Presentation.SetText StudentFile.StudentID, lRow, lCol  
+                AS400.Presentation.SetText StudentFile.StudentID, lRow, lCol
             Case "#PrefixCode"
-                AS400.Presentation.SetText StudentFile.GetPrefixCode, lRow, lCol  
+                AS400.Presentation.SetText StudentFile.GetPrefixCode, lRow, lCol
             Case "#SchoolCode"
-                AS400.Presentation.SetText StudentFile.GetSchoolCode, lRow, lCol  
+                AS400.Presentation.SetText StudentFile.GetSchoolCode, lRow, lCol
             Case "#DegreeCode"
-                AS400.Presentation.SetText StudentFile.GetDegreeCode, lRow, lCol  
+                AS400.Presentation.SetText StudentFile.GetDegreeCode, lRow, lCol
             Case "#ProofHS"
-                AS400.Presentation.SetText StudentFile.GetProofHS, lRow, lCol  
+                AS400.Presentation.SetText StudentFile.GetProofHS, lRow, lCol
             Case "#Gender"
-                AS400.Presentation.SetText StudentFile.GetGender, lRow, lCol  
+                AS400.Presentation.SetText StudentFile.GetGender, lRow, lCol
             Case "#Email"
-                AS400.Presentation.SetText StudentFile.GetEmail, lRow, lCol  
+                AS400.Presentation.SetText StudentFile.GetEmail, lRow, lCol
             Case "#ParentNum"
-                AS400.Presentation.SetText StudentFile.GetParentNumber, lRow, lCol  
+                AS400.Presentation.SetText StudentFile.GetParentNumber, lRow, lCol
             Case "#SalesPerson"
                 AS400.Presentation.SetText StudentFile.GetSalesperson, lRow, lCol
             Case "#ClassMod1"
