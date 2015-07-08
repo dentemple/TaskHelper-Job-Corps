@@ -14,8 +14,8 @@ Private pErrorFlag As Boolean
 Private pErrorMessage As String
 
 ' READ-ONLY PROPERTIES
-'	Operator 		(Stores the autECLOIA automation object)
-'	Presentation	(Stores the autECLPS automation object)
+'   Operator        (Stores the autECLOIA automation object)
+'   Presentation    (Stores the autECLPS automation object)
 
 ' OBJECT PROPERTIES
 Private pSession As Object
@@ -27,9 +27,8 @@ Private pConnection As Object
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Private Sub Class_Initialize()
-	IncrementArraySize = 20
-	pErrorFlag = False
-	pErrorMessage = "The AS/400 has encountered the following issues:" & vbNewLine & vbNewLine
+    pErrorFlag = False
+    pErrorMessage = "The AS/400 has encountered the following issues:" & vbNewLine & vbNewLine
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -41,7 +40,7 @@ End Sub
 Public Property Let Milliseconds(Value As Long)
     pMilliseconds = Value
 End Property
-Public Property Get Milliseconds As Long
+Public Property Get Milliseconds() As Long
     Milliseconds = pMilliseconds
 End Property
 
@@ -51,7 +50,7 @@ End Property
 Public Property Let SessionName(Value As String)
     pSessionName = Value
 End Property
-Public Property Get SessionName As String
+Public Property Get SessionName() As String
     SessionName = pSessionName
 End Property
 
@@ -78,16 +77,16 @@ End Property
 Public Property Get ErrorFlag() As Boolean
     pErrorFlag = True
      If Session.Started = False Then
-		pErrorMessage = pErrorMessage & "* The AS/400 has failed to connect to Session " & SessionName & vbNewLine & vbNewLine
-	End If
+        pErrorMessage = pErrorMessage & "* The AS/400 has failed to connect to Session " & SessionName & vbNewLine & vbNewLine
+    End If
     If Session.CommStarted = False Then
-		pErrorMessage = pErrorMessage & "* The AS/400 has failed to enable communications" & vbNewLine & vbNewLine
-	End If
-	If Session.Ready = False Then 
-		pErrorMessage = pErrorMessage & "* The AS/400 is not in a state of 'Ready'" & vbNewLine & vbNewLine
-	End If
-	If Session.Started = True And Session.CommStarted = True And Session.Ready = True Then
-	    pErrorMessage = pErrorMessage "* The AS/400 has encountered an unknown error"
+        pErrorMessage = pErrorMessage & "* The AS/400 has failed to enable communications" & vbNewLine & vbNewLine
+    End If
+    If Session.Ready = False Then
+        pErrorMessage = pErrorMessage & "* The AS/400 is not in a state of 'Ready'" & vbNewLine & vbNewLine
+    End If
+    If Session.Started = True And Session.CommStarted = True And Session.Ready = True Then
+        pErrorMessage = pErrorMessage "* The AS/400 has encountered an unknown error"
     End If
 End Property
 
@@ -108,7 +107,7 @@ End Property
 Public Property Set Session(Value As Object)
     Set pSession = Value
 End Property
-Public Property Get Session As Object
+Public Property Get Session() As Object
     Set Session = pSession
 End Property
 
@@ -118,7 +117,7 @@ End Property
 Public Property Set Metrics(Value As Object)
     Set pMetrics = Value
 End Property
-Public Property Get Metrics As Object
+Public Property Get Metrics() As Object
     Set Metrics = pMetrics
 End Property
 
@@ -128,20 +127,21 @@ End Property
 Public Property Set Connection(Value As Object)
     Set pConnection = Value
 End Property
-Public Property Get Connection As Object
+Public Property Get Connection() As Object
     Set Connection = pConnection
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Operator property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Get Operator As Object
+Public Property Get Operator() As Object
     Set Operator = Session.autECLOIA
  End Property
  
  ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Presentation property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Get Presentation As Object
+Public Property Get Presentation() As Object
     Set Presentation = Session.autECLPS
 End Property
+
