@@ -505,3 +505,165 @@ Public Sub ExecuteSendCommand(ByVal Command As cCommand, ByVal AS400 As cAS400, 
     Exception.Pop
     
 End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' SearchHasFailed (Public Function)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function SearchHasFailed(ByVal Command As cCommand, ByVal AS400 As cAS400, ByRef Exception As cException) As Boolean
+
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    
+    Exception.Push "Environment.SearchHasFailed"
+    
+    Dim KeyString As String
+    Dim lRow As Long
+    Dim lCol As Long
+    Dim Forward As Long
+
+    KeyString = Trim(Command.Item)
+    lRow = Command.Row
+    lCol = Command.Column
+    Forward = 1
+    
+    SearchHasFailed = False
+    'If AS400.Presentation.SearchText(KeyString, Forward, lRow, lCol) = True Then
+    
+    Exception.Pop
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ExecuteGetCommand (Public Sub)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub ExecuteGetCommand(ByVal Command As cCommand, ByVal AS400 As cAS400, ByRef StudentFile As cStudentFile, ByRef Exception As cException)
+
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    
+    Exception.Push "Environment.ExecuteGetCommand"
+
+    Dim KeyString As String
+    Dim ExtractText As String
+    Dim lRow As Long
+    Dim lCol As Long
+    Dim lLen As Long
+    
+    KeyString = Trim(Command.Item)
+    lRow = Command.Row
+    lCol = Command.Column
+    lLen = Command.Length
+    
+    ExtractText = AS400.Presentation.GetText(lRow, lCol, lLen)
+    
+    Case Select KeyString
+        'Empty
+    End Select
+
+    Exception.Pop
+    
+End Sub
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ExecuteSetCommand (Public Sub)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub ExecuteSetCommand(ByVal Command As cCommand, ByVal AS400 As cAS400, ByVal StudentFile As cStudentFile, ByRef Exception As cException)
+
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    
+    Exception.Push "Environment.ExecuteSetCommand"
+    
+    Dim Char As String
+    Dim KeyString As String
+    Dim lRow As Long
+    Dim lCol As Long
+    
+    KeyString = Trim(Command.Item)
+    Char = Left(KeyString, 1)
+    lRow = Command.Row
+    lCol = Command.Column
+    
+    If Not Char = "#" Then
+    
+        AS400.Presentation.SetText KeyString, lRow, lCol
+    
+    Else
+    
+        Case Select KeyString
+        
+            Case "#MailingName"
+                AS400.Presentation.SetText StudentFile.GetMiddleName, lRow, lCol
+            Case "#AlphaName"
+                AS400.Presentation.SetText StudentFile.GetAlphaName, lRow, lCol  
+            Case "#AreaCode"
+                AS400.Presentation.SetText StudentFile.GetAreaCode, lRow, lCol  
+            Case "#PhoneNum"
+                AS400.Presentation.SetText StudentFile.GetPhoneNumber, lRow, lCol  
+            Case "#AddressLN1"
+                AS400.Presentation.SetText StudentFile.GetAddressLine1, lRow, lCol  
+            Case "#AddressLN2"
+                AS400.Presentation.SetText StudentFile.GetAddressLine2, lRow, lCol  
+            Case "#AddressLN3"
+                AS400.Presentation.SetText StudentFile.GetAddressLine3, lRow, lCol  
+            Case "#AddressLN4"
+                AS400.Presentation.SetText StudentFile.GetAddressLine4, lRow, lCol  
+            Case "#ZipCode"
+                AS400.Presentation.SetText StudentFile.GetZipCode, lRow, lCol  
+            Case "#City"
+                AS400.Presentation.SetText StudentFile.GetCity, lRow, lCol  
+            Case "#State"
+                AS400.Presentation.SetText StudentFile.GetState, lRow, lCol  
+            Case "#StudentID"
+                AS400.Presentation.SetText StudentFile.StudentID, lRow, lCol  
+            Case "#PrefixCode"
+                AS400.Presentation.SetText StudentFile.GetPrefixCode, lRow, lCol  
+            Case "#SchoolCode"
+                AS400.Presentation.SetText StudentFile.GetSchoolCode, lRow, lCol  
+            Case "#DegreeCode"
+                AS400.Presentation.SetText StudentFile.GetDegreeCode, lRow, lCol  
+            Case "#ProofHS"
+                AS400.Presentation.SetText StudentFile.GetProofHS, lRow, lCol  
+            Case "#Gender"
+                AS400.Presentation.SetText StudentFile.GetGender, lRow, lCol  
+            Case "#Email"
+                AS400.Presentation.SetText StudentFile.GetEmail, lRow, lCol  
+            Case "#ParentNum"
+                AS400.Presentation.SetText StudentFile.GetParentNumber, lRow, lCol  
+            Case "#SalesPerson"
+                AS400.Presentation.SetText StudentFile.GetSalesperson, lRow, lCol
+            Case "#ClassMod1"
+                AS400.Presentation.SetText StudentFile.GetClassMod1, lRow, lCol
+            Case "#ClassMod2"
+                AS400.Presentation.SetText StudentFile.GetClassMod2, lRow, lCol
+            Case "#ClassMod3"
+                AS400.Presentation.SetText StudentFile.GetClassMod3, lRow, lCol
+            Case "#ClassMod4"
+                AS400.Presentation.SetText StudentFile.GetClassMod4, lRow, lCol
+            Case "#ClassMod5"
+                AS400.Presentation.SetText StudentFile.GetClassMod5, lRow, lCol
+            Case "#ClassMod6"
+                AS400.Presentation.SetText StudentFile.GetClassMod6, lRow, lCol
+            Case "#ClassMod7"
+                AS400.Presentation.SetText StudentFile.GetClassMod7, lRow, lCol
+            Case "#ClassTuition1"
+                AS400.Presentation.SetText StudentFile.GetClassTuition1, lRow, lCol
+            Case "#ClassTuition2"
+                AS400.Presentation.SetText StudentFile.GetClassTuition2, lRow, lCol
+            Case "#ClassTuition3"
+                AS400.Presentation.SetText StudentFile.GetClassTuition3, lRow, lCol
+            Case "#ClassTuition4"
+                AS400.Presentation.SetText StudentFile.GetClassTuition4, lRow, lCol
+            Case "#ClassTuition5"
+                AS400.Presentation.SetText StudentFile.GetClassTuition5, lRow, lCol
+            Case "#ClassTuition6"
+                AS400.Presentation.SetText StudentFile.GetClassTuition6, lRow, lCol
+            Case "#ClassTuition7"
+                AS400.Presentation.SetText StudentFile.GetClassTuition7, lRow, lCol
+            'Case "#"
+                'AS400.Presentation.SetText StudentFile., lRow, lCol XXXXXXXX
+                
+        End Select
+    End If
+
+    Exception.Pop
+End Sub
