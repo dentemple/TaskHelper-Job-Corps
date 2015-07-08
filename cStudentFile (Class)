@@ -44,10 +44,10 @@ The following is a list of glue functions used to interpret the information take
 '   GetAreaCode As String
 '   GetPhoneNumber As String
 '   GetEmail As String
-'   GetAddressLine1 As String
-'   GetAddressLine2 As String
-'   GetAddressLine3 As String
-'   GetAddressLine4 As String
+'   GetAddressL1 As String
+'   GetAddressL2 As String
+'   GetAddressL3 As String
+'   GetAddressL4 As String
 '   GetCity As String
 '   GetState As String
 '   GetZipCode As String
@@ -105,10 +105,10 @@ Private pStudentIDTextbox As MSForms.TextBox
 Private pAreaCodeTextbox As MSForms.TextBox
 Private pPhoneNumberTextbox As MSForms.TextBox
 Private pEmailTextbox As MSForms.TextBox
-Private pAddressLine1Textbox As MSForms.TextBox
-Private pAddressLine2Textbox As MSForms.TextBox
-Private pAddressLine3Textbox As MSForms.TextBox
-Private pAddressLine4Textbox As MSForms.TextBox
+Private pAddressL1Textbox As MSForms.TextBox
+Private pAddressL2Textbox As MSForms.TextBox
+Private pAddressL3Textbox As MSForms.TextBox
+Private pAddressL4Textbox As MSForms.TextBox
 Private pCityTextbox As MSForms.TextBox
 Private pStateTextbox As MSForms.TextBox
 Private pZipCodeTextbox As MSForms.TextBox
@@ -368,31 +368,31 @@ Public Function GetEmail() As String
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GetAddressLine1 property
+' GetAddressL1 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GetAddressLine1() As String
-    GetAddressLine1 = Trim(AddressLine1Textbox)
+Public Function GetAddressL1() As String
+    GetAddressL1 = Trim(AddressL1Textbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GetAddressLine2 property
+' GetAddressL2 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GetAddressLine2() As String
-    GetAddressLine2 = Trim(AddressLine2Textbox)
+Public Function GetAddressL2() As String
+    GetAddressL2 = Trim(AddressL2Textbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GetAddressLine3 property
+' GetAddressL3 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GetAddressLine3() As String
-    GetAddressLine3 = Trim(AddressLine3Textbox)
+Public Function GetAddressL3() As String
+    GetAddressL3 = Trim(AddressL3Textbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GetAddressLine4 property
+' GetAddressL4 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GetAddressLine4() As String
-    GetAddressLine4 = Trim(AddressLine4Textbox)
+Public Function GetAddressL4() As String
+    GetAddressL4 = Trim(AddressL4Textbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -987,43 +987,43 @@ Public Property Get EmailTextbox() As MSForms.TextBox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' AddressLine1Textbox property
+' AddressL1Textbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set AddressLine1Textbox(Value As MSForms.TextBox)
-    Set pAddressLine1Textbox = Value
+Public Property Set AddressL1Textbox(Value As MSForms.TextBox)
+    Set pAddressL1Textbox = Value
 End Property
-Public Property Get AddressLine1Textbox() As MSForms.TextBox
-    Set AddressLine1Textbox = pAddressLine1Textbox
-End Property
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' AddressLine2Textbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set AddressLine2Textbox(Value As MSForms.TextBox)
-    Set pAddressLine2Textbox = Value
-End Property
-Public Property Get AddressLine2Textbox() As MSForms.TextBox
-    Set AddressLine2Textbox = pAddressLine2Textbox
+Public Property Get AddressL1Textbox() As MSForms.TextBox
+    Set AddressL1Textbox = pAddressL1Textbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' AddressLine3Textbox property
+' AddressL2Textbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set AddressLine3Textbox(Value As MSForms.TextBox)
-    Set pAddressLine3Textbox = Value
+Public Property Set AddressL2Textbox(Value As MSForms.TextBox)
+    Set pAddressL2Textbox = Value
 End Property
-Public Property Get AddressLine3Textbox() As MSForms.TextBox
-    Set AddressLine3Textbox = pAddressLine3Textbox
+Public Property Get AddressL2Textbox() As MSForms.TextBox
+    Set AddressL2Textbox = pAddressL2Textbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' AddressLine4Textbox property
+' AddressL3Textbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set AddressLine4Textbox(Value As MSForms.TextBox)
-    Set pAddressLine4Textbox = Value
+Public Property Set AddressL3Textbox(Value As MSForms.TextBox)
+    Set pAddressL3Textbox = Value
 End Property
-Public Property Get AddressLine4Textbox() As MSForms.TextBox
-    Set AddressLine4Textbox = pAddressLine4Textbox
+Public Property Get AddressL3Textbox() As MSForms.TextBox
+    Set AddressL3Textbox = pAddressL3Textbox
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' AddressL4Textbox property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Set AddressL4Textbox(Value As MSForms.TextBox)
+    Set pAddressL4Textbox = Value
+End Property
+Public Property Get AddressL4Textbox() As MSForms.TextBox
+    Set AddressL4Textbox = pAddressL4Textbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
