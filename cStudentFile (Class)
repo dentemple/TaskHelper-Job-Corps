@@ -87,6 +87,11 @@ The following is a list of glue functions used to interpret the information take
 '   GetEnrollmentType As String
 '   GetPaymentType As String
 
+' xxxxxxxxxxxxxxxxxxxxxxxxx
+'   GetSchoolCode As String
+'   GetDegreeCode As String
+' xxxxxxxxxxxxxxxxxx
+
 ' OBJECT PROPERTIES
 'Stores the cStudentFile objects
 'UserFormObject
