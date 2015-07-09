@@ -86,6 +86,8 @@ The following is a list of glue functions used to interpret the information take
 '   GetGender As String
 '   GetEnrollmentType As String
 '   GetPaymentType As String
+'   GetWebStartTime As String
+'   GetWebEndTime As String
 
 ' xxxxxxxxxxxxxxxxxxxxxxxxx
 '   GetSchoolCode As String
@@ -135,6 +137,8 @@ Private pStudentInvoiceTextbox As MSForms.TextBox
 Private pDownPayTextbox As MSForms.TextBox
 Private pNumberOfMonthsTextbox As MSForms.TextBox
 Private pDollarPerMonthTextbox As MSForms.TextBox
+Private pWebStartTimeTextbox As MSForms.TextBox
+Private pWebEndTimeTextbox As MSForms.TextBox
 'ComboBoxes
 Private pSessionComboBox As MSForms.ComboBox
 Private pParentNumberComboBox As MSForms.ComboBox
@@ -892,6 +896,34 @@ Public Function GetPaymentType() As String
     End If
 End Function
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetWebStartTime property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetWebStartTime() As String
+    Dim str
+    str = Trim(WebStartTimeTextbox.Value)
+    If IsNumeric(str) Then
+        GetWebStartTime = str
+    Else
+        pErrorFlag = True
+        pErrorMessage = pErrorMessage & "* '" & str & "' is not recognized as a valid start time" & vbNewLine
+    End If
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetWebEndTime property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetWebEndTime() As String
+    Dim str
+    str = Trim(WebEndTimeTextbox.Value)
+    If IsNumeric(str) Then
+        GetWebEndTime = str
+    Else
+        pErrorFlag = True
+        pErrorMessage = pErrorMessage & "* '" & str & "' is not recognized as a valid end time" & vbNewLine
+    End If
+End Function
+
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' OBJECT PROPERTIES
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -1446,4 +1478,22 @@ Public Property Get NoCostOptionButton() As MSForms.OptionButton
     Set NoCostOptionButton = pNoCostOptionButton
 End Property
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' WebStartTimeTextbox property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Set WebStartTimeTextbox(Value As MSForms.TextBox)
+    Set pWebStartTimeTextbox = Value
+End Property
+Public Property Get WebStartTimeTextbox() As MSForms.TextBox
+    Set WebStartTimeTextbox = pWebStartTimeTextbox
+End Property
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' WebEndTimeTextbox property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Set WebEndTimeTextbox(Value As MSForms.TextBox)
+    Set pWebEndTimeTextbox = Value
+End Property
+Public Property Get WebEndTimeTextbox() As MSForms.TextBox
+    Set WebEndTimeTextbox = pWebEndTimeTextbox
+End Property
