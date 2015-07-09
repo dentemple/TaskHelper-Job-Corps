@@ -1,3 +1,4 @@
+
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' uStudentRegistration (Userform)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -13,6 +14,8 @@ Private Sub UserForm_Initialize()
     'Sets default value
     PrefixCode_Textbox = "HJC"
     Salesperson_Textbox = Range("DefaultSalesperson")
+    WebStartTime_Textbox = "000000"
+    WebEndTime_Textbox = "000000"
 
     'Empties the textboxes
     ParentCode_Textbox = vbNullString
@@ -52,9 +55,6 @@ Private Sub UserForm_Initialize()
         .Text = Session_ComboBox.List(0)
     End With
     
-    'Unchecks the checkbox
-    ProofHS_Checkbox.Value = False
-    
     'Sets the initial focus
     ParentCode_Textbox.SetFocus
 
@@ -64,7 +64,7 @@ End Sub
 ' COMMAND BUTTON / Actions to be called and performed
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Private Sub Launch_Button_Click()
-    RunRegistration cJobCorps
+    'EMPTY
 End Sub
 
 Private Sub Confirm_Button_Click()
@@ -104,6 +104,14 @@ Private Sub Zipcode_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
 End Sub
 
 Private Sub ProgramNumber_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+    RestrictToPostiveWholeNumbers KeyAscii
+End Sub
+
+Private Sub WebStartTime_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+    RestrictToPostiveWholeNumbers KeyAscii
+End Sub
+
+Private Sub WebEndTime_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
     RestrictToPostiveWholeNumbers KeyAscii
 End Sub
 
