@@ -77,7 +77,7 @@ The following is a list of glue functions used to interpret the information take
 '   CalcNumberOfMonths As String
 '   CalcDollarPerMonth As String
 '   GetSession As String
-'   GetParentNumber As String
+'   GetParentCode As String
 '   GetPrefixCode As String
 '   GetAutomation As String
 '   GetProofHS As String
@@ -139,10 +139,10 @@ Private pNumberOfMonthsTextbox As MSForms.TextBox
 Private pDollarPerMonthTextbox As MSForms.TextBox
 Private pWebStartTimeTextbox As MSForms.TextBox
 Private pWebEndTimeTextbox As MSForms.TextBox
+Private pParentCodeTextbox As MSForms.TextBox
+Private pPrefixCodeTextbox As MSForms.TextBox
 'ComboBoxes
 Private pSessionComboBox As MSForms.ComboBox
-Private pParentNumberComboBox As MSForms.ComboBox
-Private pPrefixCodeComboBox As MSForms.ComboBox
 Private pAutomationComboBox As MSForms.ComboBox
 'Checkboxes
 Private pProofHSCheckbox As MSForms.CheckBox
@@ -783,17 +783,17 @@ End Function
 ' GetSession property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetSession() As String
-    GetSession = SessionComboBox
+    GetSession = SessionComboBox.Value
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GetParentNumber property
+' GetParentCode property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function GetParentNumber() As String
+Public Function GetParentCode() As String
     Dim str
-    str = Left(Trim(ParentNumberComboBox.Value), 8)
+    str = Left(Trim(ParentCodeTextBox.Value), 8)
     If IsNumeric(str) Then
-        GetParentNumber = str
+        GetParentCode = str
     Else
         If GetParentStatus = True Then
             pErrorFlag = True
@@ -806,7 +806,7 @@ End Function
 ' GetPrefixCode property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetPrefixCode() As String
-    GetPrefixCode = PrefixCodeComboBox
+    GetPrefixCode = PrefixCodeTextbox
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -1329,23 +1329,23 @@ Public Property Get SessionComboBox() As MSForms.ComboBox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' ParentNumberComboBox property
+' ParentCodeTextbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ParentNumberComboBox(Value As MSForms.ComboBox)
-    Set pParentNumberComboBox = Value
+Public Property Set ParentCodeTextBox(Value As MSForms.TextBox)
+    Set pParentCodeTextbox = Value
 End Property
-Public Property Get ParentNumberComboBox() As MSForms.ComboBox
-    Set ParentNumberComboBox = pParentNumberComboBox
+Public Property Get ParentCodeTextBox() As MSForms.TextBox
+    Set ParentCodeTextBox = pParentCodeTextbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' PrefixCodeComboBox property
+' PrefixCodeTextbox property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set PrefixCodeComboBox(Value As MSForms.ComboBox)
-    Set pPrefixCodeComboBox = Value
+Public Property Set PrefixCodeTextbox(Value As MSForms.TextBox)
+    Set pPrefixCodeTextbox = Value
 End Property
-Public Property Get PrefixCodeComboBox() As MSForms.ComboBox
-    Set PrefixCodeComboBox = pPrefixCodeComboBox
+Public Property Get PrefixCodeTextbox() As MSForms.TextBox
+    Set PrefixCodeTextbox = pPrefixCodeTextbox
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
