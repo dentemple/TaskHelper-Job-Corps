@@ -1,0 +1,78 @@
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' m_Environment (Module)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Option Explicit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' LoadUserformObjects (Public Sub)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub LoadUserformObjects(ByRef StudentFile As cStudentFile, ByVal RegForm As MSForms.UserForm, ByRef Exception As cException)
+
+    'Pass error handling up the call stack
+    On Error GoTo 0
+
+    Exception.Push "m_Environment.LoadUserformObjects"
+
+    'Pass userform
+    Set StudentFile.UserFormObject = RegForm
+
+    'Pass textboxes
+    Set StudentFile.SalespersonTextbox = RegForm.Salesperson_Textbox
+    Set StudentFile.ParentCodeTextBox = RegForm.ParentCode_Textbox
+    Set StudentFile.FirstNameTextbox = RegForm.Firstname_Textbox
+    Set StudentFile.LastNameTextbox = RegForm.Lastname_Textbox
+    Set StudentFile.MiddleNameTextbox = RegForm.Middlename_Textbox
+    Set StudentFile.WebStartTimeTextbox = RegForm.WebStartTime_Textbox
+    Set StudentFile.WebEndTimeTextbox = RegForm.WebEndTime_Textbox
+    Set StudentFile.ProgramNumberTextbox = RegForm.ProgramNumber_Textbox
+    Set StudentFile.ProgramTuitionTextbox = RegForm.ProgramTuition_Textbox
+    Set StudentFile.AddressL1Textbox = RegForm.AddressL1_Textbox
+    Set StudentFile.AddressL2Textbox = RegForm.AddressL2_Textbox
+    Set StudentFile.AddressL3Textbox = RegForm.AddressL3_Textbox
+    Set StudentFile.AddressL4Textbox = RegForm.AddressL4_Textbox
+    Set StudentFile.CityTextbox = RegForm.City_Textbox
+    Set StudentFile.StateTextbox = RegForm.StateAbbrev_Textbox
+    Set StudentFile.ZipCodeTextbox = RegForm.Zipcode_Textbox
+    Set StudentFile.AreaCodeTextbox = RegForm.Areacode_Textbox
+    Set StudentFile.PhoneNumberTextbox = RegForm.Phonenumber_Textbox
+    Set StudentFile.EmailTextbox = RegForm.Email_Textbox
+    
+    'Pass comboboxes
+    Set StudentFile.SessionComboBox = RegForm.Session_ComboBox
+    Set StudentFile.PrefixCodeTextbox = RegForm.PrefixCode_Textbox
+    Set StudentFile.AutomationComboBox = RegForm.Automation_ComboBox
+    
+    'Pass option selection
+    Set StudentFile.MaleOptionButton = RegForm.Male_Optionselect
+    Set StudentFile.FemaleOptionButton = RegForm.Female_Optionselect
+    
+    Exception.Pop
+
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ApproveRegistration (Public Function)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function ApproveRegistration(ByVal StudentFile As cStudentFile, ByVal AS400 As cAS400, ByVal Exception As cException) As Boolean
+
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    
+    Exception.Push "m_Environment.ApproveRegistration"
+    
+    ApproveRegistration = True
+    
+    Dim RedMessage As String
+    RedMessage = vbTab & vbTab & "FINAL CONFIRMATION" & vbNewLine & vbNewLine & _
+        "One or more errors have occurred. Please resolve the following issues before proceeding." & vbNewLine & vbNewLine
+    Dim BlueMessage As String
+    BlueMessage = vbTab & vbTab & "FINAL CONFIRMATION" & vbNewLine & vbNewLine & _
+        "Please confirm the following information before proceeding with the enrollment script." & vbNewLine & vbNewLine
+    
+    MsgBox RedMessage, vbCritical, "Pre-Enrollment Checklist"
+    MsgBox BlueMessage, vbInformation, "Pre-Enrollment Checklist"
+    
+    Exception.Pop
+
+End Function
