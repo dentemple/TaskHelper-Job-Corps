@@ -1,5 +1,5 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' uJobCorps (Userform)
+' u_JobCorps (Userform)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Option Explicit
@@ -62,8 +62,8 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' COMMAND BUTTON / Actions to be called and performed
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Private Sub Launch_Button_Click()
-    'EMPTY
+Private Sub RunAutomation_Button_Click()
+    RunRegistration u_JobCorps
 End Sub
 
 Private Sub Confirm_Button_Click()
