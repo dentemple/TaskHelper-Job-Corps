@@ -1,0 +1,82 @@
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' m_General (Module)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Option Explicit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' InitializeAS400 (Public Sub)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub InitializeAS400(ByRef AS400 As cAS400, ByVal Letter As String, ByRef Exception As cException)
+
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    
+    Exception.Push "m_General.InitializeAS400"
+    
+    AS400.SessionName = Letter
+
+    Set AS400.Session = CreateObject("PCOMM.autECLSession")
+    Set AS400.Metrics = CreateObject("PCOMM.autECLWinMetrics")
+    Set AS400.Connection = CreateObject("PCOMM.autECLConnList")
+
+    AS400.Session.SetConnectionByName (Letter)
+    AS400.Metrics.SetConnectionByName (Letter)
+
+    Exception.Pop
+
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Excel Defaults (Public Subs)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub TurnOffExcelDefaults(ByRef Exception As cException)
+
+    'Pass error handling up the call stack
+    On Error GoTo 0
+
+    Exception.Push "m_General.TurnOffExcelDefaults"
+
+    Application.ScreenUpdating = False
+    Application.DisplayAlerts = False
+    Application.Calculation = xlCalculationManual
+    
+    Exception.Pop
+    
+End Sub
+Public Sub TurnOnExcelDefaults(ByRef Exception As cException)
+
+    'Pass error handling up the call stack
+    On Error GoTo 0
+
+    Exception.Push "m_General.TurnOnExcelDefaults"
+    
+    Application.Calculation = xlCalculationAutomatic
+    Application.DisplayAlerts = True
+    Application.ScreenUpdating = True
+    
+    Exception.Pop
+    
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' WaitForReady (Public Sub)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub WaitForReady(ByVal AS400 As cAS400, ByRef Exception As cException)
+
+    'Pass error handling up the call stack
+    On Error GoTo 0
+
+    Exception.Push "m_General.WaitForReady"
+
+    Dim InitialWaitTime As Long
+    InitialWaitTime = 10
+
+    AS400.Presentation.Wait InitialWaitTime
+    AS400.Operator.WaitForAppAvailable
+    AS400.Operator.WaitForInputReady
+    AS400.Presentation AS400.Milliseconds
+    
+    Exception.Pop
+
+End Sub
