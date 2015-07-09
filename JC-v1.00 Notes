@@ -7,6 +7,8 @@ Firstname_Textbox
 Lastname_Textbox
 Middlename_Textbox
 
+WebStartTime_Textbox
+WebEndTime_Textbox
 ProgramNumber_Textbox
 ProgramTuition_Textbox
 
@@ -26,8 +28,6 @@ Female_Optionselect
 
 Automation_ComboBox
 Session_ComboBox
-
-ProofHS_Checkbox
 
 StudentSearch_Button
 RunAutomation_Button
