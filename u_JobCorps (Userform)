@@ -4,11 +4,10 @@
 
 Option Explicit
 
-Private Sub UserForm_Initialize()
-
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Initialization event
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub UserForm_Initialize()
     
     'Sets default value
     PrefixCode_Textbox = "HJC"
