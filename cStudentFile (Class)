@@ -11,12 +11,6 @@ Private pFinalPayment As String
 Private pAddressBookListingExists As Boolean
 Private pFullProgramFlag As Boolean
 
-' ERROR PROPERTIES
-Private pErrorFlag As Boolean
-Private pErrorMessage As String
-Private pModCheckFlag As Boolean
-Private pModCheckMessage As String
-
 ' "CONSTANT" PROPERTIES
 'Caution: Real constants cannot be declared in a class module. These values are _
     for internal use only so as to provide the class some additional modularity.
@@ -164,10 +158,6 @@ Private pNoCostOptionButton As MSForms.OptionButton
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Private Sub Class_Initialize()
-    pErrorFlag = False
-    pErrorMessage = "The Student File has encountered the following issues:" & vbNewLine & vbNewLine
-    pModCheckFlag = False
-    pModCheckMessage = "The following class mods are less than 8 characters; please confirm before proceeding:" & vbNewLine & vbNewLine
     MaxCharactersName = 38
     StandardLength = 8
     pAddressBookListingExists = False
@@ -232,37 +222,6 @@ Public Property Get FullProgramFlag() As Boolean
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' ERROR PROPERTIES
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' ErrorFlag property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Get ErrorFlag() As Boolean
-    ErrorFlag = pErrorFlag
-End Property
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' ErrorMessage property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Get ErrorMessage() As String
-    ErrorMessage = pErrorMessage
-End Property
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' ModCheckFlag property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Get ModCheckFlag() As Boolean
-    ModCheckFlag = pModCheckFlag
-End Property
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' ModCheckMessage property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Get ModCheckMessage() As String
-    ModCheckMessage = pModCheckMessage
-End Property
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' FUNCTION PROPERTIES
 'By default, all of UserFormObject-based functions are declared as strings. This is _
     both to standardize the outputs, as well as to provide a safe default _
@@ -305,18 +264,10 @@ End Function
 ' GetAlphaName property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetAlphaName() As String
-    Dim str As String
     If Len(Trim(GetMiddleName)) > 0 Then
-        str = GetLastname & Space(1) & GetFirstName & Space(1) & GetMiddleName
+        GetAlphaName = GetLastname & Space(1) & GetFirstName & Space(1) & GetMiddleName
     Else
-        str = GetLastname & Space(1) & GetFirstName
-    End If
-    If Len(str) < MaxCharactersName Then
-        GetAlphaName = str
-    Else
-        GetAlphaName = vbNullString
-        pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* The student's combined Alpha Name must be less than 38 characters" & vbNewLine & vbTab & vbTab & str & vbNewLine
+        GetAlphaName = GetLastname & Space(1) & GetFirstName
     End If
 End Function
 
@@ -324,37 +275,21 @@ End Function
 ' GetSalesperson property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetSalesperson() As String
-    If IsNumeric(SalespersonTextbox) And Len(Trim(SalespersonTextbox)) = 4 Then
-        GetSalesperson = SalespersonTextbox
-    Else
-        GetSalesperson = vbNullString
-        pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* The salesperson code must be numeric and 4 digits long" & vbNewLine
-    End If
+    GetSalesperson = Trim(SalespersonTextbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetStudentID property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetStudentID() As String
-    If IsNumeric(StudentIDTextbox) And Len(Trim(StudentIDTextbox)) = StandardLength Then
-        GetStudentID = StudentIDTextbox
-    Else
-        GetStudentID = vbNullString
-        pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* The Student ID# must be numeric and 8 digits long" & vbNewLine
-    End If
+    GetStudentID = Trim(StudentIDTextbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetAreaCode property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetAreaCode() As String
-    If IsNumeric(AreaCodeTextbox) Then
-        GetAreaCode = Trim(AreaCodeTextbox)
-    Else
-        GetAreaCode = vbNullString
-    End If
+    GetAreaCode = Trim(AreaCodeTextbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -417,37 +352,21 @@ End Function
 ' GetZipCode property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetZipCode() As String
-    If IsNumeric(ZipCodeTextbox) Then
-        GetZipCode = Trim(ZipCodeTextbox)
-    Else
-        GetZipCode = vbNullString
-    End If
+    GetZipCode = Trim(ZipCodeTextbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetProgramNumber property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetProgramNumber() As String
-    If IsNumeric(ProgramNumberTextbox) And Len(Trim(ProgramNumberTextbox)) = StandardLength Then
-        GetProgramNumber = ProgramNumberTextbox
-    Else
-        GetProgramNumber = vbNullString
-        pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* The Program Number must be numeric and 8 digits long" & vbNewLine
-    End If
+    GetProgramNumber = Trim(ProgramNumberTextbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetProgramTuition property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetProgramTuition() As String
-    If IsNumeric(RemoveSym(ProgramTuitionTextbox)) And Val(RemoveSym(ProgramTuitionTextbox)) >= 0 Then
-        GetProgramTuition = RemoveSym(ProgramTuitionTextbox)
-    Else
-        GetProgramTuition = vbNullString
-        pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* The Program Tuition must be a non-negative number" & vbNewLine
-    End If
+    GetProgramTuition = RemoveSym(ProgramTuitionTextbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -455,11 +374,6 @@ End Function
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassMod1() As String
     GetClassMod1 = Trim(ClassMod1Textbox)
-    If Len(GetClassMod1) >= 1 And Len(ClassMod1Textbox) < StandardLength Then
-        GetClassMod1 = vbNullString
-        pModCheckFlag = True
-        pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod1Textbox) & vbNewLine
-    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -467,11 +381,6 @@ End Function
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassMod2() As String
     GetClassMod2 = Trim(ClassMod2Textbox)
-    If Len(GetClassMod2) >= 1 And Len(ClassMod2Textbox) < StandardLength Then
-        GetClassMod2 = vbNullString
-        pModCheckFlag = True
-        pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod2Textbox) & vbNewLine
-    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -479,11 +388,6 @@ End Function
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassMod3() As String
     GetClassMod3 = Trim(ClassMod3Textbox)
-    If Len(GetClassMod3) >= 1 And Len(ClassMod3Textbox) < StandardLength Then
-        GetClassMod3 = vbNullString
-        pModCheckFlag = True
-        pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod3Textbox) & vbNewLine
-    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -491,11 +395,6 @@ End Function
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassMod4() As String
     GetClassMod4 = Trim(ClassMod4Textbox)
-    If Len(GetClassMod4) >= 1 And Len(ClassMod4Textbox) < StandardLength Then
-        GetClassMod4 = vbNullString
-        pModCheckFlag = True
-        pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod4Textbox) & vbNewLine
-    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -503,11 +402,6 @@ End Function
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassMod5() As String
     GetClassMod5 = Trim(ClassMod5Textbox)
-    If Len(GetClassMod5) >= 1 And Len(ClassMod5Textbox) < StandardLength Then
-        GetClassMod5 = vbNullString
-        pModCheckFlag = True
-        pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod5Textbox) & vbNewLine
-    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -515,11 +409,6 @@ End Function
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassMod6() As String
     GetClassMod6 = Trim(ClassMod6Textbox)
-    If Len(GetClassMod6) >= 1 And Len(ClassMod6Textbox) < StandardLength Then
-        GetClassMod6 = vbNullString
-        pModCheckFlag = True
-        pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod6Textbox) & vbNewLine
-    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -527,102 +416,55 @@ End Function
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassMod7() As String
     GetClassMod7 = Trim(ClassMod7Textbox)
-    If Len(GetClassMod7) >= 1 And Len(ClassMod7Textbox) < StandardLength Then
-        GetClassMod7 = vbNullString
-        pModCheckFlag = True
-        pModCheckMessage = pModCheckMessage & vbTab & Trim(ClassMod7Textbox) & vbNewLine
-    End If
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassTuition1 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition1() As String
-    If IsNumeric(RemoveSym(ClassTuition1Textbox)) And Val(RemoveSym(ClassTuition1Textbox)) >= 0 Then
-        GetClassTuition1 = RemoveSym(ClassTuition1Textbox)
-    Else
-        GetClassTuition1 = vbNullString
-        pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* Class Tuition for Mod1 must be a non-negative number" & vbNewLine
-    End If
+    GetClassTuition1 = RemoveSym(ClassTuition1Textbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassTuition2 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition2() As String
-    If IsNumeric(RemoveSym(ClassTuition2Textbox)) And Val(RemoveSym(ClassTuition2Textbox)) >= 0 Then
-        GetClassTuition2 = RemoveSym(ClassTuition2Textbox)
-    Else
-        GetClassTuition2 = vbNullString
-        pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* Class Tuition for Mod2 must be a non-negative number" & vbNewLine
-    End If
+    GetClassTuition2 = RemoveSym(ClassTuition2Textbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassTuition3 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition3() As String
-    If IsNumeric(RemoveSym(ClassTuition3Textbox)) And Val(RemoveSym(ClassTuition3Textbox)) >= 0 Then
-        GetClassTuition3 = RemoveSym(ClassTuition3Textbox)
-    Else
-        GetClassTuition3 = vbNullString
-        pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* Class Tuition for Mod3 must be a non-negative number" & vbNewLine
-    End If
+    GetClassTuition3 = RemoveSym(ClassTuition3Textbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassTuition4 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition4() As String
-    If IsNumeric(RemoveSym(ClassTuition4Textbox)) And Val(RemoveSym(ClassTuition4Textbox)) >= 0 Then
-        GetClassTuition4 = RemoveSym(ClassTuition4Textbox)
-    Else
-        GetClassTuition4 = vbNullString
-        pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* Class Tuition for Mod4 must be a non-negative number" & vbNewLine
-    End If
+    GetClassTuition4 = RemoveSym(ClassTuition4Textbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassTuition5 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition5() As String
-    If IsNumeric(RemoveSym(ClassTuition5Textbox)) And Val(RemoveSym(ClassTuition5Textbox)) >= 0 Then
-        GetClassTuition5 = RemoveSym(ClassTuition5Textbox)
-    Else
-        GetClassTuition5 = vbNullString
-        pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* Class Tuition for Mod5 must be a non-negative number" & vbNewLine
-    End If
+    GetClassTuition5 = RemoveSym(ClassTuition5Textbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassTuition6 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition6() As String
-    If IsNumeric(RemoveSym(ClassTuition6Textbox)) And Val(RemoveSym(ClassTuition6Textbox)) >= 0 Then
-        GetClassTuition6 = RemoveSym(ClassTuition6Textbox)
-    Else
-        GetClassTuition6 = vbNullString
-        pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* Class Tuition for Mod6 must be a non-negative number" & vbNewLine
-    End If
+    GetClassTuition6 = RemoveSym(ClassTuition6Textbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetClassTuition7 property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetClassTuition7() As String
-    If IsNumeric(RemoveSym(ClassTuition7Textbox)) And Val(RemoveSym(ClassTuition7Textbox)) >= 0 Then
-        GetClassTuition7 = RemoveSym(ClassTuition7Textbox)
-    Else
-        GetClassTuition7 = vbNullString
-        pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* Class Tuition for Mod7 must be a non-negative number" & vbNewLine
-    End If
+    GetClassTuition7 = RemoveSym(ClassTuition7Textbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -630,10 +472,10 @@ End Function
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetParentInvoice() As String
     If GetParentStatus = True And GetEnrollmentType = "Credits" Then
-        GetParentInvoice = CStr(CCur(GetClassTuition1) + CCur(GetClassTuition2) + CCur(GetClassTuition3) + _
-                CCur(GetClassTuition4) + CCur(GetClassTuition5) + CCur(GetClassTuition6) + CCur(GetClassTuition7))
+        GetParentInvoice = Trim(CStr(CCur(GetClassTuition1) + CCur(GetClassTuition2) + CCur(GetClassTuition3) + _
+                CCur(GetClassTuition4) + CCur(GetClassTuition5) + CCur(GetClassTuition6) + CCur(GetClassTuition7)))
     ElseIf GetParentStatus = True And (GetEnrollmentType = "Career" Or GetEnrollmentType = "Semester") Then
-        GetParentInvoice = GetProgramTuition
+        GetParentInvoice = RemoveSym(GetProgramTuition)
     Else
         GetParentInvoice = vbNullString
     End If
@@ -643,26 +485,14 @@ End Function
 ' GetStudentTuition property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetStudentTuition() As String
-    If IsNumeric(RemoveSym(StudentTuitionTextbox)) And Val(RemoveSym(StudentTuitionTextbox)) >= 0 Then
-        GetStudentTuition = RemoveSym(StudentTuitionTextbox)
-    Else
-        GetStudentTuition = vbNullString
-        pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* Student Tuition must be a non-negative number" & vbNewLine
-    End If
+    GetStudentTuition = RemoveSym(StudentTuitionTextbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetStudentFees property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetStudentFees() As String
-    If IsNumeric(RemoveSym(StudentFeesTextbox)) And Val(RemoveSym(StudentFeesTextbox)) >= 0 Then
-        GetStudentFees = RemoveSym(StudentFeesTextbox)
-    Else
-        GetStudentFees = vbNullString
-        pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* Student Fees must be a non-negative number" & vbNewLine
-    End If
+    GetStudentFees = RemoveSym(StudentFeesTextbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -676,26 +506,14 @@ End Function
 ' GetDownPay property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetDownPay() As String
-    If IsNumeric(RemoveSym(DownPayTextbox)) And Val(RemoveSym(DownPayTextbox)) >= 0 Then
-        GetDownPay = RemoveSym(DownPayTextbox)
-    Else
-        GetDownPay = vbNullString
-        pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* Down Payment must be a non-negative number" & vbNewLine
-    End If
+    GetDownPay = RemoveSym(DownPayTextbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetNumberOfMonths property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetNumberOfMonths() As String
-    If IsNumeric(RemoveSym(NumberOfMonthsTextbox)) And Val(RemoveSym(NumberOfMonthsTextbox)) >= 0 Then
-        GetNumberOfMonths = RemoveSym(NumberOfMonthsTextbox)
-    Else
-        GetNumberOfMonths = vbNullString
-        pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* The number of months must be a non-negative integer" & vbNewLine
-    End If
+    GetNumberOfMonths = RemoveSym(NumberOfMonthsTextbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -713,12 +531,8 @@ Public Function CalcDollarPerMonth() As String
         Temporary = Total - DownPay
         If Installment < 1 Then
             CalcDollarPerMonth = vbNullString
-            pErrorFlag = True
-            pErrorMessage = pErrorMessage & "* Calculation Error: The number of installments cannot be less than 1" & vbNewLine
         ElseIf Temporary < 1 Then
             CalcDollarPerMonth = vbNullString
-            pErrorFlag = True
-            pErrorMessage = pErrorMessage & "* Calculation Error: The Student Invoice minus the Down Payment cannot be less than 1" & vbNewLine
         Else
             'Note: Backslash indicates integer division
             '(Technical Debt Note): Integer division seems to be the closest approximation to the AS/400's monthly payment _
@@ -728,8 +542,6 @@ Public Function CalcDollarPerMonth() As String
         End If
     Else
         CalcDollarPerMonth = vbNullString
-        pErrorFlag = True
-        pErrorMessage = pErrorMessage & "SCRIPT ERROR: The monthly payments are being calculated without the correct user entry" & vbNewLine
     End If
 End Function
 
@@ -737,13 +549,7 @@ End Function
 ' GetDollarPerMonth property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetDollarPerMonth() As String
-    If IsNumeric(RemoveSym(DollarPerMonthTextbox)) And Val(RemoveSym(DollarPerMonthTextbox)) >= 0 Then
-        GetDollarPerMonth = RemoveSym(DollarPerMonthTextbox)
-    Else
-        GetDollarPerMonth = vbNullString
-        pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* The monthly payment amount must be a non-negative number" & vbNewLine
-    End If
+    GetDollarPerMonth = RemoveSym(DollarPerMonthTextbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -761,12 +567,8 @@ Public Function CalcNumberOfMonths() As String
         Temporary = Total - DownPay
         If Monthly < 1 Then
             CalcNumberOfMonths = vbNullString
-            pErrorFlag = True
-            pErrorMessage = pErrorMessage & "* Calculation Error: The monthly payment amount cannot be less than 1" & vbNewLine
         ElseIf Temporary < 1 Then
             CalcNumberOfMonths = vbNullString
-            pErrorFlag = True
-            pErrorMessage = pErrorMessage & "* Calculation Error: The Student Invoice minus the Down Payment cannot be less than 1" & vbNewLine
         Else
             'Note: Backslash indicates integer division
             CalcNumberOfMonths = CStr(Temporary \ Monthly)
@@ -774,8 +576,6 @@ Public Function CalcNumberOfMonths() As String
         End If
     Else
         CalcNumberOfMonths = vbNullString
-        pErrorFlag = True
-        pErrorMessage = pErrorMessage & "SCRIPT ERROR: The number of months is being calculated without the correct user entry" & vbNewLine
     End If
 End Function
 
@@ -790,16 +590,7 @@ End Function
 ' GetParentCode property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetParentCode() As String
-    Dim str
-    str = Left(Trim(ParentCodeTextBox.Value), 8)
-    If IsNumeric(str) Then
-        GetParentCode = str
-    Else
-        If GetParentStatus = True Then
-            pErrorFlag = True
-            pErrorMessage = pErrorMessage & "* '" & str & "' is not recognized as a parent number" & vbNewLine
-        End If
-    End If
+    GetParentCode = Trim(ParentCodeTextBox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -873,8 +664,7 @@ Public Function GetEnrollmentType() As String
     ElseIf UserFormObject.CollegeSemester_Optionselect = True Then
         GetEnrollmentType = "Semester"
     Else
-        pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* Please select an enrollment type" & vbNewLine
+        GetEnrollmentType = vbNullString
     End If
 End Function
 
@@ -891,8 +681,7 @@ Public Function GetPaymentType() As String
     ElseIf NoCostOptionButton = True Then
         GetPaymentType = "NoCost"
     Else
-        pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* Please select a payment type" & vbNewLine
+        GetPaymentType = vbNullString
     End If
 End Function
 
@@ -900,28 +689,14 @@ End Function
 ' GetWebStartTime property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetWebStartTime() As String
-    Dim str
-    str = Trim(WebStartTimeTextbox.Value)
-    If IsNumeric(str) Then
-        GetWebStartTime = str
-    Else
-        pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* '" & str & "' is not recognized as a valid start time" & vbNewLine
-    End If
+    GetWebStartTime = Trim(WebStartTimeTextbox.Value)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetWebEndTime property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetWebEndTime() As String
-    Dim str
-    str = Trim(WebEndTimeTextbox.Value)
-    If IsNumeric(str) Then
-        GetWebEndTime = str
-    Else
-        pErrorFlag = True
-        pErrorMessage = pErrorMessage & "* '" & str & "' is not recognized as a valid end time" & vbNewLine
-    End If
+    GetWebEndTime = Trim(WebEndTimeTextbox.Value)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
