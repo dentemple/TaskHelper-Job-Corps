@@ -9,10 +9,6 @@ Private pSessionName As String
 Private pMilliseconds As Long
 Private pHandling As String
 
-' ERROR PROPERTIES
-Private pErrorFlag As Boolean
-Private pErrorMessage As String
-
 ' READ-ONLY PROPERTIES
 '   Operator        (Stores the autECLOIA automation object)
 '   Presentation    (Stores the autECLPS automation object)
@@ -27,8 +23,7 @@ Private pConnection As Object
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Private Sub Class_Initialize()
-    pErrorFlag = False
-    pErrorMessage = "The AS/400 has encountered the following issues:" & vbNewLine & vbNewLine
+    'Empty
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -62,39 +57,6 @@ Public Property Let Handling(Value As String)
 End Property
 Public Property Get Handling() As String
     Handling = pHandling
-End Property
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' ERROR PROPERTIES
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' ErrorFlag property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Let ErrorFlag(Value As Boolean)
-    pErrorFlag = Value
-End Property
-Public Property Get ErrorFlag() As Boolean
-    pErrorFlag = True
-     If Session.Started = False Then
-        pErrorMessage = pErrorMessage & "* The AS/400 has failed to connect to Session " & SessionName & vbNewLine & vbNewLine
-    End If
-    If Session.CommStarted = False Then
-        pErrorMessage = pErrorMessage & "* The AS/400 has failed to enable communications" & vbNewLine & vbNewLine
-    End If
-    If Session.Ready = False Then
-        pErrorMessage = pErrorMessage & "* The AS/400 is not in a state of 'Ready'" & vbNewLine & vbNewLine
-    End If
-    If Session.Started = True And Session.CommStarted = True And Session.Ready = True Then
-        pErrorMessage = pErrorMessage "* The AS/400 has encountered an unknown error"
-    End If
-End Property
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' ErrorMessage property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Get ErrorMessage() As String
-    ErrorMessage = pErrorMessage
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
