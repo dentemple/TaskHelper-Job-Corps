@@ -82,11 +82,8 @@ The following is a list of glue functions used to interpret the information take
 '   GetPaymentType As String
 '   GetWebStartTime As String
 '   GetWebEndTime As String
-
-' xxxxxxxxxxxxxxxxxxxxxxxxx
 '   GetSchoolCode As String
 '   GetDegreeCode As String
-' xxxxxxxxxxxxxxxxxx
 
 ' OBJECT PROPERTIES
 'Stores the cStudentFile objects
@@ -345,7 +342,7 @@ End Function
 ' GetState property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetState() As String
-    GetState = Trim(StateTextbox)
+    GetState = UCase(Trim(StateTextbox))
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -583,7 +580,7 @@ End Function
 ' GetSession property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetSession() As String
-    GetSession = SessionComboBox.Value
+    GetSession = UCase(SessionComboBox.Value)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -597,7 +594,7 @@ End Function
 ' GetPrefixCode property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetPrefixCode() As String
-    GetPrefixCode = PrefixCodeTextbox
+    GetPrefixCode = UCase(PrefixCodeTextbox)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
