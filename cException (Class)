@@ -1,7 +1,7 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' cException (Class)
 '
-' Relies on a call stack approach to help report the location of errors
+' Overloaded class object: Handles both error handling and call stack functionality
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'GENERAL PROPERTIES
 Private pErrFlag As Boolean
