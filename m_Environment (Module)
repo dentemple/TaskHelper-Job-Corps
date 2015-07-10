@@ -1,133 +1,209 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' m_CoreRegistration (Module)
+' m_Environment (Module)
+'
+' Procedures for the interpretation of data for use within the m_General module
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Option Explicit
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' RunRegistration (Private Sub)
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' LoadUserformObjects (Public Sub)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub LoadUserformObjects(ByRef StudentFile As cStudentFile, ByVal RegForm As MSForms.UserForm, ByRef Exception As cException)
+
+    'Pass error handling up the call stack
+    On Error GoTo 0
+
+    Exception.Push "[m_Environment.LoadUserformObjects]"
+
+    'Pass userform
+    Set StudentFile.UserFormObject = RegForm
+
+    'Pass textboxes
+    Set StudentFile.SalespersonTextbox = RegForm.Salesperson_Textbox
+    Set StudentFile.ParentCodeTextBox = RegForm.ParentCode_Textbox
+    Set StudentFile.FirstNameTextbox = RegForm.Firstname_Textbox
+    Set StudentFile.LastNameTextbox = RegForm.Lastname_Textbox
+    Set StudentFile.MiddleNameTextbox = RegForm.Middlename_Textbox
+    Set StudentFile.WebStartTimeTextbox = RegForm.WebStartTime_Textbox
+    Set StudentFile.WebEndTimeTextbox = RegForm.WebEndTime_Textbox
+    Set StudentFile.ProgramNumberTextbox = RegForm.ProgramNumber_Textbox
+    Set StudentFile.ProgramTuitionTextbox = RegForm.ProgramTuition_Textbox
+    Set StudentFile.AddressL1Textbox = RegForm.AddressL1_Textbox
+    Set StudentFile.AddressL2Textbox = RegForm.AddressL2_Textbox
+    Set StudentFile.AddressL3Textbox = RegForm.AddressL3_Textbox
+    Set StudentFile.AddressL4Textbox = RegForm.AddressL4_Textbox
+    Set StudentFile.CityTextbox = RegForm.City_Textbox
+    Set StudentFile.StateTextbox = RegForm.StateAbbrev_Textbox
+    Set StudentFile.ZipCodeTextbox = RegForm.Zipcode_Textbox
+    Set StudentFile.AreaCodeTextbox = RegForm.Areacode_Textbox
+    Set StudentFile.PhoneNumberTextbox = RegForm.Phonenumber_Textbox
+    Set StudentFile.EmailTextbox = RegForm.Email_Textbox
+    
+    'Pass comboboxes
+    Set StudentFile.SessionComboBox = RegForm.Session_ComboBox
+    Set StudentFile.PrefixCodeTextbox = RegForm.PrefixCode_Textbox
+    Set StudentFile.AutomationComboBox = RegForm.Automation_ComboBox
+    
+    'Pass option selection
+    Set StudentFile.MaleOptionButton = RegForm.Male_Optionselect
+    Set StudentFile.FemaleOptionButton = RegForm.Female_Optionselect
+    
+    Exception.Pop
+
+End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' General variables
+' ApproveRegistration (Public Function)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    
-    Dim i As Integer
-    i = 0
-    
-    Dim StopEachScreen As Boolean
-    StopEachScreen = False
-    
-    Dim Letter As String
-    Letter = vbNullString
-    
-    Dim RedMessage As String
-    RedMessage = vbTab & "FINAL CONFIRMATION" & vbNewLine & vbNewLine & _
-        "One or more errors have occurred. Please resolve the following issues before proceeding." & vbNewLine & vbNewLine
-    Dim BlueMessage As String
-    BlueMessage = vbTab & "FINAL CONFIRMATION" & vbNewLine & vbNewLine & _
-        "Please confirm the following information before proceeding with the enrollment script." & vbNewLine & vbNewLine
-    
+Public Function ApproveRegistration(ByVal StudentFile As cStudentFile, ByVal AS400 As cAS400, _
+    ByVal Exception As cException, ByRef RedMessage As String, ByRef BlueMessage As String) As Boolean
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Set the required classes
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-    On Error GoTo ClassError
-
-    Dim Exception As cException
-    Set Exception = New cException
-    Exception.Push "[m_CoreRegistration.RunRegistration]"
+    'Pass error handling up the call stack
+    On Error GoTo 0
     
-    Dim StudentFile As cStudentFile
-    Set StudentFile = New cStudentFile
+    Exception.Push "[m_Environment.ApproveRegistration]"
     
-    Dim AS400 As cAS400
-    Set AS400 = New cAS400
+    Dim ApprovalFlag As Boolean
+    ApprovalFlag = True
     
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Loads the class objects
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-    TurnOffExcelDefaults Exception
-    
-    On Error GoTo UserformError
-    LoadUserformObjects StudentFile, RegForm, Exception
-    Letter = StudentFile.GetSession
-    
-    On Error GoTo AS400Error
-    InitializeAS400 AS400, Letter, Exception
-    AS400.Handling = Trim(StudentFile.GetAutomation)
-    
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-PreEnrollmentCheck:
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    
-    If ApproveRegistration(StudentFile, AS400, Exception, RedMessage, BlueMessage) = False Then
-        GoTo Cleanup
+    If Exception.ErrFlag = True Then
+        ApprovalFlag = False
     End If
     
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Set the subsequent settings based on the user's selection
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    ConfirmAccountInfo StudentFile, ApprovalFlag, RedMessage, BlueMessage, Exception
+    ConfirmStudentFile StudentFile, ApprovalFlag, RedMessage, BlueMessage, Exception
     
-    Select Case AS400.Handling
-        Case "Fast"
-            On Error GoTo 0
-            StopEachScreen = False
-            AS400.Milliseconds = 75
-        Case "Slow"
-            On Error GoTo AcknowledgeError
-            StopEachScreen = False
-            AS400.Milliseconds = 900
-        Case "StopEach"
-            On Error GoTo AcknowledgeError
-            StopEachScreen = True
-            AS400.Milliseconds = 75
-        Case "Debug"
-            On Error GoTo 0
-            StopEachScreen = False
-            AS400.Milliseconds = 400
-        Case Else
-            On Error GoTo 0
-            StopEachScreen = True
-            AS400.Milliseconds = 400
-    End Select
+    MsgBox BlueMessage
+    MsgBox RedMessage
     
-    
-    
-    
-    
-    
-Cleanup:
+    ApproveRegistration = ApprovalFlag
+    Exception.Pop
 
-    TurnOnExcelDefaults Exception
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ConfirmAccountInfo
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub ConfirmAccountInfo(ByVal StudentFile As cStudentFile, ByRef ApprovalFlag As Boolean, _
+    ByRef RedMessage As String, ByRef BlueMessage As String, ByRef Exception As cException)
+    
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    
+    Exception.Push "[m_Environment.ConfirmAccountInfo]"
+    
+    Dim Temp As String
+    
+    'Automation setting
+    Temp = vbNullString
+    Temp = StudentFile.GetAutomation
+    If Temp = "Fast" Or Temp = "Slow" Or Temp = "StopEach" Or Temp = "Debug" Then
+        BlueMessage = BlueMessage & "Automation:" & vbTab & Temp & vbNewLine
+    Else
+        BlueMessage = BlueMessage & "Automation:" & vbTab & "Automation set to 'Default'" & vbNewLine
+    End If
+    
+    'AS/400 Session
+    Temp = vbNullString
+    Temp = StudentFile.GetSession
+    If Len(Temp) = 1 And InStr("ABCDEFGHIJKLMNOPQRSTUVWXYZ", Temp) >= 1 Then
+        BlueMessage = BlueMessage & "Session:" & vbTab & vbTab & Temp & vbNewLine & vbNewLine
+    Else
+        ApprovalFlag = False
+        RedMessage = RedMessage & "* The AS/400 session name must be a single letter" & vbNewLine
+    End If
+    
+    'PrefixCode
+    Temp = vbNullString
+    Temp = StudentFile.GetPrefixCode
+    If Len(Temp) = 3 Then
+        BlueMessage = BlueMessage & "PrefixCode:" & vbTab & Temp & vbNewLine
+    Else
+        ApprovalFlag = False
+        RedMessage = RedMessage & "* The Prefix Code must be 3 characters long" & vbNewLine
+    End If
+    
+    'Program Number
+    Temp = vbNullString
+    Temp = StudentFile.GetProgramNumber
+    If IsNumeric(Temp) And Len(Temp) = 8 Then
+        BlueMessage = BlueMessage & "Program Number:" & vbTab & Temp & vbNewLine
+    Else
+        ApprovalFlag = False
+        RedMessage = RedMessage & "* The Program Number must be numeric and 8 digits long" & vbNewLine
+    End If
+    
+    'Program Tuition
+    Temp = vbNullString
+    Temp = StudentFile.GetProgramTuition
+    If IsNumeric(Temp) And Val(Temp) >= 1 Then
+        BlueMessage = BlueMessage & "Program Tuition:" & vbTab & Format(Temp, "Currency") & vbNewLine & vbNewLine
+    Else
+        ApprovalFlag = False
+        RedMessage = RedMessage & "* The Program Tuition must be numeric and greater than zero" & vbNewLine
+    End If
+    
+    'Web Start Time
+    Temp = vbNullString
+    Temp = StudentFile.GetWebStartTime
+    If IsNumeric(Temp) And Len(Temp) <= 6 Then
+        BlueMessage = BlueMessage & "WebStartTime:" & vbTab & Temp & vbNewLine
+    Else
+        BlueMessage = BlueMessage & "WebStartTime:" & vbTab & "000000" & vbNewLine
+    End If
+    
+    'Web End Time
+    Temp = vbNullString
+    Temp = StudentFile.GetWebEndTime
+    If IsNumeric(Temp) And Len(Temp) <= 6 Then
+        BlueMessage = BlueMessage & "WebEndTime:" & vbTab & Temp & vbNewLine & vbNewLine
+    Else
+        BlueMessage = BlueMessage & "WebEndTime:" & vbTab & "000000" & vbNewLine
+    End If
+    
     Exception.Pop
     
-Exit Sub
+End Sub
 
-ClassError:
-    RedMessage = RedMessage & "[m_CoreRegistration.RunRegistration]" & Space(1) & _
-        "> A critical error has occurred while initializing the class modules:" & vbNewLine & _
-        "Error #" & Err.Number & Space(1) & Err.Description & vbNewLine & vbNewLine
-Resume Next
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ConfirmStudentFile
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub ConfirmStudentFile(ByVal StudentFile As cStudentFile, ByRef ApprovalFlag As Boolean, _
+    ByRef RedMessage As String, ByRef BlueMessage As String, ByRef Exception As cException)
 
-UserformError:
-    Exception.ErrFlag = True
-    RedMessage = RedMessage & Exception.StackTop & Space(1) & _
-        "> A userform object has failed to load" & Space(1) & "Error #" & Err.Number & vbNewLine & vbNewLine
-Resume Next
-
-AS400Error:
-    Exception.ErrFlag = True
-    RedMessage = RedMessage & Exception.StackTop & Space(1) & _
-        "> The AS400 has failed to initialize" & vbNewLine & _
-        "Error #" & Err.Number & Space(1) & Err.Description & vbNewLine & vbNewLine
-Resume Next
-
-AcknowledgeError:
-    Exception.ErrFlag = True
-Resume Next
-
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    
+    Exception.Push "[m_Environment.ConfirmStudentFile]"
+    
+    'Student Name
+    If Len(StudentFile.GetMailingName) < 4 Or Len(StudentFile.GetMailingName) > 38 Then
+        ApprovalFlag = False
+        RedMessage = RedMessage & "* The student's full name must be between 4 and 38 characters" & vbNewLine
+    Else
+        BlueMessage = BlueMessage & "MailingName:" & vbTab & StudentFile.GetMailingName & vbNewLine
+        BlueMessage = BlueMessage & "AlphaName:" & vbTab & StudentFile.GetAlphaName & vbNewLine
+    End If
+    
+    BlueMessage = BlueMessage & "Gender:" & vbTab & vbTab & StudentFile.GetGender & vbNewLine
+    
+    'Student Phone Number
+    BlueMessage = BlueMessage & "PhoneNumber:" & vbTab & "(" & StudentFile.GetAreaCode & ")" & _
+        StudentFile.GetPhoneNumber & vbNewLine
+        
+    'Student Email
+    BlueMessage = BlueMessage & "Email:" & vbTab & vbTab & StudentFile.GetEmail & vbNewLine
+    
+    'Student Address
+    BlueMessage = BlueMessage & "AddressL1:" & vbTab & StudentFile.GetAddressL1 & vbNewLine
+    BlueMessage = BlueMessage & "AddressL2:" & vbTab & StudentFile.GetAddressL2 & vbNewLine
+    BlueMessage = BlueMessage & "AddressL3:" & vbTab & StudentFile.GetAddressL3 & vbNewLine
+    BlueMessage = BlueMessage & "AddressL4:" & vbTab & StudentFile.GetAddressL4 & vbNewLine
+    BlueMessage = BlueMessage & "City:" & vbTab & vbTab & StudentFile.GetCity & vbNewLine
+    BlueMessage = BlueMessage & "State:" & vbTab & vbTab & StudentFile.GetState & vbNewLine
+    BlueMessage = BlueMessage & "Zip:" & vbTab & vbTab & StudentFile.GetZipCode & vbNewLine & vbNewLine
+    
+    Exception.Pop
+    
 End Sub
