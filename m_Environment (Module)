@@ -1,77 +1,133 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' m_Environment (Module)
-'
-' Procedures for the interpretation of data for use within the m_General module
+' m_CoreRegistration (Module)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Option Explicit
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' RunRegistration (Private Sub)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
+
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' LoadUserformObjects (Public Sub)
+' General variables
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub LoadUserformObjects(ByRef StudentFile As cStudentFile, ByVal RegForm As MSForms.UserForm, ByRef Exception As cException)
-
-    'Pass error handling up the call stack
-    On Error GoTo 0
-
-    Exception.Push "[m_Environment.LoadUserformObjects]"
-
-    'Pass userform
-    Set StudentFile.UserFormObject = RegForm
-
-    'Pass textboxes
-    Set StudentFile.SalespersonTextbox = RegForm.Salesperson_Textbox
-    Set StudentFile.ParentCodeTextBox = RegForm.ParentCode_Textbox
-    Set StudentFile.FirstNameTextbox = RegForm.Firstname_Textbox
-    Set StudentFile.LastNameTextbox = RegForm.Lastname_Textbox
-    Set StudentFile.MiddleNameTextbox = RegForm.Middlename_Textbox
-    Set StudentFile.WebStartTimeTextbox = RegForm.WebStartTime_Textbox
-    Set StudentFile.WebEndTimeTextbox = RegForm.WebEndTime_Textbox
-    Set StudentFile.ProgramNumberTextbox = RegForm.ProgramNumber_Textbox
-    Set StudentFile.ProgramTuitionTextbox = RegForm.ProgramTuition_Textbox
-    Set StudentFile.AddressL1Textbox = RegForm.AddressL1_Textbox
-    Set StudentFile.AddressL2Textbox = RegForm.AddressL2_Textbox
-    Set StudentFile.AddressL3Textbox = RegForm.AddressL3_Textbox
-    Set StudentFile.AddressL4Textbox = RegForm.AddressL4_Textbox
-    Set StudentFile.CityTextbox = RegForm.City_Textbox
-    Set StudentFile.StateTextbox = RegForm.StateAbbrev_Textbox
-    Set StudentFile.ZipCodeTextbox = RegForm.Zipcode_Textbox
-    Set StudentFile.AreaCodeTextbox = RegForm.Areacode_Textbox
-    Set StudentFile.PhoneNumberTextbox = RegForm.Phonenumber_Textbox
-    Set StudentFile.EmailTextbox = RegForm.Email_Textbox
     
-    'Pass comboboxes
-    Set StudentFile.SessionComboBox = RegForm.Session_ComboBox
-    Set StudentFile.PrefixCodeTextbox = RegForm.PrefixCode_Textbox
-    Set StudentFile.AutomationComboBox = RegForm.Automation_ComboBox
+    Dim i As Integer
+    i = 0
     
-    'Pass option selection
-    Set StudentFile.MaleOptionButton = RegForm.Male_Optionselect
-    Set StudentFile.FemaleOptionButton = RegForm.Female_Optionselect
+    Dim StopEachScreen As Boolean
+    StopEachScreen = False
     
+    Dim Letter As String
+    Letter = vbNullString
+    
+    Dim RedMessage As String
+    RedMessage = vbTab & "FINAL CONFIRMATION" & vbNewLine & vbNewLine & _
+        "One or more errors have occurred. Please resolve the following issues before proceeding." & vbNewLine & vbNewLine
+    Dim BlueMessage As String
+    BlueMessage = vbTab & "FINAL CONFIRMATION" & vbNewLine & vbNewLine & _
+        "Please confirm the following information before proceeding with the enrollment script." & vbNewLine & vbNewLine
+    
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Set the required classes
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+    On Error GoTo ClassError
+
+    Dim Exception As cException
+    Set Exception = New cException
+    Exception.Push "[m_CoreRegistration.RunRegistration]"
+    
+    Dim StudentFile As cStudentFile
+    Set StudentFile = New cStudentFile
+    
+    Dim AS400 As cAS400
+    Set AS400 = New cAS400
+    
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Loads the class objects
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+    TurnOffExcelDefaults Exception
+    
+    On Error GoTo UserformError
+    LoadUserformObjects StudentFile, RegForm, Exception
+    Letter = StudentFile.GetSession
+    
+    On Error GoTo AS400Error
+    InitializeAS400 AS400, Letter, Exception
+    AS400.Handling = Trim(StudentFile.GetAutomation)
+    
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+PreEnrollmentCheck:
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    
+    If ApproveRegistration(StudentFile, AS400, Exception, RedMessage, BlueMessage) = False Then
+        GoTo Cleanup
+    End If
+    
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Set the subsequent settings based on the user's selection
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    
+    Select Case AS400.Handling
+        Case "Fast"
+            On Error GoTo 0
+            StopEachScreen = False
+            AS400.Milliseconds = 75
+        Case "Slow"
+            On Error GoTo AcknowledgeError
+            StopEachScreen = False
+            AS400.Milliseconds = 900
+        Case "StopEach"
+            On Error GoTo AcknowledgeError
+            StopEachScreen = True
+            AS400.Milliseconds = 75
+        Case "Debug"
+            On Error GoTo 0
+            StopEachScreen = False
+            AS400.Milliseconds = 400
+        Case Else
+            On Error GoTo 0
+            StopEachScreen = True
+            AS400.Milliseconds = 400
+    End Select
+    
+    
+    
+    
+    
+    
+Cleanup:
+
+    TurnOnExcelDefaults Exception
     Exception.Pop
+    
+Exit Sub
+
+ClassError:
+    RedMessage = RedMessage & "[m_CoreRegistration.RunRegistration]" & Space(1) & _
+        "> A critical error has occurred while initializing the class modules:" & vbNewLine & _
+        "Error #" & Err.Number & Space(1) & Err.Description & vbNewLine & vbNewLine
+Resume Next
+
+UserformError:
+    Exception.ErrFlag = True
+    RedMessage = RedMessage & Exception.StackTop & Space(1) & _
+        "> A userform object has failed to load" & Space(1) & "Error #" & Err.Number & vbNewLine & vbNewLine
+Resume Next
+
+AS400Error:
+    Exception.ErrFlag = True
+    RedMessage = RedMessage & Exception.StackTop & Space(1) & _
+        "> The AS400 has failed to initialize" & vbNewLine & _
+        "Error #" & Err.Number & Space(1) & Err.Description & vbNewLine & vbNewLine
+Resume Next
+
+AcknowledgeError:
+    Exception.ErrFlag = True
+Resume Next
 
 End Sub
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' ApproveRegistration (Public Function)
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function ApproveRegistration(ByVal StudentFile As cStudentFile, ByVal AS400 As cAS400, _
-    ByVal Exception As cException, ByRef RedMessage As String, ByRef BlueMessage As String) As Boolean
-
-    'Pass error handling up the call stack
-    On Error GoTo 0
-    
-    Exception.Push "[m_Environment.ApproveRegistration]"
-    
-    ApproveRegistration = True
-    
-    MsgBox StudentFile.GetAlphaName
-    RedMessage = RedMessage & StudentFile.ErrorMessage
-    
-    MsgBox RedMessage, vbCritical, "Pre-Enrollment Checklist"
-    MsgBox BlueMessage, vbInformation, "Pre-Enrollment Checklist"
-    
-    Exception.Pop
-
-End Function
