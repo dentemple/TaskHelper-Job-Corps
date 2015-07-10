@@ -1,5 +1,7 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' m_Environment (Module)
+'
+' Procedures for the interpretation of data for use within the m_General module
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Option Explicit
@@ -12,7 +14,7 @@ Public Sub LoadUserformObjects(ByRef StudentFile As cStudentFile, ByVal RegForm 
     'Pass error handling up the call stack
     On Error GoTo 0
 
-    Exception.Push "m_Environment.LoadUserformObjects"
+    Exception.Push "[m_Environment.LoadUserformObjects]"
 
     'Pass userform
     Set StudentFile.UserFormObject = RegForm
@@ -54,21 +56,18 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ApproveRegistration (Public Function)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function ApproveRegistration(ByVal StudentFile As cStudentFile, ByVal AS400 As cAS400, ByVal Exception As cException) As Boolean
+Public Function ApproveRegistration(ByVal StudentFile As cStudentFile, ByVal AS400 As cAS400, _
+    ByVal Exception As cException, ByRef RedMessage As String, ByRef BlueMessage As String) As Boolean
 
     'Pass error handling up the call stack
     On Error GoTo 0
     
-    Exception.Push "m_Environment.ApproveRegistration"
+    Exception.Push "[m_Environment.ApproveRegistration]"
     
     ApproveRegistration = True
     
-    Dim RedMessage As String
-    RedMessage = vbTab & vbTab & "FINAL CONFIRMATION" & vbNewLine & vbNewLine & _
-        "One or more errors have occurred. Please resolve the following issues before proceeding." & vbNewLine & vbNewLine
-    Dim BlueMessage As String
-    BlueMessage = vbTab & vbTab & "FINAL CONFIRMATION" & vbNewLine & vbNewLine & _
-        "Please confirm the following information before proceeding with the enrollment script." & vbNewLine & vbNewLine
+    MsgBox StudentFile.GetAlphaName
+    RedMessage = RedMessage & StudentFile.ErrorMessage
     
     MsgBox RedMessage, vbCritical, "Pre-Enrollment Checklist"
     MsgBox BlueMessage, vbInformation, "Pre-Enrollment Checklist"
