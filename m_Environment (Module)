@@ -67,6 +67,9 @@ Public Function ApproveRegistration(ByVal StudentFile As cStudentFile, ByVal AS4
     Dim ApprovalFlag As Boolean
     ApprovalFlag = True
     
+    Dim UserSelection As Integer
+    UserSelection = 2
+    
     If Exception.ErrFlag = True Then
         ApprovalFlag = False
     End If
@@ -74,8 +77,13 @@ Public Function ApproveRegistration(ByVal StudentFile As cStudentFile, ByVal AS4
     ConfirmAccountInfo StudentFile, ApprovalFlag, RedMessage, BlueMessage, Exception
     ConfirmStudentFile StudentFile, ApprovalFlag, RedMessage, BlueMessage, Exception
     
-    MsgBox BlueMessage
-    MsgBox RedMessage
+    If ApprovalFlag = False Then
+        MsgBox RedMessage, vbCritical, "Pre-Enrollment Checklist"
+    Else
+        UserSelection = MsgBox BlueMessage, vbInformation, "Pre-Enrollment Checklist"
+        If UserSelection = vbOK Then ApprovalFlag = True
+        If UserSelection = vbCancel Then ApprovalFlag = False
+    End If
     
     ApproveRegistration = ApprovalFlag
     Exception.Pop
