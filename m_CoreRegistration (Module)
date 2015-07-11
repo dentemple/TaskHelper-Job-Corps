@@ -19,9 +19,6 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
     Dim StopEachScreen As Boolean
     StopEachScreen = False
     
-    Dim letter As String
-    letter = vbNullString
-    
     Dim RedMessage As String
     RedMessage = vbTab & "FINAL CONFIRMATION" & vbNewLine & vbNewLine & _
         "One or more errors have occurred. Please resolve the following issues before proceeding." & vbNewLine & vbNewLine
@@ -31,7 +28,7 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
     
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Set the required classes
+' Set the class modules
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
     On Error GoTo ClassError
@@ -54,10 +51,9 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
     
     On Error GoTo UserformError
     LoadUserformObjects StudentFile, RegForm, Exception
-    letter = StudentFile.GetSession
     
     On Error GoTo AS400Error
-    InitializeAS400 AS400, letter, Exception
+    InitializeAS400 AS400, StudentFile.GetSession, Exception
     AS400.Handling = Trim(StudentFile.GetAutomation)
     
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
