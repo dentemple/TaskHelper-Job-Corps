@@ -18,6 +18,8 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
     
     Dim StopEachScreen As Boolean
     StopEachScreen = False
+    Dim StopEachMessage = String
+    StopEachMessage = "
     
     Dim RedMessage As String
     RedMessage = vbTab & "FINAL CONFIRMATION" & vbNewLine & vbNewLine & _
@@ -64,37 +66,126 @@ PreEnrollmentCheck:
         GoTo Cleanup
     End If
     
+    RedMessage = vbNullString
+    BlueMessage = vbNullString
+    
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Set the subsequent settings based on the user's selection
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     
     Select Case AS400.Handling
         Case "Fast"
-            On Error GoTo 0
-            StopEachScreen = False
+            On Error GoTo AcknowledgeError
             AS400.Milliseconds = 75
         Case "Slow"
             On Error GoTo AcknowledgeError
-            StopEachScreen = False
             AS400.Milliseconds = 900
         Case "StopEach"
             On Error GoTo AcknowledgeError
-            StopEachScreen = True
             AS400.Milliseconds = 75
         Case "Debug"
             On Error GoTo 0
-            StopEachScreen = False
             AS400.Milliseconds = 400
         Case Else
             On Error GoTo 0
-            StopEachScreen = True
             AS400.Milliseconds = 400
     End Select
     
+    NavigateToHome AS400, Exception
+    
+    'Address Book w/ Parent option
+    AS400.Presentation.SetText "3", 19, 7
+    AS400.Presentation.SendKeys ("[Enter]")
+    WaitForReady AS400, Exception
+    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
+    
+    'Action Code
+    objAS400.autECLPS.SetText "A", 3, 19              'Action Code
+    'First-Middle-Last Name
+    AS400.Presentation.SetText StudentFile.GetMailingName, 4, 19
+    'Last-First-Middle Name
+    AS400.Presentation.SetText StudentFile.GetAlphaName, 6, 19
+    'Address Line 1
+    AS400.Presentation.SetText StudentFile.GetAddressL1, 8, 19
+    'Address Line 2
+    AS400.Presentation.SetText StudentFile.GetAddressL2, 9, 19
+    'Address Line 3
+    AS400.Presentation.SetText StudentFile.GetAddressL3, 10, 19
+    'Address Line 4
+    AS400.Presentation.SetText StudentFile.GetAddressL4, 11, 19
+    'Zip Code
+    AS400.Presentation.SetText StudentFile.GetZipCode, 12, 19
+    'City
+    AS400.Presentation.SetText StudentFile.GetCity, 12, 55
+    'State
+    AS400.Presentation.SetText StudentFile.GetState, 13, 55
+    'Search Type
+    AS400.Presentation.SetText "TR", 14, 19
+    'Parent #
+    AS400.Presentation.SetText StudentFile.GetParentCode, 17, 55 
+    'Prefix Code
+    AS400.Presentation.SetText StudentFile.GetPrefixCode, 23, 19
+    
+    WaitForReady AS400, Exception
+    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
+    AS400.Presentation.SendKeys ("[Enter]")
+    
+    'StudentID#
+    WaitForReady AS400, Exception
+    StudentFile.StudentID = AS400.Presentation.GetText(4, 32, 8)
+    WaitForReady AS400, Exception
+    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
+    AS400.Presentation.SendKeys ("[Enter]")
+    
+    'Enter-F3 sequence
+    WaitForReady AS400, Exception
+    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
+    S400.Presentation.SendKeys ("[Enter]") '#1
+    WaitForReady AS400, Exception
+    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
+    S400.Presentation.SendKeys ("[pf3]") '#1
+    WaitForReady AS400, Exception
+    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
+    S400.Presentation.SendKeys ("[Enter]") '#2
+    WaitForReady AS400, Exception
+    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
+    S400.Presentation.SendKeys ("[pf3]") '#2
+    WaitForReady AS400, Exception
+    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
+    S400.Presentation.SendKeys ("[Enter]") '#3
+    WaitForReady AS400, Exception
+    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
+    S400.Presentation.SendKeys ("[pf3]") '#3
+    WaitForReady AS400, Exception
+    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
+    S400.Presentation.SendKeys ("[Enter]") '#4
+    WaitForReady AS400, Exception
+    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
+    S400.Presentation.SendKeys ("[pf3]") '#4
+    
+    'Web Times
+    WaitForReady AS400, Exception
+    AS400.Presentation.SetText StudentFile.GetWebStartTime, 13, 23
+    AS400.Presentation.SetText StudentFile.GetWebEndTime, 14, 23
+    WaitForReady AS400, Exception
+    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
+    S400.Presentation.SendKeys ("[Enter]") '#5
+    
+    WaitForReady AS400, Exception
+    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
+    S400.Presentation.SendKeys ("[pf3]") '#5
+
+    WaitForReady AS400, Exception
+    'School Type
+    AS400.Presentation.SetText "HS", 6, 23
+    'Degree Code
+    AS400.Presentation.SetText "N", 10, 23
+    'Gender
     
     
     
     
+    WaitForReady AS400, Exception
     
 Cleanup:
 
