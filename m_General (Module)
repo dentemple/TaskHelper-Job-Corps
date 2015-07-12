@@ -172,3 +172,27 @@ Public Sub WaitForReady(ByVal AS400 As cAS400, ByRef Exception As cException)
     Exception.Pop
 
 End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' AbortAutomation (Public Function)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function AbortAutomation(ByRef AS400 As cAS400, ByRef Exception As cException) As Boolean
+
+    Dim Selection As Integer
+    
+    Exception.Push "[m_General.AbortAutomation]"
+
+    AbortAutomation = False
+    If AS400.Handling = "StopEach" Or AS400.Handling = "Debug" Then
+        Selection = MsgBox "OK:" & vbTab & "Proceed to next screen" & vbNewLine & _
+            "Cancel:" & vbTab & "Stop the automation", vbOKCancel, "StopEach / Debug"
+        If Selection = vbOK Then
+            AbortAutomation = False
+        Else
+            AbortAutomation = True
+        End If
+    End If
+    
+    Exception.Pop
+
+End Function
