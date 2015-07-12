@@ -215,3 +215,10 @@ Private Sub ConfirmStudentFile(ByVal StudentFile As cStudentFile, ByRef Approval
     Exception.Pop
     
 End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' NavigateToHome
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub NavigateToHome(ByVal AS400 As cAS400, ByVal Exception As cException)
+    'Empty
+End Sub
