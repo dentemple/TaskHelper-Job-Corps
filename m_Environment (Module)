@@ -128,7 +128,7 @@ Private Sub ConfirmAccountInfo(ByVal StudentFile As cStudentFile, ByRef Approval
         BlueMessage = BlueMessage & "PrefixCode:" & vbTab & Temp & vbNewLine
     Else
         ApprovalFlag = False
-        RedMessage = RedMessage & "* The Prefix Code must be 3 characters long" & vbNewLine
+        RedMessage = RedMessage & "* The prefix code must be 3 characters long" & vbNewLine
     End If
     
     'Program Number
@@ -138,7 +138,7 @@ Private Sub ConfirmAccountInfo(ByVal StudentFile As cStudentFile, ByRef Approval
         BlueMessage = BlueMessage & "Program Number:" & vbTab & Temp & vbNewLine
     Else
         ApprovalFlag = False
-        RedMessage = RedMessage & "* The Program Number must be numeric and 8 digits long" & vbNewLine
+        RedMessage = RedMessage & "* The program number must be numeric and 8 digits long" & vbNewLine
     End If
     
     'Program Tuition
@@ -148,7 +148,7 @@ Private Sub ConfirmAccountInfo(ByVal StudentFile As cStudentFile, ByRef Approval
         BlueMessage = BlueMessage & "Program Tuition:" & vbTab & Format(Temp, "Currency") & vbNewLine & vbNewLine
     Else
         ApprovalFlag = False
-        RedMessage = RedMessage & "* The Program Tuition must be numeric and greater than zero" & vbNewLine
+        RedMessage = RedMessage & "* The program tuition must be numeric and greater than zero" & vbNewLine
     End If
     
     'Web Start Time
@@ -216,13 +216,6 @@ Private Sub ConfirmStudentFile(ByVal StudentFile As cStudentFile, ByRef Approval
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' NavigateToHome
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Private Sub NavigateToHome(ByVal AS400 As cAS400, ByVal Exception As cException)
-    'Empty
-End Sub
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ProceedToNextScreen (Public Function)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function ProceedToNextScreen(ByVal Action As String, ByVal AS400 As cAS400, ByRef Exception As cException) As Boolean
@@ -237,13 +230,13 @@ Public Function ProceedToNextScreen(ByVal Action As String, ByVal AS400 As cAS40
     WaitForReady AS400, Exception
     ProceedToNextScreen = False
     If AS400.Handling = "StopEach" Or AS400.Handling = "Debug" Then
-        Selection = MsgBox "OK:" & vbTab & "Proceed to next screen" & vbNewLine & _
-            "Cancel:" & vbTab & "Stop the automation", vbOKCancel, "StopEach / Debug"
+        Selection = MsgBox("OK:" & vbTab & "Proceed to next screen" & vbNewLine & _
+            "Cancel:" & vbTab & "Stop the automation", vbOKCancel, "StopEach / Debug")
         If Selection = vbCancel Then
             AbortAutomation = True
         Else
             AbortAutomation = False
-            AS400.SendKeys Action
+            AS400.Presentation.SendKeys Action
         End If
     End If
     
