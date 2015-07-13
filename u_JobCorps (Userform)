@@ -77,7 +77,7 @@ Private Sub Cancel_Button_Click()
 End Sub
 
 Private Sub StudentSearch_Button_Click()
-    'EMPTY
+    
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
