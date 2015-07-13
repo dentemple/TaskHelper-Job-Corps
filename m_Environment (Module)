@@ -7,6 +7,15 @@
 Option Explicit
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub RunStudentSearch()
+
+
+
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' LoadUserformObjects (Public Sub)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub LoadUserformObjects(ByRef StudentFile As cStudentFile, ByVal RegForm As MSForms.UserForm, ByRef Exception As cException)
