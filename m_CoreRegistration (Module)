@@ -18,8 +18,6 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
     
     Dim StopEachScreen As Boolean
     StopEachScreen = False
-    Dim StopEachMessage = String
-    StopEachMessage = "
     
     Dim RedMessage As String
     RedMessage = vbTab & "FINAL CONFIRMATION" & vbNewLine & vbNewLine & _
@@ -91,7 +89,7 @@ PreEnrollmentCheck:
             AS400.Milliseconds = 400
     End Select
     
-    NavigateToHome AS400, Exception
+    'NavigateToHome AS400, Exception
     
     'Address Book w/ Parent option
     AS400.Presentation.SetText "3", 19, 7
@@ -100,7 +98,7 @@ PreEnrollmentCheck:
     If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
     
     'Action Code
-    objAS400.autECLPS.SetText "A", 3, 19              'Action Code
+    AS400.Presentation.SetText "A", 3, 19              'Action Code
     'First-Middle-Last Name
     AS400.Presentation.SetText StudentFile.GetMailingName, 4, 19
     'Last-First-Middle Name
@@ -122,7 +120,7 @@ PreEnrollmentCheck:
     'Search Type
     AS400.Presentation.SetText "TR", 14, 19
     'Parent #
-    AS400.Presentation.SetText StudentFile.GetParentCode, 17, 55 
+    AS400.Presentation.SetText StudentFile.GetParentCode, 17, 55
     'Prefix Code
     AS400.Presentation.SetText StudentFile.GetPrefixCode, 23, 19
     
@@ -140,28 +138,28 @@ PreEnrollmentCheck:
     'Enter-F3 sequence
     WaitForReady AS400, Exception
     If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
-    S400.Presentation.SendKeys ("[Enter]") '#1
+    AS400.Presentation.SendKeys ("[Enter]") '#1
     WaitForReady AS400, Exception
     If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
-    S400.Presentation.SendKeys ("[pf3]") '#1
+    AS400.Presentation.SendKeys ("[pf3]") '#1
     WaitForReady AS400, Exception
     If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
-    S400.Presentation.SendKeys ("[Enter]") '#2
+    AS400.Presentation.SendKeys ("[Enter]") '#2
     WaitForReady AS400, Exception
     If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
-    S400.Presentation.SendKeys ("[pf3]") '#2
+    AS400.Presentation.SendKeys ("[pf3]") '#2
     WaitForReady AS400, Exception
     If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
-    S400.Presentation.SendKeys ("[Enter]") '#3
+    AS400.Presentation.SendKeys ("[Enter]") '#3
     WaitForReady AS400, Exception
     If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
-    S400.Presentation.SendKeys ("[pf3]") '#3
+    AS400.Presentation.SendKeys ("[pf3]") '#3
     WaitForReady AS400, Exception
     If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
-    S400.Presentation.SendKeys ("[Enter]") '#4
+    AS400.Presentation.SendKeys ("[Enter]") '#4
     WaitForReady AS400, Exception
     If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
-    S400.Presentation.SendKeys ("[pf3]") '#4
+    AS400.Presentation.SendKeys ("[pf3]") '#4
     
     'Web Times
     WaitForReady AS400, Exception
@@ -169,11 +167,11 @@ PreEnrollmentCheck:
     AS400.Presentation.SetText StudentFile.GetWebEndTime, 14, 23
     WaitForReady AS400, Exception
     If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
-    S400.Presentation.SendKeys ("[Enter]") '#5
+    AS400.Presentation.SendKeys ("[Enter]") '#5
     
     WaitForReady AS400, Exception
     If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
-    S400.Presentation.SendKeys ("[pf3]") '#5
+    AS400.Presentation.SendKeys ("[pf3]") '#5
 
     WaitForReady AS400, Exception
     'School Type
@@ -218,3 +216,5 @@ AcknowledgeError:
 Resume Next
 
 End Sub
+
+
