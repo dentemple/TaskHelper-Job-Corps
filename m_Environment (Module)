@@ -80,7 +80,7 @@ Public Function ApproveRegistration(ByVal StudentFile As cStudentFile, ByVal AS4
     If ApprovalFlag = False Then
         MsgBox RedMessage, vbCritical, "Pre-Enrollment Checklist"
     Else
-        UserSelection = MsgBox BlueMessage, vbInformation, "Pre-Enrollment Checklist"
+        UserSelection = MsgBox(BlueMessage, vbOKCancel, "Pre-Enrollment Checklist")
         If UserSelection = vbOK Then ApprovalFlag = True
         If UserSelection = vbCancel Then ApprovalFlag = False
     End If
@@ -222,3 +222,5 @@ End Sub
 Private Sub NavigateToHome(ByVal AS400 As cAS400, ByVal Exception As cException)
     'Empty
 End Sub
+
+
