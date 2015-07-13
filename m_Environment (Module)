@@ -36,8 +36,6 @@ Public Sub LoadUserformObjects(ByRef StudentFile As cStudentFile, ByVal RegForm 
     Set StudentFile.CityTextbox = RegForm.City_Textbox
     Set StudentFile.StateTextbox = RegForm.StateAbbrev_Textbox
     Set StudentFile.ZipCodeTextbox = RegForm.Zipcode_Textbox
-    Set StudentFile.AreaCodeTextbox = RegForm.Areacode_Textbox
-    Set StudentFile.PhoneNumberTextbox = RegForm.Phonenumber_Textbox
     Set StudentFile.EmailTextbox = RegForm.Email_Textbox
     
     'Pass comboboxes
@@ -195,10 +193,6 @@ Private Sub ConfirmStudentFile(ByVal StudentFile As cStudentFile, ByRef Approval
     End If
     
     BlueMessage = BlueMessage & "Gender:" & vbTab & vbTab & StudentFile.GetGender & vbNewLine
-    
-    'Student Phone Number
-    BlueMessage = BlueMessage & "PhoneNumber:" & vbTab & "(" & StudentFile.GetAreaCode & ")" & _
-        StudentFile.GetPhoneNumber & vbNewLine
         
     'Student Email
     BlueMessage = BlueMessage & "Email:" & vbTab & vbTab & StudentFile.GetEmail & vbNewLine
