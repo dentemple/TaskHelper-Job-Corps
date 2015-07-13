@@ -13,12 +13,9 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
 ' General variables
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     
-    Dim i As Integer
-    i = 0
-    
-    Dim StopEachScreen As Boolean
-    StopEachScreen = False
-    
+    Dim GetTextString As String
+    GetTextString = vbNullString
+
     Dim RedMessage As String
     RedMessage = vbTab & "FINAL CONFIRMATION" & vbNewLine & vbNewLine & _
         "One or more errors have occurred. Please resolve the following issues before proceeding." & vbNewLine & vbNewLine
@@ -92,40 +89,40 @@ PreEnrollmentCheck:
     'NavigateToHome AS400, Exception
     
     'Address Book w/ Parent option
-    AS400.Presentation.SetText "3", 19, 7
+    AS400.SetText "3", 19, 7
     If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo AbortAutomation
     
     'Action Code
-    AS400.Presentation.SetText "A", 3, 19              'Action Code
+    AS400.SetText "A", 3, 19              'Action Code
     'First-Middle-Last Name
-    AS400.Presentation.SetText StudentFile.GetMailingName, 4, 19
+    AS400.SetText StudentFile.GetMailingName, 4, 19
     'Last-First-Middle Name
-    AS400.Presentation.SetText StudentFile.GetAlphaName, 6, 19
+    AS400.SetText StudentFile.GetAlphaName, 6, 19
     'Address Line 1
-    AS400.Presentation.SetText StudentFile.GetAddressL1, 8, 19
+    AS400.SetText StudentFile.GetAddressL1, 8, 19
     'Address Line 2
-    AS400.Presentation.SetText StudentFile.GetAddressL2, 9, 19
+    AS400.SetText StudentFile.GetAddressL2, 9, 19
     'Address Line 3
-    AS400.Presentation.SetText StudentFile.GetAddressL3, 10, 19
+    AS400.SetText StudentFile.GetAddressL3, 10, 19
     'Address Line 4
-    AS400.Presentation.SetText StudentFile.GetAddressL4, 11, 19
+    AS400.SetText StudentFile.GetAddressL4, 11, 19
     'Zip Code
-    AS400.Presentation.SetText StudentFile.GetZipCode, 12, 19
+    AS400.SetText StudentFile.GetZipCode, 12, 19
     'City
-    AS400.Presentation.SetText StudentFile.GetCity, 12, 55
+    AS400.SetText StudentFile.GetCity, 12, 55
     'State
-    AS400.Presentation.SetText StudentFile.GetState, 13, 55
+    AS400.SetText StudentFile.GetState, 13, 55
     'Search Type
-    AS400.Presentation.SetText "TR", 14, 19
+    AS400.SetText "TR", 14, 19
     'Parent #
-    AS400.Presentation.SetText StudentFile.GetParentCode, 17, 55
+    AS400.SetText StudentFile.GetParentCode, 17, 55
     'Prefix Code
-    AS400.Presentation.SetText StudentFile.GetPrefixCode, 23, 19
+    AS400.SetText StudentFile.GetPrefixCode, 23, 19
     
     If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo AbortAutomation
     
     'StudentID#
-    StudentFile.StudentID = AS400.Presentation.GetText(4, 32, 8)
+    StudentFile.StudentID = Trim(AS400.Presentation.GetText(4, 32, 8))
     If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo AbortAutomation
     
     
@@ -144,19 +141,19 @@ PreEnrollmentCheck:
     If ProceedToNextScreen("[pf3]", AS400, Exception) = True Then GoTo AbortAutomation
     
     'Web Times
-    AS400.Presentation.SetText StudentFile.GetWebStartTime, 13, 23
-    AS400.Presentation.SetText StudentFile.GetWebEndTime, 14, 23
+    AS400.SetText StudentFile.GetWebStartTime, 13, 23
+    AS400.SetText StudentFile.GetWebEndTime, 14, 23
     
     '#5
     If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo AbortAutomation
     If ProceedToNextScreen("[pf3]", AS400, Exception) = True Then GoTo AbortAutomation
 
     'School Type
-    AS400.Presentation.SetText "HS", 6, 23
+    AS400.SetText "HS", 6, 23
     'Degree Code
-    AS400.Presentation.SetText "N", 10, 23
+    AS400.SetText "N", 10, 23
     'Gender
-    AS400.Presentation.SetText StudentFile.GetGender, 19, 57
+    AS400.SetText StudentFile.GetGender, 19, 57
     
     '#6
     If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo AbortAutomation
@@ -164,40 +161,53 @@ PreEnrollmentCheck:
     
     'Back to the address book
     If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo AbortAutomation
-    AS400.Presentation.SendKeys "[Enter]"
+    AS400.SendKeys "[Enter]"
     WaitForReady AS400, Exception
     
     'Email
-    AS400.Presentation.SendKeys "[pf5]"
+    AS400.SendKeys "[pf5]"
     WaitForReady AS400, Exception
-    AS400.Presentation.SendKeys "[pf4]"
+    AS400.SendKeys "[pf4]"
     WaitForReady AS400, Exception
-    AS400.Presentation.SetText "C", 3, 18
-    AS400.Presentation.SetText "E", 11, 62
-    AS400.Presentation.SetText StudentFile.GetEmail, 10, 4
+    AS400.SetText "C", 3, 18
+    AS400.SetText "E", 11, 62
+    AS400.SetText StudentFile.GetEmail, 10, 4
     If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo AbortAutomation
-    AS400.Presentation.SendKeys "[pf3]"
+    AS400.SendKeys "[pf3]"
     WaitForReady AS400, Exception
-    AS400.Presentation.SendKeys "[pf3]"
+    AS400.SendKeys "[pf3]"
     WaitForReady AS400, Exception
     
     'NavigateToHome AS400, Exception
     
     'Full program enrollment
-    AS400.Presentation.SetText "20", 19, 7
+    AS400.SetText "20", 19, 7
     WaitForReady AS400, Exception
-    AS400.Presentation.SendKeys "[Enter]"
+    AS400.SendKeys "[Enter]"
     WaitForReady AS400, Exception
     
     'PS screen 66300
-    AS400.Presentation.SetText "A", 3, 20
-    AS400.Presentation.SetText StudentFile.StudentID, 4, 20
-    AS400.Presentation.SetText StudentFile.GetSalesperson, 6, 20
-    AS400.Presentation.SetText StudentFile.GetProgramNumber, 7, 20
+    AS400.SetText "A", 3, 20
+    AS400.SetText StudentFile.StudentID, 4, 20
+    AS400.SetText StudentFile.GetSalesperson, 6, 20
+    AS400.SetText StudentFile.GetProgramNumber, 7, 20
+    
+    If Len(StudentFile.GetPONumber) >= 1 Then
+        AS400.SetText StudentFile.GetPONumber, 8, 20
+    End If
     
     If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo AbortAutomation
     
+    'Check for PS screen 66302
+    GetTextString = Trim(AS400.Presentation.GetText(7, 32, 5))
+    WaitForReady AS400, Exception
+    If GetTextString = "66302" Then
+        AS400.SendKeys "[Enter]"
+        WaitForReady AS400, Exception
+    End If
+    GetTextString = vbNullString
     
+    'Tuition
     
 
 Cleanup:
