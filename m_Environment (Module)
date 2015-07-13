@@ -217,4 +217,33 @@ Private Sub NavigateToHome(ByVal AS400 As cAS400, ByVal Exception As cException)
     'Empty
 End Sub
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ProceedToNextScreen (Public Function)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function ProceedToNextScreen(ByVal Action As String, ByVal AS400 As cAS400, ByRef Exception As cException) As Boolean
+
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    
+    Exception.Push "[m_Environment.ProceedToNextScreen]"
+    
+    Dim Selection As Integer
+    
+    WaitForReady AS400, Exception
+    ProceedToNextScreen = False
+    If AS400.Handling = "StopEach" Or AS400.Handling = "Debug" Then
+        Selection = MsgBox "OK:" & vbTab & "Proceed to next screen" & vbNewLine & _
+            "Cancel:" & vbTab & "Stop the automation", vbOKCancel, "StopEach / Debug"
+        If Selection = vbCancel Then
+            AbortAutomation = True
+        Else
+            AbortAutomation = False
+            AS400.Presentation.SendKeys Action
+        End If
+    End If
+    
+    Exception.Pop
+    
+End Function
+
 
