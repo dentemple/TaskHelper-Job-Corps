@@ -84,6 +84,7 @@ The following is a list of glue functions used to interpret the information take
 '   GetWebEndTime As String
 '   GetSchoolCode As String
 '   GetDegreeCode As String
+'   GetPONumber As String
 
 ' OBJECT PROPERTIES
 'Stores the cStudentFile objects
@@ -696,6 +697,13 @@ Public Function GetWebEndTime() As String
     GetWebEndTime = Trim(WebEndTimeTextbox.Value)
 End Function
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetPONumber property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetPONumber() As String
+    GetPONumber = Trim(PONumberTextbox.Value)
+End Function
+
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' OBJECT PROPERTIES
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -1268,4 +1276,14 @@ Public Property Set WebEndTimeTextbox(Value As MSForms.TextBox)
 End Property
 Public Property Get WebEndTimeTextbox() As MSForms.TextBox
     Set WebEndTimeTextbox = pWebEndTimeTextbox
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' PONumberTextbox property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Set PONumberTextbox(Value As MSForms.TextBox)
+    Set pPONumberTextbox = Value
+End Property
+Public Property Get PONumberTextbox() As MSForms.TextBox
+    Set PONumberTextbox = pPONumberTextbox
 End Property
