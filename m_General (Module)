@@ -196,3 +196,5 @@ Public Function AbortAutomation(ByRef AS400 As cAS400, ByRef Exception As cExcep
     Exception.Pop
 
 End Function
+
+
