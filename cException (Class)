@@ -98,3 +98,4 @@ End Property
 Public Property Get Message() As String
     Message = pMessage
 End Property
+
