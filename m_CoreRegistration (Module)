@@ -89,13 +89,11 @@ PreEnrollmentCheck:
             AS400.Milliseconds = 400
     End Select
     
-    'NavigateToHome AS400, Exception
+    'NavigateToMainMenu AS400, Exception
     
     'Address Book w/ Parent option
     AS400.Presentation.SetText "3", 19, 7
-    AS400.Presentation.SendKeys ("[Enter]")
-    WaitForReady AS400, Exception
-    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
+    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo AbortAutomation
     
     'Action Code
     AS400.Presentation.SetText "A", 3, 19              'Action Code
@@ -124,67 +122,71 @@ PreEnrollmentCheck:
     'Prefix Code
     AS400.Presentation.SetText StudentFile.GetPrefixCode, 23, 19
     
-    WaitForReady AS400, Exception
-    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
-    AS400.Presentation.SendKeys ("[Enter]")
+    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo AbortAutomation
     
     'StudentID#
-    WaitForReady AS400, Exception
     StudentFile.StudentID = AS400.Presentation.GetText(4, 32, 8)
-    WaitForReady AS400, Exception
-    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
-    AS400.Presentation.SendKeys ("[Enter]")
+    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo AbortAutomation
+    
     
     'Enter-F3 sequence
-    WaitForReady AS400, Exception
-    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
-    AS400.Presentation.SendKeys ("[Enter]") '#1
-    WaitForReady AS400, Exception
-    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
-    AS400.Presentation.SendKeys ("[pf3]") '#1
-    WaitForReady AS400, Exception
-    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
-    AS400.Presentation.SendKeys ("[Enter]") '#2
-    WaitForReady AS400, Exception
-    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
-    AS400.Presentation.SendKeys ("[pf3]") '#2
-    WaitForReady AS400, Exception
-    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
-    AS400.Presentation.SendKeys ("[Enter]") '#3
-    WaitForReady AS400, Exception
-    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
-    AS400.Presentation.SendKeys ("[pf3]") '#3
-    WaitForReady AS400, Exception
-    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
-    AS400.Presentation.SendKeys ("[Enter]") '#4
-    WaitForReady AS400, Exception
-    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
-    AS400.Presentation.SendKeys ("[pf3]") '#4
+    '#1
+    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo AbortAutomation
+    If ProceedToNextScreen("[pf3]", AS400, Exception) = True Then GoTo AbortAutomation
+    '#2
+    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo AbortAutomation
+    If ProceedToNextScreen("[pf3]", AS400, Exception) = True Then GoTo AbortAutomation
+    '#3
+    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo AbortAutomation
+    If ProceedToNextScreen("[pf3]", AS400, Exception) = True Then GoTo AbortAutomation
+    '#4
+    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo AbortAutomation
+    If ProceedToNextScreen("[pf3]", AS400, Exception) = True Then GoTo AbortAutomation
     
     'Web Times
-    WaitForReady AS400, Exception
     AS400.Presentation.SetText StudentFile.GetWebStartTime, 13, 23
     AS400.Presentation.SetText StudentFile.GetWebEndTime, 14, 23
-    WaitForReady AS400, Exception
-    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
-    AS400.Presentation.SendKeys ("[Enter]") '#5
     
-    WaitForReady AS400, Exception
-    If AbortAutomation(AS400, Exception) = True Then GoTo Cleanup
-    AS400.Presentation.SendKeys ("[pf3]") '#5
+    '#5
+    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo AbortAutomation
+    If ProceedToNextScreen("[pf3]", AS400, Exception) = True Then GoTo AbortAutomation
 
-    WaitForReady AS400, Exception
     'School Type
     AS400.Presentation.SetText "HS", 6, 23
     'Degree Code
     AS400.Presentation.SetText "N", 10, 23
     'Gender
+    AS400.Presentation.SetText StudentFile.GetGender, 19, 57
     
+    '#6
+    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo AbortAutomation
+    If ProceedToNextScreen("[pf3]", AS400, Exception) = True Then GoTo AbortAutomation
     
-    
-    
+    'Back to the address book
+    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo AbortAutomation
+    AS400.Presentation.SendKeys "[Enter]"
     WaitForReady AS400, Exception
     
+    'Email
+    AS400.Presentation.SendKeys "[pf5]"
+    WaitForReady AS400, Exception
+    AS400.Presentation.SendKeys "[pf4]"
+    WaitForReady AS400, Exception
+    AS400.Presentation.SetText "C", 3, 18
+    AS400.Presentation.SetText "E", 11, 62
+    AS400.Presentation.SetText StudentFile.GetEmail, 10, 4
+    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo AbortAutomation
+    AS400.Presentation.SendKeys "[pf3]"
+    WaitForReady AS400, Exception
+    AS400.Presentation.SendKeys "[pf3]"
+    WaitForReady AS400, Exception
+    
+    'NavigateToMainMenu AS400, Exception
+    
+    
+    
+    
+
 Cleanup:
 
     TurnOnExcelDefaults Exception
@@ -214,6 +216,10 @@ Resume Next
 AcknowledgeError:
     Exception.ErrFlag = True
 Resume Next
+
+AbortAutomation:
+    MsgBox "The automation has been canceled", vbInformation, "Enrollment"
+GoTo Cleanup
 
 End Sub
 
