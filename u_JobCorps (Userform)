@@ -29,8 +29,6 @@ Private Sub UserForm_Initialize()
     City_Textbox = vbNullString
     StateAbbrev_Textbox = vbNullString
     Zipcode_Textbox = vbNullString
-    Areacode_Textbox = vbNullString
-    Phonenumber_Textbox = vbNullString
     Email_Textbox = vbNullString
 
     'Populates the selection boxes
@@ -90,13 +88,6 @@ End Sub
 Private Sub Salesperson_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
     RestrictToPostiveWholeNumbers KeyAscii
 End Sub
-Private Sub Areacode_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
-    RestrictToPostiveWholeNumbers KeyAscii
-End Sub
-Private Sub Phonenumber_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
-    RestrictToPostiveWholeNumbers KeyAscii
-End Sub
-
 Private Sub Zipcode_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
     RestrictToPostiveWholeNumbers KeyAscii
 End Sub
@@ -119,3 +110,4 @@ End Sub
 Private Sub ProgramTuition_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
     RestrictToPostiveFloatNumbers KeyAscii, ProgramTuition_Textbox
 End Sub
+
