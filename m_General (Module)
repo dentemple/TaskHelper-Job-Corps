@@ -164,10 +164,10 @@ Public Sub WaitForReady(ByVal AS400 As cAS400, ByRef Exception As cException)
     Dim InitialWaitTime As Long
     InitialWaitTime = 10
 
-    AS400.Presentation.Wait InitialWaitTime
+    AS400.Wait InitialWaitTime
     AS400.Operator.WaitForAppAvailable
     AS400.Operator.WaitForInputReady
-    AS400.Presentation AS400.Milliseconds
+    AS400.Wait AS400.Milliseconds
     
     Exception.Pop
 
