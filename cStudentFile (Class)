@@ -133,6 +133,7 @@ Private pWebStartTimeTextbox As MSForms.TextBox
 Private pWebEndTimeTextbox As MSForms.TextBox
 Private pParentCodeTextbox As MSForms.TextBox
 Private pPrefixCodeTextbox As MSForms.TextBox
+Private pPONumberTextbox As MSForms.TextBox
 'ComboBoxes
 Private pSessionComboBox As MSForms.ComboBox
 Private pAutomationComboBox As MSForms.ComboBox
