@@ -111,23 +111,4 @@ Public Property Get Presentation() As Object
     Set Presentation = Session.autECLPS
 End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' SetText property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Get SetText(str As String, row As Long, col As Long) As Object
-    Set SetText = Session.autECLPS.SetText(str, row, col)
-End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' SendKeys property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Get SendKeys(str As String) As Object
-    Set SendKeys = Session.autECLPS.SendKeys(str)
-End Property
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Wait property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Get Wait(lng As Long) As Object
-    Set Wait = Session.autECLPS.Wait(lng)
-End Property
