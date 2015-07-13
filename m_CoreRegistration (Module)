@@ -89,7 +89,7 @@ PreEnrollmentCheck:
             AS400.Milliseconds = 400
     End Select
     
-    'NavigateToMainMenu AS400, Exception
+    'NavigateToHome AS400, Exception
     
     'Address Book w/ Parent option
     AS400.Presentation.SetText "3", 19, 7
@@ -181,8 +181,21 @@ PreEnrollmentCheck:
     AS400.Presentation.SendKeys "[pf3]"
     WaitForReady AS400, Exception
     
-    'NavigateToMainMenu AS400, Exception
+    'NavigateToHome AS400, Exception
     
+    'Full program enrollment
+    AS400.Presentation.SetText "20", 19, 7
+    WaitForReady AS400, Exception
+    AS400.Presentation.SendKeys "[Enter]"
+    WaitForReady AS400, Exception
+    
+    'PS screen 66300
+    AS400.Presentation.SetText "A", 3, 20
+    AS400.Presentation.SetText StudentFile.StudentID, 4, 20
+    AS400.Presentation.SetText StudentFile.GetSalesperson, 6, 20
+    AS400.Presentation.SetText StudentFile.GetProgramNumber, 7, 20
+    
+    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo AbortAutomation
     
     
     
@@ -222,5 +235,3 @@ AbortAutomation:
 GoTo Cleanup
 
 End Sub
-
-
