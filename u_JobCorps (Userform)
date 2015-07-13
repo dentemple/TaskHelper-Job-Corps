@@ -22,6 +22,7 @@ Private Sub UserForm_Initialize()
     Middlename_Textbox = vbNullString
     ProgramNumber_Textbox = vbNullString
     ProgramTuition_Textbox = vbNullString
+    PONumber_Textbox = vbNullString
     AddressL1_Textbox = vbNullString
     AddressL2_Textbox = vbNullString
     AddressL3_Textbox = vbNullString
@@ -110,4 +111,3 @@ End Sub
 Private Sub ProgramTuition_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
     RestrictToPostiveFloatNumbers KeyAscii, ProgramTuition_Textbox
 End Sub
-
