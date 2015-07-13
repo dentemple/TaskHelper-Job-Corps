@@ -37,6 +37,7 @@ Public Sub LoadUserformObjects(ByRef StudentFile As cStudentFile, ByVal RegForm 
     Set StudentFile.StateTextbox = RegForm.StateAbbrev_Textbox
     Set StudentFile.ZipCodeTextbox = RegForm.Zipcode_Textbox
     Set StudentFile.EmailTextbox = RegForm.Email_Textbox
+    Set StudentFile.PONumberTextbox = RegForm.PONumber_Textbox
     
     'Pass comboboxes
     Set StudentFile.SessionComboBox = RegForm.Session_ComboBox
@@ -170,6 +171,10 @@ Private Sub ConfirmAccountInfo(ByVal StudentFile As cStudentFile, ByRef Approval
     
     Exception.Pop
     
+    If Len(StudentFile.GetPONumber) >= 1 Then
+        BlueMessage = BlueMessage & "PO Number:" & vbTab & StudentFile.GetPONumber & vbNewLine & vbNewLine
+    End If
+    
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -245,5 +250,3 @@ Public Function ProceedToNextScreen(ByVal Action As String, ByVal AS400 As cAS40
     Exception.Pop
     
 End Function
-
-
