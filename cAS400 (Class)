@@ -12,6 +12,10 @@ Private pHandling As String
 ' READ-ONLY PROPERTIES
 '   Operator        (Stores the autECLOIA automation object)
 '   Presentation    (Stores the autECLPS automation object)
+'   SetText
+'   SendKeys
+'   GetText
+'   Wait
 
 ' OBJECT PROPERTIES
 Private pSession As Object
@@ -100,10 +104,30 @@ Public Property Get Operator() As Object
     Set Operator = Session.autECLOIA
  End Property
  
- ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Presentation property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Get Presentation() As Object
     Set Presentation = Session.autECLPS
 End Property
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' SetText property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Get SetText(str As String, row As Long, col As Long) As Object
+    Set SetText = Session.autECLPS.SetText(str, row, col)
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' SendKeys property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Get SendKeys(str As String) As Object
+    Set SendKeys = Session.autECLPS.SendKeys(str)
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Wait property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Get Wait(lng As Long) As Object
+    Set Wait = Session.autECLPS.Wait(lng)
+End Property
