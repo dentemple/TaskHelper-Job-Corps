@@ -238,17 +238,27 @@ Public Function ProceedToNextScreen(ByVal Action As String, ByVal AS400 As cAS40
     
     WaitForReady AS400, Exception
     ProceedToNextScreen = False
-    If AS400.Handling = "StopEach" Or AS400.Handling = "Debug" Then
+    If AS400.Handling = "StopEach" Then
+        AppActivate "Microsoft Excel"
         Selection = MsgBox("OK:" & vbTab & "Proceed to next screen" & vbNewLine & _
             "Cancel:" & vbTab & "Stop the automation", vbOKCancel, "StopEach / Debug")
         If Selection = vbCancel Then
-            AbortAutomation = True
+            ProceedToNextScreen = True
+            AS400.Metrics.Active = True
         Else
-            AbortAutomation = False
+            ProceedToNextScreen = False
+            AS400.Metrics.Active = True
             AS400.Presentation.SendKeys Action
+            WaitForReady AS400, Exception
         End If
+    Else
+        AS400.Metrics.Active = True
+        AS400.Presentation.SendKeys Action
+        WaitForReady AS400, Exception
     End If
     
     Exception.Pop
     
 End Function
+
+
