@@ -136,6 +136,8 @@ Public Sub InitializeAS400(ByRef AS400 As cAS400, ByVal letter As String, ByRef 
     'Pass error handling up the call stack
     On Error GoTo 0
     
+    Dim ConnList As Object
+    
     Exception.Push "[m_General.InitializeAS400]"
     
     AS400.SessionName = letter
@@ -143,9 +145,12 @@ Public Sub InitializeAS400(ByRef AS400 As cAS400, ByVal letter As String, ByRef 
     Set AS400.Session = CreateObject("PCOMM.autECLSession")
     Set AS400.Metrics = CreateObject("PCOMM.autECLWinMetrics")
     Set AS400.Connection = CreateObject("PCOMM.autECLConnList")
+    Set ConnList = CreateObject("PCOMM.autECLConnList")
 
     AS400.Session.SetConnectionByName (letter)
     AS400.Metrics.SetConnectionByName (letter)
+    
+    ConnList.Refresh
 
     Exception.Pop
 
@@ -174,33 +179,6 @@ Public Sub WaitForReady(ByVal AS400 As cAS400, ByRef Exception As cException)
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' AbortAutomation (Public Function)
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function AbortAutomation(ByRef AS400 As cAS400, ByRef Exception As cException) As Boolean
-
-    'Pass error handling up the call stack
-    On Error GoTo 0
-    
-    Exception.Push "[m_General.AbortAutomation]"
-    
-    Dim Selection As Integer
-
-    AbortAutomation = False
-    If AS400.Handling = "StopEach" Or AS400.Handling = "Debug" Then
-        Selection = MsgBox("OK:" & vbTab & "Proceed to next screen" & vbNewLine & _
-            "Cancel:" & vbTab & "Stop the automation", vbOKCancel, "StopEach / Debug")
-        If Selection = vbOK Then
-            AbortAutomation = False
-        Else
-            AbortAutomation = True
-        End If
-    End If
-    
-    Exception.Pop
-
-End Function
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' NavigateToHome
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub NavigateToHome(ByVal AS400 As cAS400, ByRef Exception As cException)
@@ -218,6 +196,8 @@ Public Sub NavigateToHome(ByVal AS400 As cAS400, ByRef Exception As cException)
     
     Dim i As Integer
     i = 0
+    
+    AS400.Metrics.Active = True
     
 StartLoop:
     Do
@@ -269,7 +249,7 @@ StartLoop:
                 
             'PS: (1.14.), Student Supplemental
             Case "60110   "
-                objAS400.autECLPS.SendKeys ("[pf3]")
+                AS400.Presentation.SendKeys ("[pf3]")
 
             'PS: (1.14.), Student Course Master
             Case "60210   "
@@ -314,3 +294,5 @@ StartLoop:
     Exception.Pop
 
 End Sub
+
+
