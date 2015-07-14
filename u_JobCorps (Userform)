@@ -8,6 +8,9 @@ Option Explicit
 ' Initialization event
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Private Sub UserForm_Initialize()
+
+    'Defaults multipage to the first page
+    MultiPage1.Value = 0
     
     'Sets default value
     PrefixCode_Textbox = "HJC"
@@ -61,7 +64,13 @@ End Sub
 ' COMMAND BUTTON / Actions to be called and performed
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Private Sub RunAutomation_Button_Click()
+
+    'Sets multipage to its first page
+    MultiPage1.Value = 0
+    
+    'Run the registration script
     RunRegistration u_JobCorps
+    
 End Sub
 
 Private Sub Confirm_Button_Click()
@@ -111,3 +120,4 @@ End Sub
 Private Sub ProgramTuition_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
     RestrictToPostiveFloatNumbers KeyAscii, ProgramTuition_Textbox
 End Sub
+
