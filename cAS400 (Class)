@@ -110,5 +110,3 @@ Public Property Get Operator() As Object
 Public Property Get Presentation() As Object
     Set Presentation = Session.autECLPS
 End Property
-
-
