@@ -26,13 +26,6 @@ Private Sub UserForm_Initialize()
     ProgramNumber_Textbox = vbNullString
     ProgramTuition_Textbox = vbNullString
     PONumber_Textbox = vbNullString
-    AddressL1_Textbox = vbNullString
-    AddressL2_Textbox = vbNullString
-    AddressL3_Textbox = vbNullString
-    AddressL4_Textbox = vbNullString
-    City_Textbox = vbNullString
-    StateAbbrev_Textbox = vbNullString
-    Zipcode_Textbox = vbNullString
     Email_Textbox = vbNullString
 
     'Populates the selection boxes
