@@ -85,6 +85,7 @@ The following is a list of glue functions used to interpret the information take
 '   GetSchoolCode As String
 '   GetDegreeCode As String
 '   GetPONumber As String
+'   GetLongNumber As String
 
 ' OBJECT PROPERTIES
 'Stores the cStudentFile objects
@@ -134,6 +135,7 @@ Private pWebEndTimeTextbox As MSForms.TextBox
 Private pParentCodeTextbox As MSForms.TextBox
 Private pPrefixCodeTextbox As MSForms.TextBox
 Private pPONumberTextbox As MSForms.TextBox
+Private pLongNumberTextbox As MSForms.TextBox
 'ComboBoxes
 Private pSessionComboBox As MSForms.ComboBox
 Private pAutomationComboBox As MSForms.ComboBox
@@ -703,6 +705,13 @@ End Function
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetPONumber() As String
     GetPONumber = Trim(PONumberTextbox.Value)
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GetLongNumber property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function GetLongNumber() As String
+    GetLongNumber = Trim(LongNumberTextbox.Value)
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -1287,4 +1296,14 @@ Public Property Set PONumberTextbox(Value As MSForms.TextBox)
 End Property
 Public Property Get PONumberTextbox() As MSForms.TextBox
     Set PONumberTextbox = pPONumberTextbox
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' LongNumberTextbox property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Set LongNumberTextbox(Value As MSForms.TextBox)
+    Set pLongNumberTextbox = Value
+End Property
+Public Property Get LongNumberTextbox() As MSForms.TextBox
+    Set LongNumberTextbox = pLongNumberTextbox
 End Property
