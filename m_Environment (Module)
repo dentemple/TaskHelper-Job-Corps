@@ -38,15 +38,11 @@ Public Sub LoadUserformObjects(ByRef StudentFile As cStudentFile, ByVal RegForm 
     Set StudentFile.WebEndTimeTextbox = RegForm.WebEndTime_Textbox
     Set StudentFile.ProgramNumberTextbox = RegForm.ProgramNumber_Textbox
     Set StudentFile.ProgramTuitionTextbox = RegForm.ProgramTuition_Textbox
-    Set StudentFile.AddressL1Textbox = RegForm.AddressL1_Textbox
-    Set StudentFile.AddressL2Textbox = RegForm.AddressL2_Textbox
-    Set StudentFile.AddressL3Textbox = RegForm.AddressL3_Textbox
-    Set StudentFile.AddressL4Textbox = RegForm.AddressL4_Textbox
-    Set StudentFile.CityTextbox = RegForm.City_Textbox
-    Set StudentFile.StateTextbox = RegForm.StateAbbrev_Textbox
-    Set StudentFile.ZipCodeTextbox = RegForm.Zipcode_Textbox
     Set StudentFile.EmailTextbox = RegForm.Email_Textbox
     Set StudentFile.PONumberTextbox = RegForm.PONumber_Textbox
+    Set StudentFile.LongNumberTextbox = RegForm.LongNumber_Textbox
+    Set StudentFile.AreaCodeTextbox = RegForm.AreaCode_Textbox
+    Set StudentFile.PhoneNumberTextbox = RegForm.PhoneNumber_Textbox
     
     'Pass comboboxes
     Set StudentFile.SessionComboBox = RegForm.Session_ComboBox
@@ -116,6 +112,8 @@ Private Sub ConfirmAccountInfo(ByVal StudentFile As cStudentFile, ByRef Approval
     Temp = StudentFile.GetAutomation
     If Temp = "Fast" Or Temp = "Slow" Or Temp = "StopEach" Or Temp = "Debug" Then
         BlueMessage = BlueMessage & "Automation:" & vbTab & Temp & vbNewLine
+    ElseIf Temp = "Test" Or Temp = "test" Then
+        BlueMessage = BlueMessage & "Automation:" & vbTab & "UNIT TEST MODE" & vbNewLine
     Else
         BlueMessage = BlueMessage & "Automation:" & vbTab & "Automation set to 'Default'" & vbNewLine
     End If
@@ -207,18 +205,18 @@ Private Sub ConfirmStudentFile(ByVal StudentFile As cStudentFile, ByRef Approval
     End If
     
     BlueMessage = BlueMessage & "Gender:" & vbTab & vbTab & StudentFile.GetGender & vbNewLine
+    
+    'Phone Number
+    BlueMessage = BlueMessage & "Phone:" & vbTab & vbTab & StudentFile.GetAreaCode & "-" & StudentFile.GetPhoneNumber & vbNewLine
         
     'Student Email
-    BlueMessage = BlueMessage & "Email:" & vbTab & vbTab & StudentFile.GetEmail & vbNewLine
+    BlueMessage = BlueMessage & "Email:" & vbTab & vbTab & StudentFile.GetEmail & vbNewLine & vbNewLine
     
-    'Student Address
-    BlueMessage = BlueMessage & "AddressL1:" & vbTab & StudentFile.GetAddressL1 & vbNewLine
-    BlueMessage = BlueMessage & "AddressL2:" & vbTab & StudentFile.GetAddressL2 & vbNewLine
-    BlueMessage = BlueMessage & "AddressL3:" & vbTab & StudentFile.GetAddressL3 & vbNewLine
-    BlueMessage = BlueMessage & "AddressL4:" & vbTab & StudentFile.GetAddressL4 & vbNewLine
-    BlueMessage = BlueMessage & "City:" & vbTab & vbTab & StudentFile.GetCity & vbNewLine
-    BlueMessage = BlueMessage & "State:" & vbTab & vbTab & StudentFile.GetState & vbNewLine
-    BlueMessage = BlueMessage & "Zip:" & vbTab & vbTab & StudentFile.GetZipCode & vbNewLine & vbNewLine
+    'Long Number
+    BlueMessage = BlueMessage & "Long#:" & vbTab & vbTab & StudentFile.GetLongNumber & vbNewLine
+    
+    'PO Number
+    BlueMessage = BlueMessage & "PO#:" & vbTab & vbTab & StudentFile.GetPONumber & vbNewLine
     
     Exception.Pop
     
@@ -260,5 +258,3 @@ Public Function ProceedToNextScreen(ByVal Action As String, ByVal AS400 As cAS40
     Exception.Pop
     
 End Function
-
-
