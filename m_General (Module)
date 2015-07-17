@@ -140,15 +140,15 @@ Public Sub InitializeAS400(ByRef AS400 As cAS400, ByVal letter As String, ByRef 
     
     Exception.Push "[m_General.InitializeAS400]"
     
-    AS400.SessionName = letter
+    AS400.SessionName = Trim(letter)
 
     Set AS400.Session = CreateObject("PCOMM.autECLSession")
     Set AS400.Metrics = CreateObject("PCOMM.autECLWinMetrics")
     Set AS400.Connection = CreateObject("PCOMM.autECLConnList")
     Set ConnList = CreateObject("PCOMM.autECLConnList")
 
-    AS400.Session.SetConnectionByName (letter)
-    AS400.Metrics.SetConnectionByName (letter)
+    AS400.Session.SetConnectionByName (AS400.SessionName)
+    AS400.Metrics.SetConnectionByName (AS400.SessionName)
     
     ConnList.Refresh
 
@@ -167,7 +167,7 @@ Public Sub WaitForReady(ByVal AS400 As cAS400, ByRef Exception As cException)
     Exception.Push "[m_General.WaitForReady]"
 
     Dim InitialWaitTime As Long
-    InitialWaitTime = 10
+    InitialWaitTime = 50
 
     AS400.Presentation.Wait InitialWaitTime
     AS400.Operator.WaitForAppAvailable
@@ -181,21 +181,29 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' NavigateToHome
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub NavigateToHome(ByVal AS400 As cAS400, ByRef Exception As cException)
+Public Function NavigateToHome(ByVal AS400 As cAS400, ByRef Exception As cException) As Boolean
 
-    'Pass error handling up the call stack
-    On Error GoTo 0
+    On Error GoTo NavigationError
     
     Exception.Push "[m_General.NavigateToHome]"
+    
+    NavigateToHome = True
 
     Dim GetTextString As String
     GetTextString = vbNullString
 
     Dim MaxAttempts As Integer
-    MaxAttempts = 5
+    MaxAttempts = 4
     
     Dim i As Integer
     i = 0
+    
+    Dim Forward As Long
+    Forward = 1
+    
+    Dim PrevTime As Long
+    PrevTime = AS400.Milliseconds
+    AS400.Milliseconds = 100
     
     AS400.Metrics.Active = True
     
@@ -277,10 +285,14 @@ StartLoop:
             Case " BNIPROD"
                 AS400.Presentation.SendKeys ("[pf12]")
                 
-            Case Else
-                AS400.Presentation.SendKeys ("[pf12]")
-                WaitForReady AS400, Exception
+            'Note Maintenance
+            Case " 55192  "
                 AS400.Presentation.SendKeys ("[pf3]")
+                
+            Case Else
+                AS400.Presentation.SendKeys ("[pf3]")
+                WaitForReady AS400, Exception
+                AS400.Presentation.SendKeys ("[pf12]")
 
         End Select
         
@@ -290,9 +302,28 @@ StartLoop:
         WaitForReady AS400, Exception
     
     Loop Until i >= MaxAttempts
-        
-    Exception.Pop
+    
+    GetTextString = AS400.Presentation.GetText(1, 3, 7)
+    If GetTextString = "BNIMAIN" Then
+        NavigateToHome = True
+    Else
+        NavigateToHome = True
+    End If
+    
+Cleanup:
 
-End Sub
+    AS400.Milliseconds = PrevTime
+    Exception.Pop
+    
+Exit Function
+
+NavigationError:
+    NavigateToHome = False
+    Exception.ErrFlag = True
+    Exception.ErrDescription = Err.Description
+    Exception.ErrNumber = Err.Number
+GoTo Cleanup
+
+End Function
 
 
