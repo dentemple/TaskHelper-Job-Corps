@@ -26,6 +26,9 @@ Private Sub UserForm_Initialize()
     ProgramNumber_Textbox = vbNullString
     ProgramTuition_Textbox = vbNullString
     PONumber_Textbox = vbNullString
+    LongNumber_Textbox = vbNullString
+    AreaCode_Textbox = vbNullString
+    PhoneNumber_Textbox = vbNullString
     Email_Textbox = vbNullString
 
     'Populates the selection boxes
@@ -104,6 +107,18 @@ Private Sub WebStartTime_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnIntege
 End Sub
 
 Private Sub WebEndTime_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+    RestrictToPostiveWholeNumbers KeyAscii
+End Sub
+
+Private Sub LongNumber_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+    RestrictToPostiveWholeNumbers KeyAscii
+End Sub
+
+Private Sub AreaCode_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+    RestrictToPostiveWholeNumbers KeyAscii
+End Sub
+
+Private Sub PhoneNumber_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
     RestrictToPostiveWholeNumbers KeyAscii
 End Sub
 
