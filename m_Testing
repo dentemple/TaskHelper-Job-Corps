@@ -1,0 +1,116 @@
+Option Explicit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' RunUnitCheck
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Public Sub RunUnitCheck(ByRef StudentFile As cStudentFile, ByVal AS400 As cAS400, ByRef Exception As cException)
+    
+    On Error GoTo 0
+    
+    Dim TestGetText As String
+    TestGetText = vbNullString
+    
+    Dim Forward As Long
+    Forward = 1
+    
+    Dim PrevHandling As String
+    PrevHandling = AS400.Handling
+    
+    Exception.Push "[m_Environment.RunUnitCheck]"
+    
+    AS400.Metrics.Active = True
+    AS400.Handling = "Fast"
+    
+    On Error GoTo NavigateError
+    If NavigateToHome(AS400, Exception) = False Then GoTo NavigateFailure
+    
+    On Error GoTo SendError
+    AS400.Presentation.SetText "13", 19, 7
+    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo SendFailure
+    
+    On Error GoTo GetError
+    TestGetText = AS400.Presentation.GetText(1, 3, 5)
+    
+    On Error GoTo SetError
+    AS400.Presentation.SetText StudentFile.GetMailingName, 7, 3
+    AS400.Presentation.SetText StudentFile.GetAlphaName, 8, 3
+    AS400.Presentation.SetText StudentFile.GetPONumber, 9, 3
+    AS400.Presentation.SetText StudentFile.GetLongNumber, 10, 3
+    AS400.Presentation.SetText StudentFile.GetPrefixCode, 11, 3
+    AS400.Presentation.SetText StudentFile.GetWebStartTime, 12, 3
+    AS400.Presentation.SetText StudentFile.GetProgramNumber, 13, 3
+    AS400.Presentation.SetText StudentFile.GetProgramTuition, 14, 3
+    AS400.Presentation.SetText StudentFile.GetParentCode, 15, 3
+    AS400.Presentation.SetText StudentFile.GetAutomation, 16, 3
+    
+    AppActivate "Microsoft Excel"
+    MsgBox "Unit Test Complete" & vbNewLine & vbNewLine & "GetText check: " & TestGetText, vbInformation, "Unit Test Check"
+    
+Cleanup:
+    AS400.Handling = PrevHandling
+    Exception.Pop
+Exit Sub
+
+NavigateError:
+    AppActivate "Microsoft Excel"
+    MsgBox Exception.StackTop & vbNewLine & vbNewLine & "NavigateHome: Error", vbCritical, "Unit Test Error"
+Resume Cleanup
+
+NavigateFailure:
+    AppActivate "Microsoft Excel"
+    MsgBox Exception.StackTop & vbNewLine & vbNewLine & "NavigateHome: Failure", vbCritical, "Unit Test Failure"
+GoTo Cleanup
+
+GetError:
+    AppActivate "Microsoft Excel"
+    MsgBox Exception.StackTop & vbNewLine & vbNewLine & "GetText: Error", vbCritical, "Unit Test Failure"
+Resume Cleanup
+
+SendError:
+    AppActivate "Microsoft Excel"
+    MsgBox Exception.StackTop & vbNewLine & vbNewLine & "SendKey: Error", vbCritical, "Unit Test Error"
+Resume Cleanup
+
+SendFailure:
+    AppActivate "Microsoft Excel"
+    MsgBox Exception.StackTop & vbNewLine & vbNewLine & "SendKey: Failure", vbCritical, "Unit Test Failure"
+GoTo Cleanup
+
+SetError:
+    AppActivate "Microsoft Excel"
+    MsgBox Exception.StackTop & vbNewLine & vbNewLine & "SetText: Error", vbCritical, "Unit Test Error"
+Resume Cleanup
+
+
+End Sub
+
+Private Sub TestNavigate()
+
+Dim AS400 As cAS400
+Set AS400 = New cAS400
+
+Dim Exception As cException
+Set Exception = New cException
+
+Dim letter As String
+letter = "D"
+
+Call InitializeAS400(AS400, letter, Exception)
+
+AS400.Metrics.Active = True
+
+AS400.Presentation.SetText "1", 19, 7
+
+If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo EndAutomation
+
+'Call NavigateToHome(AS400, Exception)
+'AppActivate "Microsoft Excel"
+'MsgBox "Complete"
+
+
+Exit Sub
+
+EndAutomation:
+
+End Sub
