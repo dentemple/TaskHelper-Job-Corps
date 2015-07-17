@@ -23,6 +23,8 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
     BlueMessage = vbTab & "FINAL CONFIRMATION" & vbNewLine & vbNewLine & _
         "Please confirm the following information before proceeding with the enrollment script." & vbNewLine & vbNewLine
     
+    Dim Forward As Long
+    Forward = 1
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Set the class modules
@@ -71,16 +73,22 @@ PreEnrollmentCheck:
     Select Case AS400.Handling
         Case "Fast"
             On Error GoTo AcknowledgeError
-            AS400.Milliseconds = 75
+            AS400.Milliseconds = 100
         Case "Slow"
             On Error GoTo AcknowledgeError
             AS400.Milliseconds = 900
         Case "StopEach"
             On Error GoTo AcknowledgeError
-            AS400.Milliseconds = 75
+            AS400.Milliseconds = 100
         Case "Debug"
             On Error GoTo 0
-            AS400.Milliseconds = 400
+            AS400.Milliseconds = 200
+        Case "Test"
+            On Error GoTo 0
+            GoTo HiddenTestOption
+        Case "test"
+            On Error GoTo 0
+            GoTo HiddenTestOption
         Case Else
             On Error GoTo 0
             AS400.Milliseconds = 400
@@ -88,11 +96,7 @@ PreEnrollmentCheck:
     
     AS400.Metrics.Active = True
     
-    NavigateToHome AS400, Exception
-    If Not AS400.Presentation.SearchText("BNIMAIN", 1, 1, 3) Then
-        NavigateToHome AS400, Exception
-    End If
-    
+    If NavigateToHome(AS400, Exception) = False Then GoTo NavigationFailure
     
     'Address Book w/ Parent option
     AS400.Presentation.SetText "1", 19, 7
@@ -101,36 +105,35 @@ PreEnrollmentCheck:
     AS400.Presentation.SetText "3", 19, 7
     If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo EndAutomation
     
+    GetTextString = AS400.Presentation.GetText(1, 2, 5)
+    If Not GetTextString = "01051" Then GoTo NavigationFailure
+    GetTextString = vbNullString
+    
     'Action Code
     AS400.Presentation.SetText "A", 3, 19              'Action Code
     'First-Middle-Last Name
     AS400.Presentation.SetText StudentFile.GetMailingName, 4, 19
     'Last-First-Middle Name
     AS400.Presentation.SetText StudentFile.GetAlphaName, 6, 19
-    'Address Line 1
-    AS400.Presentation.SetText StudentFile.GetAddressL1, 8, 19
-    'Address Line 2
-    AS400.Presentation.SetText StudentFile.GetAddressL2, 9, 19
-    'Address Line 3
-    AS400.Presentation.SetText StudentFile.GetAddressL3, 10, 19
-    'Address Line 4
-    AS400.Presentation.SetText StudentFile.GetAddressL4, 11, 19
-    'Zip Code
-    AS400.Presentation.SetText StudentFile.GetZipCode, 12, 19
-    'City
-    AS400.Presentation.SetText StudentFile.GetCity, 12, 55
-    'State
-    AS400.Presentation.SetText StudentFile.GetState, 13, 55
+
     'Search Type
     AS400.Presentation.SetText "TR", 14, 19
     'Parent #
     AS400.Presentation.SetText StudentFile.GetParentCode, 17, 55
     'Prefix Code
     AS400.Presentation.SetText StudentFile.GetPrefixCode, 23, 19
+    'Long Number
+    If Len(StudentFile.GetLongNumber) >= 1 Then
+        AS400.Presentation.SetText StudentFile.GetLongNumber, 2, 60
+    End If
     
     If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo EndAutomation
     
     'StudentID#
+    GetTextString = AS400.Presentation.GetText(1, 3, 6)
+    If Not GetTextString = "010512" Then GoTo NavigationFailure
+    GetTextString = vbNullString
+    WaitForReady AS400, Exception
     StudentFile.StudentID = Trim(AS400.Presentation.GetText(4, 32, 8))
     If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo EndAutomation
     
@@ -176,6 +179,19 @@ PreEnrollmentCheck:
     AS400.Presentation.SendKeys "[Enter]"
     WaitForReady AS400, Exception
     
+    'Phone number
+    If Len(StudentFile.GetPhoneNumber) >= 1 Then
+        If ProceedToNextScreen("[pf12]", AS400, Exception) = True Then GoTo EndAutomation
+        AS400.Presentation.SetText "C", 4, 21
+        AS400.Presentation.SetText StudentFile.GetAreaCode, 11, 9
+        AS400.Presentation.SetText StudentFile.GetPhoneNumber, 11, 16
+        WaitForReady AS400, Exception
+        AS400.Presentation.SendKeys "[Enter]"
+        WaitForReady AS400, Exception
+        AS400.Presentation.SendKeys "[pf3]"
+        WaitForReady AS400, Exception
+    End If
+    
     'Email
     AS400.Presentation.SendKeys "[pf5]"
     WaitForReady AS400, Exception
@@ -190,7 +206,7 @@ PreEnrollmentCheck:
     AS400.Presentation.SendKeys "[pf3]"
     WaitForReady AS400, Exception
     
-    NavigateToHome AS400, Exception
+    If NavigateToHome(AS400, Exception) = False Then GoTo MidEnrollmentNavigationFailure
     
     'Full program enrollment
     AS400.Presentation.SetText "20", 19, 7
@@ -279,10 +295,42 @@ Resume Next
 
 AcknowledgeError:
     Exception.ErrFlag = True
-Resume Next
+    MsgBox "An unexpected error has occurred during the automation, and the application has been stopped." & _
+    vbNewLine & vbNewLine & "Please discover where the automation has stopped, and determine " & _
+    "if you need to proceed manually from here." & vbNewLine & vbNewLine & _
+    "Call Stack Position:" & vbTab & Exception.StackTop & vbNewLine & _
+    "Err Number:" & vbTab & Err.Number & vbNewLine & "Err Message:" & Err.Description, _
+    vbCritical, "An unknown error has occurred"
+GoTo Cleanup
 
 EndAutomation:
-    MsgBox "The automation has been canceled", vbInformation, "Enrollment"
+    MsgBox "The automation has been canceled" & vbNewLine & vbNewLine & Exception.StackTop, _
+        vbInformation, "Enrollment"
+GoTo Cleanup
+
+NavigationFailure:
+    If NavigateToHome(AS400, Exception) = False Then
+        MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
+            "Please navigate manually to the home screen, then attempt to run the application again." & _
+            vbNewLine & vbNewLine & Exception.StackTop, vbCritical, "Navigation Failure"
+    End If
+GoTo Cleanup
+
+MidEnrollmentNavigationFailure:
+    Dim MsgStr As String
+    MsgStr = "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
+            "Confirm that the Address Book information has been entered successfully, then " & _
+            "proceed with the tuition registration manually." & vbNewLine & vbNewLine & Exception.StackTop
+    If Exception.ErrFlag = True Then
+        MsgStr = MsgStr & vbTab & "Err Number: " & Exception.ErrNumber & vbNewLine & Exception.ErrDescription
+    End If
+    If NavigateToHome(AS400, Exception) = False Then
+            MsgBox MsgStr, vbCritical, "Navigation Failure"
+    End If
+GoTo Cleanup
+
+HiddenTestOption:
+    RunUnitCheck StudentFile, AS400, Exception
 GoTo Cleanup
 
 End Sub
