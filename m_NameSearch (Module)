@@ -72,7 +72,7 @@ Public Sub RunStudentSearch(ByVal RegForm As MSForms.UserForm)
     On Error GoTo AS400Error
     InitializeAS400 AS400, StudentFile.GetSession, Exception
     AS400.Handling = "Fast"
-    AS400.Milliseconds = 75
+    AS400.Milliseconds = 50
     
     On Error Resume Next
     'Empties the textboxes (second page)
@@ -216,6 +216,9 @@ Public Sub RunPageAction(ByVal RegForm As MSForms.UserForm, ByVal UpOrDown As Bo
     Set Status = RegForm.Status_Textbox
     Status.Value = "...Setting values..."
     
+    Dim GetTextString As String
+    GetTextString = vbNullString
+    
     Dim m1 As String
     Dim m2 As String
     Dim m3 As String
@@ -267,9 +270,12 @@ Public Sub RunPageAction(ByVal RegForm As MSForms.UserForm, ByVal UpOrDown As Bo
     On Error GoTo AS400Error
     InitializeAS400 AS400, Letter, Exception
     AS400.Handling = "Fast"
-    AS400.Milliseconds = 75
+    AS400.Milliseconds = 50
     
     TurnOffExcelDefaults Exception
+    
+    GetTextString = AS400.Presentation.GetText(2, 34, 11)
+    If Not GetTextString = "Name Search" Then GoTo IncorrectScreen
     
     On Error Resume Next
     'Empties the textboxes (second page)
@@ -371,6 +377,12 @@ AS400Error:
     MsgBox RedMessage, vbCritical, "AS/400 Error"
 Resume Cleanup
 
+IncorrectScreen:
+    MsgBox "Unable to Page Up or Down. No search has been selected." & vbNewLine & vbNewLine & _
+        "Please enter a name, then press either 'Action' or 'Name Search' to continue.", _
+        vbInformation, "No search has been selected"
+GoTo Cleanup
+
 End Sub
 
 Public Sub RunSecondaryAction(ByVal RegForm As MSForms.UserForm, ByVal Letter As String)
@@ -378,6 +390,9 @@ Public Sub RunSecondaryAction(ByVal RegForm As MSForms.UserForm, ByVal Letter As
     Dim Status As Object
     Set Status = RegForm.Status_Textbox
     Status.Value = "...Setting values..."
+    
+    Dim GetTextString As String
+    GetTextString = vbNullString
 
     Dim a1 As String
     Dim a2 As String
@@ -438,64 +453,84 @@ Public Sub RunSecondaryAction(ByVal RegForm As MSForms.UserForm, ByVal Letter As
     On Error GoTo AS400Error
     InitializeAS400 AS400, Letter, Exception
     AS400.Handling = "Fast"
-    AS400.Milliseconds = 75
+    AS400.Milliseconds = 50
     
     TurnOffExcelDefaults Exception
+    
+    GetTextString = AS400.Presentation.GetText(2, 34, 11)
+    If Not GetTextString = "Name Search" Then
+    
+        Status.Value = "...Navigating..."
+        If NavigateToHome(AS400, Exception) = False Then GoTo NavigationFailure
+        
+            On Error GoTo NavigationError
+            
+            AS400.Presentation.SetText "1", 19, 7
+            AS400.Presentation.SendKeys "[Enter]"
+            WaitForReady AS400, Exception
+            AS400.Presentation.SetText "15", 19, 7
+            AS400.Presentation.SendKeys "[Enter]"
+            WaitForReady AS400, Exception
+            AS400.Presentation.SendKeys "[pf1]"
+            AS400.Presentation.SendKeys "[Enter]"
+            WaitForReady AS400, Exception
+
+        End If
     
     Status.Value = "...Performing Actions..."
     
     On Error Resume Next
-    If Len(Trim(ActionL1_Textbox)) = 1 Then
-        AS400.Presentation.SetText Trim(ActionL1_Textbox.Value), 7, 5
+    If Len(Trim(RegForm.ActionL1_Textbox)) = 1 Then
+        AS400.Presentation.SetText Trim(RegForm.ActionL1_Textbox.Value), 7, 5
         AS400.Presentation.SendKeys "[Enter]"
         WaitForReady AS400, Exception
         AS400.Metrics.Active = True
         
-    ElseIf Len(Trim(ActionL2_Textbox)) = 1 Then
-        AS400.Presentation.SetText Trim(ActionL2_Textbox.Value), 8, 5
+    ElseIf Len(Trim(RegForm.ActionL2_Textbox)) = 1 Then
+        AS400.Presentation.SetText Trim(RegForm.ActionL2_Textbox.Value), 8, 5
         AS400.Presentation.SendKeys "[Enter]"
         WaitForReady AS400, Exception
         AS400.Metrics.Active = True
     
-    ElseIf Len(Trim(ActionL3_Textbox)) = 1 Then
-        AS400.Presentation.SetText Trim(ActionL3_Textbox.Value), 9, 5
+    ElseIf Len(Trim(RegForm.ActionL3_Textbox)) = 1 Then
+        AS400.Presentation.SetText Trim(RegForm.ActionL3_Textbox.Value), 9, 5
         AS400.Presentation.SendKeys "[Enter]"
         WaitForReady AS400, Exception
         AS400.Metrics.Active = True
     
-    ElseIf Len(Trim(ActionL4_Textbox)) = 1 Then
-        AS400.Presentation.SetText Trim(ActionL4_Textbox.Value), 10, 5
+    ElseIf Len(Trim(RegForm.ActionL4_Textbox)) = 1 Then
+        AS400.Presentation.SetText Trim(RegForm.ActionL4_Textbox.Value), 10, 5
         AS400.Presentation.SendKeys "[Enter]"
         WaitForReady AS400, Exception
         AS400.Metrics.Active = True
     
-    ElseIf Len(Trim(ActionL5_Textbox)) = 1 Then
-        AS400.Presentation.SetText Trim(ActionL5_Textbox.Value), 11, 5
+    ElseIf Len(Trim(RegForm.ActionL5_Textbox)) = 1 Then
+        AS400.Presentation.SetText Trim(RegForm.ActionL5_Textbox.Value), 11, 5
         AS400.Presentation.SendKeys "[Enter]"
         WaitForReady AS400, Exception
         AS400.Metrics.Active = True
     
-    ElseIf Len(Trim(ActionL6_Textbox)) = 1 Then
-        AS400.Presentation.SetText Trim(ActionL6_Textbox.Value), 12, 5
+    ElseIf Len(Trim(RegForm.ActionL6_Textbox)) = 1 Then
+        AS400.Presentation.SetText Trim(RegForm.ActionL6_Textbox.Value), 12, 5
         AS400.Presentation.SendKeys "[Enter]"
         WaitForReady AS400, Exception
         AS400.Metrics.Active = True
     
-    ElseIf Len(Trim(ActionL7_Textbox)) = 1 Then
-        AS400.Presentation.SetText Trim(ActionL7_Textbox.Value), 13, 5
+    ElseIf Len(Trim(RegForm.ActionL7_Textbox)) = 1 Then
+        AS400.Presentation.SetText Trim(RegForm.ActionL7_Textbox.Value), 13, 5
         AS400.Presentation.SendKeys "[Enter]"
         WaitForReady AS400, Exception
         AS400.Metrics.Active = True
     
-    ElseIf Len(Trim(ActionL8_Textbox)) = 1 Then
-        AS400.Presentation.SetText Trim(ActionL8_Textbox.Value), 14, 5
+    ElseIf Len(Trim(RegForm.ActionL8_Textbox)) = 1 Then
+        AS400.Presentation.SetText Trim(RegForm.ActionL8_Textbox.Value), 14, 5
         AS400.Presentation.SendKeys "[Enter]"
         WaitForReady AS400, Exception
         AS400.Metrics.Active = True
     
     Else
     
-        AS400.Presentation.SetText Trim(AlphaName_Textbox.Value), 4, 20
+        AS400.Presentation.SetText Trim(RegForm.AlphaName_Textbox.Value), 4, 20
         AS400.Presentation.SendKeys "[Enter]"
         WaitForReady AS400, Exception
         
@@ -554,6 +589,20 @@ Cleanup:
     
 Exit Sub
 
+NavigationFailure:
+    If NavigateToHome(AS400, Exception) = False Then
+        MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
+            "Please navigate manually to the home screen, then attempt to run the application again." & _
+            vbNewLine & vbNewLine & Exception.StackTop, vbCritical, "Navigation Failure"
+    End If
+GoTo Cleanup
+
+NavigationError:
+    MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
+        "Please navigate manually to the home screen, then attempt to run the application again." & _
+        vbNewLine & vbNewLine & Exception.StackTop, vbCritical, "Navigation Failure"
+Resume Cleanup
+
 AS400Error:
     If Exception.ErrFlag = True Then
         RedMessage = RedMessage & Exception.ErrDescription
@@ -564,8 +613,6 @@ AS400Error:
     End If
     MsgBox RedMessage, vbCritical, "AS/400 Error"
 Resume Cleanup
-
-End Sub
 
 End Sub
 
