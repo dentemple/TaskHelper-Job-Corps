@@ -7,15 +7,6 @@
 Option Explicit
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub RunStudentSearch()
-
-
-
-End Sub
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' LoadUserformObjects (Public Sub)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub LoadUserformObjects(ByRef StudentFile As cStudentFile, ByVal RegForm As MSForms.UserForm, ByRef Exception As cException)
@@ -23,7 +14,7 @@ Public Sub LoadUserformObjects(ByRef StudentFile As cStudentFile, ByVal RegForm 
     'Pass error handling up the call stack
     On Error GoTo 0
 
-    Exception.Push "[m_Environment.LoadUserformObjects]"
+    Exception.Push "Procedure: m_Environment.LoadUserformObjects"
 
     'Pass userform
     Set StudentFile.UserFormObject = RegForm
@@ -66,7 +57,7 @@ Public Function ApproveRegistration(ByVal StudentFile As cStudentFile, ByVal AS4
     'Pass error handling up the call stack
     On Error GoTo 0
     
-    Exception.Push "[m_Environment.ApproveRegistration]"
+    Exception.Push "Procedure: m_Environment.ApproveRegistration"
     
     Dim ApprovalFlag As Boolean
     ApprovalFlag = True
@@ -103,7 +94,7 @@ Private Sub ConfirmAccountInfo(ByVal StudentFile As cStudentFile, ByRef Approval
     'Pass error handling up the call stack
     On Error GoTo 0
     
-    Exception.Push "[m_Environment.ConfirmAccountInfo]"
+    Exception.Push "Procedure: m_Environment.ConfirmAccountInfo"
     
     Dim Temp As String
     
@@ -193,7 +184,7 @@ Private Sub ConfirmStudentFile(ByVal StudentFile As cStudentFile, ByRef Approval
     'Pass error handling up the call stack
     On Error GoTo 0
     
-    Exception.Push "[m_Environment.ConfirmStudentFile]"
+    Exception.Push "Procedure: m_Environment.ConfirmStudentFile"
     
     'Student Name
     If Len(StudentFile.GetMailingName) < 4 Or Len(StudentFile.GetMailingName) > 38 Then
@@ -230,7 +221,7 @@ Public Function ProceedToNextScreen(ByVal Action As String, ByVal AS400 As cAS40
     'Pass error handling up the call stack
     On Error GoTo 0
     
-    Exception.Push "[m_Environment.ProceedToNextScreen]"
+    Exception.Push "Procedure: m_Environment.ProceedToNextScreen"
     
     Dim Selection As Integer
     
