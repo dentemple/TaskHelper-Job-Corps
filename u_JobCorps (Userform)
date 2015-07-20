@@ -99,7 +99,7 @@ Private Sub RunAutomation_Button_Click()
     
 End Sub
 
-Private Sub StudentSearch_Button_Click()
+Private Sub PrimarySearch_Button_Click()
 
     'Sets multipage to the second page
     MultiPage1.Value = 1
@@ -107,6 +107,37 @@ Private Sub StudentSearch_Button_Click()
     'Run the student search
     RunStudentSearch u_JobCorps
     
+End Sub
+
+Private Sub SecondarySearch_Button_Click()
+
+    
+
+End Sub
+
+Private Sub PageUp_Button_Click()
+
+    Dim Letter As String
+    Letter = Session_ComboBox.Value
+
+    RunStudentSearch u_JobCorps, False, Letter
+
+End Sub
+
+Private Sub PageDown_Button_Click()
+
+    Dim Letter As String
+    Letter = Session_ComboBox.Value
+
+    RunPageAction u_JobCorps, True, Letter
+
+End Sub
+
+Private Sub Return_Button_Click()
+
+    'Sets multipage to the first page
+    MultiPage1.Value = 0
+
 End Sub
 
 Private Sub Clear_Button_Click()
