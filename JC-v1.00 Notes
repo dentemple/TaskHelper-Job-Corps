@@ -16,7 +16,22 @@ Action5L_Textbox
 ActionL6_Textbox
 ActionL7_Textbox
 ActionL8_Textbox
-MailingNameL_Textbox
+MailingNameL1_Textbox
+MailingNameL2_Textbox
+MailingNameL3_Textbox
+MailingNameL4_Textbox
+MailingNameL5_Textbox
+MailingNameL6_Textbox
+MailingNameL7_Textbox
+MailingNameL8_Textbox
+ShowPhoneL1_Textbox
+ShowPhoneL2_Textbox
+ShowPhoneL3_Textbox
+ShowPhoneL4_Textbox
+ShowPhoneL5_Textbox
+ShowPhoneL6_Textbox
+ShowPhoneL7_Textbox
+ShowPhoneL8_Textbox
 
 WebStartTime_Textbox
 WebEndTime_Textbox
