@@ -4,8 +4,144 @@
 
 Option Explicit
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' RunStudentSearch (Public Sub)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub RunStudentSearch(ByVal RegForm As MSForms.UserForm)
+
+    Dim m1 As String
+    Dim m2 As String
+    Dim m3 As String
+    Dim m4 As String
+    Dim m5 As String
+    Dim m6 As String
+    Dim m7 As String
+    Dim m8 As String
+    Dim p1 As String
+    Dim p2 As String
+    Dim p3 As String
+    Dim p4 As String
+    Dim p5 As String
+    Dim p6 As String
+    Dim p7 As String
+    Dim p8 As String
+    
+    m1 = vbNullString
+    m2 = vbNullString
+    m3 = vbNullString
+    m4 = vbNullString
+    m5 = vbNullString
+    m6 = vbNullString
+    m7 = vbNullString
+    m8 = vbNullString
+    p1 = vbNullString
+    p2 = vbNullString
+    p3 = vbNullString
+    p4 = vbNullString
+    p5 = vbNullString
+    p6 = vbNullString
+    p7 = vbNullString
+    p8 = vbNullString
+
+    Dim RedMessage As String
+    RedMessage = vbNullString
+    
+    Dim Exception As cException
+    Set Exception = New cException
+    
+    Dim StudentFile As cStudentFile
+    Set StudentFile = New cStudentFile
+    
+    Dim AS400 As cAS400
+    Set AS400 = New cAS400
+    
+    TurnOffExcelDefaults Exception
+    
+    On Error GoTo UserformError
+    Set StudentFile.SessionComboBox = RegForm.Session_ComboBox
+    Set StudentFile.FirstNameTextbox = RegForm.Firstname_Textbox
+    Set StudentFile.LastNameTextbox = RegForm.Lastname_Textbox
+    Set StudentFile.MiddleNameTextbox = RegForm.Middlename_Textbox
+    
+    On Error GoTo AS400Error
+    InitializeAS400 AS400, StudentFile.GetSession, Exception
+    AS400.Handling = "Fast"
+    AS400.Milliseconds = 75
+    
+    If NavigateToHome(AS400, Exception) = False Then GoTo NavigationFailure
+    
+    AS400.Presentation.SetText "1", 19, 7
+    AS400.Presentation.SendKeys "[Enter]"
+    WaitForReady AS400, Exception
+    AS400.Presentation.SetText "15", 19, 7
+    AS400.Presentation.SendKeys "[Enter]"
+    WaitForReady AS400, Exception
+    AS400.Presentation.SetText "[pf1]", 19, 7
+    AS400.Presentation.SendKeys "[Enter]"
+    WaitForReady AS400, Exception
+    AS400.Presentation.SetText StudentFile.GetAlphaName, 4, 20
+    AS400.Presentation.SendKeys "[Enter]"
+    
+    m1 = Trim(AS400.Presentation.GetText(7, 8, 37))
+    m2 = Trim(AS400.Presentation.GetText(8, 8, 37))
+    m3 = Trim(AS400.Presentation.GetText(9, 8, 37))
+    m4 = Trim(AS400.Presentation.GetText(10, 8, 37))
+    m5 = Trim(AS400.Presentation.GetText(11, 8, 37))
+    m6 = Trim(AS400.Presentation.GetText(12, 8, 37))
+    m7 = Trim(AS400.Presentation.GetText(13, 8, 37))
+    m8 = Trim(AS400.Presentation.GetText(14, 8, 37))
+    WaitForReady AS400, Exception
+    p1 = Trim(AS400.Presentation.GetText(7, 8, 37))
+    p2 = Trim(AS400.Presentation.GetText(8, 8, 37))
+    p3 = Trim(AS400.Presentation.GetText(9, 8, 37))
+    p4 = Trim(AS400.Presentation.GetText(10, 8, 37))
+    p5 = Trim(AS400.Presentation.GetText(11, 8, 37))
+    p6 = Trim(AS400.Presentation.GetText(12, 8, 37))
+    p7 = Trim(AS400.Presentation.GetText(13, 8, 37))
+    p8 = Trim(AS400.Presentation.GetText(14, 8, 37))
+    WaitForReady AS400, Exception
+    
+    RegForm.MailingNameL1_Textbox = m1
+    
+Cleanup:
+
+    TurnOnExcelDefaults Exception
+    
+Exit Sub
+
+UserformError:
+    Exception.ErrFlag = True
+    RedMessage = RedMessage & Exception.StackTop & Space(1) & _
+        "> A userform object has failed to load" & Space(1) & "Error #" & Err.Number & vbNewLine & vbNewLine
+Resume Cleanup
+
+AS400Error:
+    If Exception.ErrFlag = True Then
+        RedMessage = RedMessage & Exception.ErrDescription
+    Else
+        RedMessage = RedMessage & Exception.StackTop & Space(1) & _
+        "> The AS400 has failed to initialize" & vbNewLine & _
+        "Error #" & Err.Number & Space(1) & Err.Description & vbNewLine & vbNewLine
+    End If
+    MsgBox RedMessage, vbCritical, "AS/400 Error"
+Resume Cleanup
+
+NavigationFailure:
+    If NavigateToHome(AS400, Exception) = False Then
+        MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
+            "Please navigate manually to the home screen, then attempt to run the application again." & _
+            vbNewLine & vbNewLine & Exception.StackTop, vbCritical, "Navigation Failure"
+    End If
+GoTo Cleanup
+
+EndAutomation:
+    'Empty
+GoTo Cleanup
+
+End Sub
+
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' RunRegistration (Private Sub)
+' RunRegistration (Public Sub)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
 
@@ -34,7 +170,7 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
 
     Dim Exception As cException
     Set Exception = New cException
-    Exception.Push "[m_CoreRegistration.RunRegistration]"
+    Exception.Push "Procedure: m_CoreRegistration.RunRegistration"
     
     Dim StudentFile As cStudentFile
     Set StudentFile = New cStudentFile
@@ -73,7 +209,7 @@ PreEnrollmentCheck:
     Select Case AS400.Handling
         Case "Fast"
             On Error GoTo AcknowledgeError
-            AS400.Milliseconds = 100
+            AS400.Milliseconds = 75
         Case "Slow"
             On Error GoTo AcknowledgeError
             AS400.Milliseconds = 900
@@ -250,13 +386,13 @@ PreEnrollmentCheck:
     If ProceedToNextScreen("[pf3]", AS400, Exception) = True Then GoTo EndAutomation
     If ProceedToNextScreen("[pf11]", AS400, Exception) = True Then GoTo EndAutomation
     
-    'Navigate to Student Inquiry
+    'Navigate to Education Inquiry
     AS400.Presentation.SendKeys "[pf3]"
     WaitForReady AS400, Exception
     AS400.Presentation.SetText "1", 19, 7
     AS400.Presentation.SendKeys "[Enter]"
     WaitForReady AS400, Exception
-    AS400.Presentation.SetText "14", 19, 7
+    AS400.Presentation.SetText "15", 19, 7
     AS400.Presentation.SendKeys "[Enter]"
     WaitForReady AS400, Exception
     AS400.Presentation.SetText StudentFile.StudentID, 3, 13
@@ -334,5 +470,3 @@ HiddenTestOption:
 GoTo Cleanup
 
 End Sub
-
-
