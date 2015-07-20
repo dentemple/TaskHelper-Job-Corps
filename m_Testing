@@ -17,7 +17,7 @@ Public Sub RunUnitCheck(ByRef StudentFile As cStudentFile, ByVal AS400 As cAS400
     Dim PrevHandling As String
     PrevHandling = AS400.Handling
     
-    Exception.Push "[m_Environment.RunUnitCheck]"
+    Exception.Push "Procedure: m_Environment.RunUnitCheck"
     
     AS400.Metrics.Active = True
     AS400.Handling = "Fast"
@@ -93,10 +93,10 @@ Set AS400 = New cAS400
 Dim Exception As cException
 Set Exception = New cException
 
-Dim letter As String
-letter = "D"
+Dim Letter As String
+Letter = "D"
 
-Call InitializeAS400(AS400, letter, Exception)
+Call InitializeAS400(AS400, Letter, Exception)
 
 AS400.Metrics.Active = True
 
