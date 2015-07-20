@@ -68,40 +68,93 @@ Public Sub RunStudentSearch(ByVal RegForm As MSForms.UserForm)
     AS400.Handling = "Fast"
     AS400.Milliseconds = 75
     
+    On Error Resume Next
+    'Empties the textboxes (second page)
+    RegForm.AlphaName_Textbox = vbNullString
+    RegForm.ActionL1_Textbox = vbNullString
+    RegForm.ActionL2_Textbox = vbNullString
+    RegForm.ActionL3_Textbox = vbNullString
+    RegForm.ActionL4_Textbox = vbNullString
+    RegForm.ActionL5_Textbox = vbNullString
+    RegForm.ActionL6_Textbox = vbNullString
+    RegForm.ActionL7_Textbox = vbNullString
+    RegForm.ActionL8_Textbox = vbNullString
+    RegForm.MailingNameL1_Textbox = vbNullString
+    RegForm.MailingNameL2_Textbox = vbNullString
+    RegForm.MailingNameL3_Textbox = vbNullString
+    RegForm.MailingNameL4_Textbox = vbNullString
+    RegForm.MailingNameL5_Textbox = vbNullString
+    RegForm.MailingNameL6_Textbox = vbNullString
+    RegForm.MailingNameL7_Textbox = vbNullString
+    RegForm.MailingNameL8_Textbox = vbNullString
+    RegForm.ShowPhoneL1_Textbox = vbNullString
+    RegForm.ShowPhoneL2_Textbox = vbNullString
+    RegForm.ShowPhoneL3_Textbox = vbNullString
+    RegForm.ShowPhoneL4_Textbox = vbNullString
+    RegForm.ShowPhoneL5_Textbox = vbNullString
+    RegForm.ShowPhoneL6_Textbox = vbNullString
+    RegForm.ShowPhoneL7_Textbox = vbNullString
+    RegForm.ShowPhoneL8_Textbox = vbNullString
+    RegForm.ActionL1_Textbox = vbNullString
+    RegForm.ActionL2_Textbox = vbNullString
+    RegForm.ActionL3_Textbox = vbNullString
+    RegForm.ActionL4_Textbox = vbNullString
+    RegForm.ActionL5_Textbox = vbNullString
+    RegForm.ActionL6_Textbox = vbNullString
+    RegForm.ActionL7_Textbox = vbNullString
+    RegForm.ActionL8_Textbox = vbNullString
+    
     If NavigateToHome(AS400, Exception) = False Then GoTo NavigationFailure
     
+    On Error GoTo NavigationError
     AS400.Presentation.SetText "1", 19, 7
     AS400.Presentation.SendKeys "[Enter]"
     WaitForReady AS400, Exception
     AS400.Presentation.SetText "15", 19, 7
     AS400.Presentation.SendKeys "[Enter]"
     WaitForReady AS400, Exception
-    AS400.Presentation.SetText "[pf1]", 19, 7
+    AS400.Presentation.SendKeys "[pf1]"
     AS400.Presentation.SendKeys "[Enter]"
     WaitForReady AS400, Exception
     AS400.Presentation.SetText StudentFile.GetAlphaName, 4, 20
     AS400.Presentation.SendKeys "[Enter]"
+    WaitForReady AS400, Exception
     
+    On Error Resume Next
     m1 = Trim(AS400.Presentation.GetText(7, 8, 37))
-    m2 = Trim(AS400.Presentation.GetText(8, 8, 37))
-    m3 = Trim(AS400.Presentation.GetText(9, 8, 37))
-    m4 = Trim(AS400.Presentation.GetText(10, 8, 37))
-    m5 = Trim(AS400.Presentation.GetText(11, 8, 37))
-    m6 = Trim(AS400.Presentation.GetText(12, 8, 37))
-    m7 = Trim(AS400.Presentation.GetText(13, 8, 37))
-    m8 = Trim(AS400.Presentation.GetText(14, 8, 37))
-    WaitForReady AS400, Exception
-    p1 = Trim(AS400.Presentation.GetText(7, 8, 37))
-    p2 = Trim(AS400.Presentation.GetText(8, 8, 37))
-    p3 = Trim(AS400.Presentation.GetText(9, 8, 37))
-    p4 = Trim(AS400.Presentation.GetText(10, 8, 37))
-    p5 = Trim(AS400.Presentation.GetText(11, 8, 37))
-    p6 = Trim(AS400.Presentation.GetText(12, 8, 37))
-    p7 = Trim(AS400.Presentation.GetText(13, 8, 37))
-    p8 = Trim(AS400.Presentation.GetText(14, 8, 37))
-    WaitForReady AS400, Exception
-    
     RegForm.MailingNameL1_Textbox = m1
+    m2 = Trim(AS400.Presentation.GetText(8, 8, 37))
+    RegForm.MailingNameL2_Textbox = m2
+    m3 = Trim(AS400.Presentation.GetText(9, 8, 37))
+    RegForm.MailingNameL3_Textbox = m3
+    m4 = Trim(AS400.Presentation.GetText(10, 8, 37))
+    RegForm.MailingNameL4_Textbox = m4
+    m5 = Trim(AS400.Presentation.GetText(11, 8, 37))
+    RegForm.MailingNameL5_Textbox = m5
+    m6 = Trim(AS400.Presentation.GetText(12, 8, 37))
+    RegForm.MailingNameL6_Textbox = m6
+    m7 = Trim(AS400.Presentation.GetText(13, 8, 37))
+    RegForm.MailingNameL7_Textbox = m7
+    m8 = Trim(AS400.Presentation.GetText(14, 8, 37))
+    RegForm.MailingNameL8_Textbox = m8
+    WaitForReady AS400, Exception
+    p1 = Trim(AS400.Presentation.GetText(7, 49, 26))
+    RegForm.ShowPhoneL1_Textbox = p1
+    p2 = Trim(AS400.Presentation.GetText(8, 49, 26))
+    RegForm.ShowPhoneL2_Textbox = p2
+    p3 = Trim(AS400.Presentation.GetText(9, 49, 26))
+    RegForm.ShowPhoneL3_Textbox = p3
+    p4 = Trim(AS400.Presentation.GetText(10, 49, 26))
+    RegForm.ShowPhoneL4_Textbox = p4
+    p5 = Trim(AS400.Presentation.GetText(11, 49, 26))
+    RegForm.ShowPhoneL5_Textbox = p5
+    p6 = Trim(AS400.Presentation.GetText(12, 49, 26))
+    RegForm.ShowPhoneL6_Textbox = p6
+    p7 = Trim(AS400.Presentation.GetText(13, 49, 26))
+    RegForm.ShowPhoneL7_Textbox = p7
+    p8 = Trim(AS400.Presentation.GetText(14, 49, 26))
+    RegForm.ShowPhoneL8_Textbox = p8
+    WaitForReady AS400, Exception
     
 Cleanup:
 
@@ -134,9 +187,168 @@ NavigationFailure:
     End If
 GoTo Cleanup
 
+NavigationError:
+    MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
+        "Please navigate manually to the home screen, then attempt to run the application again." & _
+        vbNewLine & vbNewLine & Exception.StackTop, vbCritical, "Navigation Failure"
+Resume Cleanup
+
 EndAutomation:
     'Empty
 GoTo Cleanup
+
+End Sub
+
+Public Sub RunPageAction(ByVal RegForm As MSForms.UserForm, ByVal UpOrDown As Boolean, ByVal Letter As String)
+
+    Dim m1 As String
+    Dim m2 As String
+    Dim m3 As String
+    Dim m4 As String
+    Dim m5 As String
+    Dim m6 As String
+    Dim m7 As String
+    Dim m8 As String
+    Dim p1 As String
+    Dim p2 As String
+    Dim p3 As String
+    Dim p4 As String
+    Dim p5 As String
+    Dim p6 As String
+    Dim p7 As String
+    Dim p8 As String
+    
+    m1 = vbNullString
+    m2 = vbNullString
+    m3 = vbNullString
+    m4 = vbNullString
+    m5 = vbNullString
+    m6 = vbNullString
+    m7 = vbNullString
+    m8 = vbNullString
+    p1 = vbNullString
+    p2 = vbNullString
+    p3 = vbNullString
+    p4 = vbNullString
+    p5 = vbNullString
+    p6 = vbNullString
+    p7 = vbNullString
+    p8 = vbNullString
+
+    Dim RedMessage As String
+    RedMessage = vbNullString
+    
+    Dim Exception As cException
+    Set Exception = New cException
+    
+    Dim AS400 As cAS400
+    Set AS400 = New cAS400
+    
+    Dim StudentFile As cStudentFile
+    Set StudentFile = New cStudentFile
+    
+    On Error GoTo AS400Error
+    InitializeAS400 AS400, Letter, Exception
+    AS400.Handling = "Fast"
+    AS400.Milliseconds = 75
+    
+    TurnOffExcelDefaults Exception
+    
+    On Error Resume Next
+    'Empties the textboxes (second page)
+    RegForm.AlphaName_Textbox = vbNullString
+    RegForm.ActionL1_Textbox = vbNullString
+    RegForm.ActionL2_Textbox = vbNullString
+    RegForm.ActionL3_Textbox = vbNullString
+    RegForm.ActionL4_Textbox = vbNullString
+    RegForm.ActionL5_Textbox = vbNullString
+    RegForm.ActionL6_Textbox = vbNullString
+    RegForm.ActionL7_Textbox = vbNullString
+    RegForm.ActionL8_Textbox = vbNullString
+    RegForm.MailingNameL1_Textbox = vbNullString
+    RegForm.MailingNameL2_Textbox = vbNullString
+    RegForm.MailingNameL3_Textbox = vbNullString
+    RegForm.MailingNameL4_Textbox = vbNullString
+    RegForm.MailingNameL5_Textbox = vbNullString
+    RegForm.MailingNameL6_Textbox = vbNullString
+    RegForm.MailingNameL7_Textbox = vbNullString
+    RegForm.MailingNameL8_Textbox = vbNullString
+    RegForm.ShowPhoneL1_Textbox = vbNullString
+    RegForm.ShowPhoneL2_Textbox = vbNullString
+    RegForm.ShowPhoneL3_Textbox = vbNullString
+    RegForm.ShowPhoneL4_Textbox = vbNullString
+    RegForm.ShowPhoneL5_Textbox = vbNullString
+    RegForm.ShowPhoneL6_Textbox = vbNullString
+    RegForm.ShowPhoneL7_Textbox = vbNullString
+    RegForm.ShowPhoneL8_Textbox = vbNullString
+    RegForm.ActionL1_Textbox = vbNullString
+    RegForm.ActionL2_Textbox = vbNullString
+    RegForm.ActionL3_Textbox = vbNullString
+    RegForm.ActionL4_Textbox = vbNullString
+    RegForm.ActionL5_Textbox = vbNullString
+    RegForm.ActionL6_Textbox = vbNullString
+    RegForm.ActionL7_Textbox = vbNullString
+    RegForm.ActionL8_Textbox = vbNullString
+    
+    If UpOrDown = False Then
+        AS400.Presentation.SendKeys "[pageup]"
+    Else
+        AS400.Presentation.SendKeys "[pagedn]"
+    End If
+    
+    On Error Resume Next
+    WaitForReady AS400, Exception
+    m1 = Trim(AS400.Presentation.GetText(7, 8, 37))
+    RegForm.MailingNameL1_Textbox = m1
+    m2 = Trim(AS400.Presentation.GetText(8, 8, 37))
+    RegForm.MailingNameL2_Textbox = m2
+    m3 = Trim(AS400.Presentation.GetText(9, 8, 37))
+    RegForm.MailingNameL3_Textbox = m3
+    m4 = Trim(AS400.Presentation.GetText(10, 8, 37))
+    RegForm.MailingNameL4_Textbox = m4
+    m5 = Trim(AS400.Presentation.GetText(11, 8, 37))
+    RegForm.MailingNameL5_Textbox = m5
+    m6 = Trim(AS400.Presentation.GetText(12, 8, 37))
+    RegForm.MailingNameL6_Textbox = m6
+    m7 = Trim(AS400.Presentation.GetText(13, 8, 37))
+    RegForm.MailingNameL7_Textbox = m7
+    m8 = Trim(AS400.Presentation.GetText(14, 8, 37))
+    RegForm.MailingNameL8_Textbox = m8
+    WaitForReady AS400, Exception
+    p1 = Trim(AS400.Presentation.GetText(7, 49, 26))
+    RegForm.ShowPhoneL1_Textbox = p1
+    p2 = Trim(AS400.Presentation.GetText(8, 49, 26))
+    RegForm.ShowPhoneL2_Textbox = p2
+    p3 = Trim(AS400.Presentation.GetText(9, 49, 26))
+    RegForm.ShowPhoneL3_Textbox = p3
+    p4 = Trim(AS400.Presentation.GetText(10, 49, 26))
+    RegForm.ShowPhoneL4_Textbox = p4
+    p5 = Trim(AS400.Presentation.GetText(11, 49, 26))
+    RegForm.ShowPhoneL5_Textbox = p5
+    p6 = Trim(AS400.Presentation.GetText(12, 49, 26))
+    RegForm.ShowPhoneL6_Textbox = p6
+    p7 = Trim(AS400.Presentation.GetText(13, 49, 26))
+    RegForm.ShowPhoneL7_Textbox = p7
+    p8 = Trim(AS400.Presentation.GetText(14, 49, 26))
+    RegForm.ShowPhoneL8_Textbox = p8
+    WaitForReady AS400, Exception
+
+Cleanup:
+
+    TurnOnExcelDefaults Exception
+    
+Exit Sub
+
+AS400Error:
+    If Exception.ErrFlag = True Then
+        RedMessage = RedMessage & Exception.ErrDescription
+    Else
+        RedMessage = RedMessage & Exception.StackTop & Space(1) & _
+        "> The AS400 has failed to initialize" & vbNewLine & _
+        "Error #" & Err.Number & Space(1) & Err.Description & vbNewLine & vbNewLine
+    End If
+    MsgBox RedMessage, vbCritical, "AS/400 Error"
+Resume Cleanup
 
 End Sub
 
@@ -470,3 +682,5 @@ HiddenTestOption:
 GoTo Cleanup
 
 End Sub
+
+
