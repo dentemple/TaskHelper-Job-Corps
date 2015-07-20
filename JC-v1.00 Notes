@@ -7,18 +7,22 @@ Firstname_Textbox
 Lastname_Textbox
 Middlename_Textbox
 
+AlphaName_Textbox
+ActionL1_Textbox
+ActionL2_Textbox
+ActionL3_Textbox
+ActionL4_Textbox
+Action5L_Textbox
+ActionL6_Textbox
+ActionL7_Textbox
+ActionL8_Textbox
+MailingNameL_Textbox
+
 WebStartTime_Textbox
 WebEndTime_Textbox
 ProgramNumber_Textbox
 ProgramTuition_Textbox
 
-AddressL1_Textbox
-AddressL2_Textbox
-AddressL3_Textbox
-AddressL4_Textbox
-City_Textbox
-StateAbbrev_Textbox
-Zipcode_Textbox
 Areacode_Textbox
 Phonenumber_Textbox
 Email_Textbox
