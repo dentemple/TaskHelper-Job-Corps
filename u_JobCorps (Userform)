@@ -17,6 +17,7 @@ Private Sub UserForm_Initialize()
     Salesperson_Textbox = Range("DefaultSalesperson")
     WebStartTime_Textbox = "000000"
     WebEndTime_Textbox = "000000"
+    Status_Textbox = "Userform is Ready"
 
     'Empties the textboxes (first page)
     ParentCode_Textbox = vbNullString
@@ -97,6 +98,8 @@ Private Sub RunAutomation_Button_Click()
     'Run the registration script
     RunRegistration u_JobCorps
     
+    Status_Textbox = "Registration Complete!"
+    
 End Sub
 
 Private Sub PrimarySearch_Button_Click()
@@ -107,11 +110,18 @@ Private Sub PrimarySearch_Button_Click()
     'Run the student search
     RunStudentSearch u_JobCorps
     
+    Status_Textbox = "Userform is Ready"
+    
 End Sub
 
 Private Sub SecondarySearch_Button_Click()
 
+    Dim Letter As String
+    Letter = Session_ComboBox.Value
     
+    RunSecondaryAction u_JobCorps, Letter
+    
+    Status_Textbox = "Userform is Ready"
 
 End Sub
 
@@ -120,7 +130,9 @@ Private Sub PageUp_Button_Click()
     Dim Letter As String
     Letter = Session_ComboBox.Value
 
-    RunStudentSearch u_JobCorps, False, Letter
+    RunPageAction u_JobCorps, False, Letter
+    
+    Status_Textbox = "Userform is Ready"
 
 End Sub
 
@@ -130,6 +142,8 @@ Private Sub PageDown_Button_Click()
     Letter = Session_ComboBox.Value
 
     RunPageAction u_JobCorps, True, Letter
+    
+    Status_Textbox = "Userform is Ready"
 
 End Sub
 
@@ -137,6 +151,8 @@ Private Sub Return_Button_Click()
 
     'Sets multipage to the first page
     MultiPage1.Value = 0
+    
+    Status_Textbox = "Userform is Ready"
 
 End Sub
 
