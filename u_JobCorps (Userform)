@@ -18,7 +18,7 @@ Private Sub UserForm_Initialize()
     WebStartTime_Textbox = "000000"
     WebEndTime_Textbox = "000000"
 
-    'Empties the textboxes
+    'Empties the textboxes (first page)
     ParentCode_Textbox = vbNullString
     Firstname_Textbox = vbNullString
     Lastname_Textbox = vbNullString
@@ -30,6 +30,36 @@ Private Sub UserForm_Initialize()
     AreaCode_Textbox = vbNullString
     PhoneNumber_Textbox = vbNullString
     Email_Textbox = vbNullString
+    
+    'Empties the textboxes (second page)
+    AlphaName_Textbox = vbNullString
+    ActionL1_Textbox = vbNullString
+    ActionL2_Textbox = vbNullString
+    ActionL3_Textbox = vbNullString
+    ActionL4_Textbox = vbNullString
+    ActionL5_Textbox = vbNullString
+    ActionL6_Textbox = vbNullString
+    ActionL7_Textbox = vbNullString
+    ActionL8_Textbox = vbNullString
+    MailingNameL1_Textbox = vbNullString
+    MailingNameL2_Textbox = vbNullString
+    MailingNameL3_Textbox = vbNullString
+    MailingNameL4_Textbox = vbNullString
+    MailingNameL5_Textbox = vbNullString
+    MailingNameL6_Textbox = vbNullString
+    MailingNameL7_Textbox = vbNullString
+    MailingNameL8_Textbox = vbNullString
+    ShowPhoneL1_Textbox = vbNullString
+    ShowPhoneL2_Textbox = vbNullString
+    ShowPhoneL3_Textbox = vbNullString
+    ShowPhoneL4_Textbox = vbNullString
+    ShowPhoneL5_Textbox = vbNullString
+    ShowPhoneL6_Textbox = vbNullString
+    ShowPhoneL7_Textbox = vbNullString
+    ShowPhoneL8_Textbox = vbNullString
+    
+    'Empties the textboxes (second page)
+    AlphaName_Textbox = vbNullString
 
     'Populates the selection boxes
     With Automation_ComboBox
@@ -69,8 +99,14 @@ Private Sub RunAutomation_Button_Click()
     
 End Sub
 
-Private Sub Confirm_Button_Click()
-    'EMPTY
+Private Sub StudentSearch_Button_Click()
+
+    'Sets multipage to the second page
+    MultiPage1.Value = 1
+    
+    'Run the student search
+    RunStudentSearch u_JobCorps
+    
 End Sub
 
 Private Sub Clear_Button_Click()
@@ -79,10 +115,6 @@ End Sub
 
 Private Sub Cancel_Button_Click()
     Unload Me
-End Sub
-
-Private Sub StudentSearch_Button_Click()
-    
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
