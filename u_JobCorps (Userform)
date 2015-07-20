@@ -17,7 +17,7 @@ Private Sub UserForm_Initialize()
     Salesperson_Textbox = Range("DefaultSalesperson")
     WebStartTime_Textbox = "000000"
     WebEndTime_Textbox = "000000"
-    Status_Textbox = "Userform is Ready"
+    Status_Textbox = "Ready"
 
     'Empties the textboxes (first page)
     ParentCode_Textbox = vbNullString
@@ -59,8 +59,43 @@ Private Sub UserForm_Initialize()
     ShowPhoneL7_Textbox = vbNullString
     ShowPhoneL8_Textbox = vbNullString
     
-    'Empties the textboxes (second page)
-    AlphaName_Textbox = vbNullString
+    'Locking certain textboxes
+    Status_Textbox.Locked = True
+    MailingNameL1_Textbox.Locked = True
+    MailingNameL2_Textbox.Locked = True
+    MailingNameL3_Textbox.Locked = True
+    MailingNameL4_Textbox.Locked = True
+    MailingNameL5_Textbox.Locked = True
+    MailingNameL6_Textbox.Locked = True
+    MailingNameL7_Textbox.Locked = True
+    MailingNameL8_Textbox.Locked = True
+    ShowPhoneL1_Textbox.Locked = True
+    ShowPhoneL2_Textbox.Locked = True
+    ShowPhoneL3_Textbox.Locked = True
+    ShowPhoneL4_Textbox.Locked = True
+    ShowPhoneL5_Textbox.Locked = True
+    ShowPhoneL6_Textbox.Locked = True
+    ShowPhoneL7_Textbox.Locked = True
+    ShowPhoneL8_Textbox.Locked = True
+    
+    'Greys out the locked textboxes
+    Status_Textbox.BackColor = RGB(211, 211, 211)
+    MailingNameL1_Textbox.BackColor = RGB(211, 211, 211)
+    MailingNameL2_Textbox.BackColor = RGB(211, 211, 211)
+    MailingNameL3_Textbox.BackColor = RGB(211, 211, 211)
+    MailingNameL4_Textbox.BackColor = RGB(211, 211, 211)
+    MailingNameL5_Textbox.BackColor = RGB(211, 211, 211)
+    MailingNameL6_Textbox.BackColor = RGB(211, 211, 211)
+    MailingNameL7_Textbox.BackColor = RGB(211, 211, 211)
+    MailingNameL8_Textbox.BackColor = RGB(211, 211, 211)
+    ShowPhoneL1_Textbox.BackColor = RGB(211, 211, 211)
+    ShowPhoneL2_Textbox.BackColor = RGB(211, 211, 211)
+    ShowPhoneL3_Textbox.BackColor = RGB(211, 211, 211)
+    ShowPhoneL4_Textbox.BackColor = RGB(211, 211, 211)
+    ShowPhoneL5_Textbox.BackColor = RGB(211, 211, 211)
+    ShowPhoneL6_Textbox.BackColor = RGB(211, 211, 211)
+    ShowPhoneL7_Textbox.BackColor = RGB(211, 211, 211)
+    ShowPhoneL8_Textbox.BackColor = RGB(211, 211, 211)
 
     'Populates the selection boxes
     With Automation_ComboBox
@@ -83,7 +118,7 @@ Private Sub UserForm_Initialize()
     End With
     
     'Sets the initial focus
-    ParentCode_Textbox.SetFocus
+    Salesperson_Textbox.SetFocus
 
 End Sub
 
@@ -110,7 +145,7 @@ Private Sub PrimarySearch_Button_Click()
     'Run the student search
     RunStudentSearch u_JobCorps
     
-    Status_Textbox = "Userform is Ready"
+    Status_Textbox = "Ready"
     
 End Sub
 
@@ -121,7 +156,7 @@ Private Sub SecondarySearch_Button_Click()
     
     RunSecondaryAction u_JobCorps, Letter
     
-    Status_Textbox = "Userform is Ready"
+    Status_Textbox = "Ready"
 
 End Sub
 
@@ -132,7 +167,7 @@ Private Sub PageUp_Button_Click()
 
     RunPageAction u_JobCorps, False, Letter
     
-    Status_Textbox = "Userform is Ready"
+    Status_Textbox = "Ready"
 
 End Sub
 
@@ -143,7 +178,7 @@ Private Sub PageDown_Button_Click()
 
     RunPageAction u_JobCorps, True, Letter
     
-    Status_Textbox = "Userform is Ready"
+    Status_Textbox = "Ready"
 
 End Sub
 
@@ -152,7 +187,8 @@ Private Sub Return_Button_Click()
     'Sets multipage to the first page
     MultiPage1.Value = 0
     
-    Status_Textbox = "Userform is Ready"
+    Firstname_Textbox.SetFocus
+    Status_Textbox = "Ready"
 
 End Sub
 
