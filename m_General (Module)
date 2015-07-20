@@ -289,6 +289,14 @@ StartLoop:
             Case " 55192  "
                 AS400.Presentation.SendKeys ("[pf3]")
                 
+            'Education Screen
+            Case " 55192  "
+                AS400.Presentation.SendKeys ("[pf3]")
+                
+            'Name Search
+            Case "603132_B"
+                AS400.Presentation.SendKeys ("[pf3]")
+                
             Case Else
                 AS400.Presentation.SendKeys ("[pf3]")
                 WaitForReady AS400, Exception
