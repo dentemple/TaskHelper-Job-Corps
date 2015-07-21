@@ -1,1 +1,126 @@
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' m_TransferCredits (Module)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Option Explicit
+
+Dim Check1 As Boolean
+Dim Check2 As Boolean
+Dim Check3 As Boolean
+Dim Check4 As Boolean
+Dim Check5 As Boolean
+Dim Check6 As Boolean
+Dim Check7 As Boolean
+Dim Check8 As Boolean
+Dim Check9 As Boolean
+Dim Check10 As Boolean
+Dim Check11 As Boolean
+Dim Check12 As Boolean
+Dim Check13 As Boolean
+Dim Check14 As Boolean
+Dim Check15 As Boolean
+Dim Check16 As Boolean
+Dim Check17 As Boolean
+Dim Check18 As Boolean
+Dim Check19 As Boolean
+Dim Check20 As Boolean
+Dim Check21 As Boolean
+Dim Check22 As Boolean
+Dim Check23 As Boolean
+Dim Check24 As Boolean
+Dim Check25 As Boolean
+Dim Check26 As Boolean
+Dim Check27 As Boolean
+Dim Check28 As Boolean
+Dim Mod1 As String
+Dim Mod2 As String
+Dim Mod3 As String
+Dim Mod4 As String
+Dim Mod5 As String
+Dim Mod6 As String
+Dim Mod7 As String
+Dim Mod8 As String
+Dim Mod9 As String
+Dim Mod10 As String
+Dim Mod11 As String
+Dim Mod12 As String
+Dim Mod13 As String
+Dim Mod14 As String
+Dim Mod15 As String
+Dim Mod16 As String
+Dim Mod17 As String
+Dim Mod18 As String
+Dim Mod19 As String
+Dim Mod20 As String
+Dim Mod21 As String
+Dim Mod22 As String
+Dim Mod23 As String
+Dim Mod24 As String
+Dim Mod25 As String
+Dim Mod26 As String
+Dim Mod27 As String
+Dim Mod28 As String
+Dim Title1 As String
+Dim Title2 As String
+Dim Title3 As String
+Dim Title4 As String
+Dim Title5 As String
+Dim Title6 As String
+Dim Title7 As String
+Dim Title8 As String
+Dim Title9 As String
+Dim Title10 As String
+Dim Title11 As String
+Dim Title12 As String
+Dim Title13 As String
+Dim Title14 As String
+Dim Title15 As String
+Dim Title16 As String
+Dim Title17 As String
+Dim Title18 As String
+Dim Title19 As String
+Dim Title20 As String
+Dim Title21 As String
+Dim Title22 As String
+Dim Title23 As String
+Dim Title24 As String
+Dim Title25 As String
+Dim Title26 As String
+Dim Title27 As String
+Dim Title28 As String
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' RunTransferCredits (Public Sub)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub RunTransferCredits(ByVal AS400 As cAS400, ByRef Exception As cException)
+    
+    'Pass error handling up the call stack
+    On Error GoTo 0
+
+    Exception.Push "Procedure: m_TransferCredits.RunTransferCredits"
+    
+    
+    Exception.Push "Procedure: m_TransferCredits.u_TransferCredits"
+    u_TransferCredits.Show
+    Exception.Pop
+    
+    
+    
+Cleanup:
+
+    TurnOnExcelDefaults Exception
+    Exception.Pop
+    
+Exit Sub
+
+NavigationFailure:
+    If NavigateToHome(AS400, Exception) = False Then
+        MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
+            "Please navigate manually to the home screen, then attempt to run the application again." & _
+            vbNewLine & vbNewLine & Exception.StackTop, vbCritical, "Navigation Failure"
+    End If
+    
+GoTo Cleanup
+
+End Sub
 
