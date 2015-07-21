@@ -314,6 +314,7 @@ Public Sub RunPageAction(ByVal RegForm As MSForms.UserForm, ByVal UpOrDown As Bo
     Else
         AS400.Presentation.SendKeys "[pagedn]"
     End If
+    WaitForReady AS400, Exception
     
     On Error Resume Next
     m1 = Trim(AS400.Presentation.GetText(7, 8, 37))
@@ -486,51 +487,35 @@ Public Sub RunSecondaryAction(ByVal RegForm As MSForms.UserForm, ByVal Letter As
     On Error Resume Next
     If Len(Trim(RegForm.ActionL1_Textbox)) = 1 Then
         AS400.Presentation.SetText Trim(RegForm.ActionL1_Textbox.Value), 7, 5
-        AS400.Presentation.SendKeys "[Enter]"
-        WaitForReady AS400, Exception
-        AS400.Metrics.Active = True
+        GoTo FlagrantUseOfSpaghettiCode
         
     ElseIf Len(Trim(RegForm.ActionL2_Textbox)) = 1 Then
         AS400.Presentation.SetText Trim(RegForm.ActionL2_Textbox.Value), 8, 5
-        AS400.Presentation.SendKeys "[Enter]"
-        WaitForReady AS400, Exception
-        AS400.Metrics.Active = True
+        GoTo FlagrantUseOfSpaghettiCode
     
     ElseIf Len(Trim(RegForm.ActionL3_Textbox)) = 1 Then
         AS400.Presentation.SetText Trim(RegForm.ActionL3_Textbox.Value), 9, 5
-        AS400.Presentation.SendKeys "[Enter]"
-        WaitForReady AS400, Exception
-        AS400.Metrics.Active = True
+        GoTo FlagrantUseOfSpaghettiCode
     
     ElseIf Len(Trim(RegForm.ActionL4_Textbox)) = 1 Then
         AS400.Presentation.SetText Trim(RegForm.ActionL4_Textbox.Value), 10, 5
-        AS400.Presentation.SendKeys "[Enter]"
-        WaitForReady AS400, Exception
-        AS400.Metrics.Active = True
+        GoTo FlagrantUseOfSpaghettiCode
     
     ElseIf Len(Trim(RegForm.ActionL5_Textbox)) = 1 Then
         AS400.Presentation.SetText Trim(RegForm.ActionL5_Textbox.Value), 11, 5
-        AS400.Presentation.SendKeys "[Enter]"
-        WaitForReady AS400, Exception
-        AS400.Metrics.Active = True
+        GoTo FlagrantUseOfSpaghettiCode
     
     ElseIf Len(Trim(RegForm.ActionL6_Textbox)) = 1 Then
         AS400.Presentation.SetText Trim(RegForm.ActionL6_Textbox.Value), 12, 5
-        AS400.Presentation.SendKeys "[Enter]"
-        WaitForReady AS400, Exception
-        AS400.Metrics.Active = True
+        GoTo FlagrantUseOfSpaghettiCode
     
     ElseIf Len(Trim(RegForm.ActionL7_Textbox)) = 1 Then
         AS400.Presentation.SetText Trim(RegForm.ActionL7_Textbox.Value), 13, 5
-        AS400.Presentation.SendKeys "[Enter]"
-        WaitForReady AS400, Exception
-        AS400.Metrics.Active = True
+        GoTo FlagrantUseOfSpaghettiCode
     
     ElseIf Len(Trim(RegForm.ActionL8_Textbox)) = 1 Then
         AS400.Presentation.SetText Trim(RegForm.ActionL8_Textbox.Value), 14, 5
-        AS400.Presentation.SendKeys "[Enter]"
-        WaitForReady AS400, Exception
-        AS400.Metrics.Active = True
+        GoTo FlagrantUseOfSpaghettiCode
     
     Else
     
@@ -606,8 +591,59 @@ Cleanup:
     RegForm.ActionL7_Textbox = vbNullString
     RegForm.ActionL8_Textbox = vbNullString
     TurnOnExcelDefaults Exception
-    
 Exit Sub
+
+FlagrantUseOfSpaghettiCode:
+
+    AS400.Presentation.SendKeys "[Enter]"
+    WaitForReady AS400, Exception
+    AS400.Metrics.Active = True
+    
+    GetTextString = vbNullString
+    GetTextString = AS400.Presentation.GetText(2, 4, 4)
+    GetTextString = vbNullString
+    WaitForReady AS400, Exception
+    
+    If Not GetTextString = "01NS" Then
+        
+        RegForm.AlphaName_Textbox = vbNullString
+        RegForm.MailingNameL1_Textbox = "  [Results posted to the AS/400]"
+        
+        RegForm.MailingNameL2_Textbox = vbNullString
+        
+        GetTextString = Trim(AS400.Presentation.GetText(3, 2, 20))
+        RegForm.MailingNameL3_Textbox = GetTextString
+        GetTextString = vbNullString
+        
+        GetTextString = Trim(AS400.Presentation.GetText(5, 2, 28))
+        If Len(GetTextString) >= 1 Then RegForm.MailingNameL4_Textbox = GetTextString Else RegForm.MailingNameL4_Textbox = Space(4) & "[Empty]"
+        GetTextString = vbNullString
+        
+        GetTextString = Trim(AS400.Presentation.GetText(6, 2, 28))
+        If Len(GetTextString) >= 1 Then RegForm.MailingNameL5_Textbox = GetTextString Else RegForm.MailingNameL5_Textbox = Space(4) & "[Empty]"
+        GetTextString = vbNullString
+        
+        GetTextString = Trim(AS400.Presentation.GetText(7, 2, 28))
+        If Len(GetTextString) >= 1 Then RegForm.MailingNameL6_Textbox = GetTextString Else RegForm.MailingNameL6_Textbox = Space(4) & "[Empty]"
+        GetTextString = vbNullString
+        
+        RegForm.MailingNameL7_Textbox = vbNullString
+        RegForm.MailingNameL8_Textbox = "  [Results posted to the AS/400]"
+        RegForm.ShowPhoneL1_Textbox = vbNullString
+        RegForm.ShowPhoneL2_Textbox = vbNullString
+        RegForm.ShowPhoneL3_Textbox = vbNullString
+        RegForm.ShowPhoneL4_Textbox = vbNullString
+        RegForm.ShowPhoneL5_Textbox = vbNullString
+        RegForm.ShowPhoneL6_Textbox = vbNullString
+        RegForm.ShowPhoneL7_Textbox = vbNullString
+        RegForm.ShowPhoneL8_Textbox = vbNullString
+    End If
+    
+    GetTextString = vbNullString
+    
+    AS400.Metrics.Active = True
+        
+GoTo Cleanup
 
 NavigationFailure:
     If NavigateToHome(AS400, Exception) = False Then
