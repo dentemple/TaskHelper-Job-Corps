@@ -13,7 +13,7 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
 ' General variables
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-    Dim StartTime As Variant
+    Dim StartTime As Single
     StartTime = Timer
     
     Dim GetTextString As String
@@ -106,7 +106,9 @@ PreEnrollmentCheck:
     AS400.Metrics.Active = True
     
     If NavigateToHome(AS400, Exception) = False Then GoTo NavigationFailure
-    
+
+StartEnrollment:
+
     'Address Book w/ Parent option
     AS400.Presentation.SetText "1", 19, 7
     AS400.Presentation.SendKeys "[Enter]"
@@ -217,7 +219,9 @@ PreEnrollmentCheck:
     WaitForReady AS400, Exception
     
     If NavigateToHome(AS400, Exception) = False Then GoTo MidEnrollmentNavigationFailure
-    
+
+MidEnrollment:
+
     'Full program enrollment
     AS400.Presentation.SetText "20", 19, 7
     WaitForReady AS400, Exception
@@ -276,9 +280,40 @@ PreEnrollmentCheck:
     WaitForReady AS400, Exception
     
     AppActivate "Microsoft Excel"
-    MsgBox "Automation Complete" & vbNewLine & _
-        "Student ID:" & vbTab & StudentFile.StudentID & vbNewLine & vbNewLine & _
-        "Total Elapsed Time: " & (Timer - StartTime), vbInformation, "Automation"
+    If MsgBox("Automation Complete:" & " Student ID #" & StudentFile.StudentID & vbNewLine & vbNewLine & _
+        "Total Elapsed Time: " & vbTab & (Timer - StartTime) & " seconds" & vbNewLine & vbNewLine & _
+        "DO YOU WISH TO APPLY TRANSFER CREDITS?", vbYesNo, "Automation Complete - Apply TR?") = vbYes Then
+        
+        AS400.Handling = "Fast"
+        AS400.Milliseconds = 75
+        GetTextString = vbNullString
+    
+        GetTextString = AS400.Presentation.GetText(1, 2, 8)
+        If Not GetTextString = "603132_B" Or "60210   " Then
+            If NavigateToHome(AS400, Exception) = False Then GoTo Cleanup
+            AS400.Presentation.SetText "1", 19, 7
+            AS400.Presentation.SendKeys "[Enter]"
+            WaitForReady AS400, Exception
+            AS400.Presentation.SetText "15", 19, 7
+            AS400.Presentation.SendKeys "[Enter]"
+            WaitForReady AS400, Exception
+            GetTextString = vbNullString
+        End If
+    
+        AS400.Presentation.SetText SID, 3, 13
+        AS400.Presentation.SendKeys "[Enter]"
+        WaitForReady AS400, Exception
+    
+        AS400.Presentation.SendKeys "[pf11]"
+        AS400.Presentation.SendKeys "[Enter]"
+        WaitForReady AS400, Exception
+        
+        
+        Unload RegForm
+        
+        RunTransferCredits AS400, Exception
+        
+    End If
     
 Cleanup:
 
@@ -326,6 +361,8 @@ NavigationFailure:
         MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
             "Please navigate manually to the home screen, then attempt to run the application again." & _
             vbNewLine & vbNewLine & Exception.StackTop, vbCritical, "Navigation Failure"
+    Else
+        GoTo StartEnrollment
     End If
 GoTo Cleanup
 
@@ -339,6 +376,8 @@ MidEnrollmentNavigationFailure:
     End If
     If NavigateToHome(AS400, Exception) = False Then
             MsgBox MsgStr, vbCritical, "Navigation Failure"
+    Else
+        GoTo MidEnrollment
     End If
 GoTo Cleanup
 
