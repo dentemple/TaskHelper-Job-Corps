@@ -1,7 +1,21 @@
 Option Explicit
 
-Sub Open_RegistrationUserform_Click()
+Sub EnrollmentAppButton_Click()
 
     u_JobCorps.Show
+
+End Sub
+
+Sub TransferCreditsButton_Click()
+
+    Dim Exception As cException
+    
+    'RunTransferCredits
+
+End Sub
+
+Sub LicenseInfo_Button_Click()
+
+    ThisWorkbook.FollowHyperlink "http://www.gnu.org/licenses/gpl-3.0.en.html"
 
 End Sub
