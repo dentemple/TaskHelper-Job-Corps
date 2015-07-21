@@ -4,9 +4,14 @@ Option Explicit
 ' RunUnitCheck
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-Public Sub RunUnitCheck(ByRef StudentFile As cStudentFile, ByVal AS400 As cAS400, ByRef Exception As cException)
+Public Sub RunUnitCheck(ByVal RegForm As MSForms.UserForm, ByRef StudentFile As cStudentFile, _
+            ByVal AS400 As cAS400, ByRef Exception As cException)
     
     On Error GoTo 0
+    
+    Dim Status As Object
+    Set Status = RegForm.Status_Textbox
+    Status.Value = "PERFORMING THE TEST PROCEDURE"
     
     Dim TestGetText As String
     TestGetText = vbNullString
@@ -96,6 +101,9 @@ Set Exception = New cException
 Dim Letter As String
 Letter = "D"
 
+Dim CheckTime As Variant
+CheckTime = Timer
+
 Call InitializeAS400(AS400, Letter, Exception)
 
 AS400.Metrics.Active = True
@@ -108,6 +116,7 @@ If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo EndAutomati
 'AppActivate "Microsoft Excel"
 'MsgBox "Complete"
 
+MsgBox (Timer - CheckTime)
 
 Exit Sub
 
