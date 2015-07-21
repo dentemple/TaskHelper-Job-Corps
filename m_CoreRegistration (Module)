@@ -31,7 +31,7 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
     
     Dim Status As Object
     Set Status = RegForm.Status_Textbox
-    Status.Value = "...Performing the pre-enrollment check..."
+    Status.Value = "...   ...   ...   Performing the pre-enrollment check   ...   ...   ..."
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Set the class modules
@@ -73,7 +73,7 @@ PreEnrollmentCheck:
     RedMessage = vbNullString
     BlueMessage = vbNullString
     
-    Status.Value = "...Navigating to Enrollment..."
+    Status.Value = "...   ...   ...   Performing Enrollment  (Please wait)   ...   ...   ..."
     
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Set the subsequent settings based on the user's selection
@@ -118,8 +118,6 @@ PreEnrollmentCheck:
     If Not GetTextString = "01051" Then GoTo NavigationFailure
     GetTextString = vbNullString
     
-    Status.Value = "...Creating SID..."
-    
     'Action Code
     AS400.Presentation.SetText "A", 3, 19              'Action Code
     'First-Middle-Last Name
@@ -151,8 +149,6 @@ PreEnrollmentCheck:
     AppActivate "Microsoft Excel"
     MsgBox "Student ID:" & vbTab & StudentFile.StudentID, vbInformation, "Automation"
     AS400.Metrics.Active = True
-    
-    Status.Value = "...Navigating the Enter/F3 sequence..."
     
     'Enter-F3 sequence
     '#1
@@ -192,8 +188,6 @@ PreEnrollmentCheck:
     AS400.Presentation.SendKeys "[Enter]"
     WaitForReady AS400, Exception
     
-    Status.Value = "...Entering contact information..."
-    
     'Phone number
     If Len(StudentFile.GetPhoneNumber) >= 1 Then
         If ProceedToNextScreen("[pf12]", AS400, Exception) = True Then GoTo EndAutomation
@@ -217,8 +211,6 @@ PreEnrollmentCheck:
     AS400.Presentation.SetText StudentFile.GetEmail, 10, 4
     If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo EndAutomation
     
-    Status.Value = "...Navigating to Registration..."
-    
     AS400.Presentation.SendKeys "[pf3]"
     WaitForReady AS400, Exception
     AS400.Presentation.SendKeys "[pf3]"
@@ -231,8 +223,6 @@ PreEnrollmentCheck:
     WaitForReady AS400, Exception
     AS400.Presentation.SendKeys "[Enter]"
     WaitForReady AS400, Exception
-    
-    Status.Value = "...Entering the registration information..."
     
     'PS screen 66300
     AS400.Presentation.SetText "A", 3, 20
@@ -262,8 +252,6 @@ PreEnrollmentCheck:
     
     If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo EndAutomation
     
-    Status.Value = "...Finalizing Enrollment..."
-    
     'Enter payment terms
     AS400.Presentation.SendKeys "[Enter]"
     WaitForReady AS400, Exception
@@ -272,7 +260,7 @@ PreEnrollmentCheck:
     If ProceedToNextScreen("[pf3]", AS400, Exception) = True Then GoTo EndAutomation
     If ProceedToNextScreen("[pf11]", AS400, Exception) = True Then GoTo EndAutomation
     
-    Status.Value = "...Navigating to Education..."
+    Status.Value = "...   ...   ...  (Please Wait)  ...   ...   ..."
     
     'Navigate to Education Inquiry
     AS400.Presentation.SendKeys "[pf3]"
@@ -355,7 +343,7 @@ MidEnrollmentNavigationFailure:
 GoTo Cleanup
 
 HiddenTestOption:
-    RunUnitCheck StudentFile, AS400, Exception
+    RunUnitCheck RegForm, StudentFile, AS400, Exception
 GoTo Cleanup
 
 End Sub
