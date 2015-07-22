@@ -139,7 +139,7 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassFields
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Private Function AddFieldObjects(ByVal CreditsForm As MSForms.UserForm, ByVal MaxSize As Integer) As Object
+Private Function PopulateObjects(ByVal CreditsForm As MSForms.UserForm, ByVal MaxSize As Integer) As Object
 
     Dim TempArr(1 To MaxSize, 1 To 2) As Object
     
