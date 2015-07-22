@@ -144,7 +144,7 @@ Public Function NavigateToHome(ByVal AS400 As cAS400, ByRef Exception As cExcept
     
     Dim PrevTime As Long
     PrevTime = AS400.Milliseconds
-    AS400.Milliseconds = 100
+    AS400.Milliseconds = 50
     
     AS400.Metrics.Active = True
     
