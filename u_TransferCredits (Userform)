@@ -4,7 +4,7 @@
 
 Option Explicit
 
-Dim HaveBeenPopulated As Boolean
+Dim HasBeenPopulated As Boolean
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Initialization event
@@ -228,14 +228,14 @@ Status_Textbox = "TO BEGIN:" & Space(3) & "Enter the Student ID# and the AS/400 
         .Text = Session_ComboBox.List(0)
     End With
     
-    HaveBeenPopulated = False
+    HasBeenPopulated = False
 
 End Sub
 
 Private Sub PopulateClasses_Button_Click()
 
     
-    HaveBeenPopulated = True
+    HasBeenPopulated = True
     Status_Textbox = "Ready"
 
 End Sub
