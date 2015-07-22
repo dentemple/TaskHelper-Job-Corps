@@ -8,10 +8,8 @@ End Sub
 
 Sub TransferCreditsButton_Click()
 
-    Dim Exception As cException
+    u_TransferCredits.Show
     
-    'RunTransferCredits
-
 End Sub
 
 Sub LicenseInfo_Button_Click()
