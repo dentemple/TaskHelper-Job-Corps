@@ -134,7 +134,7 @@ Public Function NavigateToHome(ByVal AS400 As cAS400, ByRef Exception As cExcept
     GetTextString = vbNullString
 
     Dim MaxAttempts As Integer
-    MaxAttempts = 4
+    MaxAttempts = 5
     
     Dim i As Integer
     i = 0
@@ -202,6 +202,11 @@ StartLoop:
 
             'PS: (1.14.), Student Course Master
             Case "60210   "
+                AS400.Presentation.SendKeys ("[pf3]")
+                
+            Case "60211   "
+                AS400.Presentation.SendKeys ("[pf3]")
+                WaitForReady AS400, Exception
                 AS400.Presentation.SendKeys ("[pf3]")
 
             'PS: (1.14.), Shipping Screen
