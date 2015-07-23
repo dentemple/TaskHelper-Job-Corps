@@ -45,6 +45,9 @@ Status_Textbox = "TO BEGIN:" & Space(3) & "Enter the Student ID# and the AS/400 
     Mod26_Textbox = vbNullString
     Mod27_Textbox = vbNullString
     Mod28_Textbox = vbNullString
+    Mod29_Textbox = vbNullString
+    Mod30_Textbox = vbNullString
+    
     Title1_Textbox = vbNullString
     Title2_Textbox = vbNullString
     Title3_Textbox = vbNullString
@@ -73,6 +76,8 @@ Status_Textbox = "TO BEGIN:" & Space(3) & "Enter the Student ID# and the AS/400 
     Title26_Textbox = vbNullString
     Title27_Textbox = vbNullString
     Title28_Textbox = vbNullString
+    Title29_Textbox = vbNullString
+    Title30_Textbox = vbNullString
     
     Class1_Checkbox = False
     Class2_Checkbox = False
@@ -102,6 +107,8 @@ Status_Textbox = "TO BEGIN:" & Space(3) & "Enter the Student ID# and the AS/400 
     Class26_Checkbox = False
     Class27_Checkbox = False
     Class28_Checkbox = False
+    Class29_Checkbox = False
+    Class30_Checkbox = False
     
     Mod1_Textbox.Locked = True
     Mod2_Textbox.Locked = True
@@ -131,6 +138,9 @@ Status_Textbox = "TO BEGIN:" & Space(3) & "Enter the Student ID# and the AS/400 
     Mod26_Textbox.Locked = True
     Mod27_Textbox.Locked = True
     Mod28_Textbox.Locked = True
+    Mod29_Textbox.Locked = True
+    Mod30_Textbox.Locked = True
+    
     Title1_Textbox.Locked = True
     Title2_Textbox.Locked = True
     Title3_Textbox.Locked = True
@@ -159,6 +169,8 @@ Status_Textbox = "TO BEGIN:" & Space(3) & "Enter the Student ID# and the AS/400 
     Title26_Textbox.Locked = True
     Title27_Textbox.Locked = True
     Title28_Textbox.Locked = True
+    Title29_Textbox.Locked = True
+    Title30_Textbox.Locked = True
     
     Mod1_Textbox.BackColor = RGB(211, 211, 211)
     Mod2_Textbox.BackColor = RGB(211, 211, 211)
@@ -188,6 +200,9 @@ Status_Textbox = "TO BEGIN:" & Space(3) & "Enter the Student ID# and the AS/400 
     Mod26_Textbox.BackColor = RGB(211, 211, 211)
     Mod27_Textbox.BackColor = RGB(211, 211, 211)
     Mod28_Textbox.BackColor = RGB(211, 211, 211)
+    Mod29_Textbox.BackColor = RGB(211, 211, 211)
+    Mod30_Textbox.BackColor = RGB(211, 211, 211)
+    
     Title1_Textbox.BackColor = RGB(211, 211, 211)
     Title2_Textbox.BackColor = RGB(211, 211, 211)
     Title3_Textbox.BackColor = RGB(211, 211, 211)
@@ -216,6 +231,8 @@ Status_Textbox = "TO BEGIN:" & Space(3) & "Enter the Student ID# and the AS/400 
     Title26_Textbox.BackColor = RGB(211, 211, 211)
     Title27_Textbox.BackColor = RGB(211, 211, 211)
     Title28_Textbox.BackColor = RGB(211, 211, 211)
+    Title29_Textbox.BackColor = RGB(211, 211, 211)
+    Title30_Textbox.BackColor = RGB(211, 211, 211)
 
     With Session_ComboBox
         .Clear
@@ -234,6 +251,7 @@ End Sub
 
 Private Sub PopulateClasses_Button_Click()
 
+    RunPopulateClasses u_TransferCredits
     
     HasBeenPopulated = True
     Status_Textbox = "Ready"
@@ -242,8 +260,17 @@ End Sub
 
 Private Sub ApplyTransferCredits_Button_Click()
 
-
-
+    If HasBeenPopulated = True Then
+    
+        
+        Status_Textbox = "TR credits have been successfully applied!"
+        
+    Else
+    
+        MsgBox ""
+    
+    End If
+    
 End Sub
 
 Private Sub Clear_Button_Click()
@@ -585,6 +612,30 @@ Private Sub Class28_Checkbox_Click()
     Else
         Mod28_Textbox.BackColor = RGB(211, 211, 211)
         Title28_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class29_Checkbox_Click()
+
+    If Class29_Checkbox = True Then
+        Mod29_Textbox.BackColor = RGB(255, 251, 204)
+        Title29_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod29_Textbox.BackColor = RGB(211, 211, 211)
+        Title29_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class30_Checkbox_Click()
+
+    If Class30_Checkbox = True Then
+        Mod30_Textbox.BackColor = RGB(255, 251, 204)
+        Title30_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod30_Textbox.BackColor = RGB(211, 211, 211)
+        Title30_Textbox.BackColor = RGB(211, 211, 211)
     End If
 
 End Sub
