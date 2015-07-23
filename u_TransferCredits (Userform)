@@ -4,10 +4,9 @@
 
 Option Explicit
 
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' RunPopulateClasses
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub RunPopulateClasses(ByVal CreditsForm As MSForms.UserForm)
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -294,11 +293,14 @@ Resume Cleanup
 
 End Sub
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ApplyTransferCredits
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' General variables
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     Dim GetTextString As String
     GetTextString = vbNullString
     
@@ -324,12 +326,17 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
     Dim BooleanArray() As Boolean
     ReDim BooleanArray(1 To MaxSize)
     
+    On Error GoTo EntryError
     Dim Letter As String
     Letter = Trim(CreditsForm.Session_ComboBox.Value)
     
     Dim SID As String
     SID = Trim(CreditsForm.SID_Textbox)
     
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Set the class modules
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    On Error GoTo ClassError
     Dim Exception As cException
     Set Exception = New cException
     Exception.Push "Procedure: m_TransferCredits.ApplyTransferCredits"
@@ -337,12 +344,21 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
     Dim AS400 As cAS400
     Set AS400 = New cAS400
     
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Loads the class objects
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    
     TurnOffExcelDefaults Exception
     
+    On Error GoTo AS400Error
     InitializeAS400 AS400, Letter, Exception
     AS400.Handling = "Fast"
     AS400.Milliseconds = 50
     
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Navigation
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    On Error GoTo NavigationError
     Select Case GetTextString
     
         Case "60210   "
@@ -378,6 +394,14 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
 
     End Select
     
+    GetTextString = vbNullString
+    GetTextString = AS400.Presentation.GetText(4, 23, ModLen)
+    'If Not current SID (Trim)
+    
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Loads array
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    On Error Resume Next
     BooleanArray(1) = CreditsForm.Class1_Checkbox.Value
     BooleanArray(2) = CreditsForm.Class2_Checkbox.Value
     BooleanArray(3) = CreditsForm.Class3_Checkbox.Value
@@ -468,10 +492,6 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
     Set TextboxArray(28, 2) = CreditsForm.Title28_Textbox
     Set TextboxArray(29, 2) = CreditsForm.Title29_Textbox
     Set TextboxArray(30, 2) = CreditsForm.Title30_Textbox
-    
-    GetTextString = vbNullString
-    GetTextString = AS400.Presentation.GetText(4, 23, ModLen)
-    'If Not current SID (Trim)
     
     '1st Loop: Select classes to apply transfer credit
     Do Until i >= MaxSize
@@ -626,6 +646,37 @@ Cleanup:
     Exception.Pop
 
 Exit Sub
+
+EntryError:
+    MsgBox "A problem occurred with either the Student ID# or the AS/400 Session." & vbNewLine & vbNewLine & _
+        "Please confirm the information is correct, then try again." & vbNewLine & vbNewLine & _
+        "Error: " & Err.Number & vbNewLine & Err.Description, vbCritical, "Entry Error"
+Resume Cleanup
+
+ClassError:
+    MsgBox "An unexpected error has occurred.  Please close the userform, then attempt to run the program again." & _
+        vbNewLine & vbNewLine & "Error: " & Err.Number & vbNewLine & Err.Description, vbCritical, "Class Error"
+Resume Cleanup
+
+AS400Error:
+    MsgBox "The AS400 has failed to initialize. Please confirm the session letter is correct, " & _
+        "and that the AS/400 itself is active, then try again." & vbNewLine & vbNewLine & _
+        "Error: " & Err.Number & vbNewLine & Err.Description, vbCritical, "AS/400 Error"
+Resume Cleanup
+
+NavigationFailure:
+    If NavigateToHome(AS400, Exception) = False Then
+        MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
+            "Please navigate manually to the home screen, then attempt to run the application again.", _
+            vbCritical, "Navigation Failure"
+    End If
+GoTo Cleanup
+
+NavigationError:
+    MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
+        "Please navigate manually to the home screen, then attempt to run the application again.", _
+        vbCritical, "Navigation Error"
+Resume Cleanup
 
 End Sub
 
