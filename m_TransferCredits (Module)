@@ -5,73 +5,62 @@
 Option Explicit
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' RunPopulateClasses
+' ApplyTransferCredits
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub RunPopulateClasses(ByVal CreditForm As MSForms.UserForm)
+Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' General variables
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-    Dim StartTime As Single
-    StartTime = Timer
-    
     Dim GetTextString As String
     GetTextString = vbNullString
     
     Dim Status As Object
-    Set Status = CreditForm.Status_Textbox
-    Status.Value = "...   ...   ...   Populating Classes   ...   ...   ..."
+    Set Status = CreditsForm.Status_Textbox
+    Status.Value = "...   ...   ...   Applying Transfer Credits   ...   ...   ..."
     
-    Dim MaxObjects As Integer
-    MaxObjects = 28
+    Dim MaxSize As Integer
+    MaxSize = 30
     
-    Dim UsedObjects As Integer
-    UsedObjects = 0
+    Dim i As Integer
+    i = 0
     
-    On Error GoTo EntryError
+    Dim Counter As Integer
+    Counter = 0
+    
+    Dim ModLen As Integer
+    ModLen = 8
+    
+    Dim TextboxArray() As Object
+    ReDim TextboxArray(1 To MaxSize, 1 To 2)
+    
+    Dim BooleanArray() As Boolean
+    ReDim BooleanArray(1 To MaxSize)
+    
     Dim Letter As String
-    'pass as/400 session
+    Letter = Trim(CreditsForm.Session_ComboBox.Value)
     
     Dim SID As String
-    'pass SID
-    
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Set the class modules
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-    On Error GoTo ClassError
+    SID = Trim(CreditsForm.SID_Textbox)
     
     Dim Exception As cException
     Set Exception = New cException
-    Exception.Push "Procedure: m_TransferCredits.RunPopulateClasses"
+    Exception.Push "Procedure: m_TransferCredits.ApplyTransferCredits"
     
     Dim AS400 As cAS400
     Set AS400 = New cAS400
     
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Loads the class objects
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
     TurnOffExcelDefaults Exception
     
-    On Error GoTo AS400Error
     InitializeAS400 AS400, Letter, Exception
     AS400.Handling = "Fast"
     AS400.Milliseconds = 50
-    
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Navigation
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    
-    On Error GoTo NavigationError
-    GetTextString = AS400.Presentation.GetText(1, 2, 8)
     
     Select Case GetTextString
     
         Case "60210   "
         
-            'Empty
+            AS400.Presentation.SendKeys "[pf3]"
+            WaitForReady AS400, Exception
+            AS400.Presentation.SendKeys "[pf11]"
+            WaitForReady AS400, Exception
         
         Case "603132_B"
         
@@ -99,23 +88,486 @@ Public Sub RunPopulateClasses(ByVal CreditForm As MSForms.UserForm)
 
     End Select
     
-    Do
+    BooleanArray(1) = CreditsForm.Class1_Checkbox.Value
+    BooleanArray(2) = CreditsForm.Class2_Checkbox.Value
+    BooleanArray(3) = CreditsForm.Class3_Checkbox.Value
+    BooleanArray(4) = CreditsForm.Class4_Checkbox.Value
+    BooleanArray(5) = CreditsForm.Class5_Checkbox.Value
+    BooleanArray(6) = CreditsForm.Class6_Checkbox.Value
+    BooleanArray(7) = CreditsForm.Class7_Checkbox.Value
+    BooleanArray(8) = CreditsForm.Class8_Checkbox.Value
+    BooleanArray(9) = CreditsForm.Class9_Checkbox.Value
+    BooleanArray(10) = CreditsForm.Class10_Checkbox.Value
+    BooleanArray(11) = CreditsForm.Class11_Checkbox.Value
+    BooleanArray(12) = CreditsForm.Class12_Checkbox.Value
+    BooleanArray(13) = CreditsForm.Class13_Checkbox.Value
+    BooleanArray(14) = CreditsForm.Class14_Checkbox.Value
+    BooleanArray(15) = CreditsForm.Class15_Checkbox.Value
+    BooleanArray(16) = CreditsForm.Class16_Checkbox.Value
+    BooleanArray(17) = CreditsForm.Class17_Checkbox.Value
+    BooleanArray(18) = CreditsForm.Class18_Checkbox.Value
+    BooleanArray(19) = CreditsForm.Class19_Checkbox.Value
+    BooleanArray(20) = CreditsForm.Class20_Checkbox.Value
+    BooleanArray(21) = CreditsForm.Class21_Checkbox.Value
+    BooleanArray(22) = CreditsForm.Class22_Checkbox.Value
+    BooleanArray(23) = CreditsForm.Class23_Checkbox.Value
+    BooleanArray(24) = CreditsForm.Class24_Checkbox.Value
+    BooleanArray(25) = CreditsForm.Class25_Checkbox.Value
+    BooleanArray(26) = CreditsForm.Class26_Checkbox.Value
+    BooleanArray(27) = CreditsForm.Class27_Checkbox.Value
+    BooleanArray(28) = CreditsForm.Class28_Checkbox.Value
     
+    Set TextboxArray(1, 1) = CreditsForm.Mod1_Textbox
+    Set TextboxArray(2, 1) = CreditsForm.Mod2_Textbox
+    Set TextboxArray(3, 1) = CreditsForm.Mod3_Textbox
+    Set TextboxArray(4, 1) = CreditsForm.Mod4_Textbox
+    Set TextboxArray(5, 1) = CreditsForm.Mod5_Textbox
+    Set TextboxArray(6, 1) = CreditsForm.Mod6_Textbox
+    Set TextboxArray(7, 1) = CreditsForm.Mod7_Textbox
+    Set TextboxArray(8, 1) = CreditsForm.Mod8_Textbox
+    Set TextboxArray(9, 1) = CreditsForm.Mod9_Textbox
+    Set TextboxArray(10, 1) = CreditsForm.Mod10_Textbox
+    Set TextboxArray(11, 1) = CreditsForm.Mod11_Textbox
+    Set TextboxArray(12, 1) = CreditsForm.Mod12_Textbox
+    Set TextboxArray(13, 1) = CreditsForm.Mod13_Textbox
+    Set TextboxArray(14, 1) = CreditsForm.Mod14_Textbox
+    Set TextboxArray(15, 1) = CreditsForm.Mod15_Textbox
+    Set TextboxArray(16, 1) = CreditsForm.Mod16_Textbox
+    Set TextboxArray(17, 1) = CreditsForm.Mod17_Textbox
+    Set TextboxArray(18, 1) = CreditsForm.Mod18_Textbox
+    Set TextboxArray(19, 1) = CreditsForm.Mod19_Textbox
+    Set TextboxArray(20, 1) = CreditsForm.Mod20_Textbox
+    Set TextboxArray(21, 1) = CreditsForm.Mod21_Textbox
+    Set TextboxArray(22, 1) = CreditsForm.Mod22_Textbox
+    Set TextboxArray(23, 1) = CreditsForm.Mod23_Textbox
+    Set TextboxArray(24, 1) = CreditsForm.Mod24_Textbox
+    Set TextboxArray(25, 1) = CreditsForm.Mod25_Textbox
+    Set TextboxArray(26, 1) = CreditsForm.Mod26_Textbox
+    Set TextboxArray(27, 1) = CreditsForm.Mod27_Textbox
+    Set TextboxArray(28, 1) = CreditsForm.Mod28_Textbox
+    Set TextboxArray(29, 1) = CreditsForm.Mod29_Textbox
+    Set TextboxArray(30, 1) = CreditsForm.Mod30_Textbox
     
+    Set TextboxArray(1, 2) = CreditsForm.Title1_Textbox
+    Set TextboxArray(2, 2) = CreditsForm.Title2_Textbox
+    Set TextboxArray(3, 2) = CreditsForm.Title3_Textbox
+    Set TextboxArray(4, 2) = CreditsForm.Title4_Textbox
+    Set TextboxArray(5, 2) = CreditsForm.Title5_Textbox
+    Set TextboxArray(6, 2) = CreditsForm.Title6_Textbox
+    Set TextboxArray(7, 2) = CreditsForm.Title7_Textbox
+    Set TextboxArray(8, 2) = CreditsForm.Title8_Textbox
+    Set TextboxArray(9, 2) = CreditsForm.Title9_Textbox
+    Set TextboxArray(10, 2) = CreditsForm.Title10_Textbox
+    Set TextboxArray(11, 2) = CreditsForm.Title11_Textbox
+    Set TextboxArray(12, 2) = CreditsForm.Title12_Textbox
+    Set TextboxArray(13, 2) = CreditsForm.Title13_Textbox
+    Set TextboxArray(14, 2) = CreditsForm.Title14_Textbox
+    Set TextboxArray(15, 2) = CreditsForm.Title15_Textbox
+    Set TextboxArray(16, 2) = CreditsForm.Title16_Textbox
+    Set TextboxArray(17, 2) = CreditsForm.Title17_Textbox
+    Set TextboxArray(18, 2) = CreditsForm.Title18_Textbox
+    Set TextboxArray(19, 2) = CreditsForm.Title19_Textbox
+    Set TextboxArray(20, 2) = CreditsForm.Title20_Textbox
+    Set TextboxArray(21, 2) = CreditsForm.Title21_Textbox
+    Set TextboxArray(22, 2) = CreditsForm.Title22_Textbox
+    Set TextboxArray(23, 2) = CreditsForm.Title23_Textbox
+    Set TextboxArray(24, 2) = CreditsForm.Title24_Textbox
+    Set TextboxArray(25, 2) = CreditsForm.Title25_Textbox
+    Set TextboxArray(26, 2) = CreditsForm.Title26_Textbox
+    Set TextboxArray(27, 2) = CreditsForm.Title27_Textbox
+    Set TextboxArray(28, 2) = CreditsForm.Title28_Textbox
+    Set TextboxArray(29, 2) = CreditsForm.Title29_Textbox
+    Set TextboxArray(30, 2) = CreditsForm.Title30_Textbox
     
-        UsedObjects = UsedObjects + 1
+    GetTextString = vbNullString
+    GetTextString = AS400.Presentation.GetText(4, 23, ModLen)
+    'If Not current SID (Trim)
     
+    '1st Loop: Select classes to apply transfer credit
+    Do Until i >= MaxSize
+    
+        'Increment
+        i = i + 1
+        
+        'Line 17
+        WaitForReady AS400, Exception
+        If BooleanArray(i) = True And Len(Trim(TextboxArray(i, 1).Value)) > 1 Then
+        
+            GetTextString = vbNullString
+            GetTextString = AS400.Presentation.GetText(17, 4, ModLen)
+            
+            If Trim(GetTextString) = Trim(TextboxArray(i, 1).Value) Then
+                AS400.Presentation.SetText "1", 17, 2
+                Counter = Counter + 1
+            End If
+        
+        End If
+        
+        'Increment
+        i = i + 1
+        
+        'Line 18
+        WaitForReady AS400, Exception
+        If BooleanArray(i) = True And Len(Trim(TextboxArray(i, 1).Value)) > 1 Then
+        
+            GetTextString = vbNullString
+            GetTextString = AS400.Presentation.GetText(18, 4, ModLen)
+            
+            If Trim(GetTextString) = Trim(TextboxArray(i, 1).Value) Then
+                AS400.Presentation.SetText "1", 18, 2
+                Counter = Counter + 1
+            End If
+        
+        End If
+        
+        'Increment
+        i = i + 1
+        
+        'Line 19
+        WaitForReady AS400, Exception
+        If BooleanArray(i) = True And Len(Trim(TextboxArray(i, 1).Value)) > 1 Then
+        
+            GetTextString = vbNullString
+            GetTextString = AS400.Presentation.GetText(19, 4, ModLen)
+            
+            If Trim(GetTextString) = Trim(TextboxArray(i, 1).Value) Then
+                AS400.Presentation.SetText "1", 19, 2
+                Counter = Counter + 1
+            End If
+        
+        End If
+        
+        'Increment
+        i = i + 1
+        
+        'Line 20
+        WaitForReady AS400, Exception
+        If BooleanArray(i) = True And Len(Trim(TextboxArray(i, 1).Value)) > 1 Then
+        
+            GetTextString = vbNullString
+            GetTextString = AS400.Presentation.GetText(20, 4, ModLen)
+            
+            If Trim(GetTextString) = Trim(TextboxArray(i, 1).Value) Then
+                AS400.Presentation.SetText "1", 20, 2
+                Counter = Counter + 1
+            End If
+        
+        End If
+        
+        'Increment
+        i = i + 1
+        
+        'Line 21
+        WaitForReady AS400, Exception
+        If BooleanArray(i) = True And Len(Trim(TextboxArray(i, 1).Value)) > 1 Then
+        
+            GetTextString = vbNullString
+            GetTextString = AS400.Presentation.GetText(21, 4, ModLen)
+            
+            If Trim(GetTextString) = Trim(TextboxArray(i, 1).Value) Then
+                AS400.Presentation.SetText "1", 21, 2
+                Counter = Counter + 1
+            End If
+        
+        End If
+        
+        'Increment
+        i = i + 1
+        
+        'Line 22
+        WaitForReady AS400, Exception
+        If BooleanArray(i) = True And Len(Trim(TextboxArray(i, 1).Value)) > 1 Then
+        
+            GetTextString = vbNullString
+            GetTextString = AS400.Presentation.GetText(22, 4, ModLen)
+            
+            If Trim(GetTextString) = Trim(TextboxArray(i, 1).Value) Then
+                AS400.Presentation.SetText "1", 22, 2
+                Counter = Counter + 1
+            End If
+        
+        End If
+        
+        'Wait
+        WaitForReady AS400, Exception
+        
+        'Check
         GetTextString = vbNullString
         GetTextString = AS400.Presentation.GetText(22, 4, 2)
+        If Len(Trim(GetTextString)) < 1 Then
+            Exit Do
+        Else
+            AS400.Presentation.SendKeys "[pagedn]"
+        End If
     
-    Loop Until UsedObjects >= MaxObjects Or Len(Trim(GetTextString)) < 2
+    Loop
     
+    WaitForReady AS400, Exception
+    AS400.Presentation.SendKeys "[Enter]"
+    
+    GetTextString = vbNullString
+    GetTextString = AS400.Presentation.GetText(1, 2, 5)
+    'If Not on correct PS "60211"
+    
+    Do Until Counter <= 0
+    
+        WaitForReady AS400, Exception
+        AS400.Presentation.SetText "C", 3, 19
+        AS400.Presentation.SetText "Y", 8, 19
+        AS400.Presentation.SetText "H", 10, 19
+        
+        AS400.Presentation.SendKeys "[Enter]"
+        WaitForReady AS400, Exception
+        
+        AS400.Presentation.SendKeys "[pf3]"
+        WaitForReady AS400, Exception
+        
+        Counter = Counter - 1
+    
+    Loop
+    
+    WaitForReady AS400, Exception
+    AS400.Presentation.SendKeys "[pf3]"
+    
+
+Cleanup:
+
+    TurnOnExcelDefaults Exception
+    Exception.Pop
+
+Exit Sub
+
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' RunPopulateClasses
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub RunPopulateClasses(ByVal CreditsForm As MSForms.UserForm)
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' General variables
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+    Dim GetTextString As String
+    GetTextString = vbNullString
+    
+    Dim Status As Object
+    Set Status = CreditsForm.Status_Textbox
+    Status.Value = "...   ...   ...   Populating Classes   ...   ...   ..."
+    
+    Dim MaxSize As Integer
+    MaxSize = 30
+    
+    Dim i As Integer
+    i = 0
+    
+    Dim ModLen As Integer
+    ModLen = 8
+    
+    Dim TextboxArray() As Object
+    ReDim TextboxArray(1 To MaxSize, 1 To 2)
+    
+    Dim Letter As String
+    Letter = Trim(CreditsForm.Session_ComboBox.Value)
+    
+    Dim SID As String
+    SID = Trim(CreditsForm.SID_Textbox)
+    
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Set the class modules
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    Dim Exception As cException
+    Set Exception = New cException
+    Exception.Push "Procedure: m_TransferCredits.RunPopulateClasses"
+    
+    Dim AS400 As cAS400
+    Set AS400 = New cAS400
+    
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Loads the class objects
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+    TurnOffExcelDefaults Exception
+    
+    InitializeAS400 AS400, Letter, Exception
+    AS400.Handling = "Fast"
+    AS400.Milliseconds = 50
+    
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Navigation
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    
+    GetTextString = AS400.Presentation.GetText(1, 2, 8)
+    
+    Select Case GetTextString
+    
+        Case "60210   "
+        
+            WaitForReady AS400, Exception
+        
+        Case "603132_B"
+        
+            AS400.Presentation.SendKeys "[pf11]"
+            WaitForReady AS400, Exception
+        
+        Case Else
+        
+            If NavigateToHome(AS400, Exception) = False Then GoTo NavigationFailure
+            AS400.Presentation.SetText "1", 19, 7
+            AS400.Presentation.SendKeys "[Enter]"
+            WaitForReady AS400, Exception
+            AS400.Presentation.SetText "15", 19, 7
+            AS400.Presentation.SendKeys "[Enter]"
+            WaitForReady AS400, Exception
+            AS400.Presentation.SetText SID, 3, 13
+            AS400.Presentation.SendKeys "[Enter]"
+            WaitForReady AS400, Exception
+            AS400.Presentation.SendKeys "[pf11]"
+            WaitForReady AS400, Exception
+            
+            GetTextString = vbNullString
+            GetTextString = AS400.Presentation.GetText(1, 2, 5)
+            If Not GetTextString = "60210" Then GoTo NavigationFailure
+
+    End Select
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Loads array
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    Set TextboxArray(1, 1) = CreditsForm.Mod1_Textbox
+    Set TextboxArray(2, 1) = CreditsForm.Mod2_Textbox
+    Set TextboxArray(3, 1) = CreditsForm.Mod3_Textbox
+    Set TextboxArray(4, 1) = CreditsForm.Mod4_Textbox
+    Set TextboxArray(5, 1) = CreditsForm.Mod5_Textbox
+    Set TextboxArray(6, 1) = CreditsForm.Mod6_Textbox
+    Set TextboxArray(7, 1) = CreditsForm.Mod7_Textbox
+    Set TextboxArray(8, 1) = CreditsForm.Mod8_Textbox
+    Set TextboxArray(9, 1) = CreditsForm.Mod9_Textbox
+    Set TextboxArray(10, 1) = CreditsForm.Mod10_Textbox
+    Set TextboxArray(11, 1) = CreditsForm.Mod11_Textbox
+    Set TextboxArray(12, 1) = CreditsForm.Mod12_Textbox
+    Set TextboxArray(13, 1) = CreditsForm.Mod13_Textbox
+    Set TextboxArray(14, 1) = CreditsForm.Mod14_Textbox
+    Set TextboxArray(15, 1) = CreditsForm.Mod15_Textbox
+    Set TextboxArray(16, 1) = CreditsForm.Mod16_Textbox
+    Set TextboxArray(17, 1) = CreditsForm.Mod17_Textbox
+    Set TextboxArray(18, 1) = CreditsForm.Mod18_Textbox
+    Set TextboxArray(19, 1) = CreditsForm.Mod19_Textbox
+    Set TextboxArray(20, 1) = CreditsForm.Mod20_Textbox
+    Set TextboxArray(21, 1) = CreditsForm.Mod21_Textbox
+    Set TextboxArray(22, 1) = CreditsForm.Mod22_Textbox
+    Set TextboxArray(23, 1) = CreditsForm.Mod23_Textbox
+    Set TextboxArray(24, 1) = CreditsForm.Mod24_Textbox
+    Set TextboxArray(25, 1) = CreditsForm.Mod25_Textbox
+    Set TextboxArray(26, 1) = CreditsForm.Mod26_Textbox
+    Set TextboxArray(27, 1) = CreditsForm.Mod27_Textbox
+    Set TextboxArray(28, 1) = CreditsForm.Mod28_Textbox
+    Set TextboxArray(29, 1) = CreditsForm.Mod29_Textbox
+    Set TextboxArray(30, 1) = CreditsForm.Mod30_Textbox
+    
+    Set TextboxArray(1, 2) = CreditsForm.Title1_Textbox
+    Set TextboxArray(2, 2) = CreditsForm.Title2_Textbox
+    Set TextboxArray(3, 2) = CreditsForm.Title3_Textbox
+    Set TextboxArray(4, 2) = CreditsForm.Title4_Textbox
+    Set TextboxArray(5, 2) = CreditsForm.Title5_Textbox
+    Set TextboxArray(6, 2) = CreditsForm.Title6_Textbox
+    Set TextboxArray(7, 2) = CreditsForm.Title7_Textbox
+    Set TextboxArray(8, 2) = CreditsForm.Title8_Textbox
+    Set TextboxArray(9, 2) = CreditsForm.Title9_Textbox
+    Set TextboxArray(10, 2) = CreditsForm.Title10_Textbox
+    Set TextboxArray(11, 2) = CreditsForm.Title11_Textbox
+    Set TextboxArray(12, 2) = CreditsForm.Title12_Textbox
+    Set TextboxArray(13, 2) = CreditsForm.Title13_Textbox
+    Set TextboxArray(14, 2) = CreditsForm.Title14_Textbox
+    Set TextboxArray(15, 2) = CreditsForm.Title15_Textbox
+    Set TextboxArray(16, 2) = CreditsForm.Title16_Textbox
+    Set TextboxArray(17, 2) = CreditsForm.Title17_Textbox
+    Set TextboxArray(18, 2) = CreditsForm.Title18_Textbox
+    Set TextboxArray(19, 2) = CreditsForm.Title19_Textbox
+    Set TextboxArray(20, 2) = CreditsForm.Title20_Textbox
+    Set TextboxArray(21, 2) = CreditsForm.Title21_Textbox
+    Set TextboxArray(22, 2) = CreditsForm.Title22_Textbox
+    Set TextboxArray(23, 2) = CreditsForm.Title23_Textbox
+    Set TextboxArray(24, 2) = CreditsForm.Title24_Textbox
+    Set TextboxArray(25, 2) = CreditsForm.Title25_Textbox
+    Set TextboxArray(26, 2) = CreditsForm.Title26_Textbox
+    Set TextboxArray(27, 2) = CreditsForm.Title27_Textbox
+    Set TextboxArray(28, 2) = CreditsForm.Title28_Textbox
+    Set TextboxArray(29, 2) = CreditsForm.Title29_Textbox
+    Set TextboxArray(30, 2) = CreditsForm.Title30_Textbox
+    
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Passes the required information to the userform
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    
+    Do Until i >= MaxSize
+    
+        'Wait
+        WaitForReady AS400, Exception
+    
+        'Increment
+        i = i + 1
+        
+        'Line 17
+        TextboxArray(i, 1) = Trim(AS400.Presentation.GetText(17, 4, ModLen))
+        TextboxArray(i, 2) = Trim(AS400.Presentation.GetText(17, 13, 30))
+        
+        'Increment
+        i = i + 1
+        
+        'Line 18
+        TextboxArray(i, 1) = Trim(AS400.Presentation.GetText(18, 4, ModLen))
+        TextboxArray(i, 2) = Trim(AS400.Presentation.GetText(18, 13, 30))
+        
+        'Increment
+        i = i + 1
+        
+        'Line 19
+        TextboxArray(i, 1) = Trim(AS400.Presentation.GetText(19, 4, ModLen))
+        TextboxArray(i, 2) = Trim(AS400.Presentation.GetText(19, 13, 30))
+        
+        'Increment
+        i = i + 1
+        
+        'Line 20
+        TextboxArray(i, 1) = Trim(AS400.Presentation.GetText(20, 4, ModLen))
+        TextboxArray(i, 2) = Trim(AS400.Presentation.GetText(20, 13, 30))
+        
+        'Increment
+        i = i + 1
+        
+        'Line 21
+        TextboxArray(i, 1) = Trim(AS400.Presentation.GetText(21, 4, ModLen))
+        TextboxArray(i, 2) = Trim(AS400.Presentation.GetText(21, 13, 30))
+        
+        'Increment
+        i = i + 1
+        
+        'Line 22
+        TextboxArray(i, 1) = Trim(AS400.Presentation.GetText(22, 4, ModLen))
+        TextboxArray(i, 2) = Trim(AS400.Presentation.GetText(22, 13, 30))
+    
+        'Wait
+        WaitForReady AS400, Exception
+        
+        'Check
+        GetTextString = vbNullString
+        GetTextString = AS400.Presentation.GetText(22, 4, 2)
+        If Len(Trim(GetTextString)) < 1 Then
+            Exit Do
+        Else
+            AS400.Presentation.SendKeys "[pagedn]"
+        End If
+    
+    Loop
+
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Cleanup:
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
     TurnOnExcelDefaults Exception
     Exception.Pop
+
 
 Exit Sub
 
@@ -125,125 +577,37 @@ Exit Sub
 
 ClassError:
 
+    Exception.ErrNumber = Err.Number
+    Exception.ErrDescription = Err.Description
+
 EntryError:
+
+    Exception.ErrNumber = Err.Number
+    Exception.ErrDescription = Err.Description
 
 AS400Error:
 
+    Exception.ErrNumber = Err.Number
+    Exception.ErrDescription = Err.Description
+
 NavigationError:
+
+    Exception.ErrNumber = Err.Number
+    Exception.ErrDescription = Err.Description
 
 NavigationFailure:
 
+    Exception.ErrNumber = Err.Number
+    Exception.ErrDescription = Err.Description
+
+ArrayError:
+
+    Exception.ErrNumber = Err.Number
+    Exception.ErrDescription = Err.Description
+
+LoopError:
+
+    Exception.ErrNumber = Err.Number
+    Exception.ErrDescription = Err.Description
+
 End Sub
-
-Private Function LoadClassBooleans(ByVal CreditsForm As MSForms.UserForm, ByVal MaxSize As Integer) As Boolean
-
-    'Pass error handling up the call stack
-    On Error GoTo 0
-    
-    Dim TempArr() As Object
-    ReDim TempArr(1 To MaxSize)
-    
-    TempArr(1, 1) = CreditsForm.Class1_Checkbox.Value
-    TempArr(2, 1) = CreditsForm.Class2_Checkbox.Value
-    TempArr(3, 1) = CreditsForm.Class3_Checkbox.Value
-    TempArr(4, 1) = CreditsForm.Class4_Checkbox.Value
-    TempArr(5, 1) = CreditsForm.Class5_Checkbox.Value
-    TempArr(6, 1) = CreditsForm.Class6_Checkbox.Value
-    TempArr(7, 1) = CreditsForm.Class7_Checkbox.Value
-    TempArr(8, 1) = CreditsForm.Class8_Checkbox.Value
-    TempArr(9, 1) = CreditsForm.Class9_Checkbox.Value
-    TempArr(10, 1) = CreditsForm.Class10_Checkbox.Value
-    TempArr(11, 1) = CreditsForm.Class11_Checkbox.Value
-    TempArr(12, 1) = CreditsForm.Class12_Checkbox.Value
-    TempArr(13, 1) = CreditsForm.Class13_Checkbox.Value
-    TempArr(14, 1) = CreditsForm.Class14_Checkbox.Value
-    TempArr(15, 1) = CreditsForm.Class15_Checkbox.Value
-    TempArr(16, 1) = CreditsForm.Class16_Checkbox.Value
-    TempArr(17, 1) = CreditsForm.Class17_Checkbox.Value
-    TempArr(18, 1) = CreditsForm.Class18_Checkbox.Value
-    TempArr(19, 1) = CreditsForm.Class19_Checkbox.Value
-    TempArr(20, 1) = CreditsForm.Class20_Checkbox.Value
-    TempArr(21, 1) = CreditsForm.Class21_Checkbox.Value
-    TempArr(22, 1) = CreditsForm.Class22_Checkbox.Value
-    TempArr(23, 1) = CreditsForm.Class23_Checkbox.Value
-    TempArr(24, 1) = CreditsForm.Class24_Checkbox.Value
-    TempArr(25, 1) = CreditsForm.Class25_Checkbox.Value
-    TempArr(26, 1) = CreditsForm.Class26_Checkbox.Value
-    TempArr(27, 1) = CreditsForm.Class27_Checkbox.Value
-    TempArr(28, 1) = CreditsForm.Class28_Checkbox.Value
-
-End Function
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' ClassFields
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Private Function LoadClassFields(ByVal CreditsForm As MSForms.UserForm, ByVal MaxSize As Integer) As Object
-
-    'Pass error handling up the call stack
-    On Error GoTo 0
-
-    Dim TempArr() As Object
-    ReDim TempArr(1 To MaxSize, 1 To 2)
-    
-    TempArr(1, 1) = CreditsForm.Mod1_Textbox
-    TempArr(2, 1) = CreditsForm.Mod2_Textbox
-    TempArr(3, 1) = CreditsForm.Mod3_Textbox
-    TempArr(4, 1) = CreditsForm.Mod4_Textbox
-    TempArr(5, 1) = CreditsForm.Mod5_Textbox
-    TempArr(6, 1) = CreditsForm.Mod6_Textbox
-    TempArr(7, 1) = CreditsForm.Mod7_Textbox
-    TempArr(8, 1) = CreditsForm.Mod8_Textbox
-    TempArr(9, 1) = CreditsForm.Mod9_Textbox
-    TempArr(10, 1) = CreditsForm.Mod10_Textbox
-    TempArr(11, 1) = CreditsForm.Mod11_Textbox
-    TempArr(12, 1) = CreditsForm.Mod12_Textbox
-    TempArr(13, 1) = CreditsForm.Mod13_Textbox
-    TempArr(14, 1) = CreditsForm.Mod14_Textbox
-    TempArr(15, 1) = CreditsForm.Mod15_Textbox
-    TempArr(16, 1) = CreditsForm.Mod16_Textbox
-    TempArr(17, 1) = CreditsForm.Mod17_Textbox
-    TempArr(18, 1) = CreditsForm.Mod18_Textbox
-    TempArr(19, 1) = CreditsForm.Mod19_Textbox
-    TempArr(20, 1) = CreditsForm.Mod20_Textbox
-    TempArr(21, 1) = CreditsForm.Mod21_Textbox
-    TempArr(22, 1) = CreditsForm.Mod22_Textbox
-    TempArr(23, 1) = CreditsForm.Mod23_Textbox
-    TempArr(24, 1) = CreditsForm.Mod24_Textbox
-    TempArr(25, 1) = CreditsForm.Mod25_Textbox
-    TempArr(26, 1) = CreditsForm.Mod26_Textbox
-    TempArr(27, 1) = CreditsForm.Mod27_Textbox
-    TempArr(28, 1) = CreditsForm.Mod28_Textbox
-    
-    TempArr(1, 2) = CreditsForm.Title1_Textbox
-    TempArr(2, 2) = CreditsForm.Title2_Textbox
-    TempArr(3, 2) = CreditsForm.Title3_Textbox
-    TempArr(4, 2) = CreditsForm.Title4_Textbox
-    TempArr(5, 2) = CreditsForm.Title5_Textbox
-    TempArr(6, 2) = CreditsForm.Title6_Textbox
-    TempArr(7, 2) = CreditsForm.Title7_Textbox
-    TempArr(8, 2) = CreditsForm.Title8_Textbox
-    TempArr(9, 2) = CreditsForm.Title9_Textbox
-    TempArr(10, 2) = CreditsForm.Title10_Textbox
-    TempArr(11, 2) = CreditsForm.Title11_Textbox
-    TempArr(12, 2) = CreditsForm.Title12_Textbox
-    TempArr(13, 2) = CreditsForm.Title13_Textbox
-    TempArr(14, 2) = CreditsForm.Title14_Textbox
-    TempArr(15, 2) = CreditsForm.Title15_Textbox
-    TempArr(16, 2) = CreditsForm.Title16_Textbox
-    TempArr(17, 2) = CreditsForm.Title17_Textbox
-    TempArr(18, 2) = CreditsForm.Title18_Textbox
-    TempArr(19, 2) = CreditsForm.Title19_Textbox
-    TempArr(20, 2) = CreditsForm.Title20_Textbox
-    TempArr(21, 2) = CreditsForm.Title21_Textbox
-    TempArr(22, 2) = CreditsForm.Title22_Textbox
-    TempArr(23, 2) = CreditsForm.Title23_Textbox
-    TempArr(24, 2) = CreditsForm.Title24_Textbox
-    TempArr(25, 2) = CreditsForm.Title25_Textbox
-    TempArr(26, 2) = CreditsForm.Title26_Textbox
-    TempArr(27, 2) = CreditsForm.Title27_Textbox
-    TempArr(28, 2) = CreditsForm.Title28_Textbox
-    
-    LoadClassFields = TempArr()
-
-End Function
-
