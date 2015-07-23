@@ -135,13 +135,55 @@ NavigationFailure:
 
 End Sub
 
+Private Function LoadClassBooleans(ByVal CreditsForm As MSForms.UserForm, ByVal MaxSize As Integer) As Boolean
+
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    
+    Dim TempArr() As Object
+    ReDim TempArr(1 To MaxSize)
+    
+    TempArr(1, 1) = CreditsForm.Class1_Checkbox.Value
+    TempArr(2, 1) = CreditsForm.Class2_Checkbox.Value
+    TempArr(3, 1) = CreditsForm.Class3_Checkbox.Value
+    TempArr(4, 1) = CreditsForm.Class4_Checkbox.Value
+    TempArr(5, 1) = CreditsForm.Class5_Checkbox.Value
+    TempArr(6, 1) = CreditsForm.Class6_Checkbox.Value
+    TempArr(7, 1) = CreditsForm.Class7_Checkbox.Value
+    TempArr(8, 1) = CreditsForm.Class8_Checkbox.Value
+    TempArr(9, 1) = CreditsForm.Class9_Checkbox.Value
+    TempArr(10, 1) = CreditsForm.Class10_Checkbox.Value
+    TempArr(11, 1) = CreditsForm.Class11_Checkbox.Value
+    TempArr(12, 1) = CreditsForm.Class12_Checkbox.Value
+    TempArr(13, 1) = CreditsForm.Class13_Checkbox.Value
+    TempArr(14, 1) = CreditsForm.Class14_Checkbox.Value
+    TempArr(15, 1) = CreditsForm.Class15_Checkbox.Value
+    TempArr(16, 1) = CreditsForm.Class16_Checkbox.Value
+    TempArr(17, 1) = CreditsForm.Class17_Checkbox.Value
+    TempArr(18, 1) = CreditsForm.Class18_Checkbox.Value
+    TempArr(19, 1) = CreditsForm.Class19_Checkbox.Value
+    TempArr(20, 1) = CreditsForm.Class20_Checkbox.Value
+    TempArr(21, 1) = CreditsForm.Class21_Checkbox.Value
+    TempArr(22, 1) = CreditsForm.Class22_Checkbox.Value
+    TempArr(23, 1) = CreditsForm.Class23_Checkbox.Value
+    TempArr(24, 1) = CreditsForm.Class24_Checkbox.Value
+    TempArr(25, 1) = CreditsForm.Class25_Checkbox.Value
+    TempArr(26, 1) = CreditsForm.Class26_Checkbox.Value
+    TempArr(27, 1) = CreditsForm.Class27_Checkbox.Value
+    TempArr(28, 1) = CreditsForm.Class28_Checkbox.Value
+
+End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassFields
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Private Function PopulateObjects(ByVal CreditsForm As MSForms.UserForm, ByVal MaxSize As Integer) As Object
+Private Function LoadClassFields(ByVal CreditsForm As MSForms.UserForm, ByVal MaxSize As Integer) As Object
 
-    Dim TempArr(1 To MaxSize, 1 To 2) As Object
+    'Pass error handling up the call stack
+    On Error GoTo 0
+
+    Dim TempArr() As Object
+    ReDim TempArr(1 To MaxSize, 1 To 2)
     
     TempArr(1, 1) = CreditsForm.Mod1_Textbox
     TempArr(2, 1) = CreditsForm.Mod2_Textbox
@@ -200,6 +242,8 @@ Private Function PopulateObjects(ByVal CreditsForm As MSForms.UserForm, ByVal Ma
     TempArr(26, 2) = CreditsForm.Title26_Textbox
     TempArr(27, 2) = CreditsForm.Title27_Textbox
     TempArr(28, 2) = CreditsForm.Title28_Textbox
+    
+    LoadClassFields = TempArr()
 
 End Function
 
