@@ -243,10 +243,17 @@ StartLoop:
             Case "603132_B"
                 AS400.Presentation.SendKeys ("[pf3]")
                 
+            Case "631001  "
+                AS400.Presentation.SendKeys ("[pf3]")
+                WaitForReady AS400, Exception
+                AS400.Presentation.SendKeys ("[pf3]")
+                
             Case Else
                 AS400.Presentation.SendKeys ("[pf3]")
                 WaitForReady AS400, Exception
                 AS400.Presentation.SendKeys ("[pf12]")
+                WaitForReady AS400, Exception
+                AS400.Presentation.SendKeys ("[pf3]")
 
         End Select
         
@@ -279,6 +286,3 @@ NavigationError:
 GoTo Cleanup
 
 End Function
-
-
-
