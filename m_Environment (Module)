@@ -73,8 +73,10 @@ Public Function ApproveRegistration(ByVal StudentFile As cStudentFile, ByVal AS4
     ConfirmStudentFile StudentFile, ApprovalFlag, RedMessage, BlueMessage, Exception
     
     If ApprovalFlag = False Then
+        AppActivate "Microsoft excel"
         MsgBox RedMessage, vbCritical, "Pre-Enrollment Checklist"
     Else
+        AppActivate "Microsoft excel"
         UserSelection = MsgBox(BlueMessage, vbOKCancel, "Pre-Enrollment Checklist")
         If UserSelection = vbOK Then ApprovalFlag = True
         If UserSelection = vbCancel Then ApprovalFlag = False
