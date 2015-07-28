@@ -668,7 +668,7 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
         
             AS400.Presentation.SetText "C", 3, 19
             AS400.Presentation.SetText "Y", 8, 19
-            AS400.Presentation.SetText "C", 10, 19
+            AS400.Presentation.SetText "H", 10, 19
 
 SkipIterationEntries:
         
@@ -685,7 +685,13 @@ SkipIterationEntries:
         Loop
         
         WaitForReady AS400, Exception
+        AS400.Presentation.SetText "C", 3, 23
+        AS400.Presentation.SetText "Y", 14, 60
+        AS400.Presentation.SendKeys "[Enter]"
+        WaitForReady AS400, Exception
         AS400.Presentation.SendKeys "[pf3]"
+        WaitForReady AS400, Exception
+        
         MsgBox "Transfer credits have been successfully applied", vbInformation, "Information"
         
     End If
