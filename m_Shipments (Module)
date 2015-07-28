@@ -1,0 +1,110 @@
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' m_Shipments (Module)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Option Explicit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ManageShipments
+'Assumes the passed arguments are valid entries
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal SendShipments As Boolean)
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' General variables
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    Dim GetTextString As String
+    GetTextString = vbNullString
+    
+    Dim i As Integer
+    i = 0
+    
+    Dim MaxSize As Integer
+    MaxSize = 23
+    
+    Dim ShipArray() As String
+    ReDim ShipArray(12 To MaxSize, 1 To 2)
+    
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Set the class modules
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    Dim Exception As cException
+    Set Exception = New cException
+    Exception.Push "Procedure: m_Shipments.ManageShipments"
+    
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Loads the required objects/information
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    TurnOffExcelDefaults Exception
+
+    AS400.Handling = "Fast"
+    AS400.Milliseconds = 50
+    
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Navigation
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    On Error GoTo NavigationError
+    GetTextString = AS400.Presentation.GetText(1, 3, 5)
+    
+    If Not GetTextString = "42040" Then
+
+        If NavigateToHome(AS400, Exception) = False Then GoTo NavigationFailure
+    
+        AS400.Presentation.SetText "1", 19, 7
+        AS400.Presentation.SendKeys "[Enter]"
+        WaitForReady AS400, Exception
+    
+        AS400.Presentation.SetText "8", 19, 7
+        AS400.Presentation.SendKeys "[Enter]"
+        WaitForReady AS400, Exception
+        
+    Else
+        AS400.Presentation.SendKeys "[pf3]"
+    End If
+    
+    If SendShipments = False Then
+        AS400.Presentation.SetText "17", 19, 7
+    Else
+        AS400.Presentation.SetText "18", 19, 7
+    End If
+    
+    AS400.Presentation.SendKeys "[Enter]"
+    WaitForReady AS400, Exception
+    
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Option: "Prevent Shipment Release"
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    If SendShipments = False Then
+    
+        AS400.Presentation.SetText SID, 4, 22
+        AS400.Presentation.SetText "540", 2, 78
+        AS400.Presentation.SendKeys "[Enter]"
+        WaitForReady AS400, Exception
+        
+        
+    
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Option: "Release Additional Shipments"
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Cleanup:
+
+NavigationFailure:
+    If NavigateToHome(AS400, Exception) = False Then
+        AppActivate "Microsoft excel"
+        MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
+            "Please navigate manually to the home screen, then attempt to run the application again.", _
+            vbCritical, "Navigation Failure"
+    End If
+GoTo Cleanup
+
+NavigationError:
+    AppActivate "Microsoft excel"
+    MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
+        "Please navigate manually to the home screen, then attempt to run the application again.", _
+        vbCritical, "Navigation Error"
+Resume Cleanup
+
+Exit Sub
+
+End Sub
