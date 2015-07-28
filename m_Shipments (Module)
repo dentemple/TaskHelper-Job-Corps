@@ -19,11 +19,16 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
     Dim i As Integer
     i = 0
     
+    Dim StartSize As Integer
+    StartSize = 12
+    
     Dim MaxSize As Integer
     MaxSize = 23
     
+    Dim 
+    
     Dim ShipArray() As String
-    ReDim ShipArray(12 To MaxSize, 1 To 2)
+    ReDim ShipArray(StartSize To MaxSize, 1 To 2)
     
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Set the class modules
@@ -77,15 +82,48 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
     If SendShipments = False Then
     
         AS400.Presentation.SetText SID, 4, 22
+        
+        '''''''''''''''''''''''''''''''''''''''''''''''''''''
+        ' The '540' set
+        '''''''''''''''''''''''''''''''''''''''''''''''''''''
         AS400.Presentation.SetText "540", 2, 78
         AS400.Presentation.SendKeys "[Enter]"
         WaitForReady AS400, Exception
         
+        i = StartSize
+        Do
         
+            ShipArray(i, 1) = Trim(AS400.Presentation.GetText(i, 47, 4))
+            ShipArray(i, 2) = Trim(AS400.Presentation.GetText(i, 77, 3))
+        
+        i = i + 1
+        Loop While i <= MaxSize
+
+        WaitForReady AS400, Exception
+        
+        i = StartSize
+        Do
+        
+            If Len(ShipArray(i, 1)) < 1 Then
+            
+                Exit do
+                
+            ElseIf ShipArray(i, 1) = "ELEC" Or ShipArray(i, 1) = "M1PR" Then
+            
+                'Do Nothing
+                
+            ElseIf ShipArray(
+        
+        Loop While i <= MaxSize
+        
+        WaitForReady AS400, Exception
     
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Option: "Release Additional Shipments"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    Else
+    
+    End If
 
 Cleanup:
 
