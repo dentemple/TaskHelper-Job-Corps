@@ -127,6 +127,8 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
 
 Cleanup:
 
+Exit Sub
+
 NavigationFailure:
     If NavigateToHome(AS400, Exception) = False Then
         AppActivate "Microsoft excel"
@@ -142,7 +144,5 @@ NavigationError:
         "Please navigate manually to the home screen, then attempt to run the application again.", _
         vbCritical, "Navigation Error"
 Resume Cleanup
-
-Exit Sub
 
 End Sub
