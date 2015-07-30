@@ -32,6 +32,10 @@ Sub ShipmentsButton_Click()
     Dim Letter As String
     Letter = vbNullString
     
+    Dim Exception As cException
+    Set Exception = New cException
+    Exception.Push "Procedure: ThisWorkbook.ShipmentsButton_Click"
+    
     SID = Application.InputBox("Enter the Student ID#")
     
     If SID = "" Then
@@ -65,10 +69,6 @@ Sub ShipmentsButton_Click()
         GoTo LetterLength
     End If
 
-    Dim Exception As cException
-    Set Exception = New cException
-    Exception.Push "Procedure: ThisWorkbook.ShipmentsButton_Click"
-
     Dim AS400 As cAS400
     Set AS400 = New cAS400
     
@@ -78,28 +78,25 @@ Sub ShipmentsButton_Click()
     AS400.Milliseconds = 50
 
     On Error GoTo UnknownError
-    'ManageShipments AS400, SID, SendShipments
+    'ManageShipments AS400, SID, SendShipments, Exception
 
 Cleanup:
 
     On Error Resume Next
+    Exception.Pop
 
 Exit Sub
 
 SIDLength:
-
 GoTo Cleanup
 
 LetterLength:
-
 GoTo Cleanup
 
 AS400Error:
-
 Resume Cleanup
 
 UnknownError:
-
 Resume Cleanup
 
 End Sub
