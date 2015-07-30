@@ -248,6 +248,18 @@ StartLoop:
                 WaitForReady AS400, Exception
                 AS400.Presentation.SendKeys ("[pf3]")
                 
+            Case " BNISOP "
+                AS400.Presentation.SendKeys ("[pf12]")
+                WaitForReady AS400, Exception
+                AS400.Presentation.SendKeys ("[pf12]")
+                
+            Case " 42040  "
+                AS400.Presentation.SendKeys ("[pf3]")
+                WaitForReady AS400, Exception
+                AS400.Presentation.SendKeys ("[pf12]")
+                WaitForReady AS400, Exception
+                AS400.Presentation.SendKeys ("[pf12]")
+                
             Case Else
                 AS400.Presentation.SendKeys ("[pf3]")
                 WaitForReady AS400, Exception
