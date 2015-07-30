@@ -9,11 +9,13 @@ Option Explicit
 ' ManageShipments
 'Assumes the passed arguments are valid entries
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal SendShipments As Boolean)
+Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal SendShipments As Boolean, ByRef Exception As cException)
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' General variables
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    Exception.Push "Procedure: m_Shipments.ManageShipments"
+    
     Const StartSize = 12
     Const MaxSize = 23
     
@@ -39,16 +41,10 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
     Dim EndPageLoop As Boolean
     EndPageLoop = False
     
-    Dim ShipSet() As String
-    ShipSet = Array("540", "560", "620")
+    Dim ShipSet() As Variant
+    ShipSet() = Array("540", "560", "620")
     
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Set the class modules
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    Dim Exception As cException
-    Set Exception = New cException
-    Exception.Push "Procedure: m_Shipments.ManageShipments"
-    
+
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Loads the required objects/information
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -96,7 +92,7 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
         '1st level loop: Perform on each shipment status
         For SetCount = LBound(ShipSet) To UBound(ShipSet)
         
-            Select Case SetCount
+            Select Case ShipSet(SetCount)
             
                 Case "540"
                     Target = "539"
@@ -110,7 +106,7 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
             End Select
         
             AS400.Presentation.SetText SID, 4, 22
-            AS400.Presentation.SetText SetCount, 2, 78
+            AS400.Presentation.SetText ShipSet(SetCount), 2, 78
             AS400.Presentation.SendKeys "[Enter]"
             WaitForReady AS400.Exception
             
@@ -178,6 +174,9 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
     End If
 
 Cleanup:
+
+    TurnOffExcelDefaults Exception
+    Exception.Pop
 
 Exit Sub
 
