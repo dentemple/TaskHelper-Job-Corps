@@ -1,3 +1,4 @@
+
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' m_Shipments (Module)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -13,22 +14,33 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' General variables
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    Const StartSize = 12
+    Const MaxSize = 23
+    
     Dim GetTextString As String
     GetTextString = vbNullString
     
-    Dim i As Integer
+    Dim CheckForTarget As String
+    CheckForTarget = vbNullString
+    
+    'The AS/400 only accepts as long
+    Dim i As Long
     i = 0
     
-    Dim StartSize As Integer
-    StartSize = 12
+    Dim SetCount As Integer
+    SetCount = 0
     
-    Dim MaxSize As Integer
-    MaxSize = 23
+    Dim Pages As Integer
+    Pages = 0
     
-    Dim 
+    Dim Target As String
+    Target = vbNullString
     
-    Dim ShipArray() As String
-    ReDim ShipArray(StartSize To MaxSize, 1 To 2)
+    Dim EndPageLoop As Boolean
+    EndPageLoop = False
+    
+    Dim ShipSet() As String
+    ShipSet = Array("540", "560", "620")
     
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Set the class modules
@@ -80,47 +92,87 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
 ' Option: "Prevent Shipment Release"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     If SendShipments = False Then
-    
-        AS400.Presentation.SetText SID, 4, 22
+           
+        '1st level loop: Perform on each shipment status
+        For SetCount = LBound(ShipSet) To UBound(ShipSet)
         
-        '''''''''''''''''''''''''''''''''''''''''''''''''''''
-        ' The '540' set
-        '''''''''''''''''''''''''''''''''''''''''''''''''''''
-        AS400.Presentation.SetText "540", 2, 78
-        AS400.Presentation.SendKeys "[Enter]"
-        WaitForReady AS400, Exception
-        
-        i = StartSize
-        Do
-        
-            ShipArray(i, 1) = Trim(AS400.Presentation.GetText(i, 47, 4))
-            ShipArray(i, 2) = Trim(AS400.Presentation.GetText(i, 77, 3))
-        
-        i = i + 1
-        Loop While i <= MaxSize
-
-        WaitForReady AS400, Exception
-        
-        i = StartSize
-        Do
-        
-            If Len(ShipArray(i, 1)) < 1 Then
+            Select Case SetCount
             
-                Exit do
-                
-            ElseIf ShipArray(i, 1) = "ELEC" Or ShipArray(i, 1) = "M1PR" Then
+                Case "540"
+                    Target = "539"
+                Case "560"
+                    Target = "540"
+                Case "620"
+                    Target = "560"
+                Case Else
+                    GoTo ArrayFailure
+                    
+            End Select
+        
+            AS400.Presentation.SetText SID, 4, 22
+            AS400.Presentation.SetText SetCount, 2, 78
+            AS400.Presentation.SendKeys "[Enter]"
+            WaitForReady AS400.Exception
             
-                'Do Nothing
+            '2nd level loop: Perform on each separate page
+            EndPageLoop = False
+            Do
+            
+                '3rd level loop: Perform on each line
+                i = StartSize
+                Do
                 
-            ElseIf ShipArray(
+                    GetTextString = vbNullString
+                    GetTextString = Trim(AS400.Presentation.GetText(i, 47, 4))
+                    
+                    CheckForTarget = vbNullString
+                    CheckForTarget = Trim(AS400.Presentation.GetText(i, 77, 3))
+                
+                    'If the line is empty...
+                    If Len(GetTextString) < 2 Then
+                        Exit Do
+                        
+                    'ElseIf the line refers to electives or assessments...
+                    ElseIf GetTextString = "ELEC" Or GetTextString = "M1PR" Then
+                        'Do Nothing
+                        
+                    'ElseIf the line includes the target status...
+                    ElseIf CheckForTarget = Target Then
+                        AS400.Presentation.SetText "1", i, 3
+                        
+                    Else
+                        'Do Nothing
+                    End If
+                
+                    i = i + 1
+                    
+                Loop While i <= MaxSize
+            
+                GetTextString = vbNullString
+                GetTextString = Trim(AS400.Presentation.GetText(23, 47, 4))
+                
+                If Len(GetTextString) < 2 Then
+                
+                    WaitForReady AS400.Exception
+                    AS400.Presentation.SendKeys "[Enter]"
+                    WaitForReady AS400.Exception
+                    
+                    EndPageLoop = True
+                    
+                Else
+                
+                    WaitForReady AS400.Exception
+                    AS400.Presentation.SendKeys "[pagedn]"
+                    WaitForReady AS400.Exception
+                    
+                End If
+                 
+            Loop Until EndPageLoop = True
+            
+        Next SetCount
         
-        Loop While i <= MaxSize
+        AS400.Presentation.SendKeys "[pf3]"
         
-        WaitForReady AS400, Exception
-    
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Option: "Release Additional Shipments"
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     Else
     
     End If
@@ -144,5 +196,7 @@ NavigationError:
         "Please navigate manually to the home screen, then attempt to run the application again.", _
         vbCritical, "Navigation Error"
 Resume Cleanup
+
+ArrayFailure:
 
 End Sub
