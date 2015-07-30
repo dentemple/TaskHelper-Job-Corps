@@ -31,7 +31,6 @@ Public Sub RunPopulateClasses(ByVal CreditsForm As MSForms.UserForm)
     Dim TextboxArray() As Object
     ReDim TextboxArray(1 To MaxSize, 1 To 2)
     
-    
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Set the class modules
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -340,8 +339,17 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
     Dim BooleanArray() As Boolean
     ReDim BooleanArray(1 To MaxSize)
     
-    Dim SuccessMessage As String
-    SuccessMessage = "TR credits have been successfully applied!"
+    Dim TRSuccessMessage As String
+    TRSuccessMessage = "Transfer credits have been successfully applied!"
+    
+    Dim ShipSuccessMessage As String
+    ShipSuccessMessage = "The shipment option has been successfully applied!"
+    
+    Dim ReturnValue As Integer
+    ReturnValue = 0
+    
+    Dim SendShipments As Boolean
+    SendShipments = False
     
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Set the class modules
@@ -680,7 +688,7 @@ SkipIterationEntries:
         
             Counter = Counter - 1
             
-            Status.Value = SuccessMessage
+            Status.Value = TRSuccessMessage
     
         Loop
         
@@ -692,13 +700,68 @@ SkipIterationEntries:
         AS400.Presentation.SendKeys "[pf3]"
         WaitForReady AS400, Exception
         
-        MsgBox "Transfer credits have been successfully applied", vbInformation, "Information"
+        AppActivate "Microsoft excel"
+        MsgBox TRSuccessMessage, vbInformation, "Information"
         
+    End If
+    
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    ' Shipments
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    If CreditsForm.PreventShipments_Optionbutton.Value = True Then
+        
+        Status.Value = "...   ...   ...   Managing Shipments   ...   ...   ..."
+        SendShipments = False
+        ManageShipments AS400, SID, SendShipments, Exception
+        Status.Value = ShipSuccessMessage
+        
+    ElseIf CreditsForm.SendShipments_Optionbutton.Value = True Then
+    
+        Status.Value = "...   ...   ...   Managing Shipments   ...   ...   ..."
+        SendShipments = True
+        ManageShipments AS400, SID, SendShipments, Exception
+        Status.Value = ShipSuccessMessage
+        
+    ElseIf CreditsForm.NoDecision_Optionbutton.Value = True Then
+    
+        'Do Nothing
+        
+    Else
+    
+        AppActivate "Microsoft excel"
+        ReturnValue = MsgBox("*** No shipment option has been selected. ***" & _
+            vbNewLine & vbNewLine & vbNewLine & vbNewLine & _
+            Space(3) & "Click 'Yes' to send the course shipments." & vbNewLine & vbNewLine & _
+            Space(3) & "Click 'No' to prevent the course shipments." & vbNewLine & vbNewLine & _
+            Space(3) & "Press 'Cancel' to end the application.", vbYesNoCancel, "Manage Shipments")
+        
+        Select Case ReturnValue
+        
+            Case vbYes
+                Status.Value = "...   ...   ...   Managing Shipments   ...   ...   ..."
+                SendShipments = True
+                ManageShipments AS400, SID, SendShipments, Exception
+                Status.Value = ShipSuccessMessage
+                
+            Case vbNo
+                Status.Value = "...   ...   ...   Managing Shipments   ...   ...   ..."
+                SendShipments = False
+                ManageShipments AS400, SID, SendShipments, Exception
+                Status.Value = ShipSuccessMessage
+                
+            Case vbCancel
+                'Do Nothing
+                
+            Case Else
+                'Do Nothing
+                
+        End Select
+    
     End If
 
 Cleanup:
 
-    If Not Status.Value = SuccessMessage Then
+    If Not Status.Value = TRSuccessMessage Or Not Status.Value = ShipSuccessMessage Then
         Status.Value = "Ready"
     End If
 
