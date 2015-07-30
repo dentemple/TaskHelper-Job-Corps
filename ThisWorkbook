@@ -15,5 +15,91 @@ End Sub
 Sub LicenseInfo_Button_Click()
 
     ThisWorkbook.FollowHyperlink "http://www.gnu.org/licenses/gpl-3.0.en.html"
+ 
+End Sub
+
+Sub ShipmentsButton_Click()
+
+    Dim SID As String
+    SID = vbNullString
+    
+    Dim ReturnValue As Integer
+    ReturnValue = 0
+    
+    Dim SendShipments As Boolean
+    SendShipments = False
+    
+    Dim Letter As String
+    Letter = vbNullString
+    
+    SID = Application.InputBox("Enter the Student ID#")
+    
+    If SID = "" Then
+        GoTo Cleanup
+    ElseIf Len(SID) < 8 Or Len(SID) > 8 Then
+        GoTo SIDLength
+    End If
+    
+    ReturnValue = MsgBox("*** Should shipments be sent for this program? ***" & _
+        vbNewLine & vbNewLine & vbNewLine & vbNewLine & _
+        Space(3) & "Click 'Yes' to send the shipments." & vbNewLine & vbNewLine & _
+        Space(3) & "Click 'No' to prevent the shipments." & vbNewLine & vbNewLine & _
+        Space(3) & "Press 'Cancel' to end the application.", vbYesNoCancel, "Manage Shipments")
+        
+    Select Case ReturnValue
+        Case vbYes
+            SendShipments = True
+        Case vbNo
+            SendShipments = False
+        Case vbCancel
+            GoTo Cleanup
+        Case Else
+            GoTo Cleanup
+    End Select
+    
+    Letter = Application.InputBox("Enter the AS/400 Session")
+    
+    If Letter = "" Then
+        GoTo Cleanup
+    ElseIf Len(Letter) > 1 Then
+        GoTo LetterLength
+    End If
+
+    Dim Exception As cException
+    Set Exception = New cException
+    Exception.Push "Procedure: ThisWorkbook.ShipmentsButton_Click"
+
+    Dim AS400 As cAS400
+    Set AS400 = New cAS400
+    
+    On Error GoTo AS400Error
+    InitializeAS400 AS400, Letter, Exception
+    AS400.Handling = "Fast"
+    AS400.Milliseconds = 50
+
+    On Error GoTo UnknownError
+    'ManageShipments AS400, SID, SendShipments
+
+Cleanup:
+
+    On Error Resume Next
+
+Exit Sub
+
+SIDLength:
+
+GoTo Cleanup
+
+LetterLength:
+
+GoTo Cleanup
+
+AS400Error:
+
+Resume Cleanup
+
+UnknownError:
+
+Resume Cleanup
 
 End Sub
