@@ -87,6 +87,7 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Option: "Prevent Shipment Release"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    On Error Resume Next
     If SendShipments = False Then
            
         '1st level loop: Perform on each shipment status
@@ -108,7 +109,7 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
             AS400.Presentation.SetText SID, 4, 22
             AS400.Presentation.SetText ShipSet(SetCount), 2, 78
             AS400.Presentation.SendKeys "[Enter]"
-            WaitForReady AS400.Exception
+            WaitForReady AS400, Exception
             
             '2nd level loop: Perform on each page
             EndPageLoop = False
@@ -149,17 +150,17 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
                 
                 If Len(GetTextString) < 2 Then
                 
-                    WaitForReady AS400.Exception
+                    WaitForReady AS400, Exception
                     AS400.Presentation.SendKeys "[Enter]"
-                    WaitForReady AS400.Exception
+                    WaitForReady AS400, Exception
                     
                     EndPageLoop = True
                     
                 Else
                 
-                    WaitForReady AS400.Exception
+                    WaitForReady AS400, Exception
                     AS400.Presentation.SendKeys "[pagedn]"
-                    WaitForReady AS400.Exception
+                    WaitForReady AS400, Exception
                     
                 End If
                  
@@ -168,12 +169,65 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
         Next SetCount
         
         AS400.Presentation.SendKeys "[pf3]"
-        
-    Else
     
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Option: "Prevent Shipment Release"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    Else
+    
+        AS400.Presentation.SetText SID, 4, 22
+        AS400.Presentation.SendKeys "[Enter]"
+        WaitForReady AS400, Exception
+        
+        '1st level loop: Perform on each page
+        EndPageLoop = False
+        Do
+        
+            '2nd level loop: Perform on each line
+            i = StartSize
+            Do
+            
+                GetTextString = vbNullString
+                GetTextString = Trim(AS400.Presentation.GetText(i, 47, 4))
+                
+                'If the line is empty...
+                If Len(GetTextString) < 2 Then
+                    Exit Do
+                    
+                'ElseIf the line refers to electives or assessments...
+                ElseIf GetTextString = "ELEC" Or GetTextString = "M1PR" Then
+                    'Do Nothing
+                    
+                Else
+                    AS400.Presentation.SetText "1", i, 3
+                End If
+                
+                i = i + 1
+                
+            Loop While i <= MaxSize
+                    
+            GetTextString = vbNullString
+            GetTextString = Trim(AS400.Presentation.GetText(23, 47, 4))
+            
+            If Len(GetTextString) < 2 Then
+            
+                WaitForReady AS400, Exception
+                AS400.Presentation.SendKeys "[Enter]"
+                WaitForReady AS400, Exception
+                
+                EndPageLoop = True
+                
+            Else
+            
+                WaitForReady AS400, Exception
+                AS400.Presentation.SendKeys "[pagedn]"
+                WaitForReady AS400, Exception
+                
+            End If
+            
+        Loop Until EndPageLoop = True
+        
+        AS400.Presentation.SendKeys "[pf3]"
     
     End If
 
