@@ -193,11 +193,13 @@ AS400Error:
         "> The AS400 has failed to initialize" & vbNewLine & _
         "Error #" & Err.Number & Space(1) & Err.Description & vbNewLine & vbNewLine
     End If
+    AppActivate "Microsoft excel"
     MsgBox RedMessage, vbCritical, "AS/400 Error"
 Resume Cleanup
 
 NavigationFailure:
     If NavigateToHome(AS400, Exception) = False Then
+        AppActivate "Microsoft excel"
         MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
             "Please navigate manually to the home screen, then attempt to run the application again." & _
             vbNewLine & vbNewLine & Exception.StackTop, vbCritical, "Navigation Failure"
@@ -205,6 +207,7 @@ NavigationFailure:
 GoTo Cleanup
 
 NavigationError:
+    AppActivate "Microsoft excel"
     MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
         "Please navigate manually to the home screen, then attempt to run the application again." & _
         vbNewLine & vbNewLine & Exception.StackTop, vbCritical, "Navigation Failure"
@@ -384,10 +387,12 @@ AS400Error:
         "> The AS400 has failed to initialize" & vbNewLine & _
         "Error #" & Err.Number & Space(1) & Err.Description & vbNewLine & vbNewLine
     End If
+    AppActivate "Microsoft excel"
     MsgBox RedMessage, vbCritical, "AS/400 Error"
 Resume Cleanup
 
 IncorrectScreen:
+    AppActivate "Microsoft excel"
     MsgBox "Unable to Page Up or Down. No search has been selected." & vbNewLine & vbNewLine & _
         "Please enter a name, then press either 'Action' or 'Name Search' to continue.", _
         vbInformation, "No search has been selected"
@@ -647,6 +652,7 @@ GoTo Cleanup
 
 NavigationFailure:
     If NavigateToHome(AS400, Exception) = False Then
+        AppActivate "Microsoft excel"
         MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
             "Please navigate manually to the home screen, then attempt to run the application again." & _
             vbNewLine & vbNewLine & Exception.StackTop, vbCritical, "Navigation Failure"
@@ -654,6 +660,7 @@ NavigationFailure:
 GoTo Cleanup
 
 NavigationError:
+    AppActivate "Microsoft excel"
     MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
         "Please navigate manually to the home screen, then attempt to run the application again." & _
         vbNewLine & vbNewLine & Exception.StackTop, vbCritical, "Navigation Failure"
@@ -667,8 +674,8 @@ AS400Error:
         "> The AS400 has failed to initialize" & vbNewLine & _
         "Error #" & Err.Number & Space(1) & Err.Description & vbNewLine & vbNewLine
     End If
+    AppActivate "Microsoft excel"
     MsgBox RedMessage, vbCritical, "AS/400 Error"
 Resume Cleanup
 
 End Sub
-
