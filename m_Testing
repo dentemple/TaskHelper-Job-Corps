@@ -9,6 +9,9 @@ Public Sub RunUnitCheck(ByVal RegForm As MSForms.UserForm, ByRef StudentFile As 
     
     On Error GoTo 0
     
+    Dim StartTime As Single
+    StartTime = Timer
+    
     Dim Status As Object
     Set Status = RegForm.Status_Textbox
     Status.Value = "PERFORMING THE TEST PROCEDURE"
@@ -51,6 +54,19 @@ Public Sub RunUnitCheck(ByVal RegForm As MSForms.UserForm, ByRef StudentFile As 
     
     AppActivate "Microsoft Excel"
     MsgBox "Unit Test Complete" & vbNewLine & vbNewLine & "GetText check: " & TestGetText, vbInformation, "Unit Test Check"
+    
+    
+    AppActivate "Microsoft Excel"
+    If MsgBox("Automation Complete:" & " Student ID #" & StudentFile.StudentID & vbNewLine & vbNewLine & _
+        "Total Elapsed Time: " & vbTab & (Timer - StartTime) & " seconds" & vbNewLine & vbNewLine & _
+        "DO YOU WISH TO APPLY TRANSFER CREDITS?", vbYesNo, "Automation Complete - Apply TR?") = vbYes Then
+        
+        Unload RegForm
+        
+        u_TransferCredits.Show
+        
+    End If
+    
     
 Cleanup:
     AS400.Handling = PrevHandling
@@ -121,5 +137,43 @@ MsgBox (Timer - CheckTime)
 Exit Sub
 
 EndAutomation:
+
+End Sub
+
+Private Sub sdosdvngksld()
+
+Dim SetCount As Integer
+SetCount = 0
+
+Dim ShipSet() As Variant
+ShipSet() = Array("540", "560", "620")
+
+Dim Target As String
+Target = vbNullString
+
+For SetCount = LBound(ShipSet) To UBound(ShipSet)
+        
+            Select Case ShipSet(SetCount)
+            
+                Case "540"
+                    Target = "539"
+                Case "560"
+                    Target = "540"
+                Case "620"
+                    Target = "560"
+                Case Else
+                    GoTo ArrayFailure
+                    
+            End Select
+            
+    MsgBox "ShipSet Value:" & vbTab & ShipSet(SetCount) & vbNewLine & _
+        "Target Value:" & vbTab & Target & vbNewLine, vbInformation, "Testing"
+    
+Next SetCount
+
+Exit Sub
+
+ArrayFailure:
+    MsgBox "Array Failure", vbCritical, "Array Failure"
 
 End Sub
