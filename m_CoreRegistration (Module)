@@ -25,10 +25,7 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
     Dim BlueMessage As String
     BlueMessage = vbTab & "FINAL CONFIRMATION" & vbNewLine & vbNewLine & _
         "Please confirm the following information before proceeding with the enrollment script." & vbNewLine & vbNewLine
-    
-    Dim Forward As Long
-    Forward = 1
-    
+
     Dim Status As Object
     Set Status = RegForm.Status_Textbox
     Status.Value = "...   ...   ...   Performing the pre-enrollment check   ...   ...   ..."
@@ -79,22 +76,19 @@ PreEnrollmentCheck:
 ' Set the subsequent settings based on the user's selection
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     
-    Select Case AS400.Handling
-        Case "Fast"
+    Select Case LCase(AS400.Handling)
+        Case "fast"
             On Error GoTo AcknowledgeError
             AS400.Milliseconds = 75
-        Case "Slow"
+        Case "slow"
             On Error GoTo AcknowledgeError
             AS400.Milliseconds = 900
-        Case "StopEach"
+        Case "stopeach"
             On Error GoTo AcknowledgeError
             AS400.Milliseconds = 100
-        Case "Debug"
+        Case "debug"
             On Error GoTo 0
             AS400.Milliseconds = 200
-        Case "Test"
-            On Error GoTo 0
-            GoTo HiddenTestOption
         Case "test"
             On Error GoTo 0
             GoTo HiddenTestOption
@@ -107,7 +101,9 @@ PreEnrollmentCheck:
     
     If NavigateToHome(AS400, Exception) = False Then GoTo NavigationFailure
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 StartEnrollment:
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
     'Address Book w/ Parent option
     AS400.Presentation.SetText "1", 19, 7
@@ -220,7 +216,9 @@ StartEnrollment:
     
     If NavigateToHome(AS400, Exception) = False Then GoTo MidEnrollmentNavigationFailure
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 MidEnrollment:
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
     'Full program enrollment
     AS400.Presentation.SetText "20", 19, 7
@@ -284,43 +282,24 @@ MidEnrollment:
         "Total Elapsed Time: " & vbTab & (Timer - StartTime) & " seconds" & vbNewLine & vbNewLine & _
         "DO YOU WISH TO APPLY TRANSFER CREDITS?", vbYesNo, "Automation Complete - Apply TR?") = vbYes Then
         
-        AS400.Handling = "Fast"
-        AS400.Milliseconds = 75
-        GetTextString = vbNullString
-    
-        GetTextString = AS400.Presentation.GetText(1, 2, 8)
-        If Not GetTextString = "603132_B" Or "60210   " Then
-            If NavigateToHome(AS400, Exception) = False Then GoTo Cleanup
-            AS400.Presentation.SetText "1", 19, 7
-            AS400.Presentation.SendKeys "[Enter]"
-            WaitForReady AS400, Exception
-            AS400.Presentation.SetText "15", 19, 7
-            AS400.Presentation.SendKeys "[Enter]"
-            WaitForReady AS400, Exception
-            GetTextString = vbNullString
-        End If
-    
-        AS400.Presentation.SetText SID, 3, 13
-        AS400.Presentation.SendKeys "[Enter]"
-        WaitForReady AS400, Exception
-    
-        AS400.Presentation.SendKeys "[pf11]"
-        AS400.Presentation.SendKeys "[Enter]"
-        WaitForReady AS400, Exception
-        
-        
         Unload RegForm
         
-        RunTransferCredits AS400, Exception
+        u_TransferCredits.Show
         
     End If
     
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Cleanup:
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
     TurnOnExcelDefaults Exception
     Exception.Pop
     
 Exit Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Error Handling
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 ClassError:
     RedMessage = RedMessage & "[m_CoreRegistration.RunRegistration]" & Space(1) & _
@@ -337,12 +316,15 @@ Resume Next
 AS400Error:
     Exception.ErrFlag = True
     RedMessage = RedMessage & Exception.StackTop & Space(1) & _
-        "> The AS400 has failed to initialize" & vbNewLine & _
+        "> The AS400 has failed to initialize" & vbNewLine & vbNewLine & _
+        "Please confirm the AS400 is active, and that the session letter is correct, " & _
+        "then try again." & _
         "Error #" & Err.Number & Space(1) & Err.Description & vbNewLine & vbNewLine
 Resume Next
 
 AcknowledgeError:
     Exception.ErrFlag = True
+    AppActivate "Microsoft excel"
     MsgBox "An unexpected error has occurred during the automation, and the application has been stopped." & _
     vbNewLine & vbNewLine & "Please discover where the automation has stopped, and determine " & _
     "if you need to proceed manually from here." & vbNewLine & vbNewLine & _
@@ -352,12 +334,14 @@ AcknowledgeError:
 GoTo Cleanup
 
 EndAutomation:
+    AppActivate "Microsoft excel"
     MsgBox "The automation has been canceled" & vbNewLine & vbNewLine & Exception.StackTop, _
         vbInformation, "Enrollment"
 GoTo Cleanup
 
 NavigationFailure:
     If NavigateToHome(AS400, Exception) = False Then
+        AppActivate "Microsoft excel"
         MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
             "Please navigate manually to the home screen, then attempt to run the application again." & _
             vbNewLine & vbNewLine & Exception.StackTop, vbCritical, "Navigation Failure"
@@ -375,6 +359,7 @@ MidEnrollmentNavigationFailure:
         MsgStr = MsgStr & vbTab & "Err Number: " & Exception.ErrNumber & vbNewLine & Exception.ErrDescription
     End If
     If NavigateToHome(AS400, Exception) = False Then
+            AppActivate "Microsoft excel"
             MsgBox MsgStr, vbCritical, "Navigation Failure"
     Else
         GoTo MidEnrollment
@@ -386,5 +371,3 @@ HiddenTestOption:
 GoTo Cleanup
 
 End Sub
-
-
