@@ -36,15 +36,7 @@ Sub ShipmentsButton_Click()
     Set Exception = New cException
     Exception.Push "Procedure: ThisWorkbook.ShipmentsButton_Click"
     
-    SID = Application.InputBox("Enter the Student ID#")
-    
-    If SID = "" Then
-        GoTo Cleanup
-    ElseIf Len(SID) < 8 Or Len(SID) > 8 Then
-        GoTo SIDLength
-    End If
-    
-    ReturnValue = MsgBox("*** Should shipments be sent for this program? ***" & _
+    ReturnValue = MsgBox("*** Should shipments be sent for the following program? ***" & _
         vbNewLine & vbNewLine & vbNewLine & vbNewLine & _
         Space(3) & "Click 'Yes' to send the shipments." & vbNewLine & vbNewLine & _
         Space(3) & "Click 'No' to prevent the shipments." & vbNewLine & vbNewLine & _
@@ -61,6 +53,15 @@ Sub ShipmentsButton_Click()
             GoTo Cleanup
     End Select
     
+    SID = Application.InputBox("Enter the Student ID#")
+    
+    If SID = "" Then
+        GoTo Cleanup
+    ElseIf Len(SID) < 8 Or Len(SID) > 8 Or Not IsNumeric(SID) Then
+        GoTo SIDFailure
+    End If
+    
+    On Error GoTo AS400Error
     Letter = Application.InputBox("Enter the AS/400 Session")
     
     If Letter = "" Then
@@ -71,32 +72,32 @@ Sub ShipmentsButton_Click()
 
     Dim AS400 As cAS400
     Set AS400 = New cAS400
-    
-    On Error GoTo AS400Error
+
     InitializeAS400 AS400, Letter, Exception
     AS400.Handling = "Fast"
     AS400.Milliseconds = 50
 
-    On Error GoTo UnknownError
+    On Error Resume Next
     'ManageShipments AS400, SID, SendShipments, Exception
 
 Cleanup:
 
-    On Error Resume Next
     Exception.Pop
 
 Exit Sub
 
-SIDLength:
+SIDFailure:
+    MsgBox "The Student ID must be a valid number", vbCritical, "Student ID"
 GoTo Cleanup
 
 LetterLength:
+    MsgBox "The AS/400 Session must be a single letter", vbCritical, "AS/400 Session"
 GoTo Cleanup
 
 AS400Error:
+    MsgBox "The AS400 has failed to initialize. Please confirm the session letter is correct " & _
+        "and the AS/400 itself is active, then try again.", vbCritical, "AS400 Error"
 Resume Cleanup
 
-UnknownError:
-Resume Cleanup
 
 End Sub
