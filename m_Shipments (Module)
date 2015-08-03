@@ -25,7 +25,7 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
     Dim CheckForTarget As String
     CheckForTarget = vbNullString
     
-    'The AS/400 only accepts as long
+    'The AS/400 only accepts values as long
     Dim i As Long
     i = 0
     
@@ -110,7 +110,7 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
             AS400.Presentation.SendKeys "[Enter]"
             WaitForReady AS400.Exception
             
-            '2nd level loop: Perform on each separate page
+            '2nd level loop: Perform on each page
             EndPageLoop = False
             Do
             
@@ -171,6 +171,10 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
         
     Else
     
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Option: "Prevent Shipment Release"
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    
     End If
 
 Cleanup:
@@ -197,5 +201,10 @@ NavigationError:
 Resume Cleanup
 
 ArrayFailure:
+    AppActivate "Microsoft excel"
+    MsgBox "A shipment value has not been recognized, and the application has been skipped." & _
+        vbNewLine & vbNewLine & "Please inform the VBA support team before proceeding again with the shipment application", _
+        vbCritical, "Shipments not recognized"
+GoTo Cleanup
 
 End Sub
