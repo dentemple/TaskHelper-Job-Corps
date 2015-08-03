@@ -243,4 +243,3 @@ End Sub
 Private Sub ProgramTuition_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
     RestrictToPostiveFloatNumbers KeyAscii, ProgramTuition_Textbox
 End Sub
-
