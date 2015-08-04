@@ -20,20 +20,15 @@ End Sub
 
 Sub ShipmentsButton_Click()
 
-    Dim SID As String
-    SID = vbNullString
+    Dim SID As String: SID = vbNullString
     
-    Dim ReturnValue As Integer
-    ReturnValue = 0
+    Dim ReturnValue As Integer: ReturnValue = 0
     
-    Dim SendShipments As Boolean
-    SendShipments = False
+    Dim SendShipments As Boolean: SendShipments = False
     
-    Dim Letter As String
-    Letter = vbNullString
+    Dim Letter As String: Letter = vbNullString
     
-    Dim Exception As cException
-    Set Exception = New cException
+    Dim Exception As cException: Set Exception = New cException
     Exception.Push "Procedure: ThisWorkbook.ShipmentsButton_Click"
     
     ReturnValue = MsgBox("*** Should shipments be sent for the following program? ***" & _
@@ -75,7 +70,7 @@ Sub ShipmentsButton_Click()
 
     InitializeAS400 AS400, Letter, Exception
     AS400.Handling = "Fast"
-    AS400.Milliseconds = 50
+    AS400.Time = 50
 
     On Error Resume Next
     'ManageShipments AS400, SID, SendShipments, Exception
