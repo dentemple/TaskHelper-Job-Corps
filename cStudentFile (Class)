@@ -157,7 +157,6 @@ Private pNoCostOptionButton As MSForms.OptionButton
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' LOCAL PROCEDURES
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
 Private Sub Class_Initialize()
     MaxCharactersName = 38
     StandardLength = 8
@@ -168,9 +167,9 @@ End Sub
 Private Function RemoveSym(ByVal passTextbox As String) As String
     'Removes the currency symbol from the textbox output. The textboxes have event handlers _
         that prevent entering non-numbers; however, copy/paste can bypass this restriction.
-    Dim str As String
-    str = passTextbox
-    RemoveSym = Trim(Replace(str, "$", " "))
+    Dim Str As String
+    Str = passTextbox
+    RemoveSym = Trim(Replace(Str, "$", " "))
 End Function
 
 Private Sub Class_Terminate()
