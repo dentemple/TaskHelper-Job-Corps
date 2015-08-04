@@ -1,827 +1,660 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' m_TransferCredits (Module)
+' u_TransferCredits (Userform)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Option Explicit
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' RunPopulateClasses
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub RunPopulateClasses(ByVal CreditsForm As MSForms.UserForm)
+Dim HasBeenPopulated As Boolean
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' General variables
+' Initialization event
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    Dim GetTextString As String
-    GetTextString = vbNullString
-    
-    Dim Status As Object
-    Set Status = CreditsForm.Status_Textbox
-    Status.Value = "...   ...   ...   Populating Classes   ...   ...   ..."
-    
-    Dim MaxSize As Integer
-    MaxSize = 30
-    
-    Dim i As Integer
-    i = 0
-    
-    Dim ModLen As Integer
-    ModLen = 8
-    
-    Dim TextboxArray() As Object
-    ReDim TextboxArray(1 To MaxSize, 1 To 2)
-    
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Set the class modules
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    Dim Exception As cException
-    Set Exception = New cException
-    Exception.Push "Procedure: m_TransferCredits.RunPopulateClasses"
-    
-    Dim AS400 As cAS400
-    Set AS400 = New cAS400
-    
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Loads the required objects/information
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    TurnOffExcelDefaults Exception
-    
-    On Error GoTo EntryError
-    Dim Letter As String
-    Letter = Trim(CreditsForm.Session_ComboBox.Value)
-    
-    Dim SID As String
-    SID = Trim(CreditsForm.SID_Textbox)
-    If Len(SID) < 1 Then GoTo SIDNotFound
-    
-    On Error GoTo AS400Error
-    InitializeAS400 AS400, Letter, Exception
-    AS400.Handling = "Fast"
-    AS400.Milliseconds = 50
-    
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Navigation
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    On Error GoTo NavigationError
-    GetTextString = AS400.Presentation.GetText(1, 2, 8)
-    
-    Select Case GetTextString
-    
-        Case "60210   "
-        
-            WaitForReady AS400, Exception
-        
-        Case "603132_B"
-        
-            AS400.Presentation.SendKeys "[pf11]"
-            WaitForReady AS400, Exception
-        
-        Case Else
-        
-            If NavigateToHome(AS400, Exception) = False Then GoTo NavigationFailure
-            AS400.Presentation.SetText "1", 19, 7
-            AS400.Presentation.SendKeys "[Enter]"
-            WaitForReady AS400, Exception
-            AS400.Presentation.SetText "15", 19, 7
-            AS400.Presentation.SendKeys "[Enter]"
-            WaitForReady AS400, Exception
-            AS400.Presentation.SetText SID, 3, 13
-            AS400.Presentation.SendKeys "[Enter]"
-            WaitForReady AS400, Exception
-            AS400.Presentation.SendKeys "[pf11]"
-            WaitForReady AS400, Exception
-            
-            GetTextString = vbNullString
-            GetTextString = AS400.Presentation.GetText(1, 2, 5)
-            If Not GetTextString = "60210" Then GoTo NavigationFailure
-            
-            WaitForReady AS400, Exception
-            GetTextString = vbNullString
-            GetTextString = AS400.Presentation.GetText(5, 23, ModLen)
-            If Len(Trim(GetTextString)) < 2 Then GoTo DoesNotExist
+Private Sub UserForm_Initialize()
 
-    End Select
+    SID_Textbox = vbNullString
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Loads array
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    On Error Resume Next
-    Set TextboxArray(1, 1) = CreditsForm.Mod1_Textbox
-    Set TextboxArray(2, 1) = CreditsForm.Mod2_Textbox
-    Set TextboxArray(3, 1) = CreditsForm.Mod3_Textbox
-    Set TextboxArray(4, 1) = CreditsForm.Mod4_Textbox
-    Set TextboxArray(5, 1) = CreditsForm.Mod5_Textbox
-    Set TextboxArray(6, 1) = CreditsForm.Mod6_Textbox
-    Set TextboxArray(7, 1) = CreditsForm.Mod7_Textbox
-    Set TextboxArray(8, 1) = CreditsForm.Mod8_Textbox
-    Set TextboxArray(9, 1) = CreditsForm.Mod9_Textbox
-    Set TextboxArray(10, 1) = CreditsForm.Mod10_Textbox
-    Set TextboxArray(11, 1) = CreditsForm.Mod11_Textbox
-    Set TextboxArray(12, 1) = CreditsForm.Mod12_Textbox
-    Set TextboxArray(13, 1) = CreditsForm.Mod13_Textbox
-    Set TextboxArray(14, 1) = CreditsForm.Mod14_Textbox
-    Set TextboxArray(15, 1) = CreditsForm.Mod15_Textbox
-    Set TextboxArray(16, 1) = CreditsForm.Mod16_Textbox
-    Set TextboxArray(17, 1) = CreditsForm.Mod17_Textbox
-    Set TextboxArray(18, 1) = CreditsForm.Mod18_Textbox
-    Set TextboxArray(19, 1) = CreditsForm.Mod19_Textbox
-    Set TextboxArray(20, 1) = CreditsForm.Mod20_Textbox
-    Set TextboxArray(21, 1) = CreditsForm.Mod21_Textbox
-    Set TextboxArray(22, 1) = CreditsForm.Mod22_Textbox
-    Set TextboxArray(23, 1) = CreditsForm.Mod23_Textbox
-    Set TextboxArray(24, 1) = CreditsForm.Mod24_Textbox
-    Set TextboxArray(25, 1) = CreditsForm.Mod25_Textbox
-    Set TextboxArray(26, 1) = CreditsForm.Mod26_Textbox
-    Set TextboxArray(27, 1) = CreditsForm.Mod27_Textbox
-    Set TextboxArray(28, 1) = CreditsForm.Mod28_Textbox
-    Set TextboxArray(29, 1) = CreditsForm.Mod29_Textbox
-    Set TextboxArray(30, 1) = CreditsForm.Mod30_Textbox
+    Status_Textbox.Locked = True
+    Status_Textbox.BackColor = RGB(211, 211, 211)
+    Status_Textbox = "TO BEGIN:" & Space(3) & "Enter the Student ID# " & _
+        "and the AS/400 session, then press POPULATE CLASSES to continue"
+
+    AlphaName_Textbox = vbNullString
     
-    Set TextboxArray(1, 2) = CreditsForm.Title1_Textbox
-    Set TextboxArray(2, 2) = CreditsForm.Title2_Textbox
-    Set TextboxArray(3, 2) = CreditsForm.Title3_Textbox
-    Set TextboxArray(4, 2) = CreditsForm.Title4_Textbox
-    Set TextboxArray(5, 2) = CreditsForm.Title5_Textbox
-    Set TextboxArray(6, 2) = CreditsForm.Title6_Textbox
-    Set TextboxArray(7, 2) = CreditsForm.Title7_Textbox
-    Set TextboxArray(8, 2) = CreditsForm.Title8_Textbox
-    Set TextboxArray(9, 2) = CreditsForm.Title9_Textbox
-    Set TextboxArray(10, 2) = CreditsForm.Title10_Textbox
-    Set TextboxArray(11, 2) = CreditsForm.Title11_Textbox
-    Set TextboxArray(12, 2) = CreditsForm.Title12_Textbox
-    Set TextboxArray(13, 2) = CreditsForm.Title13_Textbox
-    Set TextboxArray(14, 2) = CreditsForm.Title14_Textbox
-    Set TextboxArray(15, 2) = CreditsForm.Title15_Textbox
-    Set TextboxArray(16, 2) = CreditsForm.Title16_Textbox
-    Set TextboxArray(17, 2) = CreditsForm.Title17_Textbox
-    Set TextboxArray(18, 2) = CreditsForm.Title18_Textbox
-    Set TextboxArray(19, 2) = CreditsForm.Title19_Textbox
-    Set TextboxArray(20, 2) = CreditsForm.Title20_Textbox
-    Set TextboxArray(21, 2) = CreditsForm.Title21_Textbox
-    Set TextboxArray(22, 2) = CreditsForm.Title22_Textbox
-    Set TextboxArray(23, 2) = CreditsForm.Title23_Textbox
-    Set TextboxArray(24, 2) = CreditsForm.Title24_Textbox
-    Set TextboxArray(25, 2) = CreditsForm.Title25_Textbox
-    Set TextboxArray(26, 2) = CreditsForm.Title26_Textbox
-    Set TextboxArray(27, 2) = CreditsForm.Title27_Textbox
-    Set TextboxArray(28, 2) = CreditsForm.Title28_Textbox
-    Set TextboxArray(29, 2) = CreditsForm.Title29_Textbox
-    Set TextboxArray(30, 2) = CreditsForm.Title30_Textbox
+    Mod1_Textbox = vbNullString
+    Mod2_Textbox = vbNullString
+    Mod3_Textbox = vbNullString
+    Mod4_Textbox = vbNullString
+    Mod5_Textbox = vbNullString
+    Mod6_Textbox = vbNullString
+    Mod7_Textbox = vbNullString
+    Mod8_Textbox = vbNullString
+    Mod9_Textbox = vbNullString
+    Mod10_Textbox = vbNullString
+    Mod11_Textbox = vbNullString
+    Mod12_Textbox = vbNullString
+    Mod13_Textbox = vbNullString
+    Mod14_Textbox = vbNullString
+    Mod15_Textbox = vbNullString
+    Mod16_Textbox = vbNullString
+    Mod17_Textbox = vbNullString
+    Mod18_Textbox = vbNullString
+    Mod19_Textbox = vbNullString
+    Mod20_Textbox = vbNullString
+    Mod21_Textbox = vbNullString
+    Mod22_Textbox = vbNullString
+    Mod23_Textbox = vbNullString
+    Mod24_Textbox = vbNullString
+    Mod25_Textbox = vbNullString
+    Mod26_Textbox = vbNullString
+    Mod27_Textbox = vbNullString
+    Mod28_Textbox = vbNullString
+    Mod29_Textbox = vbNullString
+    Mod30_Textbox = vbNullString
     
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Passes the required information to the userform
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    On Error GoTo LoopError
-    Do Until i >= MaxSize
+    Title1_Textbox = vbNullString
+    Title2_Textbox = vbNullString
+    Title3_Textbox = vbNullString
+    Title4_Textbox = vbNullString
+    Title5_Textbox = vbNullString
+    Title6_Textbox = vbNullString
+    Title7_Textbox = vbNullString
+    Title8_Textbox = vbNullString
+    Title9_Textbox = vbNullString
+    Title10_Textbox = vbNullString
+    Title11_Textbox = vbNullString
+    Title12_Textbox = vbNullString
+    Title13_Textbox = vbNullString
+    Title14_Textbox = vbNullString
+    Title15_Textbox = vbNullString
+    Title16_Textbox = vbNullString
+    Title17_Textbox = vbNullString
+    Title18_Textbox = vbNullString
+    Title19_Textbox = vbNullString
+    Title20_Textbox = vbNullString
+    Title21_Textbox = vbNullString
+    Title22_Textbox = vbNullString
+    Title23_Textbox = vbNullString
+    Title24_Textbox = vbNullString
+    Title25_Textbox = vbNullString
+    Title26_Textbox = vbNullString
+    Title27_Textbox = vbNullString
+    Title28_Textbox = vbNullString
+    Title29_Textbox = vbNullString
+    Title30_Textbox = vbNullString
     
-        'Wait
-        WaitForReady AS400, Exception
+    Class1_Checkbox = False
+    Class2_Checkbox = False
+    Class3_Checkbox = False
+    Class4_Checkbox = False
+    Class5_Checkbox = False
+    Class6_Checkbox = False
+    Class7_Checkbox = False
+    Class8_Checkbox = False
+    Class9_Checkbox = False
+    Class10_Checkbox = False
+    Class11_Checkbox = False
+    Class12_Checkbox = False
+    Class13_Checkbox = False
+    Class14_Checkbox = False
+    Class15_Checkbox = False
+    Class16_Checkbox = False
+    Class17_Checkbox = False
+    Class18_Checkbox = False
+    Class19_Checkbox = False
+    Class20_Checkbox = False
+    Class21_Checkbox = False
+    Class22_Checkbox = False
+    Class23_Checkbox = False
+    Class24_Checkbox = False
+    Class25_Checkbox = False
+    Class26_Checkbox = False
+    Class27_Checkbox = False
+    Class28_Checkbox = False
+    Class29_Checkbox = False
+    Class30_Checkbox = False
     
-        'Increment
-        i = i + 1
-        
-        'Line 17
-        TextboxArray(i, 1) = Trim(AS400.Presentation.GetText(17, 4, ModLen))
-        TextboxArray(i, 2) = Trim(AS400.Presentation.GetText(17, 13, 30))
-        
-        'Increment
-        i = i + 1
-        
-        'Line 18
-        TextboxArray(i, 1) = Trim(AS400.Presentation.GetText(18, 4, ModLen))
-        TextboxArray(i, 2) = Trim(AS400.Presentation.GetText(18, 13, 30))
-        
-        'Increment
-        i = i + 1
-        
-        'Line 19
-        TextboxArray(i, 1) = Trim(AS400.Presentation.GetText(19, 4, ModLen))
-        TextboxArray(i, 2) = Trim(AS400.Presentation.GetText(19, 13, 30))
-        
-        'Increment
-        i = i + 1
-        
-        'Line 20
-        TextboxArray(i, 1) = Trim(AS400.Presentation.GetText(20, 4, ModLen))
-        TextboxArray(i, 2) = Trim(AS400.Presentation.GetText(20, 13, 30))
-        
-        'Increment
-        i = i + 1
-        
-        'Line 21
-        TextboxArray(i, 1) = Trim(AS400.Presentation.GetText(21, 4, ModLen))
-        TextboxArray(i, 2) = Trim(AS400.Presentation.GetText(21, 13, 30))
-        
-        'Increment
-        i = i + 1
-        
-        'Line 22
-        TextboxArray(i, 1) = Trim(AS400.Presentation.GetText(22, 4, ModLen))
-        TextboxArray(i, 2) = Trim(AS400.Presentation.GetText(22, 13, 30))
+    AlphaName_Textbox.Locked = True
     
-        'Wait
-        WaitForReady AS400, Exception
-        
-        'Check
-        GetTextString = vbNullString
-        GetTextString = AS400.Presentation.GetText(22, 4, 2)
-        If Len(Trim(GetTextString)) < 1 Then
-            Exit Do
-        Else
-            AS400.Presentation.SendKeys "[pagedn]"
-        End If
+    Mod1_Textbox.Locked = True
+    Mod2_Textbox.Locked = True
+    Mod3_Textbox.Locked = True
+    Mod4_Textbox.Locked = True
+    Mod5_Textbox.Locked = True
+    Mod6_Textbox.Locked = True
+    Mod7_Textbox.Locked = True
+    Mod8_Textbox.Locked = True
+    Mod9_Textbox.Locked = True
+    Mod10_Textbox.Locked = True
+    Mod11_Textbox.Locked = True
+    Mod12_Textbox.Locked = True
+    Mod13_Textbox.Locked = True
+    Mod14_Textbox.Locked = True
+    Mod15_Textbox.Locked = True
+    Mod16_Textbox.Locked = True
+    Mod17_Textbox.Locked = True
+    Mod18_Textbox.Locked = True
+    Mod19_Textbox.Locked = True
+    Mod20_Textbox.Locked = True
+    Mod21_Textbox.Locked = True
+    Mod22_Textbox.Locked = True
+    Mod23_Textbox.Locked = True
+    Mod24_Textbox.Locked = True
+    Mod25_Textbox.Locked = True
+    Mod26_Textbox.Locked = True
+    Mod27_Textbox.Locked = True
+    Mod28_Textbox.Locked = True
+    Mod29_Textbox.Locked = True
+    Mod30_Textbox.Locked = True
     
-    Loop
+    Title1_Textbox.Locked = True
+    Title2_Textbox.Locked = True
+    Title3_Textbox.Locked = True
+    Title4_Textbox.Locked = True
+    Title5_Textbox.Locked = True
+    Title6_Textbox.Locked = True
+    Title7_Textbox.Locked = True
+    Title8_Textbox.Locked = True
+    Title9_Textbox.Locked = True
+    Title10_Textbox.Locked = True
+    Title11_Textbox.Locked = True
+    Title12_Textbox.Locked = True
+    Title13_Textbox.Locked = True
+    Title14_Textbox.Locked = True
+    Title15_Textbox.Locked = True
+    Title16_Textbox.Locked = True
+    Title17_Textbox.Locked = True
+    Title18_Textbox.Locked = True
+    Title19_Textbox.Locked = True
+    Title20_Textbox.Locked = True
+    Title21_Textbox.Locked = True
+    Title22_Textbox.Locked = True
+    Title23_Textbox.Locked = True
+    Title24_Textbox.Locked = True
+    Title25_Textbox.Locked = True
+    Title26_Textbox.Locked = True
+    Title27_Textbox.Locked = True
+    Title28_Textbox.Locked = True
+    Title29_Textbox.Locked = True
+    Title30_Textbox.Locked = True
     
-    WaitForReady AS400, Exception
-    GetTextString = vbNullString
-    GetTextString = AS400.Presentation.GetText(4, 32, 38)
+    AlphaName_Textbox.BackColor = RGB(211, 211, 211)
     
-    If Trim(GetTextString) < 0 Then
-        CreditsForm.AlphaName_Textbox = vbTab & "(Empty)"
-    Else
-        CreditsForm.AlphaName_Textbox = Trim(GetTextString)
-    End If
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Cleanup:
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-    TurnOnExcelDefaults Exception
-    Exception.Pop
-
-Exit Sub
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Error Handling
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-SIDNotFound:
-    AppActivate "Microsoft excel"
-    MsgBox "Please enter the Student ID# before proceeding", vbCritical, "SID Mismatch"
-GoTo Cleanup
-
-EntryError:
-    AppActivate "Microsoft excel"
-    MsgBox "A problem occurred with either the Student ID# or the AS/400 Session." & vbNewLine & vbNewLine & _
-        "Please confirm the information is correct, then try again." & vbNewLine & vbNewLine & _
-        "Error: " & Err.Number & vbNewLine & Err.Description, vbCritical, "Entry Error"
-GoTo Cleanup
-
-AS400Error:
-    AppActivate "Microsoft excel"
-    MsgBox "The AS400 has failed to initialize. Please confirm the session letter is correct " & _
-        "and the AS/400 itself is active, then try again." & vbNewLine & vbNewLine & _
-        "Error: " & Err.Number & vbNewLine & Err.Description, vbCritical, "AS/400 Error"
-Resume Cleanup
-
-NavigationFailure:
-    If NavigateToHome(AS400, Exception) = False Then
-        AppActivate "Microsoft excel"
-        MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
-            "Please navigate manually to the home screen, then attempt to run the application again.", _
-            vbCritical, "Navigation Failure"
-    End If
-GoTo Cleanup
-
-NavigationError:
-    AppActivate "Microsoft excel"
-    MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
-        "Please navigate manually to the home screen, then attempt to run the application again.", _
-        vbCritical, "Navigation Error"
-Resume Cleanup
+    Mod1_Textbox.BackColor = RGB(211, 211, 211)
+    Mod2_Textbox.BackColor = RGB(211, 211, 211)
+    Mod3_Textbox.BackColor = RGB(211, 211, 211)
+    Mod4_Textbox.BackColor = RGB(211, 211, 211)
+    Mod5_Textbox.BackColor = RGB(211, 211, 211)
+    Mod6_Textbox.BackColor = RGB(211, 211, 211)
+    Mod7_Textbox.BackColor = RGB(211, 211, 211)
+    Mod8_Textbox.BackColor = RGB(211, 211, 211)
+    Mod9_Textbox.BackColor = RGB(211, 211, 211)
+    Mod10_Textbox.BackColor = RGB(211, 211, 211)
+    Mod11_Textbox.BackColor = RGB(211, 211, 211)
+    Mod12_Textbox.BackColor = RGB(211, 211, 211)
+    Mod13_Textbox.BackColor = RGB(211, 211, 211)
+    Mod14_Textbox.BackColor = RGB(211, 211, 211)
+    Mod15_Textbox.BackColor = RGB(211, 211, 211)
+    Mod16_Textbox.BackColor = RGB(211, 211, 211)
+    Mod17_Textbox.BackColor = RGB(211, 211, 211)
+    Mod18_Textbox.BackColor = RGB(211, 211, 211)
+    Mod19_Textbox.BackColor = RGB(211, 211, 211)
+    Mod20_Textbox.BackColor = RGB(211, 211, 211)
+    Mod21_Textbox.BackColor = RGB(211, 211, 211)
+    Mod22_Textbox.BackColor = RGB(211, 211, 211)
+    Mod23_Textbox.BackColor = RGB(211, 211, 211)
+    Mod24_Textbox.BackColor = RGB(211, 211, 211)
+    Mod25_Textbox.BackColor = RGB(211, 211, 211)
+    Mod26_Textbox.BackColor = RGB(211, 211, 211)
+    Mod27_Textbox.BackColor = RGB(211, 211, 211)
+    Mod28_Textbox.BackColor = RGB(211, 211, 211)
+    Mod29_Textbox.BackColor = RGB(211, 211, 211)
+    Mod30_Textbox.BackColor = RGB(211, 211, 211)
     
-DoesNotExist:
-    AppActivate "Microsoft excel"
-    MsgBox "The entered Student ID# does not exist. Please confirm the Student ID# is correct, " & _
-        "then try again.", vbCritical, "Student ID# Does Not Exist"
-GoTo Cleanup
+    Title1_Textbox.BackColor = RGB(211, 211, 211)
+    Title2_Textbox.BackColor = RGB(211, 211, 211)
+    Title3_Textbox.BackColor = RGB(211, 211, 211)
+    Title4_Textbox.BackColor = RGB(211, 211, 211)
+    Title5_Textbox.BackColor = RGB(211, 211, 211)
+    Title6_Textbox.BackColor = RGB(211, 211, 211)
+    Title7_Textbox.BackColor = RGB(211, 211, 211)
+    Title8_Textbox.BackColor = RGB(211, 211, 211)
+    Title9_Textbox.BackColor = RGB(211, 211, 211)
+    Title10_Textbox.BackColor = RGB(211, 211, 211)
+    Title11_Textbox.BackColor = RGB(211, 211, 211)
+    Title12_Textbox.BackColor = RGB(211, 211, 211)
+    Title13_Textbox.BackColor = RGB(211, 211, 211)
+    Title14_Textbox.BackColor = RGB(211, 211, 211)
+    Title15_Textbox.BackColor = RGB(211, 211, 211)
+    Title16_Textbox.BackColor = RGB(211, 211, 211)
+    Title17_Textbox.BackColor = RGB(211, 211, 211)
+    Title18_Textbox.BackColor = RGB(211, 211, 211)
+    Title19_Textbox.BackColor = RGB(211, 211, 211)
+    Title20_Textbox.BackColor = RGB(211, 211, 211)
+    Title21_Textbox.BackColor = RGB(211, 211, 211)
+    Title22_Textbox.BackColor = RGB(211, 211, 211)
+    Title23_Textbox.BackColor = RGB(211, 211, 211)
+    Title24_Textbox.BackColor = RGB(211, 211, 211)
+    Title25_Textbox.BackColor = RGB(211, 211, 211)
+    Title26_Textbox.BackColor = RGB(211, 211, 211)
+    Title27_Textbox.BackColor = RGB(211, 211, 211)
+    Title28_Textbox.BackColor = RGB(211, 211, 211)
+    Title29_Textbox.BackColor = RGB(211, 211, 211)
+    Title30_Textbox.BackColor = RGB(211, 211, 211)
 
-LoopError:
-    AppActivate "Microsoft excel"
-    MsgBox "The AS/400 scan has failed unexpectedly.  Please close out the userform " & _
-        "and attempt to run the scan again." & vbNewLine & vbNewLine & _
-        "Error: " & Err.Number & vbNewLine & Err.Description, vbCritical, "Loop Error"
-Resume Cleanup
+    With Session_ComboBox
+        .Clear
+        .AddItem Range("DefaultSession")
+        .AddItem "A"
+        .AddItem "B"
+        .AddItem "C"
+        .AddItem "D"
+        .AddItem "E"
+        .Text = Session_ComboBox.List(0)
+    End With
+    
+    HasBeenPopulated = False
+    
+    'Sets the initial focus
+    SID_Textbox.SetFocus
 
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' ApplyTransferCredits
+' COMMAND BUTTON / Actions to be called and performed
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
+Private Sub PopulateClasses_Button_Click()
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' General variables
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    Dim GetTextString As String
-    GetTextString = vbNullString
+    RunPopulateClasses u_TransferCredits
     
-    Dim Status As Object
-    Set Status = CreditsForm.Status_Textbox
-    Status.Value = "...   ...   ...   Applying Transfer Credits   ...   ...   ..."
-    
-    Dim MaxSize As Integer
-    MaxSize = 30
-    
-    Dim i As Integer
-    i = 0
-    
-    Dim Counter As Integer
-    Counter = 0
-    
-    Dim ModLen As Integer
-    ModLen = 8
-    
-    Dim TextboxArray() As Object
-    ReDim TextboxArray(1 To MaxSize, 1 To 2)
-    
-    Dim BooleanArray() As Boolean
-    ReDim BooleanArray(1 To MaxSize)
-    
-    Dim TRSuccessMessage As String
-    TRSuccessMessage = "Transfer credits have been successfully applied!"
-    
-    Dim ShipSuccessMessage As String
-    ShipSuccessMessage = "The shipment option has been successfully applied!"
-    
-    Dim ReturnValue As Integer
-    ReturnValue = 0
-    
-    Dim SendShipments As Boolean
-    SendShipments = False
-    
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Set the class modules
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    Dim Exception As cException
-    Set Exception = New cException
-    Exception.Push "Procedure: m_TransferCredits.ApplyTransferCredits"
-    
-    Dim AS400 As cAS400
-    Set AS400 = New cAS400
-    
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Loads the class objects/information
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    
-    TurnOffExcelDefaults Exception
-    
-    On Error GoTo EntryError
-    Dim Letter As String
-    Letter = Trim(CreditsForm.Session_ComboBox.Value)
-    
-    Dim SID As String
-    SID = Trim(CreditsForm.SID_Textbox)
-    If Len(SID) < 1 Then GoTo SIDNotFound
-    
-    On Error GoTo AS400Error
-    InitializeAS400 AS400, Letter, Exception
-    AS400.Handling = "Fast"
-    AS400.Milliseconds = 50
-    
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Navigation
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    On Error GoTo NavigationError
-    Select Case GetTextString
-    
-        Case "60210   "
-        
-            AS400.Presentation.SendKeys "[pf3]"
-            WaitForReady AS400, Exception
-            AS400.Presentation.SendKeys "[pf11]"
-            WaitForReady AS400, Exception
-        
-        Case "603132_B"
-        
-            AS400.Presentation.SendKeys "[pf11]"
-            WaitForReady AS400, Exception
-        
-        Case Else
-        
-            If NavigateToHome(AS400, Exception) = False Then GoTo NavigationFailure
-            AS400.Presentation.SetText "1", 19, 7
-            AS400.Presentation.SendKeys "[Enter]"
-            WaitForReady AS400, Exception
-            AS400.Presentation.SetText "15", 19, 7
-            AS400.Presentation.SendKeys "[Enter]"
-            WaitForReady AS400, Exception
-            AS400.Presentation.SetText SID, 3, 13
-            AS400.Presentation.SendKeys "[Enter]"
-            WaitForReady AS400, Exception
-            AS400.Presentation.SendKeys "[pf11]"
-            WaitForReady AS400, Exception
-            
-            GetTextString = vbNullString
-            GetTextString = AS400.Presentation.GetText(1, 2, 5)
-            If Not GetTextString = "60210" Then GoTo NavigationFailure
+    HasBeenPopulated = True
+    Status_Textbox = "Ready"
 
-    End Select
-    
-    GetTextString = vbNullString
-    GetTextString = AS400.Presentation.GetText(4, 23, ModLen)
-    If Not Trim(GetTextString) = SID Then GoTo SIDNotAMatch
-    
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Loads array
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    On Error Resume Next
-    BooleanArray(1) = CreditsForm.Class1_Checkbox.Value
-    BooleanArray(2) = CreditsForm.Class2_Checkbox.Value
-    BooleanArray(3) = CreditsForm.Class3_Checkbox.Value
-    BooleanArray(4) = CreditsForm.Class4_Checkbox.Value
-    BooleanArray(5) = CreditsForm.Class5_Checkbox.Value
-    BooleanArray(6) = CreditsForm.Class6_Checkbox.Value
-    BooleanArray(7) = CreditsForm.Class7_Checkbox.Value
-    BooleanArray(8) = CreditsForm.Class8_Checkbox.Value
-    BooleanArray(9) = CreditsForm.Class9_Checkbox.Value
-    BooleanArray(10) = CreditsForm.Class10_Checkbox.Value
-    BooleanArray(11) = CreditsForm.Class11_Checkbox.Value
-    BooleanArray(12) = CreditsForm.Class12_Checkbox.Value
-    BooleanArray(13) = CreditsForm.Class13_Checkbox.Value
-    BooleanArray(14) = CreditsForm.Class14_Checkbox.Value
-    BooleanArray(15) = CreditsForm.Class15_Checkbox.Value
-    BooleanArray(16) = CreditsForm.Class16_Checkbox.Value
-    BooleanArray(17) = CreditsForm.Class17_Checkbox.Value
-    BooleanArray(18) = CreditsForm.Class18_Checkbox.Value
-    BooleanArray(19) = CreditsForm.Class19_Checkbox.Value
-    BooleanArray(20) = CreditsForm.Class20_Checkbox.Value
-    BooleanArray(21) = CreditsForm.Class21_Checkbox.Value
-    BooleanArray(22) = CreditsForm.Class22_Checkbox.Value
-    BooleanArray(23) = CreditsForm.Class23_Checkbox.Value
-    BooleanArray(24) = CreditsForm.Class24_Checkbox.Value
-    BooleanArray(25) = CreditsForm.Class25_Checkbox.Value
-    BooleanArray(26) = CreditsForm.Class26_Checkbox.Value
-    BooleanArray(27) = CreditsForm.Class27_Checkbox.Value
-    BooleanArray(28) = CreditsForm.Class28_Checkbox.Value
-    
-    Set TextboxArray(1, 1) = CreditsForm.Mod1_Textbox
-    Set TextboxArray(2, 1) = CreditsForm.Mod2_Textbox
-    Set TextboxArray(3, 1) = CreditsForm.Mod3_Textbox
-    Set TextboxArray(4, 1) = CreditsForm.Mod4_Textbox
-    Set TextboxArray(5, 1) = CreditsForm.Mod5_Textbox
-    Set TextboxArray(6, 1) = CreditsForm.Mod6_Textbox
-    Set TextboxArray(7, 1) = CreditsForm.Mod7_Textbox
-    Set TextboxArray(8, 1) = CreditsForm.Mod8_Textbox
-    Set TextboxArray(9, 1) = CreditsForm.Mod9_Textbox
-    Set TextboxArray(10, 1) = CreditsForm.Mod10_Textbox
-    Set TextboxArray(11, 1) = CreditsForm.Mod11_Textbox
-    Set TextboxArray(12, 1) = CreditsForm.Mod12_Textbox
-    Set TextboxArray(13, 1) = CreditsForm.Mod13_Textbox
-    Set TextboxArray(14, 1) = CreditsForm.Mod14_Textbox
-    Set TextboxArray(15, 1) = CreditsForm.Mod15_Textbox
-    Set TextboxArray(16, 1) = CreditsForm.Mod16_Textbox
-    Set TextboxArray(17, 1) = CreditsForm.Mod17_Textbox
-    Set TextboxArray(18, 1) = CreditsForm.Mod18_Textbox
-    Set TextboxArray(19, 1) = CreditsForm.Mod19_Textbox
-    Set TextboxArray(20, 1) = CreditsForm.Mod20_Textbox
-    Set TextboxArray(21, 1) = CreditsForm.Mod21_Textbox
-    Set TextboxArray(22, 1) = CreditsForm.Mod22_Textbox
-    Set TextboxArray(23, 1) = CreditsForm.Mod23_Textbox
-    Set TextboxArray(24, 1) = CreditsForm.Mod24_Textbox
-    Set TextboxArray(25, 1) = CreditsForm.Mod25_Textbox
-    Set TextboxArray(26, 1) = CreditsForm.Mod26_Textbox
-    Set TextboxArray(27, 1) = CreditsForm.Mod27_Textbox
-    Set TextboxArray(28, 1) = CreditsForm.Mod28_Textbox
-    Set TextboxArray(29, 1) = CreditsForm.Mod29_Textbox
-    Set TextboxArray(30, 1) = CreditsForm.Mod30_Textbox
-    
-    Set TextboxArray(1, 2) = CreditsForm.Title1_Textbox
-    Set TextboxArray(2, 2) = CreditsForm.Title2_Textbox
-    Set TextboxArray(3, 2) = CreditsForm.Title3_Textbox
-    Set TextboxArray(4, 2) = CreditsForm.Title4_Textbox
-    Set TextboxArray(5, 2) = CreditsForm.Title5_Textbox
-    Set TextboxArray(6, 2) = CreditsForm.Title6_Textbox
-    Set TextboxArray(7, 2) = CreditsForm.Title7_Textbox
-    Set TextboxArray(8, 2) = CreditsForm.Title8_Textbox
-    Set TextboxArray(9, 2) = CreditsForm.Title9_Textbox
-    Set TextboxArray(10, 2) = CreditsForm.Title10_Textbox
-    Set TextboxArray(11, 2) = CreditsForm.Title11_Textbox
-    Set TextboxArray(12, 2) = CreditsForm.Title12_Textbox
-    Set TextboxArray(13, 2) = CreditsForm.Title13_Textbox
-    Set TextboxArray(14, 2) = CreditsForm.Title14_Textbox
-    Set TextboxArray(15, 2) = CreditsForm.Title15_Textbox
-    Set TextboxArray(16, 2) = CreditsForm.Title16_Textbox
-    Set TextboxArray(17, 2) = CreditsForm.Title17_Textbox
-    Set TextboxArray(18, 2) = CreditsForm.Title18_Textbox
-    Set TextboxArray(19, 2) = CreditsForm.Title19_Textbox
-    Set TextboxArray(20, 2) = CreditsForm.Title20_Textbox
-    Set TextboxArray(21, 2) = CreditsForm.Title21_Textbox
-    Set TextboxArray(22, 2) = CreditsForm.Title22_Textbox
-    Set TextboxArray(23, 2) = CreditsForm.Title23_Textbox
-    Set TextboxArray(24, 2) = CreditsForm.Title24_Textbox
-    Set TextboxArray(25, 2) = CreditsForm.Title25_Textbox
-    Set TextboxArray(26, 2) = CreditsForm.Title26_Textbox
-    Set TextboxArray(27, 2) = CreditsForm.Title27_Textbox
-    Set TextboxArray(28, 2) = CreditsForm.Title28_Textbox
-    Set TextboxArray(29, 2) = CreditsForm.Title29_Textbox
-    Set TextboxArray(30, 2) = CreditsForm.Title30_Textbox
-    
-    '1st Loop: Select classes to apply transfer credit
-    On Error GoTo LoopError
-    Do Until i >= MaxSize
-    
-        'Increment
-        i = i + 1
-        
-        'Line 17
-        WaitForReady AS400, Exception
-        If BooleanArray(i) = True And Len(Trim(TextboxArray(i, 1).Value)) > 1 Then
-        
-            GetTextString = vbNullString
-            GetTextString = AS400.Presentation.GetText(17, 4, ModLen)
-            
-            If Trim(GetTextString) = Trim(TextboxArray(i, 1).Value) Then
-                AS400.Presentation.SetText "1", 17, 2
-                TextboxArray(i, 1).BackColor = RGB(135, 206, 250)
-                TextboxArray(i, 2).BackColor = RGB(135, 206, 250)
-                Counter = Counter + 1
-            End If
-        
-        End If
-        
-        'Increment
-        i = i + 1
-        
-        'Line 18
-        WaitForReady AS400, Exception
-        If BooleanArray(i) = True And Len(Trim(TextboxArray(i, 1).Value)) > 1 Then
-        
-            GetTextString = vbNullString
-            GetTextString = AS400.Presentation.GetText(18, 4, ModLen)
-            
-            If Trim(GetTextString) = Trim(TextboxArray(i, 1).Value) Then
-                AS400.Presentation.SetText "1", 18, 2
-                TextboxArray(i, 1).BackColor = RGB(135, 206, 250)
-                TextboxArray(i, 2).BackColor = RGB(135, 206, 250)
-                Counter = Counter + 1
-            End If
-        
-        End If
-        
-        'Increment
-        i = i + 1
-        
-        'Line 19
-        WaitForReady AS400, Exception
-        If BooleanArray(i) = True And Len(Trim(TextboxArray(i, 1).Value)) > 1 Then
-        
-            GetTextString = vbNullString
-            GetTextString = AS400.Presentation.GetText(19, 4, ModLen)
-            
-            If Trim(GetTextString) = Trim(TextboxArray(i, 1).Value) Then
-                AS400.Presentation.SetText "1", 19, 2
-                TextboxArray(i, 1).BackColor = RGB(135, 206, 250)
-                TextboxArray(i, 2).BackColor = RGB(135, 206, 250)
-                Counter = Counter + 1
-            End If
-        
-        End If
-        
-        'Increment
-        i = i + 1
-        
-        'Line 20
-        WaitForReady AS400, Exception
-        If BooleanArray(i) = True And Len(Trim(TextboxArray(i, 1).Value)) > 1 Then
-        
-            GetTextString = vbNullString
-            GetTextString = AS400.Presentation.GetText(20, 4, ModLen)
-            
-            If Trim(GetTextString) = Trim(TextboxArray(i, 1).Value) Then
-                AS400.Presentation.SetText "1", 20, 2
-                TextboxArray(i, 1).BackColor = RGB(135, 206, 250)
-                TextboxArray(i, 2).BackColor = RGB(135, 206, 250)
-                Counter = Counter + 1
-            End If
-        
-        End If
-        
-        'Increment
-        i = i + 1
-        
-        'Line 21
-        WaitForReady AS400, Exception
-        If BooleanArray(i) = True And Len(Trim(TextboxArray(i, 1).Value)) > 1 Then
-        
-            GetTextString = vbNullString
-            GetTextString = AS400.Presentation.GetText(21, 4, ModLen)
-            
-            If Trim(GetTextString) = Trim(TextboxArray(i, 1).Value) Then
-                AS400.Presentation.SetText "1", 21, 2
-                TextboxArray(i, 1).BackColor = RGB(135, 206, 250)
-                TextboxArray(i, 2).BackColor = RGB(135, 206, 250)
-                Counter = Counter + 1
-            End If
-        
-        End If
-        
-        'Increment
-        i = i + 1
-        
-        'Line 22
-        WaitForReady AS400, Exception
-        If BooleanArray(i) = True And Len(Trim(TextboxArray(i, 1).Value)) > 1 Then
-        
-            GetTextString = vbNullString
-            GetTextString = AS400.Presentation.GetText(22, 4, ModLen)
-            
-            If Trim(GetTextString) = Trim(TextboxArray(i, 1).Value) Then
-                AS400.Presentation.SetText "1", 22, 2
-                TextboxArray(i, 1).BackColor = RGB(135, 206, 250)
-                TextboxArray(i, 2).BackColor = RGB(135, 206, 250)
-                Counter = Counter + 1
-            End If
-        
-        End If
-        
-        'Wait
-        WaitForReady AS400, Exception
-        
-        'Check
-        GetTextString = vbNullString
-        GetTextString = AS400.Presentation.GetText(22, 4, 2)
-        If Len(Trim(GetTextString)) < 1 Then
-            Exit Do
-        Else
-            AS400.Presentation.SendKeys "[pagedn]"
-        End If
-    
-    Loop
-    
-    If Counter < 1 Then
-        
-        WaitForReady AS400, Exception
-        AS400.Presentation.SendKeys "[pf3]"
-        Status.Value = "Ready"
-        AppActivate "Microsoft excel"
-        MsgBox "Please select a class to transfer", vbInformation, "Information"
-    
-    Else
-    
-        AS400.Presentation.SendKeys "[Enter]"
-    
-        WaitForReady AS400, Exception
-        GetTextString = vbNullString
-        GetTextString = AS400.Presentation.GetText(1, 2, 5)
-        If Not Trim(GetTextString) = "60211" Then GoTo LocationMismatch
-    
-        Do Until Counter <= 0
-    
-            WaitForReady AS400, Exception
-            GetTextString = vbNullString
-            GetTextString = AS400.Presentation.GetText(10, 19, 1)
-            If Len(Trim(GetTextString)) = 1 Then GoTo SkipIterationEntries
-        
-            AS400.Presentation.SetText "C", 3, 19
-            AS400.Presentation.SetText "Y", 8, 19
-            AS400.Presentation.SetText "H", 10, 19
+End Sub
 
-SkipIterationEntries:
-        
-            AS400.Presentation.SendKeys "[Enter]"
-            WaitForReady AS400, Exception
-        
-            AS400.Presentation.SendKeys "[pf3]"
-            WaitForReady AS400, Exception
-        
-            Counter = Counter - 1
-            
-            Status.Value = TRSuccessMessage
+Private Sub ApplyTransferCredits_Button_Click()
+
+    If HasBeenPopulated = True Then
     
-        Loop
-        
-        WaitForReady AS400, Exception
-        AS400.Presentation.SetText "C", 3, 23
-        AS400.Presentation.SetText "Y", 14, 60
-        AS400.Presentation.SendKeys "[Enter]"
-        WaitForReady AS400, Exception
-        AS400.Presentation.SendKeys "[pf3]"
-        WaitForReady AS400, Exception
-        
-        AppActivate "Microsoft excel"
-        MsgBox TRSuccessMessage, vbInformation, "Information"
-        
-    End If
-    
-    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    ' Shipments
-    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    If CreditsForm.PreventShipments_Optionbutton.Value = True Then
-        
-        Status.Value = "...   ...   ...   Managing Shipments   ...   ...   ..."
-        SendShipments = False
-        ManageShipments AS400, SID, SendShipments, Exception
-        Status.Value = ShipSuccessMessage
-        
-    ElseIf CreditsForm.SendShipments_Optionbutton.Value = True Then
-    
-        Status.Value = "...   ...   ...   Managing Shipments   ...   ...   ..."
-        SendShipments = True
-        ManageShipments AS400, SID, SendShipments, Exception
-        Status.Value = ShipSuccessMessage
-        
-    ElseIf CreditsForm.NoDecision_Optionbutton.Value = True Then
-    
-        'Do Nothing
+        ApplyTransferCredits u_TransferCredits
         
     Else
     
-        AppActivate "Microsoft excel"
-        ReturnValue = MsgBox("*** No shipment option has been selected. ***" & _
-            vbNewLine & vbNewLine & vbNewLine & vbNewLine & _
-            Space(3) & "Click 'Yes' to send the course shipments." & vbNewLine & vbNewLine & _
-            Space(3) & "Click 'No' to prevent the course shipments." & vbNewLine & vbNewLine & _
-            Space(3) & "Press 'Cancel' to end the application.", vbYesNoCancel, "Manage Shipments")
-        
-        Select Case ReturnValue
-        
-            Case vbYes
-                Status.Value = "...   ...   ...   Managing Shipments   ...   ...   ..."
-                SendShipments = True
-                ManageShipments AS400, SID, SendShipments, Exception
-                Status.Value = ShipSuccessMessage
-                
-            Case vbNo
-                Status.Value = "...   ...   ...   Managing Shipments   ...   ...   ..."
-                SendShipments = False
-                ManageShipments AS400, SID, SendShipments, Exception
-                Status.Value = ShipSuccessMessage
-                
-            Case vbCancel
-                'Do Nothing
-                
-            Case Else
-                'Do Nothing
-                
-        End Select
+        MsgBox "Please populate the classes before attempting to apply transfer credits", vbInformation, "Classes must be populated"
     
     End If
+    
+End Sub
 
-Cleanup:
+Private Sub Clear_Button_Click()
+    UserForm_Initialize
+End Sub
 
-    If Not Status.Value = TRSuccessMessage Or Not Status.Value = ShipSuccessMessage Then
-        Status.Value = "Ready"
+Private Sub Cancel_Button_Click()
+    Unload Me
+End Sub
+
+Private Sub SID_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+    RestrictToPostiveWholeNumbers KeyAscii
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' FORM CONTROLS
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub Class1_Checkbox_Click()
+
+    If Class1_Checkbox = True Then
+        Mod1_Textbox.BackColor = RGB(255, 251, 204)
+        Title1_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod1_Textbox.BackColor = RGB(211, 211, 211)
+        Title1_Textbox.BackColor = RGB(211, 211, 211)
     End If
 
-    TurnOnExcelDefaults Exception
-    Exception.Pop
+End Sub
 
-Exit Sub
+Private Sub Class2_Checkbox_Click()
 
-SIDNotFound:
-    AppActivate "Microsoft excel"
-    MsgBox "Please enter the Student ID# before proceeding", vbCritical, "SID Mismatch"
-GoTo Cleanup
-
-SIDNotAMatch:
-    AppActivate "Microsoft excel"
-    MsgBox "The Student ID# did not match the current AS/400 screen." & vbNewLine & vbNewLine & _
-        "Please confirm the entered information is correct, then try again.", vbCritical, "SID Mismatch"
-GoTo Cleanup
-
-LocationMismatch:
-    AppActivate "Microsoft excel"
-    MsgBox "The AS/400 location has changed and is currently not on the correct screen." & vbNewLine & vbNewLine & _
-        "Please confirm the entered information is correct, then try again.", vbCritical, "Location Mismatch"
-GoTo Cleanup
-
-EntryError:
-    AppActivate "Microsoft excel"
-    MsgBox "A problem occurred with either the Student ID# or the AS/400 Session." & vbNewLine & vbNewLine & _
-        "Please confirm the information is correct, then try again." & vbNewLine & vbNewLine & _
-        "Error: " & Err.Number & vbNewLine & Err.Description, vbCritical, "Entry Error"
-Resume Cleanup
-
-AS400Error:
-    AppActivate "Microsoft excel"
-    MsgBox "The AS400 has failed to initialize. Please confirm the session letter is correct, " & _
-        "and that the AS/400 itself is active, then try again." & vbNewLine & vbNewLine & _
-        "Error: " & Err.Number & vbNewLine & Err.Description, vbCritical, "AS/400 Error"
-Resume Cleanup
-
-NavigationFailure:
-    If NavigateToHome(AS400, Exception) = False Then
-        AppActivate "Microsoft excel"
-        MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
-            "Please navigate manually to the home screen, then attempt to run the application again.", _
-            vbCritical, "Navigation Failure"
+    If Class2_Checkbox = True Then
+        Mod2_Textbox.BackColor = RGB(255, 251, 204)
+        Title2_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod2_Textbox.BackColor = RGB(211, 211, 211)
+        Title2_Textbox.BackColor = RGB(211, 211, 211)
     End If
-GoTo Cleanup
 
-NavigationError:
-    AppActivate "Microsoft excel"
-    MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
-        "Please navigate manually to the home screen, then attempt to run the application again.", _
-        vbCritical, "Navigation Error"
-Resume Cleanup
+End Sub
 
-LoopError:
-    AppActivate "Microsoft excel"
-    MsgBox "The AS/400 scan has failed unexpectedly.  Please confirm the script's progress, " & _
-        "then proceed manually with the process." & vbNewLine & vbNewLine & _
-        "Error: " & Err.Number & vbNewLine & Err.Description, vbCritical, "Loop Error"
-Resume Cleanup
+Private Sub Class3_Checkbox_Click()
+
+    If Class3_Checkbox = True Then
+        Mod3_Textbox.BackColor = RGB(255, 251, 204)
+        Title3_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod3_Textbox.BackColor = RGB(211, 211, 211)
+        Title3_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class4_Checkbox_Click()
+
+    If Class4_Checkbox = True Then
+        Mod4_Textbox.BackColor = RGB(255, 251, 204)
+        Title4_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod4_Textbox.BackColor = RGB(211, 211, 211)
+        Title4_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class5_Checkbox_Click()
+
+    If Class5_Checkbox = True Then
+        Mod5_Textbox.BackColor = RGB(255, 251, 204)
+        Title5_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod5_Textbox.BackColor = RGB(211, 211, 211)
+        Title5_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class6_Checkbox_Click()
+
+    If Class6_Checkbox = True Then
+        Mod6_Textbox.BackColor = RGB(255, 251, 204)
+        Title6_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod6_Textbox.BackColor = RGB(211, 211, 211)
+        Title6_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class7_Checkbox_Click()
+
+    If Class7_Checkbox = True Then
+        Mod7_Textbox.BackColor = RGB(255, 251, 204)
+        Title7_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod7_Textbox.BackColor = RGB(211, 211, 211)
+        Title7_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class8_Checkbox_Click()
+
+    If Class8_Checkbox = True Then
+        Mod8_Textbox.BackColor = RGB(255, 251, 204)
+        Title8_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod8_Textbox.BackColor = RGB(211, 211, 211)
+        Title8_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class9_Checkbox_Click()
+
+    If Class9_Checkbox = True Then
+        Mod9_Textbox.BackColor = RGB(255, 251, 204)
+        Title9_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod9_Textbox.BackColor = RGB(211, 211, 211)
+        Title9_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class10_Checkbox_Click()
+
+    If Class10_Checkbox = True Then
+        Mod10_Textbox.BackColor = RGB(255, 251, 204)
+        Title10_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod10_Textbox.BackColor = RGB(211, 211, 211)
+        Title10_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class11_Checkbox_Click()
+
+    If Class11_Checkbox = True Then
+        Mod11_Textbox.BackColor = RGB(255, 251, 204)
+        Title11_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod11_Textbox.BackColor = RGB(211, 211, 211)
+        Title11_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class12_Checkbox_Click()
+
+    If Class12_Checkbox = True Then
+        Mod12_Textbox.BackColor = RGB(255, 251, 204)
+        Title12_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod12_Textbox.BackColor = RGB(211, 211, 211)
+        Title12_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class13_Checkbox_Click()
+
+    If Class13_Checkbox = True Then
+        Mod13_Textbox.BackColor = RGB(255, 251, 204)
+        Title13_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod13_Textbox.BackColor = RGB(211, 211, 211)
+        Title13_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class14_Checkbox_Click()
+
+    If Class14_Checkbox = True Then
+        Mod14_Textbox.BackColor = RGB(255, 251, 204)
+        Title14_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod14_Textbox.BackColor = RGB(211, 211, 211)
+        Title14_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class15_Checkbox_Click()
+
+    If Class15_Checkbox = True Then
+        Mod15_Textbox.BackColor = RGB(255, 251, 204)
+        Title15_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod15_Textbox.BackColor = RGB(211, 211, 211)
+        Title15_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class16_Checkbox_Click()
+
+    If Class16_Checkbox = True Then
+        Mod16_Textbox.BackColor = RGB(255, 251, 204)
+        Title16_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod16_Textbox.BackColor = RGB(211, 211, 211)
+        Title16_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class17_Checkbox_Click()
+
+    If Class17_Checkbox = True Then
+        Mod17_Textbox.BackColor = RGB(255, 251, 204)
+        Title17_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod17_Textbox.BackColor = RGB(211, 211, 211)
+        Title17_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class18_Checkbox_Click()
+
+    If Class18_Checkbox = True Then
+        Mod18_Textbox.BackColor = RGB(255, 251, 204)
+        Title18_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod18_Textbox.BackColor = RGB(211, 211, 211)
+        Title18_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class19_Checkbox_Click()
+
+    If Class19_Checkbox = True Then
+        Mod19_Textbox.BackColor = RGB(255, 251, 204)
+        Title19_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod19_Textbox.BackColor = RGB(211, 211, 211)
+        Title19_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class20_Checkbox_Click()
+
+    If Class20_Checkbox = True Then
+        Mod20_Textbox.BackColor = RGB(255, 251, 204)
+        Title20_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod20_Textbox.BackColor = RGB(211, 211, 211)
+        Title20_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class21_Checkbox_Click()
+
+    If Class21_Checkbox = True Then
+        Mod21_Textbox.BackColor = RGB(255, 251, 204)
+        Title21_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod21_Textbox.BackColor = RGB(211, 211, 211)
+        Title21_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class22_Checkbox_Click()
+
+    If Class22_Checkbox = True Then
+        Mod22_Textbox.BackColor = RGB(255, 251, 204)
+        Title22_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod22_Textbox.BackColor = RGB(211, 211, 211)
+        Title22_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class23_Checkbox_Click()
+
+    If Class23_Checkbox = True Then
+        Mod23_Textbox.BackColor = RGB(255, 251, 204)
+        Title23_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod23_Textbox.BackColor = RGB(211, 211, 211)
+        Title23_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class24_Checkbox_Click()
+
+    If Class24_Checkbox = True Then
+        Mod24_Textbox.BackColor = RGB(255, 251, 204)
+        Title24_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod24_Textbox.BackColor = RGB(211, 211, 211)
+        Title24_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+Private Sub Class25_Checkbox_Click()
+
+    If Class25_Checkbox = True Then
+        Mod25_Textbox.BackColor = RGB(255, 251, 204)
+        Title25_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod25_Textbox.BackColor = RGB(211, 211, 211)
+        Title25_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class26_Checkbox_Click()
+
+    If Class26_Checkbox = True Then
+        Mod26_Textbox.BackColor = RGB(255, 251, 204)
+        Title26_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod26_Textbox.BackColor = RGB(211, 211, 211)
+        Title26_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class27_Checkbox_Click()
+
+    If Class27_Checkbox = True Then
+        Mod27_Textbox.BackColor = RGB(255, 251, 204)
+        Title27_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod27_Textbox.BackColor = RGB(211, 211, 211)
+        Title27_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class28_Checkbox_Click()
+
+    If Class28_Checkbox = True Then
+        Mod28_Textbox.BackColor = RGB(255, 251, 204)
+        Title28_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod28_Textbox.BackColor = RGB(211, 211, 211)
+        Title28_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class29_Checkbox_Click()
+
+    If Class29_Checkbox = True Then
+        Mod29_Textbox.BackColor = RGB(255, 251, 204)
+        Title29_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod29_Textbox.BackColor = RGB(211, 211, 211)
+        Title29_Textbox.BackColor = RGB(211, 211, 211)
+    End If
+
+End Sub
+
+Private Sub Class30_Checkbox_Click()
+
+    If Class30_Checkbox = True Then
+        Mod30_Textbox.BackColor = RGB(255, 251, 204)
+        Title30_Textbox.BackColor = RGB(255, 251, 204)
+    Else
+        Mod30_Textbox.BackColor = RGB(211, 211, 211)
+        Title30_Textbox.BackColor = RGB(211, 211, 211)
+    End If
 
 End Sub
