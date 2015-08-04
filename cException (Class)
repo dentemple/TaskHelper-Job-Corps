@@ -1,27 +1,68 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' cException (Class)
-'
-' Overloaded class object: Handles both error handling and call stack functionality
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Sets custom error functionality. Overloaded to include call stack procedures.
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Option Explicit
+
 'GENERAL PROPERTIES
-Private pErrFlag As Boolean
-Private pErrNumber As Integer
-Private pErrDescription As String
-Private pMessage As String
+Private pFlag As Boolean '.Flag
+Private pNumber As Integer '.Number
+Private pDescription As String '.Description
+Private pMessage As String '.Message
 
 'CALL STACK PROPERTIES
 Public siTop As StackItem
-
-'LogErrorDescription Function
-'LogErrorNumberFunction
-'WriteErrorToFile Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' LOCAL PROCEDURES
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Private Sub Class_Initialize()
-    pErrFlag = False
+    pFlag = False
 End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GENERAL PROPERTIES
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' .Flag property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Let Flag(Value As Boolean)
+    pFlag = Value
+End Property
+Public Property Get Flag() As Boolean
+    Flag = pFlag
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' .Number property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Let Number(Value As Integer)
+    pNumber = Value
+End Property
+Public Property Get Number() As Integer
+    Number = pNumber
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' .Description property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Let Description(Value As String)
+    pDescription = Value
+End Property
+Public Property Get Description() As String
+    Description = pDescription
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Message property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Let Message(Value As String)
+    pMessage = Value
+End Property
+Public Property Get Message() As String
+    Message = pMessage
+End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' STACK PROPERTIES AND PROCEDURES
@@ -57,44 +98,4 @@ Property Get StackTop() As Variant
     Else
         StackTop = siTop.Value
     End If
-End Property
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' ErrFlag property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Let ErrFlag(Value As Boolean)
-    pErrFlag = Value
-End Property
-Public Property Get ErrFlag() As Boolean
-    ErrFlag = pErrFlag
-End Property
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' ErrNumber property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Let ErrNumber(Value As Integer)
-    pErrNumber = Value
-End Property
-Public Property Get ErrNumber() As Integer
-    ErrNumber = pErrNumber
-End Property
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' ErrDescription property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Let ErrDescription(Value As String)
-    pErrDescription = Value
-End Property
-Public Property Get ErrDescription() As String
-    ErrDescription = pErrDescription
-End Property
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Message property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Let Message(Value As String)
-    pMessage = Value
-End Property
-Public Property Get Message() As String
-    Message = pMessage
 End Property
