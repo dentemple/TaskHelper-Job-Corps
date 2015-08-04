@@ -1,5 +1,5 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' m_TransferCredits (Module)
+' TransferCredits (Module)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Option Explicit
@@ -57,47 +57,47 @@ Public Sub RunPopulateClasses(ByVal CreditsForm As MSForms.UserForm)
     On Error GoTo AS400Error
     InitializeAS400 AS400, Letter, Exception
     AS400.Handling = "Fast"
-    AS400.Milliseconds = 50
+    AS400.Time = 50
     
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Navigation
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     On Error GoTo NavigationError
-    GetTextString = AS400.Presentation.GetText(1, 2, 8)
+    GetTextString = AS400.GetText(1, 2, 8)
     
     Select Case GetTextString
     
         Case "60210   "
         
-            WaitForReady AS400, Exception
+            Pause AS400, Exception
         
         Case "603132_B"
         
-            AS400.Presentation.SendKeys "[pf11]"
-            WaitForReady AS400, Exception
+            AS400.SendKeys "[pf11]"
+            Pause AS400, Exception
         
         Case Else
         
             If NavigateToHome(AS400, Exception) = False Then GoTo NavigationFailure
-            AS400.Presentation.SetText "1", 19, 7
-            AS400.Presentation.SendKeys "[Enter]"
-            WaitForReady AS400, Exception
-            AS400.Presentation.SetText "15", 19, 7
-            AS400.Presentation.SendKeys "[Enter]"
-            WaitForReady AS400, Exception
-            AS400.Presentation.SetText SID, 3, 13
-            AS400.Presentation.SendKeys "[Enter]"
-            WaitForReady AS400, Exception
-            AS400.Presentation.SendKeys "[pf11]"
-            WaitForReady AS400, Exception
+            AS400.SetText "1", 19, 7
+            AS400.SendKeys "[Enter]"
+            Pause AS400, Exception
+            AS400.SetText "15", 19, 7
+            AS400.SendKeys "[Enter]"
+            Pause AS400, Exception
+            AS400.SetText SID, 3, 13
+            AS400.SendKeys "[Enter]"
+            Pause AS400, Exception
+            AS400.SendKeys "[pf11]"
+            Pause AS400, Exception
             
             GetTextString = vbNullString
-            GetTextString = AS400.Presentation.GetText(1, 2, 5)
+            GetTextString = AS400.GetText(1, 2, 5)
             If Not GetTextString = "60210" Then GoTo NavigationFailure
             
-            WaitForReady AS400, Exception
+            Pause AS400, Exception
             GetTextString = vbNullString
-            GetTextString = AS400.Presentation.GetText(5, 23, ModLen)
+            GetTextString = AS400.GetText(5, 23, ModLen)
             If Len(Trim(GetTextString)) < 2 Then GoTo DoesNotExist
 
     End Select
@@ -175,67 +175,67 @@ Public Sub RunPopulateClasses(ByVal CreditsForm As MSForms.UserForm)
     Do Until i >= MaxSize
     
         'Wait
-        WaitForReady AS400, Exception
+        Pause AS400, Exception
     
         'Increment
         i = i + 1
         
         'Line 17
-        TextboxArray(i, 1) = Trim(AS400.Presentation.GetText(17, 4, ModLen))
-        TextboxArray(i, 2) = Trim(AS400.Presentation.GetText(17, 13, 30))
+        TextboxArray(i, 1) = Trim(AS400.GetText(17, 4, ModLen))
+        TextboxArray(i, 2) = Trim(AS400.GetText(17, 13, 30))
         
         'Increment
         i = i + 1
         
         'Line 18
-        TextboxArray(i, 1) = Trim(AS400.Presentation.GetText(18, 4, ModLen))
-        TextboxArray(i, 2) = Trim(AS400.Presentation.GetText(18, 13, 30))
+        TextboxArray(i, 1) = Trim(AS400.GetText(18, 4, ModLen))
+        TextboxArray(i, 2) = Trim(AS400.GetText(18, 13, 30))
         
         'Increment
         i = i + 1
         
         'Line 19
-        TextboxArray(i, 1) = Trim(AS400.Presentation.GetText(19, 4, ModLen))
-        TextboxArray(i, 2) = Trim(AS400.Presentation.GetText(19, 13, 30))
+        TextboxArray(i, 1) = Trim(AS400.GetText(19, 4, ModLen))
+        TextboxArray(i, 2) = Trim(AS400.GetText(19, 13, 30))
         
         'Increment
         i = i + 1
         
         'Line 20
-        TextboxArray(i, 1) = Trim(AS400.Presentation.GetText(20, 4, ModLen))
-        TextboxArray(i, 2) = Trim(AS400.Presentation.GetText(20, 13, 30))
+        TextboxArray(i, 1) = Trim(AS400.GetText(20, 4, ModLen))
+        TextboxArray(i, 2) = Trim(AS400.GetText(20, 13, 30))
         
         'Increment
         i = i + 1
         
         'Line 21
-        TextboxArray(i, 1) = Trim(AS400.Presentation.GetText(21, 4, ModLen))
-        TextboxArray(i, 2) = Trim(AS400.Presentation.GetText(21, 13, 30))
+        TextboxArray(i, 1) = Trim(AS400.GetText(21, 4, ModLen))
+        TextboxArray(i, 2) = Trim(AS400.GetText(21, 13, 30))
         
         'Increment
         i = i + 1
         
         'Line 22
-        TextboxArray(i, 1) = Trim(AS400.Presentation.GetText(22, 4, ModLen))
-        TextboxArray(i, 2) = Trim(AS400.Presentation.GetText(22, 13, 30))
+        TextboxArray(i, 1) = Trim(AS400.GetText(22, 4, ModLen))
+        TextboxArray(i, 2) = Trim(AS400.GetText(22, 13, 30))
     
         'Wait
-        WaitForReady AS400, Exception
+        Pause AS400, Exception
         
         'Check
         GetTextString = vbNullString
-        GetTextString = AS400.Presentation.GetText(22, 4, 2)
+        GetTextString = AS400.GetText(22, 4, 2)
         If Len(Trim(GetTextString)) < 1 Then
             Exit Do
         Else
-            AS400.Presentation.SendKeys "[pagedn]"
+            AS400.SendKeys "[pagedn]"
         End If
     
     Loop
     
-    WaitForReady AS400, Exception
+    Pause AS400, Exception
     GetTextString = vbNullString
-    GetTextString = AS400.Presentation.GetText(4, 32, 38)
+    GetTextString = AS400.GetText(4, 32, 38)
     
     If Trim(GetTextString) < 0 Then
         CreditsForm.AlphaName_Textbox = vbTab & "(Empty)"
@@ -270,8 +270,8 @@ GoTo Cleanup
 
 AS400Error:
     AppActivate "Microsoft excel"
-    MsgBox "The AS400 has failed to initialize. Please confirm the session letter is correct, " & _
-        "and that the AS/400 itself is active, then try again." & vbNewLine & vbNewLine & _
+    MsgBox "The AS400 has failed to initialize. Please confirm the session letter is correct " & _
+        "and the AS/400 itself is active, then try again." & vbNewLine & vbNewLine & _
         "Error: " & Err.Number & vbNewLine & Err.Description, vbCritical, "AS/400 Error"
 Resume Cleanup
 
@@ -378,7 +378,7 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
     On Error GoTo AS400Error
     InitializeAS400 AS400, Letter, Exception
     AS400.Handling = "Fast"
-    AS400.Milliseconds = 50
+    AS400.Time = 50
     
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Navigation
@@ -388,39 +388,39 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
     
         Case "60210   "
         
-            AS400.Presentation.SendKeys "[pf3]"
-            WaitForReady AS400, Exception
-            AS400.Presentation.SendKeys "[pf11]"
-            WaitForReady AS400, Exception
+            AS400.SendKeys "[pf3]"
+            Pause AS400, Exception
+            AS400.SendKeys "[pf11]"
+            Pause AS400, Exception
         
         Case "603132_B"
         
-            AS400.Presentation.SendKeys "[pf11]"
-            WaitForReady AS400, Exception
+            AS400.SendKeys "[pf11]"
+            Pause AS400, Exception
         
         Case Else
         
             If NavigateToHome(AS400, Exception) = False Then GoTo NavigationFailure
-            AS400.Presentation.SetText "1", 19, 7
-            AS400.Presentation.SendKeys "[Enter]"
-            WaitForReady AS400, Exception
-            AS400.Presentation.SetText "15", 19, 7
-            AS400.Presentation.SendKeys "[Enter]"
-            WaitForReady AS400, Exception
-            AS400.Presentation.SetText SID, 3, 13
-            AS400.Presentation.SendKeys "[Enter]"
-            WaitForReady AS400, Exception
-            AS400.Presentation.SendKeys "[pf11]"
-            WaitForReady AS400, Exception
+            AS400.SetText "1", 19, 7
+            AS400.SendKeys "[Enter]"
+            Pause AS400, Exception
+            AS400.SetText "15", 19, 7
+            AS400.SendKeys "[Enter]"
+            Pause AS400, Exception
+            AS400.SetText SID, 3, 13
+            AS400.SendKeys "[Enter]"
+            Pause AS400, Exception
+            AS400.SendKeys "[pf11]"
+            Pause AS400, Exception
             
             GetTextString = vbNullString
-            GetTextString = AS400.Presentation.GetText(1, 2, 5)
+            GetTextString = AS400.GetText(1, 2, 5)
             If Not GetTextString = "60210" Then GoTo NavigationFailure
 
     End Select
     
     GetTextString = vbNullString
-    GetTextString = AS400.Presentation.GetText(4, 23, ModLen)
+    GetTextString = AS400.GetText(4, 23, ModLen)
     If Not Trim(GetTextString) = SID Then GoTo SIDNotAMatch
     
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -526,14 +526,14 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
         i = i + 1
         
         'Line 17
-        WaitForReady AS400, Exception
+        Pause AS400, Exception
         If BooleanArray(i) = True And Len(Trim(TextboxArray(i, 1).Value)) > 1 Then
         
             GetTextString = vbNullString
-            GetTextString = AS400.Presentation.GetText(17, 4, ModLen)
+            GetTextString = AS400.GetText(17, 4, ModLen)
             
             If Trim(GetTextString) = Trim(TextboxArray(i, 1).Value) Then
-                AS400.Presentation.SetText "1", 17, 2
+                AS400.SetText "1", 17, 2
                 TextboxArray(i, 1).BackColor = RGB(135, 206, 250)
                 TextboxArray(i, 2).BackColor = RGB(135, 206, 250)
                 Counter = Counter + 1
@@ -545,14 +545,14 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
         i = i + 1
         
         'Line 18
-        WaitForReady AS400, Exception
+        Pause AS400, Exception
         If BooleanArray(i) = True And Len(Trim(TextboxArray(i, 1).Value)) > 1 Then
         
             GetTextString = vbNullString
-            GetTextString = AS400.Presentation.GetText(18, 4, ModLen)
+            GetTextString = AS400.GetText(18, 4, ModLen)
             
             If Trim(GetTextString) = Trim(TextboxArray(i, 1).Value) Then
-                AS400.Presentation.SetText "1", 18, 2
+                AS400.SetText "1", 18, 2
                 TextboxArray(i, 1).BackColor = RGB(135, 206, 250)
                 TextboxArray(i, 2).BackColor = RGB(135, 206, 250)
                 Counter = Counter + 1
@@ -564,14 +564,14 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
         i = i + 1
         
         'Line 19
-        WaitForReady AS400, Exception
+        Pause AS400, Exception
         If BooleanArray(i) = True And Len(Trim(TextboxArray(i, 1).Value)) > 1 Then
         
             GetTextString = vbNullString
-            GetTextString = AS400.Presentation.GetText(19, 4, ModLen)
+            GetTextString = AS400.GetText(19, 4, ModLen)
             
             If Trim(GetTextString) = Trim(TextboxArray(i, 1).Value) Then
-                AS400.Presentation.SetText "1", 19, 2
+                AS400.SetText "1", 19, 2
                 TextboxArray(i, 1).BackColor = RGB(135, 206, 250)
                 TextboxArray(i, 2).BackColor = RGB(135, 206, 250)
                 Counter = Counter + 1
@@ -583,14 +583,14 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
         i = i + 1
         
         'Line 20
-        WaitForReady AS400, Exception
+        Pause AS400, Exception
         If BooleanArray(i) = True And Len(Trim(TextboxArray(i, 1).Value)) > 1 Then
         
             GetTextString = vbNullString
-            GetTextString = AS400.Presentation.GetText(20, 4, ModLen)
+            GetTextString = AS400.GetText(20, 4, ModLen)
             
             If Trim(GetTextString) = Trim(TextboxArray(i, 1).Value) Then
-                AS400.Presentation.SetText "1", 20, 2
+                AS400.SetText "1", 20, 2
                 TextboxArray(i, 1).BackColor = RGB(135, 206, 250)
                 TextboxArray(i, 2).BackColor = RGB(135, 206, 250)
                 Counter = Counter + 1
@@ -602,14 +602,14 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
         i = i + 1
         
         'Line 21
-        WaitForReady AS400, Exception
+        Pause AS400, Exception
         If BooleanArray(i) = True And Len(Trim(TextboxArray(i, 1).Value)) > 1 Then
         
             GetTextString = vbNullString
-            GetTextString = AS400.Presentation.GetText(21, 4, ModLen)
+            GetTextString = AS400.GetText(21, 4, ModLen)
             
             If Trim(GetTextString) = Trim(TextboxArray(i, 1).Value) Then
-                AS400.Presentation.SetText "1", 21, 2
+                AS400.SetText "1", 21, 2
                 TextboxArray(i, 1).BackColor = RGB(135, 206, 250)
                 TextboxArray(i, 2).BackColor = RGB(135, 206, 250)
                 Counter = Counter + 1
@@ -621,14 +621,14 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
         i = i + 1
         
         'Line 22
-        WaitForReady AS400, Exception
+        Pause AS400, Exception
         If BooleanArray(i) = True And Len(Trim(TextboxArray(i, 1).Value)) > 1 Then
         
             GetTextString = vbNullString
-            GetTextString = AS400.Presentation.GetText(22, 4, ModLen)
+            GetTextString = AS400.GetText(22, 4, ModLen)
             
             If Trim(GetTextString) = Trim(TextboxArray(i, 1).Value) Then
-                AS400.Presentation.SetText "1", 22, 2
+                AS400.SetText "1", 22, 2
                 TextboxArray(i, 1).BackColor = RGB(135, 206, 250)
                 TextboxArray(i, 2).BackColor = RGB(135, 206, 250)
                 Counter = Counter + 1
@@ -637,54 +637,54 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
         End If
         
         'Wait
-        WaitForReady AS400, Exception
+        Pause AS400, Exception
         
         'Check
         GetTextString = vbNullString
-        GetTextString = AS400.Presentation.GetText(22, 4, 2)
+        GetTextString = AS400.GetText(22, 4, 2)
         If Len(Trim(GetTextString)) < 1 Then
             Exit Do
         Else
-            AS400.Presentation.SendKeys "[pagedn]"
+            AS400.SendKeys "[pagedn]"
         End If
     
     Loop
     
     If Counter < 1 Then
         
-        WaitForReady AS400, Exception
-        AS400.Presentation.SendKeys "[pf3]"
+        Pause AS400, Exception
+        AS400.SendKeys "[pf3]"
         Status.Value = "Ready"
         AppActivate "Microsoft excel"
         MsgBox "Please select a class to transfer", vbInformation, "Information"
     
     Else
     
-        AS400.Presentation.SendKeys "[Enter]"
+        AS400.SendKeys "[Enter]"
     
-        WaitForReady AS400, Exception
+        Pause AS400, Exception
         GetTextString = vbNullString
-        GetTextString = AS400.Presentation.GetText(1, 2, 5)
+        GetTextString = AS400.GetText(1, 2, 5)
         If Not Trim(GetTextString) = "60211" Then GoTo LocationMismatch
     
         Do Until Counter <= 0
     
-            WaitForReady AS400, Exception
+            Pause AS400, Exception
             GetTextString = vbNullString
-            GetTextString = AS400.Presentation.GetText(10, 19, 1)
+            GetTextString = AS400.GetText(10, 19, 1)
             If Len(Trim(GetTextString)) = 1 Then GoTo SkipIterationEntries
         
-            AS400.Presentation.SetText "C", 3, 19
-            AS400.Presentation.SetText "Y", 8, 19
-            AS400.Presentation.SetText "H", 10, 19
+            AS400.SetText "C", 3, 19
+            AS400.SetText "Y", 8, 19
+            AS400.SetText "H", 10, 19
 
 SkipIterationEntries:
         
-            AS400.Presentation.SendKeys "[Enter]"
-            WaitForReady AS400, Exception
+            AS400.SendKeys "[Enter]"
+            Pause AS400, Exception
         
-            AS400.Presentation.SendKeys "[pf3]"
-            WaitForReady AS400, Exception
+            AS400.SendKeys "[pf3]"
+            Pause AS400, Exception
         
             Counter = Counter - 1
             
@@ -692,13 +692,13 @@ SkipIterationEntries:
     
         Loop
         
-        WaitForReady AS400, Exception
-        AS400.Presentation.SetText "C", 3, 23
-        AS400.Presentation.SetText "Y", 14, 60
-        AS400.Presentation.SendKeys "[Enter]"
-        WaitForReady AS400, Exception
-        AS400.Presentation.SendKeys "[pf3]"
-        WaitForReady AS400, Exception
+        Pause AS400, Exception
+        AS400.SetText "C", 3, 23
+        AS400.SetText "Y", 14, 60
+        AS400.SendKeys "[Enter]"
+        Pause AS400, Exception
+        AS400.SendKeys "[pf3]"
+        Pause AS400, Exception
         
         AppActivate "Microsoft excel"
         MsgBox TRSuccessMessage, vbInformation, "Information"
@@ -825,4 +825,3 @@ LoopError:
 Resume Cleanup
 
 End Sub
-
