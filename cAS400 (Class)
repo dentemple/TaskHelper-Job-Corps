@@ -5,14 +5,12 @@
     intent to reduce redundancy and simplify the code. The HACL allows the _
     AS/400 to be controlled by Microsoft's COM-based technology.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-Option Compare Database
-
 Option Explicit
 
 'GENERAL PROPERTIES
 Private pName As String '.Name
 Private pTime As Long '.Time
+Private pHandling As String '.Handling
 
 'READ-ONLY PROPERTIES/SUBROUTINES
 '   .Operator (Stores the autECLOIA object)
@@ -23,6 +21,7 @@ Private pTime As Long '.Time
 '   .Wait
 '   .WaitForApp
 '   .Refresh
+'   .Activate
 
 'OBJECT PROPERTIES
 Private pSession As Object '.Session
@@ -57,6 +56,16 @@ Public Property Let Time(Value As Long)
 End Property
 Public Property Get Time() As Long
     Time = pTime
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' .Handling property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Let Handling(Value As String)
+    pHandling = Value
+End Property
+Public Property Get Handling() As String
+    Handling = pHandling
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -119,6 +128,13 @@ Public Sub Refresh()
     Connection.Refresh
 End Sub
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' .Activate property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub Activate()
+    Metrics.Active = True
+End Sub
+
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' OBJECT PROPERTIES
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -151,3 +167,5 @@ End Property
 Public Property Get Connection() As Object
     Set Connection = pConnection
 End Property
+
+
