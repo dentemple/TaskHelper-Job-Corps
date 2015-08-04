@@ -1,5 +1,5 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' m_Environment (Module)
+' RegistrationEnvironment (Module)
 '
 ' Procedures for the interpretation of data for use within the m_General module
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -9,12 +9,28 @@ Option Explicit
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' LoadUserformObjects (Public Sub)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub LoadUserformObjects(ByRef StudentFile As cStudentFile, ByVal RegForm As MSForms.UserForm, ByRef Exception As cException)
+Public Sub LoadUserformObjects(ByRef StudentFile As cStudentFile, ByVal RegForm As MSForms.UserForm, _
+    Optional ByRef Exception As cException)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Purpose:      Passes data from the userform object to the _
+                    custom class object _
+
+' Input:        The registration userform object _
+                The custom StudentFile class object _
+                (Optional) The custom Exception class object _
+
+' Output:       A modified StudentFile class object _
+                (Optional) A modified Exception class object_
+
+' Assumptions:  The userform is valid and holds valid objects _
+
+' Handles Errors:   No
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
     'Pass error handling up the call stack
     On Error GoTo 0
 
-    Exception.Push "Procedure: m_Environment.LoadUserformObjects"
+    If Not Exception Is Nothing Then Exception.Push "RegistrationEnvironment.LoadUserformObjects"
 
     'Pass userform
     Set StudentFile.UserFormObject = RegForm
@@ -44,7 +60,9 @@ Public Sub LoadUserformObjects(ByRef StudentFile As cStudentFile, ByVal RegForm 
     Set StudentFile.MaleOptionButton = RegForm.Male_Optionselect
     Set StudentFile.FemaleOptionButton = RegForm.Female_Optionselect
     
-    Exception.Pop
+Cleanup:
+    
+    If Not Exception Is Nothing Then Exception.Pop
 
 End Sub
 
@@ -52,37 +70,57 @@ End Sub
 ' ApproveRegistration (Public Function)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function ApproveRegistration(ByVal StudentFile As cStudentFile, ByVal AS400 As cAS400, _
-    ByVal Exception As cException, ByRef RedMessage As String, ByRef BlueMessage As String) As Boolean
+    ByRef RedMessage As String, ByRef BlueMessage As String, ByRef Exception As cException) As Boolean
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Purpose:      Runs an approval check for the user prior _
+                    to running the registration script
+
+' Input:        The StudentFile, AS400, and Exception custom _
+                    class objects _
+                The RedMessage (Failure) and BlueMessage (Success) _
+                    string values _
+
+' Output:       TRUE if approved/successful _
+                FALSE if cancelled/failed _
+                Custom string messages
+
+' Assumptions:  The custom class objects are valid
+
+' Handles Errors:   No
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
     'Pass error handling up the call stack
     On Error GoTo 0
     
-    Exception.Push "Procedure: m_Environment.ApproveRegistration"
+    Exception.Push "RegistrationEnvironment.ApproveRegistration"
     
-    Dim ApprovalFlag As Boolean
-    ApprovalFlag = True
+    Dim ApprovalFlag As Boolean: ApprovalFlag = True
     
-    Dim UserSelection As Integer
-    UserSelection = 2
+    Dim UserSelection As Integer: UserSelection = 2
     
-    If Exception.ErrFlag = True Then
-        ApprovalFlag = False
-    End If
+    If Exception.ErrFlag = True Then ApprovalFlag = False
     
     ConfirmAccountInfo StudentFile, ApprovalFlag, RedMessage, BlueMessage, Exception
     ConfirmStudentFile StudentFile, ApprovalFlag, RedMessage, BlueMessage, Exception
     
     If ApprovalFlag = False Then
+    
         AppActivate "Microsoft excel"
         MsgBox RedMessage, vbCritical, "Pre-Enrollment Checklist"
+        
     Else
+    
         AppActivate "Microsoft excel"
         UserSelection = MsgBox(BlueMessage, vbOKCancel, "Pre-Enrollment Checklist")
         If UserSelection = vbOK Then ApprovalFlag = True
         If UserSelection = vbCancel Then ApprovalFlag = False
+        
     End If
     
     ApproveRegistration = ApprovalFlag
+    
+Cleanup:
+
     Exception.Pop
 
 End Function
@@ -91,17 +129,18 @@ End Function
 ' ConfirmAccountInfo
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Private Sub ConfirmAccountInfo(ByVal StudentFile As cStudentFile, ByRef ApprovalFlag As Boolean, _
-    ByRef RedMessage As String, ByRef BlueMessage As String, ByRef Exception As cException)
-    
+    ByRef RedMessage As String, ByRef BlueMessage As String, Optional ByRef Exception As cException)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' (See the m_Environment.ApproveRegistration procedure)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     'Pass error handling up the call stack
     On Error GoTo 0
     
-    Exception.Push "Procedure: m_Environment.ConfirmAccountInfo"
+    If Not Exception Is Nothing Then Exception.Push "RegistrationEnvironment.ConfirmAccountInfo"
     
-    Dim Temp As String
+    Dim Temp As String: Temp = vbNullString
     
     'Automation setting
-    Temp = vbNullString
     Temp = StudentFile.GetAutomation
     If Temp = "Fast" Or Temp = "Slow" Or Temp = "StopEach" Or Temp = "Debug" Then
         BlueMessage = BlueMessage & "Automation:" & vbTab & Temp & vbNewLine
@@ -169,11 +208,13 @@ Private Sub ConfirmAccountInfo(ByVal StudentFile As cStudentFile, ByRef Approval
         BlueMessage = BlueMessage & "WebEndTime:" & vbTab & "000000" & vbNewLine
     End If
     
-    Exception.Pop
-    
     If Len(StudentFile.GetPONumber) >= 1 Then
         BlueMessage = BlueMessage & "PO Number:" & vbTab & StudentFile.GetPONumber & vbNewLine & vbNewLine
     End If
+    
+Cleanup:
+
+    If Not Exception Is Nothing Then Exception.Pop
     
 End Sub
 
@@ -181,12 +222,15 @@ End Sub
 ' ConfirmStudentFile
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Private Sub ConfirmStudentFile(ByVal StudentFile As cStudentFile, ByRef ApprovalFlag As Boolean, _
-    ByRef RedMessage As String, ByRef BlueMessage As String, ByRef Exception As cException)
+    ByRef RedMessage As String, ByRef BlueMessage As String, Optional ByRef Exception As cException)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' (See the m_Environment.ApproveRegistration procedure)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
     'Pass error handling up the call stack
     On Error GoTo 0
     
-    Exception.Push "Procedure: m_Environment.ConfirmStudentFile"
+    If Not Exception Is Nothing Then Exception.Push "RegistrationEnvironment.ConfirmStudentFile"
     
     'Student Name
     If Len(StudentFile.GetMailingName) < 4 Or Len(StudentFile.GetMailingName) > 38 Then
@@ -211,7 +255,9 @@ Private Sub ConfirmStudentFile(ByVal StudentFile As cStudentFile, ByRef Approval
     'PO Number
     BlueMessage = BlueMessage & "PO#:" & vbTab & vbTab & StudentFile.GetPONumber & vbNewLine
     
-    Exception.Pop
+Cleanup:
+    
+    If Not Exception Is Nothing Then Exception.Pop
     
 End Sub
 
@@ -219,34 +265,59 @@ End Sub
 ' ProceedToNextScreen (Public Function)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function ProceedToNextScreen(ByVal Action As String, ByVal AS400 As cAS400, ByRef Exception As cException) As Boolean
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Purpose:      Provides an additional automation object for _
+                    the user _
+    (Note: May be removed in future iterations)
 
+' Input:        SendKeys command action _
+                The AS400 custom class object _
+                The Exception custom class object _
+
+' Output:       TBD
+
+' Assumptions:  TBD
+
+' Handles Errors:   No
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     'Pass error handling up the call stack
     On Error GoTo 0
     
-    Exception.Push "Procedure: m_Environment.ProceedToNextScreen"
-    
+    Exception.Push "RegistrationEnvironment.ProceedToNextScreen"
+
     Dim Selection As Integer
     
-    WaitForReady AS400, Exception
+    Pause AS400, Exception
     ProceedToNextScreen = False
+    
     If AS400.Handling = "StopEach" Then
+    
         AppActivate "Microsoft Excel"
         Selection = MsgBox("OK:" & vbTab & "Proceed to next screen" & vbNewLine & _
             "Cancel:" & vbTab & "Stop the automation", vbOKCancel, "StopEach / Debug")
+            
         If Selection = vbCancel Then
+        
             ProceedToNextScreen = True
-            AS400.Metrics.Active = True
+            AS400.Activate = True
+            
         Else
+        
             ProceedToNextScreen = False
-            AS400.Metrics.Active = True
-            AS400.Presentation.SendKeys Action
-            WaitForReady AS400, Exception
+            AS400.Activate = True
+            AS400.SendKeys Action
+            Pause AS400, Exception
+            
         End If
     Else
-        AS400.Metrics.Active = True
-        AS400.Presentation.SendKeys Action
-        WaitForReady AS400, Exception
+    
+        AS400.Activate = True
+        AS400.SendKeys Action
+        Pause AS400, Exception
+        
     End If
+    
+Cleanup:
     
     Exception.Pop
     
