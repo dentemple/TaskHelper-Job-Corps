@@ -1,26 +1,32 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' cAS400 (Class)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Provides containers for the Host Automation Class Library objects with the _
+    intent to reduce redundancy and simplify the code. The HACL allows the _
+    AS/400 to be controlled by Microsoft's COM-based technology.
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Option Compare Database
 
 Option Explicit
 
-' GENERAL PROPERTIES
-Private pSessionName As String
-Private pMilliseconds As Long
-Private pHandling As String
+'GENERAL PROPERTIES
+Private pName As String ' .Name
+Private pTime As Long ' .Time
 
-' READ-ONLY PROPERTIES
-'   Operator        (Stores the autECLOIA automation object)
-'   Presentation    (Stores the autECLPS automation object)
-'   SetText
-'   SendKeys
-'   GetText
-'   Wait
+'READ-ONLY PROPERTIES/SUBROUTINES
+'   .Operator (Stores the autECLOIA object)
+'   .Presentation (Stores the autECLPS object)
+'   .SetText
+'   .SendKeys
+'   .GetText
+'   .Wait
+'   .WaitForApp
 
-' OBJECT PROPERTIES
-Private pSession As Object
-Private pMetrics As Object
-Private pConnection As Object
+'OBJECT PROPERTIES
+Private pSession As Object ' .Session
+Private pMetrics As Object ' .Metrics
+Private pConnection As Object ' .Connection
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' LOCAL PROCEDURES
@@ -34,41 +40,83 @@ End Sub
 ' GENERAL PROPERTIES
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Milliseconds property
+' .Name property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Let Milliseconds(Value As Long)
-    pMilliseconds = Value
+Public Property Let Name(Value As String)
+    pName = Value
 End Property
-Public Property Get Milliseconds() As Long
-    Milliseconds = pMilliseconds
+Public Property Get Name() As String
+    Name = pName
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' SessionName property
+' .Time property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Let SessionName(Value As String)
-    pSessionName = Value
+Public Property Let Time(Value As Long)
+    pTime = Value
 End Property
-Public Property Get SessionName() As String
-    SessionName = pSessionName
+Public Property Get Time() As Long
+    Time = pTime
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' READ-ONLY PROPERTIES/SUBROUTINES
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' .Operator property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Get Operator() As Object
+    Set Operator = Session.autECLOIA
+ End Property
+ 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' .Presentation property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Get Presentation() As Object
+    Set Presentation = Session.autECLPS
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Handling property
+' .SetText property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Let Handling(Value As String)
-    pHandling = Value
+Public Sub SetText(Str As String, Row As Long, Col As Long)
+    Session.autECLPS.SetText Str, Row, Col
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' .SendKeys property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub SendKeys(Str As String)
+    Session.autECLPS.SendKeys Str
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' .GetText property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Get GetText(Row As Long, Col As Long, Length As Long) As String
+    GetText = Session.autECLPS.GetText(Row, Col, Length)
 End Property
-Public Property Get Handling() As String
-    Handling = pHandling
-End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' .Wait property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub Wait(Milliseconds As Long)
+    Session.autECLPS.Wait Milliseconds
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' .WaitForApp property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub WaitForApp()
+    Session.autECLOIA.WaitForAppAvailable
+    Session.autECLOIA.WaitForInputReady
+End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' OBJECT PROPERTIES
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Session property
+' .Session property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Set Session(Value As Object)
     Set pSession = Value
@@ -78,7 +126,7 @@ Public Property Get Session() As Object
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Metrics property
+' .Metrics property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Set Metrics(Value As Object)
     Set pMetrics = Value
@@ -88,25 +136,11 @@ Public Property Get Metrics() As Object
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Connection property
+' .Connection property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Property Set Connection(Value As Object)
     Set pConnection = Value
 End Property
 Public Property Get Connection() As Object
     Set Connection = pConnection
-End Property
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Operator property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Get Operator() As Object
-    Set Operator = Session.autECLOIA
- End Property
- 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Presentation property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Get Presentation() As Object
-    Set Presentation = Session.autECLPS
 End Property
