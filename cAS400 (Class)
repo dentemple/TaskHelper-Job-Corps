@@ -11,8 +11,8 @@ Option Compare Database
 Option Explicit
 
 'GENERAL PROPERTIES
-Private pName As String ' .Name
-Private pTime As Long ' .Time
+Private pName As String '.Name
+Private pTime As Long '.Time
 
 'READ-ONLY PROPERTIES/SUBROUTINES
 '   .Operator (Stores the autECLOIA object)
@@ -24,9 +24,9 @@ Private pTime As Long ' .Time
 '   .WaitForApp
 
 'OBJECT PROPERTIES
-Private pSession As Object ' .Session
-Private pMetrics As Object ' .Metrics
-Private pConnection As Object ' .Connection
+Private pSession As Object '.Session
+Private pMetrics As Object '.Metrics
+Private pConnection As Object '.Connection
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' LOCAL PROCEDURES
