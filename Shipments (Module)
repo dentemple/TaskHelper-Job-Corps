@@ -51,38 +51,38 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
     TurnOffExcelDefaults Exception
 
     AS400.Handling = "Fast"
-    AS400.Milliseconds = 50
+    AS400.Time = 50
     
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Navigation
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     On Error GoTo NavigationError
-    GetTextString = AS400.Presentation.GetText(1, 3, 5)
+    GetTextString = AS400.GetText(1, 3, 5)
     
     If Not GetTextString = "42040" Then
 
         If NavigateToHome(AS400, Exception) = False Then GoTo NavigationFailure
     
-        AS400.Presentation.SetText "1", 19, 7
-        AS400.Presentation.SendKeys "[Enter]"
-        WaitForReady AS400, Exception
+        AS400.SetText "1", 19, 7
+        AS400.SendKeys "[Enter]"
+        Pause AS400, Exception
     
-        AS400.Presentation.SetText "8", 19, 7
-        AS400.Presentation.SendKeys "[Enter]"
-        WaitForReady AS400, Exception
+        AS400.SetText "8", 19, 7
+        AS400.SendKeys "[Enter]"
+        Pause AS400, Exception
         
     Else
-        AS400.Presentation.SendKeys "[pf3]"
+        AS400.SendKeys "[pf3]"
     End If
     
     If SendShipments = False Then
-        AS400.Presentation.SetText "17", 19, 7
+        AS400.SetText "17", 19, 7
     Else
-        AS400.Presentation.SetText "18", 19, 7
+        AS400.SetText "18", 19, 7
     End If
     
-    AS400.Presentation.SendKeys "[Enter]"
-    WaitForReady AS400, Exception
+    AS400.SendKeys "[Enter]"
+    Pause AS400, Exception
     
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Option: "Prevent Shipment Release"
@@ -106,10 +106,10 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
                     
             End Select
         
-            AS400.Presentation.SetText SID, 4, 22
-            AS400.Presentation.SetText ShipSet(SetCount), 2, 78
-            AS400.Presentation.SendKeys "[Enter]"
-            WaitForReady AS400, Exception
+            AS400.SetText SID, 4, 22
+            AS400.SetText ShipSet(SetCount), 2, 78
+            AS400.SendKeys "[Enter]"
+            Pause AS400, Exception
             
             '2nd level loop: Perform on each page
             EndPageLoop = False
@@ -120,10 +120,10 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
                 Do
                 
                     GetTextString = vbNullString
-                    GetTextString = Trim(AS400.Presentation.GetText(i, 47, 4))
+                    GetTextString = Trim(AS400.GetText(i, 47, 4))
                     
                     CheckForTarget = vbNullString
-                    CheckForTarget = Trim(AS400.Presentation.GetText(i, 77, 3))
+                    CheckForTarget = Trim(AS400.GetText(i, 77, 3))
                 
                     'If the line is empty...
                     If Len(GetTextString) < 2 Then
@@ -135,7 +135,7 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
                         
                     'ElseIf the line includes the target status...
                     ElseIf CheckForTarget = Target Then
-                        AS400.Presentation.SetText "1", i, 3
+                        AS400.SetText "1", i, 3
                         
                     Else
                         'Do Nothing
@@ -146,21 +146,21 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
                 Loop While i <= MaxSize
             
                 GetTextString = vbNullString
-                GetTextString = Trim(AS400.Presentation.GetText(23, 47, 4))
+                GetTextString = Trim(AS400.GetText(23, 47, 4))
                 
                 If Len(GetTextString) < 2 Then
                 
-                    WaitForReady AS400, Exception
-                    AS400.Presentation.SendKeys "[Enter]"
-                    WaitForReady AS400, Exception
+                    Pause AS400, Exception
+                    AS400.SendKeys "[Enter]"
+                    Pause AS400, Exception
                     
                     EndPageLoop = True
                     
                 Else
                 
-                    WaitForReady AS400, Exception
-                    AS400.Presentation.SendKeys "[pagedn]"
-                    WaitForReady AS400, Exception
+                    Pause AS400, Exception
+                    AS400.SendKeys "[pagedn]"
+                    Pause AS400, Exception
                     
                 End If
                  
@@ -168,16 +168,16 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
             
         Next SetCount
         
-        AS400.Presentation.SendKeys "[pf3]"
+        AS400.SendKeys "[pf3]"
     
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Option: "Prevent Shipment Release"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     Else
     
-        AS400.Presentation.SetText SID, 4, 22
-        AS400.Presentation.SendKeys "[Enter]"
-        WaitForReady AS400, Exception
+        AS400.SetText SID, 4, 22
+        AS400.SendKeys "[Enter]"
+        Pause AS400, Exception
         
         '1st level loop: Perform on each page
         EndPageLoop = False
@@ -188,7 +188,7 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
             Do
             
                 GetTextString = vbNullString
-                GetTextString = Trim(AS400.Presentation.GetText(i, 47, 4))
+                GetTextString = Trim(AS400.GetText(i, 47, 4))
                 
                 'If the line is empty...
                 If Len(GetTextString) < 2 Then
@@ -199,7 +199,7 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
                     'Do Nothing
                     
                 Else
-                    AS400.Presentation.SetText "1", i, 3
+                    AS400.SetText "1", i, 3
                 End If
                 
                 i = i + 1
@@ -207,27 +207,27 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
             Loop While i <= MaxSize
                     
             GetTextString = vbNullString
-            GetTextString = Trim(AS400.Presentation.GetText(23, 47, 4))
+            GetTextString = Trim(AS400.GetText(23, 47, 4))
             
             If Len(GetTextString) < 2 Then
             
-                WaitForReady AS400, Exception
-                AS400.Presentation.SendKeys "[Enter]"
-                WaitForReady AS400, Exception
+                Pause AS400, Exception
+                AS400.SendKeys "[Enter]"
+                Pause AS400, Exception
                 
                 EndPageLoop = True
                 
             Else
             
-                WaitForReady AS400, Exception
-                AS400.Presentation.SendKeys "[pagedn]"
-                WaitForReady AS400, Exception
+                Pause AS400, Exception
+                AS400.SendKeys "[pagedn]"
+                Pause AS400, Exception
                 
             End If
             
         Loop Until EndPageLoop = True
         
-        AS400.Presentation.SendKeys "[pf3]"
+        AS400.SendKeys "[pf3]"
     
     End If
 
