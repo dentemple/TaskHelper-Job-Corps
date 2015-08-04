@@ -5,6 +5,9 @@
     intent to reduce redundancy and simplify the code. The HACL allows the _
     AS/400 to be controlled by Microsoft's COM-based technology.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Option Compare Database
+
 Option Explicit
 
 'GENERAL PROPERTIES
@@ -19,6 +22,7 @@ Private pTime As Long '.Time
 '   .GetText
 '   .Wait
 '   .WaitForApp
+'   .Refresh
 
 'OBJECT PROPERTIES
 Private pSession As Object '.Session
@@ -106,6 +110,13 @@ End Sub
 Public Sub WaitForApp()
     Session.autECLOIA.WaitForAppAvailable
     Session.autECLOIA.WaitForInputReady
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' .Refresh property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub Refresh()
+    Connection.Refresh
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
