@@ -31,7 +31,6 @@ Private pConnection As Object ' .Connection
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' LOCAL PROCEDURES
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
 Private Sub Class_Initialize()
     'Empty
 End Sub
