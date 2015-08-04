@@ -9,6 +9,10 @@ Public Sub RunUnitCheck(ByVal RegForm As MSForms.UserForm, ByRef StudentFile As 
     
     On Error GoTo 0
     
+    '''''''''''''''''''''''''''''''''''''''''''''
+    ' Copied and adjusted from m_CoreRegistration
+    '''''''''''''''''''''''''''''''''''''''''''''
+    
     Dim StartTime As Single
     StartTime = Timer
     
@@ -27,45 +31,38 @@ Public Sub RunUnitCheck(ByVal RegForm As MSForms.UserForm, ByRef StudentFile As 
     
     Exception.Push "Procedure: m_Environment.RunUnitCheck"
     
-    AS400.Metrics.Active = True
+    AS400.Activate = True
     AS400.Handling = "Fast"
     
     On Error GoTo NavigateError
     If NavigateToHome(AS400, Exception) = False Then GoTo NavigateFailure
     
     On Error GoTo SendError
-    AS400.Presentation.SetText "13", 19, 7
+    AS400.SetText "13", 19, 7
     If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo SendFailure
     
     On Error GoTo GetError
-    TestGetText = AS400.Presentation.GetText(1, 3, 5)
+    TestGetText = AS400.GetText(1, 3, 5)
     
     On Error GoTo SetError
-    AS400.Presentation.SetText StudentFile.GetMailingName, 7, 3
-    AS400.Presentation.SetText StudentFile.GetAlphaName, 8, 3
-    AS400.Presentation.SetText StudentFile.GetPONumber, 9, 3
-    AS400.Presentation.SetText StudentFile.GetLongNumber, 10, 3
-    AS400.Presentation.SetText StudentFile.GetPrefixCode, 11, 3
-    AS400.Presentation.SetText StudentFile.GetWebStartTime, 12, 3
-    AS400.Presentation.SetText StudentFile.GetProgramNumber, 13, 3
-    AS400.Presentation.SetText StudentFile.GetProgramTuition, 14, 3
-    AS400.Presentation.SetText StudentFile.GetParentCode, 15, 3
-    AS400.Presentation.SetText StudentFile.GetAutomation, 16, 3
+    AS400.SetText StudentFile.GetMailingName, 7, 3
+    AS400.SetText StudentFile.GetAlphaName, 8, 3
+    AS400.SetText StudentFile.GetPONumber, 9, 3
+    AS400.SetText StudentFile.GetLongNumber, 10, 3
+    AS400.SetText StudentFile.GetPrefixCode, 11, 3
+    AS400.SetText StudentFile.GetWebStartTime, 12, 3
+    AS400.SetText StudentFile.GetProgramNumber, 13, 3
+    AS400.SetText StudentFile.GetProgramTuition, 14, 3
+    AS400.SetText StudentFile.GetParentCode, 15, 3
+    AS400.SetText StudentFile.GetAutomation, 16, 3
     
     AppActivate "Microsoft Excel"
-    MsgBox "Unit Test Complete" & vbNewLine & vbNewLine & "GetText check: " & TestGetText, vbInformation, "Unit Test Check"
+    MsgBox "Registration Test Complete" & vbNewLine & vbNewLine & "GetText check: " & TestGetText, vbInformation, "Unit Test Check"
     
     
-    AppActivate "Microsoft Excel"
-    If MsgBox("Automation Complete:" & " Student ID #" & StudentFile.StudentID & vbNewLine & vbNewLine & _
-        "Total Elapsed Time: " & vbTab & (Timer - StartTime) & " seconds" & vbNewLine & vbNewLine & _
-        "DO YOU WISH TO APPLY TRANSFER CREDITS?", vbYesNo, "Automation Complete - Apply TR?") = vbYes Then
-        
-        Unload RegForm
-        
-        u_TransferCredits.Show
-        
-    End If
+    '''''''''''''''''''''''''''''''''''''''''''''
+    ' Copied and adjusted from m_CoreRegistration
+    '''''''''''''''''''''''''''''''''''''''''''''
     
     
 Cleanup:
@@ -122,9 +119,9 @@ CheckTime = Timer
 
 Call InitializeAS400(AS400, Letter, Exception)
 
-AS400.Metrics.Active = True
+AS400.Activate = True
 
-AS400.Presentation.SetText "1", 19, 7
+AS400.SetText "1", 19, 7
 
 If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo EndAutomation
 
@@ -137,43 +134,5 @@ MsgBox (Timer - CheckTime)
 Exit Sub
 
 EndAutomation:
-
-End Sub
-
-Private Sub sdosdvngksld()
-
-Dim SetCount As Integer
-SetCount = 0
-
-Dim ShipSet() As Variant
-ShipSet() = Array("540", "560", "620")
-
-Dim Target As String
-Target = vbNullString
-
-For SetCount = LBound(ShipSet) To UBound(ShipSet)
-        
-            Select Case ShipSet(SetCount)
-            
-                Case "540"
-                    Target = "539"
-                Case "560"
-                    Target = "540"
-                Case "620"
-                    Target = "560"
-                Case Else
-                    GoTo ArrayFailure
-                    
-            End Select
-            
-    MsgBox "ShipSet Value:" & vbTab & ShipSet(SetCount) & vbNewLine & _
-        "Target Value:" & vbTab & Target & vbNewLine, vbInformation, "Testing"
-    
-Next SetCount
-
-Exit Sub
-
-ArrayFailure:
-    MsgBox "Array Failure", vbCritical, "Array Failure"
 
 End Sub
