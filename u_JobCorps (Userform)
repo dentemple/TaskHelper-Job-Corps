@@ -151,8 +151,7 @@ End Sub
 
 Private Sub SecondarySearch_Button_Click()
 
-    Dim Letter As String
-    Letter = Session_ComboBox.Value
+    Dim Letter As String: Letter = Session_ComboBox.Value
     
     RunSecondaryAction u_JobCorps, Letter
     
@@ -162,8 +161,7 @@ End Sub
 
 Private Sub PageUp_Button_Click()
 
-    Dim Letter As String
-    Letter = Session_ComboBox.Value
+    Dim Letter As String: Letter = Session_ComboBox.Value
 
     RunPageAction u_JobCorps, False, Letter
     
@@ -173,8 +171,7 @@ End Sub
 
 Private Sub PageDown_Button_Click()
 
-    Dim Letter As String
-    Letter = Session_ComboBox.Value
+    Dim Letter As String: Letter = Session_ComboBox.Value
 
     RunPageAction u_JobCorps, True, Letter
     
@@ -201,7 +198,7 @@ Private Sub Cancel_Button_Click()
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' CONTROL SETTINGS
+' FORM CONTROLS
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'Restrict to whole numbers
