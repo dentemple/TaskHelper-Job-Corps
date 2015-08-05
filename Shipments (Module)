@@ -10,7 +10,17 @@ Option Explicit
 'Assumes the passed arguments are valid entries
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal SendShipments As Boolean, ByRef Exception As cException)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Purpose:      TBD
 
+' Input:        TBD
+
+' Output:       TBD
+
+' Assumptions:  TBD
+
+' Handles Errors:   Yes
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' General variables
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
