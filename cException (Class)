@@ -12,6 +12,10 @@ Private pDescription As String '.Description
 Private pMessage As String '.Message
 
 'CALL STACK PROPERTIES
+'   .Push
+'   .Pop
+'   .StackEmpty
+'   .StackTop
 Public siTop As StackItem
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
