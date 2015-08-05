@@ -153,7 +153,7 @@ Public Sub Pause(ByVal AS400 As cAS400, Optional ByRef Exception As cException)
 
     If Not Exception Is Nothing Then Exception.Push "GeneralProcedures.Pause"
 
-    AS400.Wait 40
+    AS400.Wait 25
     AS400.WaitForApp
     AS400.Wait AS400.Time
 
@@ -201,7 +201,7 @@ Public Function NavigateToHome(ByVal AS400 As cAS400, Optional ByRef Exception A
     Dim i As Integer: i = 0
     
     Dim PrevTime As Long: PrevTime = AS400.Time
-    AS400.Time = 40
+    AS400.Time = 25
     
     AS400.Activate = True
     
