@@ -44,11 +44,14 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
     Dim Status As Object: Set Status = RegForm.Status_Textbox
     Status.Value = "...   ...   ...   Performing the pre-enrollment check   ...   ...   ..."
     
-    'AS/400 modular values (accepted only as Long)
+    'AS/400 modular values
     Dim Entry As String: Entry = vbNullString
     Dim Row As Long: Row = 0
     Dim Col As Long: Col = 0
     Dim Length As Long: Length = 0
+    
+    'AS/400 static values
+    Const ModLength As Long = 8
 
     '''''''''''''''''''''''''''
     ' Set the class modules
@@ -94,22 +97,22 @@ PreEnrollmentCheck:
     Select Case LCase(AS400.Handling)
         Case "fast"
             On Error GoTo AcknowledgeError
-            AS400.Time = 40
+            AS400.Time = 25
         Case "slow"
             On Error GoTo AcknowledgeError
-            AS400.Time = 500
+            AS400.Time = 200
         Case "stopeach"
             On Error GoTo AcknowledgeError
-            AS400.Time = 100
+            AS400.Time = 200
         Case "debug"
             On Error GoTo 0
-            AS400.Time = 500
+            AS400.Time = 200
         Case "test"
             On Error GoTo 0
             GoTo HiddenTestOption
         Case Else
             On Error GoTo 0
-            AS400.Time = 100
+            AS400.Time = 25
     End Select
     
     AS400.Activate = True
@@ -179,8 +182,8 @@ StartEnrollment:
     GetTextString = vbNullString
     Pause AS400, Exception
     
-    Entry = "": Row = 4: Col = 32: Length = 8
-    AS400.SetText Entry, Row, Col
+    Entry = "": Row = 4: Col = 32: Length = ModLength
+    StudentFile.StudentID = Trim(AS400.GetText(Row, Col, Length))
     
     If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo EndAutomation
     
@@ -293,7 +296,7 @@ MidEnrollment:
     Pause AS400, Exception
     
     'PS screen 66300
-    Entry = "A": Row = 3: Col = 20: Length = 0
+    Entry = AddFile: Row = 3: Col = 20: Length = 0
     AS400.SetText Entry, Row, Col
     
     Entry = StudentFile.StudentID: Row = 4: Col = 20: Length = 0
