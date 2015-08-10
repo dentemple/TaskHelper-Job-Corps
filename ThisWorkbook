@@ -2,7 +2,7 @@ Option Explicit
 
 Sub EnrollmentAppButton_Click()
 
-    u_JobCorps.Show
+    u_RegistrationForm.Show
 
 End Sub
 
