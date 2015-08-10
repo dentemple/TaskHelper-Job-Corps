@@ -26,7 +26,6 @@ Public Sub LoadUserformObjects(ByRef StudentFile As cStudentFile, ByVal RegForm 
 
 ' Handles Errors:   No
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
     'Pass error handling up the call stack
     On Error GoTo 0
 
@@ -95,22 +94,21 @@ Public Function ApproveRegistration(ByVal StudentFile As cStudentFile, ByVal AS4
     Exception.Push "RegistrationEnvironment.ApproveRegistration"
     
     Dim ApprovalFlag As Boolean: ApprovalFlag = True
-    
     Dim UserSelection As Integer: UserSelection = 2
     
-    If Exception.ErrFlag = True Then ApprovalFlag = False
+    If Exception.Flag = True Then ApprovalFlag = False
     
     ConfirmAccountInfo StudentFile, ApprovalFlag, RedMessage, BlueMessage, Exception
     ConfirmStudentFile StudentFile, ApprovalFlag, RedMessage, BlueMessage, Exception
     
     If ApprovalFlag = False Then
     
-        AppActivate "Microsoft excel"
+        AppActivate "Excel"
         MsgBox RedMessage, vbCritical, "Pre-Enrollment Checklist"
         
     Else
     
-        AppActivate "Microsoft excel"
+        AppActivate "Excel"
         UserSelection = MsgBox(BlueMessage, vbOKCancel, "Pre-Enrollment Checklist")
         If UserSelection = vbOK Then ApprovalFlag = True
         If UserSelection = vbCancel Then ApprovalFlag = False
@@ -292,26 +290,26 @@ Public Function ProceedToNextScreen(ByVal Action As String, ByVal AS400 As cAS40
     
     If AS400.Handling = "StopEach" Then
     
-        AppActivate "Microsoft Excel"
+        AppActivate "Excel"
         Selection = MsgBox("OK:" & vbTab & "Proceed to next screen" & vbNewLine & _
             "Cancel:" & vbTab & "Stop the automation", vbOKCancel, "StopEach / Debug")
             
         If Selection = vbCancel Then
         
             ProceedToNextScreen = True
-            AS400.Activate = True
+            AS400.Metrics.Active = True
             
         Else
         
             ProceedToNextScreen = False
-            AS400.Activate = True
+            AS400.Metrics.Active = True
             AS400.SendKeys Action
             Pause AS400, Exception
             
         End If
     Else
     
-        AS400.Activate = True
+        AS400.Metrics.Active = True
         AS400.SendKeys Action
         Pause AS400, Exception
         
