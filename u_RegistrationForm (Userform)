@@ -1,5 +1,5 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' u_JobCorps (Userform)
+' u_RegistrationForm (Userform)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Option Explicit
@@ -127,11 +127,13 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Private Sub RunAutomation_Button_Click()
 
+    On Error GoTo 0
+    
     'Sets multipage to its first page
     MultiPage1.Value = 0
     
     'Run the registration script
-    RunRegistration u_JobCorps
+    RunRegistration u_RegistrationForm
     
     Status_Textbox = "Registration Complete!"
     
@@ -139,11 +141,13 @@ End Sub
 
 Private Sub PrimarySearch_Button_Click()
 
+    On Error GoTo 0
+
     'Sets multipage to the second page
     MultiPage1.Value = 1
     
     'Run the student search
-    RunStudentSearch u_JobCorps
+    RunStudentSearch u_RegistrationForm
     
     Status_Textbox = "Ready"
     
@@ -151,9 +155,11 @@ End Sub
 
 Private Sub SecondarySearch_Button_Click()
 
+    On Error GoTo 0
+
     Dim Letter As String: Letter = Session_ComboBox.Value
     
-    RunSecondaryAction u_JobCorps, Letter
+    RunSecondaryAction u_RegistrationForm, Letter
     
     Status_Textbox = "Ready"
 
@@ -161,9 +167,11 @@ End Sub
 
 Private Sub PageUp_Button_Click()
 
+    On Error GoTo 0
+
     Dim Letter As String: Letter = Session_ComboBox.Value
 
-    RunPageAction u_JobCorps, False, Letter
+    RunPageAction u_RegistrationForm, False, Letter
     
     Status_Textbox = "Ready"
 
@@ -171,15 +179,19 @@ End Sub
 
 Private Sub PageDown_Button_Click()
 
+    On Error GoTo 0
+
     Dim Letter As String: Letter = Session_ComboBox.Value
 
-    RunPageAction u_JobCorps, True, Letter
+    RunPageAction u_RegistrationForm, True, Letter
     
     Status_Textbox = "Ready"
 
 End Sub
 
 Private Sub Return_Button_Click()
+
+    On Error GoTo 0
 
     'Sets multipage to the first page
     MultiPage1.Value = 0
