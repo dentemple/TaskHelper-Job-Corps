@@ -25,21 +25,14 @@ Public Sub RunStudentSearch(ByVal RegForm As MSForms.UserForm)
     '''''''''''''''''''''''''''
     ' General variables
     '''''''''''''''''''''''''''
-    Dim Status As Object: Set Status = RegForm.Status_Textbox
-    Status.Value = "...   ...   ...   Running the Name Search   ...   ...   ..."
+    'AS/400 modular values (accepted only as Long)
+    Entry = vbNullString
+    Row = 0
+    Col = 0
+    Length = 0
     
     Dim RedMessage As String: RedMessage = vbNullString
     
-    Dim StudentFile As cStudentFile: Set StudentFile = New cStudentFile
-    
-    Dim AS400 As cAS400: Set AS400 = New cAS400
-    
-    'AS/400 modular values (accepted only as Long)
-    Dim Entry As String: Entry = vbNullString
-    Dim Row As Long: Row = 0
-    Dim Col As Long: Col = 0
-    Dim Length As Long: Length = 0
-
     Dim m1 As String: m1 = vbNullString
     Dim m2 As String: m2 = vbNullString
     Dim m3 As String: m3 = vbNullString
@@ -56,6 +49,16 @@ Public Sub RunStudentSearch(ByVal RegForm As MSForms.UserForm)
     Dim p6 As String: p6 = vbNullString
     Dim p7 As String: p7 = vbNullString
     Dim p8 As String: p8 = vbNullString
+    
+    Dim Status As Object
+    Set Status = RegForm.Status_Textbox
+    Status.Value = "...   ...   ...   Running the Name Search   ...   ...   ..."
+    
+    Dim StudentFile As cStudentFile
+    Set StudentFile = New cStudentFile
+    
+    Dim AS400 As cAS400
+    Set AS400 = New cAS400
     
     '''''''''''''''''''''''''''
     ' Initialize the textboxes
@@ -223,13 +226,13 @@ AS400Error:
     RedMessage = RedMessage & _
         "> The AS400 has failed to initialize" & vbNewLine & _
         "Error #" & Err.Number & Space(1) & Err.Description & vbNewLine & vbNewLine
-    AppActivate "Microsoft excel"
+    AppActivate "Excel"
     MsgBox RedMessage, vbCritical, "AS/400 Error"
 Resume Cleanup
 
 NavigationFailure:
     If NavigateToHome(AS400) = False Then
-        AppActivate "Microsoft excel"
+        AppActivate "Excel"
         MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
             "Please navigate manually to the home screen, then attempt to run the application again." & _
             vbNewLine & vbNewLine, vbCritical, "Navigation Failure"
@@ -237,7 +240,7 @@ NavigationFailure:
 GoTo Cleanup
 
 NavigationError:
-    AppActivate "Microsoft excel"
+    AppActivate "Excel"
     MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
         "Please navigate manually to the home screen, then attempt to run the application again." & _
         vbNewLine & vbNewLine, vbCritical, "Navigation Failure"
@@ -268,22 +271,14 @@ Public Sub RunPageAction(ByVal RegForm As MSForms.UserForm, ByVal UpOrDown As Bo
     '''''''''''''''''''''''''''
     ' General variables
     '''''''''''''''''''''''''''
-    Dim Status As Object: Set Status = RegForm.Status_Textbox
-    Status.Value = "...   ...   ...   Running the Name Search   ...   ...   ..."
-    
-    Dim GetTextString As String: GetTextString = vbNullString
-    
-    Dim RedMessage As String: RedMessage = vbNullString
-    
-    Dim AS400 As cAS400: Set AS400 = New cAS400
-    
-    Dim StudentFile As cStudentFile: Set StudentFile = New cStudentFile
-    
     'AS/400 modular values (accepted only as Long)
-    Dim Entry As String: Entry = vbNullString
-    Dim Row As Long: Row = 0
-    Dim Col As Long: Col = 0
-    Dim Length As Long: Length = 0
+    Entry = vbNullString
+    Row = 0
+    Col = 0
+    Length = 0
+    
+    GetTextString = vbNullString
+    Dim RedMessage As String: RedMessage = vbNullString
     
     Dim m1 As String: m1 = vbNullString
     Dim m2 As String: m2 = vbNullString
@@ -301,6 +296,16 @@ Public Sub RunPageAction(ByVal RegForm As MSForms.UserForm, ByVal UpOrDown As Bo
     Dim p6 As String: p6 = vbNullString
     Dim p7 As String: p7 = vbNullString
     Dim p8 As String: p8 = vbNullString
+    
+    Dim Status As Object
+    Set Status = RegForm.Status_Textbox
+    Status.Value = "...   ...   ...   Running the Name Search   ...   ...   ..."
+
+    Dim AS400 As cAS400
+    Set AS400 = New cAS400
+    
+    Dim StudentFile As cStudentFile
+    Set StudentFile = New cStudentFile
     
     '''''''''''''''''''''''''''
     ' Initialize the textboxes
@@ -446,12 +451,12 @@ AS400Error:
     RedMessage = RedMessage & _
         "> The AS400 has failed to initialize" & vbNewLine & _
         "Error #" & Err.Number & Space(1) & Err.Description & vbNewLine & vbNewLine
-    AppActivate "Microsoft excel"
+    AppActivate "Excel"
     MsgBox RedMessage, vbCritical, "AS/400 Error"
 Resume Cleanup
 
 IncorrectScreen:
-    AppActivate "Microsoft excel"
+    AppActivate "Excel"
     MsgBox "Unable to Page Up or Down. No search has been selected." & vbNewLine & vbNewLine & _
         "Please enter a name, then press either 'Action' or 'Name Search' to continue.", _
         vbInformation, "No search has been selected"
@@ -478,23 +483,16 @@ Public Sub RunSecondaryAction(ByVal RegForm As MSForms.UserForm, ByVal Letter As
     '''''''''''''''''''''''''''
     ' General variables
     '''''''''''''''''''''''''''
-    Dim Status As Object: Set Status = RegForm.Status_Textbox
-    Status.Value = "...   ...   ...   Running the Name Search   ...   ...   ..."
+    'AS/400 modular values (accepted only as Long)
+    Entry = vbNullString
+    Row = 0
+    Col = 0
+    Length = 0
     
-    Dim GetTextString As String: GetTextString = vbNullString
+    GetTextString = vbNullString
     
     Dim RedMessage As String: RedMessage = vbNullString
     
-    Dim AS400 As cAS400: Set AS400 = New cAS400
-    
-    Dim StudentFile As cStudentFile: Set StudentFile = New cStudentFile
-    
-    'AS/400 modular values (accepted only as Long)
-    Dim Entry As String: Entry = vbNullString
-    Dim Row As Long: Row = 0
-    Dim Col As Long: Col = 0
-    Dim Length As Long: Length = 0
-
     Dim a1 As String: a1 = vbNullString
     Dim a2 As String: a2 = vbNullString
     Dim a3 As String: a3 = vbNullString
@@ -519,6 +517,16 @@ Public Sub RunSecondaryAction(ByVal RegForm As MSForms.UserForm, ByVal Letter As
     Dim p6 As String: p6 = vbNullString
     Dim p7 As String: p7 = vbNullString
     Dim p8 As String: p8 = vbNullString
+    
+    Dim Status As Object
+    Set Status = RegForm.Status_Textbox
+    Status.Value = "...   ...   ...   Running the Name Search   ...   ...   ..."
+    
+    Dim AS400 As cAS400
+    Set AS400 = New cAS400
+    
+    Dim StudentFile As cStudentFile
+    Set StudentFile = New cStudentFile
     
     '''''''''''''''''''''''''''
     ' Initialize the AS/400
@@ -563,7 +571,7 @@ Public Sub RunSecondaryAction(ByVal RegForm As MSForms.UserForm, ByVal Letter As
     '''''''''''''''''''''''''''
     On Error Resume Next
     If Len(Trim(RegForm.ActionL1_Textbox)) = 1 Then
-        Entry = Trim(RegFor.ActionL1_Textbox.Value): Row = 7: Col = 5: Length = 0
+        Entry = Trim(RegForm.ActionL1_Textbox.Value): Row = 7: Col = 5: Length = 0
         AS400.SetText Entry, Row, Col
         GoTo FlagrantUseOfSpaghettiCode
         
@@ -705,7 +713,7 @@ FlagrantUseOfSpaghettiCode:
 
     AS400.SendKeys "[Enter]"
     Pause AS400
-    AS400.Activate = True
+    AS400.Metrics.Active = True
     
     GetTextString = vbNullString
     Entry = "": Row = 2: Col = 4: Length = 4
@@ -754,7 +762,7 @@ FlagrantUseOfSpaghettiCode:
     
     GetTextString = vbNullString
     
-    AS400.Activate = True
+    AS400.Metrics.Active = True
         
 GoTo Cleanup
 
@@ -763,7 +771,7 @@ GoTo Cleanup
 '''''''''''''''''''''''''''
 NavigationFailure:
     If NavigateToHome(AS400) = False Then
-        AppActivate "Microsoft excel"
+        AppActivate "Excel"
         MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
             "Please navigate manually to the home screen, then attempt to run the application again." & _
             vbNewLine & vbNewLine, vbCritical, "Navigation Failure"
@@ -771,7 +779,7 @@ NavigationFailure:
 GoTo Cleanup
 
 NavigationError:
-    AppActivate "Microsoft excel"
+    AppActivate "Excel"
     MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
         "Please navigate manually to the home screen, then attempt to run the application again." & _
         vbNewLine & vbNewLine, vbCritical, "Navigation Failure"
@@ -781,7 +789,7 @@ AS400Error:
     RedMessage = RedMessage & _
         "> The AS400 has failed to initialize" & vbNewLine & _
         "Error #" & Err.Number & Space(1) & Err.Description & vbNewLine & vbNewLine
-    AppActivate "Microsoft excel"
+    AppActivate "Excel"
     MsgBox RedMessage, vbCritical, "AS/400 Error"
 Resume Cleanup
 
