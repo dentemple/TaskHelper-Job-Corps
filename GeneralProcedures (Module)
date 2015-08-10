@@ -5,6 +5,15 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Option Explicit
 
+'AS/400 modular values
+    Public Entry As String
+    Public Row As Long
+    Public Col As Long
+    Public Length As Long
+    
+'Line text container
+    Public GetTextString As String
+
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' RestrictToPositiveWholeNumbers (Public Sub)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -194,21 +203,24 @@ Public Function NavigateToHome(ByVal AS400 As cAS400, Optional ByRef Exception A
     '''''''''''''''''''''''''''
     NavigateToHome = True
 
-    Dim GetTextString As String: GetTextString = vbNullString
-
-    Dim MaxAttempts As Integer: MaxAttempts = 5
-    
     Dim i As Integer: i = 0
-    
+    Dim MaxAttempts As Integer: MaxAttempts = 5
     Dim PrevTime As Long: PrevTime = AS400.Time
-    AS400.Time = 25
-    
-    AS400.Activate = True
     
     'AS/400 modular values
-    Dim Row As Long: Row = 0
-    Dim Col As Long: Col = 0
-    Dim Length As Long: Length = 0
+    Entry = vbNullString
+    Row = 0
+    Col = 0
+    Length = 0
+    
+    GetTextString = vbNullString
+    
+    '''''''''''''''''''''''''''
+    ' General Settings
+    '''''''''''''''''''''''''''
+    
+    AS400.Time = 25
+    AS400.Metrics.Active = True
     
     '''''''''''''''''''''''''''
     ' Navigation Loop
@@ -373,9 +385,9 @@ Exit Function
 '''''''''''''''''''''''''''
 NavigationError:
     NavigateToHome = False
-    If Not Exception Is Nothing Then Exception.ErrFlag = True
-    If Not Exception Is Nothing Then Exception.ErrDescription = Err.Description
-    If Not Exception Is Nothing Then Exception.ErrNumber = Err.Number
+    If Not Exception Is Nothing Then Exception.Flag = True
+    If Not Exception Is Nothing Then Exception.Description = Err.Description
+    If Not Exception Is Nothing Then Exception.Number = Err.Number
 GoTo Cleanup
 
 End Function
