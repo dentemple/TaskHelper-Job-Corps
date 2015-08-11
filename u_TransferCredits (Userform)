@@ -11,6 +11,8 @@ Dim HasBeenPopulated As Boolean
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Private Sub UserForm_Initialize()
 
+
+
     SID_Textbox = vbNullString
 
     Status_Textbox.Locked = True
