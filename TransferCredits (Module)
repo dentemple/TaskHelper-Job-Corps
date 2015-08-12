@@ -17,6 +17,8 @@ Public Sub RunPopulateClasses(ByVal CreditsForm As MSForms.UserForm)
 
 ' Assumptions:  TBD
 
+' AS/400 required:  Yes
+
 ' Handles Errors:   Yes
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     '''''''''''''''''''''''''''
@@ -66,7 +68,7 @@ Public Sub RunPopulateClasses(ByVal CreditsForm As MSForms.UserForm)
     If Len(SID) < 1 Then GoTo SIDNotFound
     
     On Error GoTo AS400Error
-    InitializeAS400 AS400, SessionLetter, Exception
+    InitializeApp AS400, SessionLetter, Exception
     AS400.Handling = "Fast"
     AS400.Time = 25
     
@@ -90,7 +92,7 @@ Public Sub RunPopulateClasses(ByVal CreditsForm As MSForms.UserForm)
         
         Case Else
         
-            If NavigateToHome(AS400, Exception) = False Then GoTo NavigationFailure
+            NavigateHome AS400, Exception
             Entry = "1": Row = 19: Col = 7: Length = 0
             AS400.SetText Entry, Row, Col
             AS400.SendKeys "[Enter]"
@@ -309,12 +311,7 @@ AS400Error:
 Resume Cleanup
 
 NavigationFailure:
-    If NavigateToHome(AS400, Exception) = False Then
-        AppActivate "Excel"
-        MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
-            "Please navigate manually to the home screen, then attempt to run the application again.", _
-            vbCritical, "Navigation Failure"
-    End If
+    
 GoTo Cleanup
 
 NavigationError:
@@ -351,6 +348,8 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
 ' Output:       TBD
 
 ' Assumptions:  TBD
+
+' AS/400 required:  Yes
 
 ' Handles Errors:   Yes
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -414,7 +413,7 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
     If Len(SID) < 1 Then GoTo SIDNotFound
     
     On Error GoTo AS400Error
-    InitializeAS400 AS400, SessionLetter, Exception
+    InitializeApp AS400, SessionLetter, Exception
     AS400.Handling = "Fast"
     AS400.Time = 25
     
@@ -437,7 +436,7 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
         
         Case Else
         
-            If NavigateToHome(AS400, Exception) = False Then GoTo NavigationFailure
+            NavigateHome AS400, Exception
             Entry = "1": Row = 19: Col = 7: Length = 0
             AS400.SetText Entry, Row, Col
             AS400.SendKeys "[Enter]"
@@ -869,12 +868,7 @@ AS400Error:
 Resume Cleanup
 
 NavigationFailure:
-    If NavigateToHome(AS400, Exception) = False Then
-        AppActivate "Excel"
-        MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
-            "Please navigate manually to the home screen, then attempt to run the application again.", _
-            vbCritical, "Navigation Failure"
-    End If
+    
 GoTo Cleanup
 
 NavigationError:
