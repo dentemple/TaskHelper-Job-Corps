@@ -10,7 +10,6 @@ Option Explicit
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ManageShipments
-'Assumes the passed arguments are valid entries
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal SendShipments As Boolean, ByRef Exception As cException)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -20,7 +19,9 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
 
 ' Output:       TBD
 
-' Assumptions:  TBD
+' Assumptions:  The passed arguments are valid entries
+
+' AS/400 required:  Yes
 
 ' Handles Errors:   Yes
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -68,7 +69,7 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
     
     If Not GetTextString = "42040" Then
 
-        If NavigateToHome(AS400, Exception) = False Then GoTo NavigationFailure
+        NavigateHome AS400, Exception
     
         Entry = "1": Row = 19: Col = 7: Length = 0
         AS400.SetText Entry, Row, Col
@@ -267,12 +268,7 @@ Exit Sub
 ' Error Handling
 '''''''''''''''''''''''''''
 NavigationFailure:
-    If NavigateToHome(AS400, Exception) = False Then
-        AppActivate "Excel"
-        MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
-            "Please navigate manually to the home screen, then attempt to run the application again.", _
-            vbCritical, "Navigation Failure"
-    End If
+    
 GoTo Cleanup
 
 NavigationError:
