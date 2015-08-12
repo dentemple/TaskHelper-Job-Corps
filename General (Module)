@@ -1,9 +1,12 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GeneralProcedures (Module)
+' General (Module)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Provides a series of public procedures for use across multiple applications
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Option Explicit
+
+'Set to True to turn off error handling
+    Public Const DebugFlag As Boolean = False
 
 'AS/400 modular values
     Public Entry As String
@@ -61,7 +64,7 @@ Public Sub TurnOffExcelDefaults(Optional ByRef Exception As cException)
     'Pass error handling up the call stack
     On Error GoTo 0
 
-    If Not Exception Is Nothing Then Exception.Push "GeneralProcedures.TurnOffExcelDefaults"
+    If Not Exception Is Nothing Then Exception.Push "General.TurnOffExcelDefaults"
 
     Application.ScreenUpdating = False
     Application.DisplayAlerts = False
@@ -84,7 +87,7 @@ Public Sub TurnOnExcelDefaults(Optional ByRef Exception As cException)
     'Pass error handling up the call stack
     On Error GoTo 0
 
-    If Not Exception Is Nothing Then Exception.Push "GeneralProcedures.TurnOnExcelDefaults"
+    If Not Exception Is Nothing Then Exception.Push "General.TurnOnExcelDefaults"
     
     Application.Calculation = xlCalculationAutomatic
     Application.DisplayAlerts = True
@@ -97,9 +100,9 @@ Cleanup:
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' InitializeAS400 (Public Sub)
+' InitializeApp (Public Sub)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub InitializeAS400(ByRef AS400 As cAS400, ByVal Letter As String, _
+Public Sub InitializeApp(ByRef AS400 As cAS400, ByVal SessionLetter As String, _
     Optional ByRef Exception As cException)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Purpose:      Connects VBA to the AS/400
@@ -114,28 +117,33 @@ Public Sub InitializeAS400(ByRef AS400 As cAS400, ByVal Letter As String, _
 ' Assumptions:  The custom AS400 class object works w/o error _
                 The session name is a valid entry _
 
+' AS/400 required:  Yes
+
 ' Handles Errors:   No
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     'Passes error handling up the call stack
     On Error GoTo 0
     
-    If Not Exception Is Nothing Then Exception.Push "GeneralProcedures.InitializeAS400"
+    If Not Exception Is Nothing Then Exception.Push "General.InitializeApp"
 
-    AS400.Name = Trim(Letter)
+    AS400.Name = Trim(SessionLetter)
     
+    If Not Exception Is Nothing Then Exception.Message = "Setting containers to the PCOMM objects..."
     Set AS400.Session = CreateObject("PCOMM.autECLSession")
     Set AS400.Metrics = CreateObject("PCOMM.autECLWinMetrics")
     Set AS400.Connection = CreateObject("PCOMM.autECLConnList")
     
+    If Not Exception Is Nothing Then Exception.Message = "Setting object to the connection name..."
     AS400.Session.SetConnectionByName (AS400.Name)
     AS400.Metrics.SetConnectionByName (AS400.Name)
     
-    'Refreshing the connection list is not required, _
-        but the IBM documentation recommends it
+    'Refreshing the connection list is not required, but the IBM documentation recommends it
+    If Not Exception Is Nothing Then Exception.Message = "Refreshing the connection list..."
     AS400.Refresh
     
 Cleanup:
 
+    If Not Exception Is Nothing Then Exception.Message = vbNullString
     If Not Exception Is Nothing Then Exception.Pop
 
 End Sub
@@ -155,14 +163,16 @@ Public Sub Pause(ByVal AS400 As cAS400, Optional ByRef Exception As cException)
 ' Assumptions:  The class objects are valid _
                 The AS/400 is connected _
 
+' AS/400 required:  Yes
+
 ' Handles Errors:   No
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     'Passes error handling up the call stack
     On Error GoTo 0
 
-    If Not Exception Is Nothing Then Exception.Push "GeneralProcedures.Pause"
+    If Not Exception Is Nothing Then Exception.Push "General.Pause"
 
-    AS400.Wait 25
+    AS400.Wait 10
     AS400.WaitForApp
     AS400.Wait AS400.Time
 
@@ -173,39 +183,45 @@ Cleanup:
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' NavigateToHome
+' NavigateHome
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function NavigateToHome(ByVal AS400 As cAS400, Optional ByRef Exception As cException) As Boolean
+Public Sub NavigateHome(ByVal AS400 As cAS400, Optional ByRef Exception As cException)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Purpose:      Navigates the AS/400's presentation space _
                     to the agency's home screen. _
 
 ' Input:        The custom AS400 class object _
-                The custom Exception class object _
+                (Optional) The custom Exception class object _
 
-' Output:       TRUE if successful _
-                FALSE if unsuccessful _
-                Procedural actions
+' Output:       Procedural actions _
 
 ' Assumptions:  The class objects are valid _
                 The AS/400 is connected _
                 No changes are made to the AS/400 that would cause this _
                     procedure to "run off the rails" _
 
-' Handles Errors:   Yes
+' AS/400 required:  Yes
+
+' Handles Errors:   No
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    On Error GoTo NavigationError
+    'Passes error handling up the call stack
+    On Error GoTo 0
     
-    If Not Exception Is Nothing Then Exception.Push "GeneralProcedures.NavigateToHome"
+    If Not Exception Is Nothing Then Exception.Push "General.NavigateHome"
     
     '''''''''''''''''''''''''''
     ' General variables
     '''''''''''''''''''''''''''
-    NavigateToHome = True
-
     Dim i As Integer: i = 0
-    Dim MaxAttempts As Integer: MaxAttempts = 5
-    Dim PrevTime As Long: PrevTime = AS400.Time
+    
+    Const MaxAttempts As Integer = 5
+    Const HomeTag As String = " BNIMAIN"
+    Const MaxAttempts As Integer = 5
+    Const TagLength As Long = 8
+    Const TagRow As Long = 1
+    Const TagCol As Long = 2
+    Const MenuRow As Long = 19
+    Const MenuCol As Long = 7
     
     'AS/400 modular values
     Entry = vbNullString
@@ -218,48 +234,46 @@ Public Function NavigateToHome(ByVal AS400 As cAS400, Optional ByRef Exception A
     '''''''''''''''''''''''''''
     ' General Settings
     '''''''''''''''''''''''''''
-    
     AS400.Time = 25
-    AS400.Metrics.Active = True
     
     '''''''''''''''''''''''''''
     ' Navigation Loop
     '''''''''''''''''''''''''''
-StartLoop:
-
+    'Note: Assumes that "F3" will correctly back out of most screens. _
+        The select case should focus on overcoming the F12 "traps", as well _
+        as those times where, if not accounted for, multiple F3 presses would _
+        trip the MaxAttempts flag.
     Do
     
-        Pause AS400
+        Pause AS400, Exception
         
-        Row = 1: Col = 2: Length = 8
+        Entry = "": Row = TagRow: Col = TagCol: Length = TagLength
         GetTextString = AS400.GetText(Row, Col, Length)
         
-        Pause AS400
+        If Not Exception Is Nothing Then Exception.Message = _
+            "Nav Loop: Iteration (" & i & "), Case (" & GetTextString & ")"
     
         Select Case GetTextString
         
             'PS: BNIMAIN (Destination)
-            Case " BNIMAIN"
-                Pause AS400
+            Case Is = HomeTag
+                'Note: Certain screens have a "pop-up" screen _
+                    that must be F3'd out of as well
+                AS400.SendKeys "[pf3]"
                 Exit Do
                 
             'PS: BNICS
             Case " BNICS  "
                 AS400.SendKeys "[pf12]"
-                Pause AS400
                 Exit Do
                 
             'PS: 66300
             Case " 66300  "
                 AS400.SendKeys ("[pf3]")
-                Pause AS400
-                Exit Do
                 
             'PS: 66340
             Case " 66340  "
                 AS400.SendKeys ("[pf3]")
-                Pause AS400
-                Exit Do
                 
             'PS: Student Service Inquiry (1.14.)
             Case "603131_B"
@@ -287,7 +301,6 @@ StartLoop:
                 
             Case "60211   "
                 AS400.SendKeys ("[pf3]")
-                Pause AS400
                 AS400.SendKeys ("[pf3]")
 
             'PS: (1.14.), Shipping Screen
@@ -300,11 +313,13 @@ StartLoop:
 
             'PS: Main Menu
             Case "ICSMAIN "
+                Pause AS400, Exception
                 AS400.SetText "6", 20, 7
                 AS400.SendKeys ("[Enter]")
 
             'Library List Selection
             Case " 98VL   "
+                Pause AS400, Exception
                 AS400.SetText "1", 6, 10
                 AS400.SendKeys ("[Enter]")
 
@@ -326,68 +341,76 @@ StartLoop:
                 
             Case "631001  "
                 AS400.SendKeys ("[pf3]")
-                Pause AS400
                 AS400.SendKeys ("[pf3]")
                 
             Case " BNISOP "
                 AS400.SendKeys ("[pf12]")
-                Pause AS400
                 AS400.SendKeys ("[pf12]")
                 
             Case " 42040  "
                 AS400.SendKeys ("[pf3]")
-                Pause AS400
                 AS400.SendKeys ("[pf12]")
-                Pause AS400
                 AS400.SendKeys ("[pf12]")
                 
+            'Empty
+            Case "          "
+            
+                Entry = vbNullString: Row = 1: Col = 32: Length = 10
+                GetTextString = AS400.GetText(Row, Col, Length)
+                
+                    Select Case GetTextString
+                    
+                        'Exit
+                        Case "       Exi"
+                            AS400.SendKeys "[Enter]"
+                        
+                        'Sign-on Information
+                        Case "ign-on Inf"
+                            AS400.SendKeys "[Enter]"
+                            AS400.SendKeys "[Enter]"
+                            
+                        'Display Program Messages
+                        Case "lay Progra"
+                            AS400.SendKeys "[Enter]"
+                            AS400.SendKeys "[Enter]"
+                        
+                        'Display Messages (Standard screen)
+                        Case " Display M"
+                            AS400.SendKeys "[Enter]"
+                            
+                        'Sign On"
+                        Case "    Sign O"
+                            MsgBox "Please sign into the AS/400 before proceeding", _
+                                vbInformation, "Sign-In required"
+                            Exit Do
+                        
+                        'MSM screens
+                        Case "          "
+                            MsgBox "Please ensure the AS/400 is signed into the current environment " & _
+                                "before proceeding", vbInformation, "Incorrect AS/400 location"
+                            Exit Do
+                            
+                    End Select
+                
             Case Else
+            
                 AS400.SendKeys ("[pf3]")
-                Pause AS400
                 AS400.SendKeys ("[pf12]")
-                Pause AS400
-                AS400.SendKeys ("[pf3]")
 
         End Select
         
         'loop counter
         i = i + 1
-        
-        Pause AS400
     
-    Loop Until i >= MaxAttempts
+    Loop While i <= MaxAttempts
     
-    '''''''''''''''''''''''''''
-    ' Confirmation
-    '''''''''''''''''''''''''''
-    
-    Row = 1: Col = 3: Length = 7
-    GetTextString = AS400.GetText(Row, Col, Length)
-    
-    If GetTextString = "BNIMAIN" Then
-        NavigateToHome = True
-    Else
-        NavigateToHome = False
-    End If
-
 '''''''''''''''''''''''''''
 'Cleanup
 '''''''''''''''''''''''''''
 Cleanup:
 
-    AS400.Time = PrevTime
+    Pause AS400, Exception
+    If Not Exception Is Nothing Then Exception.Message = vbNullString
     If Not Exception Is Nothing Then Exception.Pop
-    
-Exit Function
 
-'''''''''''''''''''''''''''
-'Error Handling
-'''''''''''''''''''''''''''
-NavigationError:
-    NavigateToHome = False
-    If Not Exception Is Nothing Then Exception.Flag = True
-    If Not Exception Is Nothing Then Exception.Description = Err.Description
-    If Not Exception Is Nothing Then Exception.Number = Err.Number
-GoTo Cleanup
-
-End Function
+End Sub
