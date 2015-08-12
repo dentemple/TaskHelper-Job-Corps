@@ -1,5 +1,5 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' RegistrationEnvironment (Module)
+' Environment (Module)
 '
 ' Procedures for the interpretation of data for use within the m_General module
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -24,12 +24,15 @@ Public Sub LoadUserformObjects(ByRef StudentFile As cStudentFile, ByVal RegForm 
 
 ' Assumptions:  The userform is valid and holds valid objects _
 
+' AS/400 required:  No
+
 ' Handles Errors:   No
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     'Pass error handling up the call stack
     On Error GoTo 0
 
-    If Not Exception Is Nothing Then Exception.Push "RegistrationEnvironment.LoadUserformObjects"
+    If Not Exception Is Nothing Then Exception.Push "Environment.LoadUserformObjects"
+    If Not Exception Is Nothing Then Exception.Message = "Loading userform objects..."
 
     'Pass userform
     Set StudentFile.UserFormObject = RegForm
@@ -53,7 +56,6 @@ Public Sub LoadUserformObjects(ByRef StudentFile As cStudentFile, ByVal RegForm 
     'Pass comboboxes
     Set StudentFile.SessionComboBox = RegForm.Session_ComboBox
     Set StudentFile.PrefixCodeTextbox = RegForm.PrefixCode_Textbox
-    Set StudentFile.AutomationComboBox = RegForm.Automation_ComboBox
     
     'Pass option selection
     Set StudentFile.MaleOptionButton = RegForm.Male_Optionselect
@@ -61,6 +63,7 @@ Public Sub LoadUserformObjects(ByRef StudentFile As cStudentFile, ByVal RegForm 
     
 Cleanup:
     
+    If Not Exception Is Nothing Then Exception.Message = vbNullString
     If Not Exception Is Nothing Then Exception.Pop
 
 End Sub
@@ -68,8 +71,8 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ApproveRegistration (Public Function)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function ApproveRegistration(ByVal StudentFile As cStudentFile, ByVal AS400 As cAS400, _
-    ByRef RedMessage As String, ByRef BlueMessage As String, ByRef Exception As cException) As Boolean
+Public Function ApproveRegistration(ByVal StudentFile As cStudentFile, ByRef RedMessage As String, _
+    ByRef BlueMessage As String, ByRef Exception As cException) As Boolean
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Purpose:      Runs an approval check for the user prior _
                     to running the registration script
@@ -85,13 +88,15 @@ Public Function ApproveRegistration(ByVal StudentFile As cStudentFile, ByVal AS4
 
 ' Assumptions:  The custom class objects are valid
 
+' AS/400 required:  No
+
 ' Handles Errors:   No
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
     'Pass error handling up the call stack
     On Error GoTo 0
     
-    Exception.Push "RegistrationEnvironment.ApproveRegistration"
+    Exception.Push "Environment.ApproveRegistration"
     
     Dim ApprovalFlag As Boolean: ApprovalFlag = True
     Dim UserSelection As Integer: UserSelection = 2
@@ -100,6 +105,8 @@ Public Function ApproveRegistration(ByVal StudentFile As cStudentFile, ByVal AS4
     
     ConfirmAccountInfo StudentFile, ApprovalFlag, RedMessage, BlueMessage, Exception
     ConfirmStudentFile StudentFile, ApprovalFlag, RedMessage, BlueMessage, Exception
+    
+    If Not Exception Is Nothing Then Exception.Message = "Providing the final checklist..."
     
     If ApprovalFlag = False Then
     
@@ -119,6 +126,7 @@ Public Function ApproveRegistration(ByVal StudentFile As cStudentFile, ByVal AS4
     
 Cleanup:
 
+    If Not Exception Is Nothing Then Exception.Message = vbNullString
     Exception.Pop
 
 End Function
@@ -134,19 +142,9 @@ Private Sub ConfirmAccountInfo(ByVal StudentFile As cStudentFile, ByRef Approval
     'Pass error handling up the call stack
     On Error GoTo 0
     
-    If Not Exception Is Nothing Then Exception.Push "RegistrationEnvironment.ConfirmAccountInfo"
+    If Not Exception Is Nothing Then Exception.Push "Environment.ConfirmAccountInfo"
     
     Dim Temp As String: Temp = vbNullString
-    
-    'Automation setting
-    Temp = StudentFile.GetAutomation
-    If Temp = "Fast" Or Temp = "Slow" Or Temp = "StopEach" Or Temp = "Debug" Then
-        BlueMessage = BlueMessage & "Automation:" & vbTab & Temp & vbNewLine
-    ElseIf Temp = "Test" Or Temp = "test" Then
-        BlueMessage = BlueMessage & "Automation:" & vbTab & "UNIT TEST MODE" & vbNewLine
-    Else
-        BlueMessage = BlueMessage & "Automation:" & vbTab & "Automation set to 'Default'" & vbNewLine
-    End If
     
     'AS/400 Session
     Temp = vbNullString
@@ -228,7 +226,7 @@ Private Sub ConfirmStudentFile(ByVal StudentFile As cStudentFile, ByRef Approval
     'Pass error handling up the call stack
     On Error GoTo 0
     
-    If Not Exception Is Nothing Then Exception.Push "RegistrationEnvironment.ConfirmStudentFile"
+    If Not Exception Is Nothing Then Exception.Push "Environment.ConfirmStudentFile"
     
     'Student Name
     If Len(StudentFile.GetMailingName) < 4 Or Len(StudentFile.GetMailingName) > 38 Then
@@ -276,12 +274,14 @@ Public Function ProceedToNextScreen(ByVal Action As String, ByVal AS400 As cAS40
 
 ' Assumptions:  TBD
 
+' AS/400 required:  Yes
+
 ' Handles Errors:   No
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     'Pass error handling up the call stack
     On Error GoTo 0
     
-    Exception.Push "RegistrationEnvironment.ProceedToNextScreen"
+    Exception.Push "Environment.ProceedToNextScreen"
 
     Dim Selection As Integer
     
