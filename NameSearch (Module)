@@ -19,6 +19,8 @@ Public Sub RunStudentSearch(ByVal RegForm As MSForms.UserForm)
 
 ' Assumptions:  TBD
 
+' AS/400 required:  Yes
+
 ' Handles Errors:   Yes
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
@@ -30,8 +32,9 @@ Public Sub RunStudentSearch(ByVal RegForm As MSForms.UserForm)
     Row = 0
     Col = 0
     Length = 0
-    
-    Dim RedMessage As String: RedMessage = vbNullString
+
+    GetTextString = vbNullString
+    Dim ErrorMessage As String: ErrorMessage = vbNullString
     
     Dim m1 As String: m1 = vbNullString
     Dim m2 As String: m2 = vbNullString
@@ -102,32 +105,33 @@ Public Sub RunStudentSearch(ByVal RegForm As MSForms.UserForm)
     ' Initialize the AS400
     '''''''''''''''''''''''''''
     On Error GoTo AS400Error
-    InitializeAS400 AS400, StudentFile.GetSession
-    AS400.Handling = "Fast"
+    InitializeApp AS400, StudentFile.GetSession
     AS400.Time = 25
     
     '''''''''''''''''''''''''''
     ' Navigation
     '''''''''''''''''''''''''''
-    On Error Resume Next
-    
-    If NavigateToHome(AS400) = False Then GoTo NavigationFailure
-    
     On Error GoTo NavigationError
+    
+    NavigateHome AS400, Exception
+    
     Entry = "1": Row = 19: Col = 7: Length = 0
     AS400.SetText Entry, Row, Col
+    
     AS400.SendKeys "[Enter]"
     Pause AS400
+    
     Entry = "15": Row = 19: Col = 7: Length = 0
     AS400.SetText Entry, Row, Col
+    
     AS400.SendKeys "[Enter]"
-    Pause AS400
     AS400.SendKeys "[pf1]"
     AS400.SendKeys "[Enter]"
     Pause AS400
     
     Entry = StudentFile.GetAlphaName: Row = 4: Col = 20: Length = 0
     AS400.SetText Entry, Row, Col
+    
     AS400.SendKeys "[Enter]"
     Pause AS400
     
@@ -218,44 +222,47 @@ Exit Sub
 ' Error Handling
 '''''''''''''''''''''''''''
 UserformError:
-    RedMessage = RedMessage & _
-        "> A userform object has failed to load" & Space(1) & "Error #" & Err.Number & vbNewLine & vbNewLine
+    
+    ErrorMessage = "Error occurred during procedure: " & "NameSearch.RunStudentSearch" & vbNewLine & vbNewLine & _
+                   "Last action attempted by script: " & "Loading a userform object" & vbNewLine & vbNewLine & _
+                   "Recommended resolution:" & vbTab & "Unavailable" & _
+                   "" & vbNewLine & vbNewLine & _
+                   "Error # " & Str(Err.Number) & ": " & Err.Description
+    AppActivate "Excel"
+    MsgBox ErrorMessage, vbCritical, "An error occurred while accessing the userform"
+    
 Resume Cleanup
 
 AS400Error:
-    RedMessage = RedMessage & _
-        "> The AS400 has failed to initialize" & vbNewLine & _
-        "Error #" & Err.Number & Space(1) & Err.Description & vbNewLine & vbNewLine
-    AppActivate "Excel"
-    MsgBox RedMessage, vbCritical, "AS/400 Error"
-Resume Cleanup
 
-NavigationFailure:
-    If NavigateToHome(AS400) = False Then
-        AppActivate "Excel"
-        MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
-            "Please navigate manually to the home screen, then attempt to run the application again." & _
-            vbNewLine & vbNewLine, vbCritical, "Navigation Failure"
-    End If
-GoTo Cleanup
+    ErrorMessage = "Error occurred during procedure: " & "NameSearch.RunStudentSearch" & vbNewLine & vbNewLine & _
+                   "Last action attempted by script: " & "Initializing the AS/400" & vbNewLine & vbNewLine & _
+                   "Recommended resolution: Please ensure the AS/400 is active, and the session letter " & _
+                   "is valid and correct, before proceeding." & vbNewLine & vbNewLine & _
+                   "Error # " & Str(Err.Number) & ": " & Err.Description
+    AppActivate "Excel"
+    MsgBox ErrorMessage, vbCritical, "An error occurred while connecting to the AS/400"
+    
+Resume Cleanup
 
 NavigationError:
-    AppActivate "Excel"
-    MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
-        "Please navigate manually to the home screen, then attempt to run the application again." & _
-        vbNewLine & vbNewLine, vbCritical, "Navigation Failure"
-Resume Cleanup
 
-EndAutomation:
-    'Empty
-GoTo Cleanup
+    ErrorMessage = "Error occurred during procedure: " & "NameSearch.RunStudentSearch" & vbNewLine & vbNewLine & _
+                   "Last action attempted by script: " & "Navigating the AS/400" & vbNewLine & vbNewLine & _
+                   "Recommended resolution: Please ensure the AS/400 is on a valid screen " & _
+                   "before proceeding." & vbNewLine & vbNewLine & _
+                   "Error # " & Str(Err.Number) & ": " & Err.Description
+    AppActivate "Excel"
+    MsgBox ErrorMessage, vbCritical, "An error occurred while navigating the AS/400"
+
+Resume Cleanup
 
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' RunPageAction (Public Sub)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub RunPageAction(ByVal RegForm As MSForms.UserForm, ByVal UpOrDown As Boolean, ByVal Letter As String)
+Public Sub RunPageAction(ByVal RegForm As MSForms.UserForm, ByVal UpOrDown As Boolean, ByVal SessionLetter As String)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Purpose:      TBD
 
@@ -264,6 +271,8 @@ Public Sub RunPageAction(ByVal RegForm As MSForms.UserForm, ByVal UpOrDown As Bo
 ' Output:       TBD
 
 ' Assumptions:  TBD
+
+' AS/400 required:  Yes
 
 ' Handles Errors:   Yes
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -278,7 +287,7 @@ Public Sub RunPageAction(ByVal RegForm As MSForms.UserForm, ByVal UpOrDown As Bo
     Length = 0
     
     GetTextString = vbNullString
-    Dim RedMessage As String: RedMessage = vbNullString
+    Dim ErrorMessage As String: ErrorMessage = vbNullString
     
     Dim m1 As String: m1 = vbNullString
     Dim m2 As String: m2 = vbNullString
@@ -341,7 +350,7 @@ Public Sub RunPageAction(ByVal RegForm As MSForms.UserForm, ByVal UpOrDown As Bo
     ' Initialize the AS400
     '''''''''''''''''''''''''''
     On Error GoTo AS400Error
-    InitializeAS400 AS400, Letter
+    InitializeApp AS400, SessionLetter
     AS400.Handling = "Fast"
     AS400.Time = 25
     
@@ -448,26 +457,35 @@ Exit Sub
 ' Error Handling
 '''''''''''''''''''''''''''
 AS400Error:
-    RedMessage = RedMessage & _
-        "> The AS400 has failed to initialize" & vbNewLine & _
-        "Error #" & Err.Number & Space(1) & Err.Description & vbNewLine & vbNewLine
+
+    ErrorMessage = "Error occurred during procedure: " & "NameSearch.RunPageAction" & vbNewLine & vbNewLine & _
+                   "Last action attempted by script: " & "Initializing the AS/400" & vbNewLine & vbNewLine & _
+                   "Recommended resolution: Please ensure the AS/400 is active, and the session letter " & _
+                   "is valid and correct, before proceeding." & vbNewLine & vbNewLine & _
+                   "Error # " & Str(Err.Number) & ": " & Err.Description
     AppActivate "Excel"
-    MsgBox RedMessage, vbCritical, "AS/400 Error"
+    MsgBox ErrorMessage, vbCritical, "An error occurred while connecting to the AS/400"
+    
 Resume Cleanup
 
 IncorrectScreen:
+
+    ErrorMessage = "Failure occurred during procedure: " & "NameSearch.RunPageAction" & vbNewLine & vbNewLine & _
+                   "Last action attempted by script: " & "Pressing PageUp/PageDown..." & vbNewLine & vbNewLine & _
+                   "Recommended resolution: Please enter a name, " & _
+                   "then press either 'Action' or 'Name Search' to continue." & vbNewLine & vbNewLine & _
+                   ""
     AppActivate "Excel"
-    MsgBox "Unable to Page Up or Down. No search has been selected." & vbNewLine & vbNewLine & _
-        "Please enter a name, then press either 'Action' or 'Name Search' to continue.", _
-        vbInformation, "No search has been selected"
+    MsgBox ErrorMessage, vbInformation, "No search has been selected"
+        
 GoTo Cleanup
 
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' RunSecondaryAction (Public Sub)
+' Run_ActionButtonNumberTwo (Public Sub)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub RunSecondaryAction(ByVal RegForm As MSForms.UserForm, ByVal Letter As String)
+Public Sub Run_ActionButtonNumberTwo(ByVal RegForm As MSForms.UserForm, ByVal SessionLetter As String)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Purpose:      TBD
 
@@ -476,6 +494,8 @@ Public Sub RunSecondaryAction(ByVal RegForm As MSForms.UserForm, ByVal Letter As
 ' Output:       TBD
 
 ' Assumptions:  TBD
+
+' AS/400 required:  Yes
 
 ' Handles Errors:   Yes
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -491,7 +511,7 @@ Public Sub RunSecondaryAction(ByVal RegForm As MSForms.UserForm, ByVal Letter As
     
     GetTextString = vbNullString
     
-    Dim RedMessage As String: RedMessage = vbNullString
+    Dim ErrorMessage As String: ErrorMessage = vbNullString
     
     Dim a1 As String: a1 = vbNullString
     Dim a2 As String: a2 = vbNullString
@@ -532,8 +552,7 @@ Public Sub RunSecondaryAction(ByVal RegForm As MSForms.UserForm, ByVal Letter As
     ' Initialize the AS/400
     '''''''''''''''''''''''''''
     On Error GoTo AS400Error
-    InitializeAS400 AS400, Letter
-    AS400.Handling = "Fast"
+    InitializeApp AS400, SessionLetter
     AS400.Time = 25
     
     TurnOffExcelDefaults
@@ -546,26 +565,25 @@ Public Sub RunSecondaryAction(ByVal RegForm As MSForms.UserForm, ByVal Letter As
     GetTextString = AS400.GetText(Row, Col, Length)
     If Not GetTextString = "Name Search" Then
     
-        If NavigateToHome(AS400) = False Then GoTo NavigationFailure
-        
-            On Error GoTo NavigationError
-            
-            Entry = "1": Row = 19: Col = 7: Length = 0
-            AS400.SetText Entry, Row, Col
-            AS400.SendKeys "[Enter]"
-            Pause AS400
-            
-            Entry = "15": Row = 19: Col = 7: Length = 0
-            AS400.SetText Entry, Row, Col
-            AS400.SendKeys "[Enter]"
-            Pause AS400
-            
-            AS400.SendKeys "[pf1]"
-            AS400.SendKeys "[Enter]"
-            Pause AS400
+        On Error GoTo NavigationError
+        NavigateHome AS400, Exception
 
-        End If
-    
+        Entry = "1": Row = 19: Col = 7: Length = 0
+        AS400.SetText Entry, Row, Col
+        AS400.SendKeys "[Enter]"
+        Pause AS400
+            
+        Entry = "15": Row = 19: Col = 7: Length = 0
+        AS400.SetText Entry, Row, Col
+        AS400.SendKeys "[Enter]"
+        Pause AS400
+            
+        AS400.SendKeys "[pf1]"
+        AS400.SendKeys "[Enter]"
+        Pause AS400
+            
+    End If
+
     '''''''''''''''''''''''''''
     '
     '''''''''''''''''''''''''''
@@ -573,42 +591,42 @@ Public Sub RunSecondaryAction(ByVal RegForm As MSForms.UserForm, ByVal Letter As
     If Len(Trim(RegForm.ActionL1_Textbox)) = 1 Then
         Entry = Trim(RegForm.ActionL1_Textbox.Value): Row = 7: Col = 5: Length = 0
         AS400.SetText Entry, Row, Col
-        GoTo FlagrantUseOfSpaghettiCode
+        PostResultsToForm RegForm, AS400
         
     ElseIf Len(Trim(RegForm.ActionL2_Textbox)) = 1 Then
         Entry = Trim(RegForm.ActionL2_Textbox.Value): Row = 8: Col = 5: Length = 0
         AS400.SetText Entry, Row, Col
-        GoTo FlagrantUseOfSpaghettiCode
+        PostResultsToForm RegForm, AS400
     
     ElseIf Len(Trim(RegForm.ActionL3_Textbox)) = 1 Then
         Entry = Trim(RegForm.ActionL3_Textbox.Value): Row = 9: Col = 5: Length = 0
         AS400.SetText Entry, Row, Col
-        GoTo FlagrantUseOfSpaghettiCode
+        PostResultsToForm RegForm, AS400
     
     ElseIf Len(Trim(RegForm.ActionL4_Textbox)) = 1 Then
         Entry = Trim(RegForm.ActionL4_Textbox.Value): Row = 10: Col = 5: Length = 0
         AS400.SetText Entry, Row, Col
-        GoTo FlagrantUseOfSpaghettiCode
+        PostResultsToForm RegForm, AS400
     
     ElseIf Len(Trim(RegForm.ActionL5_Textbox)) = 1 Then
         Entry = Trim(RegForm.ActionL5_Textbox.Value): Row = 11: Col = 5: Length = 0
         AS400.SetText Entry, Row, Col
-        GoTo FlagrantUseOfSpaghettiCode
+        PostResultsToForm RegForm, AS400
     
     ElseIf Len(Trim(RegForm.ActionL6_Textbox)) = 1 Then
         Entry = Trim(RegForm.ActionL6_Textbox.Value): Row = 12: Col = 5: Length = 0
         AS400.SetText Entry, Row, Col
-        GoTo FlagrantUseOfSpaghettiCode
+        PostResultsToForm RegForm, AS400
     
     ElseIf Len(Trim(RegForm.ActionL7_Textbox)) = 1 Then
         Entry = Trim(RegForm.ActionL7_Textbox.Value): Row = 13: Col = 5: Length = 0
         AS400.SetText Entry, Row, Col
-        GoTo FlagrantUseOfSpaghettiCode
+        PostResultsToForm RegForm, AS400
     
     ElseIf Len(Trim(RegForm.ActionL8_Textbox)) = 1 Then
         Entry = Trim(RegForm.ActionL8_Textbox.Value): Row = 14: Col = 5: Length = 0
         AS400.SetText Entry, Row, Col
-        GoTo FlagrantUseOfSpaghettiCode
+        PostResultsToForm RegForm, AS400
     
     Else
     
@@ -707,9 +725,46 @@ Cleanup:
 Exit Sub
 
 '''''''''''''''''''''''''''
-'
+' Error Handling
 '''''''''''''''''''''''''''
-FlagrantUseOfSpaghettiCode:
+NavigationFailure:
+    
+GoTo Cleanup
+
+NavigationError:
+
+    ErrorMessage = "Error occurred during procedure: " & "NameSearch.Run_ActionButtonNumberTwo" & vbNewLine & vbNewLine & _
+                   "Last action attempted by script: " & "Navigating the AS/400" & vbNewLine & vbNewLine & _
+                   "Recommended resolution: Please ensure the AS/400 is on a valid screen " & _
+                   "before proceeding." & vbNewLine & vbNewLine & _
+                   "Error # " & Str(Err.Number) & ": " & Err.Description
+    AppActivate "Excel"
+    MsgBox ErrorMessage, vbCritical, "An error occurred while navigating the AS/400"
+
+Resume Cleanup
+
+AS400Error:
+
+    ErrorMessage = "Error occurred during procedure: " & "NameSearch.Run_ActionButtonNumberTwo" & vbNewLine & vbNewLine & _
+                   "Last action attempted by script: " & "Initializing the AS/400" & vbNewLine & vbNewLine & _
+                   "Recommended resolution: Please ensure the AS/400 is active, and the session letter " & _
+                   "is valid and correct, before proceeding." & vbNewLine & vbNewLine & _
+                   "Error # " & Str(Err.Number) & ": " & Err.Description
+    AppActivate "Excel"
+    MsgBox ErrorMessage, vbCritical, "An error occurred while connecting to the AS/400"
+    
+Resume Cleanup
+
+End Sub
+
+Private Sub PostResultsToForm(ByVal RegForm As MSForms.UserForm, ByVal AS400 As cAS400)
+
+    Entry = vbNullString
+    Row = 0
+    Col = 0
+    Length = 0
+
+    GetTextString = vbNullString
 
     AS400.SendKeys "[Enter]"
     Pause AS400
@@ -758,39 +813,11 @@ FlagrantUseOfSpaghettiCode:
         RegForm.ShowPhoneL6_Textbox = vbNullString
         RegForm.ShowPhoneL7_Textbox = vbNullString
         RegForm.ShowPhoneL8_Textbox = vbNullString
+        
     End If
     
     GetTextString = vbNullString
     
     AS400.Metrics.Active = True
-        
-GoTo Cleanup
-
-'''''''''''''''''''''''''''
-' Error Handling
-'''''''''''''''''''''''''''
-NavigationFailure:
-    If NavigateToHome(AS400) = False Then
-        AppActivate "Excel"
-        MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
-            "Please navigate manually to the home screen, then attempt to run the application again." & _
-            vbNewLine & vbNewLine, vbCritical, "Navigation Failure"
-    End If
-GoTo Cleanup
-
-NavigationError:
-    AppActivate "Excel"
-    MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
-        "Please navigate manually to the home screen, then attempt to run the application again." & _
-        vbNewLine & vbNewLine, vbCritical, "Navigation Failure"
-Resume Cleanup
-
-AS400Error:
-    RedMessage = RedMessage & _
-        "> The AS400 has failed to initialize" & vbNewLine & _
-        "Error #" & Err.Number & Space(1) & Err.Description & vbNewLine & vbNewLine
-    AppActivate "Excel"
-    MsgBox RedMessage, vbCritical, "AS/400 Error"
-Resume Cleanup
-
+    
 End Sub
