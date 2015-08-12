@@ -1,5 +1,5 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' RegistrationMain (Module)
+' Registration (Module)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Contains the core procedures for handling agency enrollments
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -22,9 +22,13 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
 ' Assumptions:  The user is reasonably attempting a legitimate enrollment _
                 No changes are made to the AS/400 that would cause this _
                     procedure to "run off the rails"
+                    
+' AS/400 required:  Yes
 
 ' Handles Errors:   Yes
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo VariablesError
 
     '''''''''''''''''''''''''''
     ' General variables
@@ -41,6 +45,7 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
     Length = 0
     
     GetTextString = vbNullString
+    Dim ErrorMessage As String: ErrorMessage = vbNullString
 
     Dim RedMessage As String: RedMessage = vbTab & "FINAL CONFIRMATION" & _
         vbNewLine & vbNewLine & "One or more errors have occurred. Please" & _
@@ -57,11 +62,11 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
     '''''''''''''''''''''''''''
     ' Set the class modules
     '''''''''''''''''''''''''''
-    On Error GoTo ClassError
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo ClassError
 
     Dim Exception As cException
     Set Exception = New cException
-    Exception.Push "RegistrationMain.RunRegistration"
+    Exception.Push "Registration.RunRegistration"
     
     Dim StudentFile As cStudentFile
     Set StudentFile = New cStudentFile
@@ -74,19 +79,17 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
     '''''''''''''''''''''''''''
     TurnOffExcelDefaults Exception
     
-    On Error GoTo UserformError
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo UserformError
     LoadUserformObjects StudentFile, RegForm, Exception
     
-    On Error GoTo AS400Error
-    InitializeAS400 AS400, StudentFile.GetSession, Exception
-    AS400.Handling = Trim(StudentFile.GetAutomation)
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo AS400Error
+    InitializeApp AS400, StudentFile.GetSession, Exception
     
     '''''''''''''''''''''''''''
     ' Pre-enrollment check
     '''''''''''''''''''''''''''
-PreEnrollmentCheck:
-    On Error GoTo 0
-    If ApproveRegistration(StudentFile, AS400, RedMessage, BlueMessage, Exception) = False Then
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo ErrorOnEnrollmentCheck
+    If ApproveRegistration(StudentFile, RedMessage, BlueMessage, Exception) = False Then
         GoTo Cleanup
     End If
     
@@ -96,39 +99,19 @@ PreEnrollmentCheck:
     Status.Value = "...   ...   ...   Performing Enrollment  (Please wait)   ...   ...   ..."
     
     '''''''''''''''''''''''''''
-    ' Set the subsequent settings based on the user's selection
+    ' Additional Settings
     '''''''''''''''''''''''''''
-    
-    Select Case LCase(AS400.Handling)
-        Case "fast"
-            On Error GoTo AcknowledgeError
-            AS400.Time = 25
-        Case "slow"
-            On Error GoTo AcknowledgeError
-            AS400.Time = 200
-        Case "stopeach"
-            On Error GoTo AcknowledgeError
-            AS400.Time = 200
-        Case "debug"
-            On Error GoTo 0
-            AS400.Time = 200
-        Case "test"
-            On Error GoTo 0
-            GoTo HiddenTestOption
-        Case Else
-            On Error GoTo 0
-            AS400.Time = 25
-    End Select
-    
+    AS400.Time = 25
     AS400.Metrics.Active = True
     
-    If NavigateToHome(AS400, Exception) = False Then GoTo NavigationFailure
-
     '''''''''''''''''''''''''''
-    ' Address Book registration
+    ' Navigation
     '''''''''''''''''''''''''''
-StartEnrollment:
-
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo NavigationError
+    NavigateHome AS400, Exception
+    
+    Exception.Message = "Navigating to the Address Book..."
+    
     'Address Book w/ Parent option
     Entry = "1": Row = 19: Col = 7: Length = 0
     AS400.SetText Entry, Row, Col
@@ -139,13 +122,21 @@ StartEnrollment:
     Entry = "3": Row = 19: Col = 7: Length = 0
     AS400.SetText Entry, Row, Col
     
-    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo EndAutomation
+    AS400.SendKeys "[Enter]"
+    Pause AS400, Exception
     
     Entry = "": Row = 1: Col = 2: Length = 5
     GetTextString = AS400.GetText(Row, Col, Length)
     
     If Not GetTextString = "01051" Then GoTo NavigationFailure
     GetTextString = vbNullString
+    
+    '''''''''''''''''''''''''''
+    ' Address Book registration
+    '''''''''''''''''''''''''''
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo ExecutionError
+    
+    Exception.Message = "Adding to the Address Book..."
     
     'Action Code
     Entry = "A": Row = 3: Col = 19: Length = 0
@@ -177,7 +168,10 @@ StartEnrollment:
         AS400.SetText Entry, Row, Col
     End If
     
-    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo EndAutomation
+    AS400.SendKeys "[Enter]"
+    Pause AS400, Exception
+    
+    Exception.Message = "Pulling the Student ID#..."
     
     'StudentID#
     Entry = "": Row = 1: Col = 3: Length = 6
@@ -190,25 +184,30 @@ StartEnrollment:
     Entry = "": Row = 4: Col = 32: Length = ModLength
     StudentFile.StudentID = Trim(AS400.GetText(Row, Col, Length))
     
-    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo EndAutomation
+    AS400.SendKeys "[Enter]"
+    Pause AS400, Exception
     
     AppActivate "Excel"
     MsgBox "Student ID:" & vbTab & StudentFile.StudentID, vbInformation, "Automation"
     AS400.Metrics.Active = True
     
-    'Enter-F3 sequence
+    Exception.Message = "Navigating the Enter/F3 sequence"
+    
+    'Enter/F3 sequence
     '#1
-    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo EndAutomation
-    If ProceedToNextScreen("[pf3]", AS400, Exception) = True Then GoTo EndAutomation
+    AS400.SendKeys "[Enter]"
+    AS400.SendKeys "[pf3]"
     '#2
-    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo EndAutomation
-    If ProceedToNextScreen("[pf3]", AS400, Exception) = True Then GoTo EndAutomation
+    AS400.SendKeys "[Enter]"
+    AS400.SendKeys "[pf3]"
     '#3
-    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo EndAutomation
-    If ProceedToNextScreen("[pf3]", AS400, Exception) = True Then GoTo EndAutomation
+    AS400.SendKeys "[Enter]"
+    AS400.SendKeys "[pf3]"
     '#4
-    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo EndAutomation
-    If ProceedToNextScreen("[pf3]", AS400, Exception) = True Then GoTo EndAutomation
+    AS400.SendKeys "[Enter]"
+    AS400.SendKeys "[pf3]"
+    
+    Pause AS400, Exception
     
     'Web Times
     Entry = StudentFile.GetWebStartTime: Row = 13: Col = 23: Length = 0
@@ -218,8 +217,12 @@ StartEnrollment:
     AS400.SetText Entry, Row, Col
     
     '#5
-    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo EndAutomation
-    If ProceedToNextScreen("[pf3]", AS400, Exception) = True Then GoTo EndAutomation
+    AS400.SendKeys "[Enter]"
+    AS400.SendKeys "[pf3]"
+    
+    Pause AS400, Exception
+    
+    Exception.Message = "Adding the account type information..."
 
     'School Type
     Entry = "HS": Row = 6: Col = 23: Length = 0
@@ -234,18 +237,22 @@ StartEnrollment:
     AS400.SetText Entry, Row, Col
     
     '#6
-    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo EndAutomation
-    If ProceedToNextScreen("[pf3]", AS400, Exception) = True Then GoTo EndAutomation
+    AS400.SendKeys "[Enter]"
+    AS400.SendKeys "[pf3]"
+    
+    Exception.Message = "Adding contact information..."
     
     'Back to the address book
-    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo EndAutomation
+    AS400.SendKeys "[Enter]"
     AS400.SendKeys "[Enter]"
     Pause AS400, Exception
     
     'Phone number
     If Len(StudentFile.GetPhoneNumber) >= 1 Then
     
-        If ProceedToNextScreen("[pf12]", AS400, Exception) = True Then GoTo EndAutomation
+        AS400.SendKeys "[pf12]"
+        
+        Pause AS400, Exception
         
         Entry = "C": Row = 4: Col = 21: Length = 0
         AS400.SetText Entry, Row, Col
@@ -256,18 +263,15 @@ StartEnrollment:
         Entry = StudentFile.GetPhoneNumber: Row = 11: Col = 16: Length = 0
         AS400.SetText Entry, Row, Col
         
-        Pause AS400, Exception
         AS400.SendKeys "[Enter]"
-        Pause AS400, Exception
         AS400.SendKeys "[pf3]"
-        Pause AS400, Exception
         
     End If
     
     'Email
     AS400.SendKeys "[pf5]"
-    Pause AS400, Exception
     AS400.SendKeys "[pf4]"
+    
     Pause AS400, Exception
     
     Entry = "C": Row = 3: Col = 18: Length = 0
@@ -278,26 +282,26 @@ StartEnrollment:
     
     Entry = StudentFile.GetEmail: Row = 10: Col = 4: Length = 0
     AS400.SetText Entry, Row, Col
-    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo EndAutomation
+    AS400.SendKeys "[Enter]"
     
     AS400.SendKeys "[pf3]"
-    Pause AS400, Exception
     AS400.SendKeys "[pf3]"
     Pause AS400, Exception
     
-    If NavigateToHome(AS400, Exception) = False Then GoTo MidEnrollmentNavigationFailure
+    NavigateHome AS400, Exception
 
     '''''''''''''''''''''''''''
     ' Course Registration
     '''''''''''''''''''''''''''
-MidEnrollment:
+    
+    Exception.Message = "Entering the course information..."
 
     'Full program enrollment
     Entry = "20": Row = 19: Col = 7: Length = 0
     AS400.SetText Entry, Row, Col
     
-    Pause AS400, Exception
     AS400.SendKeys "[Enter]"
+    
     Pause AS400, Exception
     
     'PS screen 66300
@@ -318,18 +322,21 @@ MidEnrollment:
         AS400.SetText Entry, Row, Col
     End If
     
-    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo EndAutomation
+    AS400.SendKeys "[Enter]"
+    
+    Pause AS400, Exception
     
     'Check for PS screen 66302
     Entry = "": Row = 7: Col = 32: Length = 5
     GetTextString = Trim(AS400.GetText(Row, Col, Length))
-    Pause AS400, Exception
     
     If GetTextString = "66302" Then
         AS400.SendKeys "[Enter]"
         Pause AS400, Exception
     End If
     GetTextString = vbNullString
+    
+    Exception.Message = "Entering the tuition information..."
     
     'Tuition
     Entry = "PA": Row = 11: Col = 11: Length = 0
@@ -341,17 +348,26 @@ MidEnrollment:
     Entry = StudentFile.GetProgramTuition: Row = 11: Col = 54: Length = 0
     AS400.SetText Entry, Row, Col
     
-    If ProceedToNextScreen("[Enter]", AS400, Exception) = True Then GoTo EndAutomation
+    AS400.SendKeys "[Enter]"
     
     'Enter payment terms
     AS400.SendKeys "[Enter]"
-    Pause AS400, Exception
     AS400.SendKeys "[Enter]"
     
-    If ProceedToNextScreen("[pf3]", AS400, Exception) = True Then GoTo EndAutomation
-    If ProceedToNextScreen("[pf11]", AS400, Exception) = True Then GoTo EndAutomation
+    AS400.SendKeys "[pf3]"
+    
+    Pause AS400, Exception
+    
+    Exception.Message = "Pressing the final enrollment key..."
+    
+    'Final Enrollment key
+    AS400.SendKeys "[pf11]"
     
     Status.Value = "...   ...   ...  (Please Wait)  ...   ...   ..."
+    
+    Pause AS400, Exception
+    
+    Exception.Message = "Navigating to the Education screen..."
     
     'Navigate to Education Inquiry
     AS400.SendKeys "[pf3]"
@@ -377,6 +393,8 @@ MidEnrollment:
     '''''''''''''''''''''''''''
     ' Transfer Credits option
     '''''''''''''''''''''''''''
+    Exception.Message = "Transfer Credits dialogue box."
+    
     AppActivate "Excel"
     If MsgBox("Automation Complete:" & " Student ID #" & StudentFile.StudentID & vbNewLine & vbNewLine & _
         "Total Elapsed Time: " & vbTab & (Timer - StartTime) & " seconds" & vbNewLine & vbNewLine & _
@@ -394,6 +412,7 @@ MidEnrollment:
 Cleanup:
 
     TurnOnExcelDefaults Exception
+    Exception.Message = vbNullString
     Exception.Pop
     
 Exit Sub
@@ -402,79 +421,86 @@ Exit Sub
 ' Error Handling
 '''''''''''''''''''''''''''
 
-ApprovalError:
+VariablesError:
 
+    ErrorMessage = "Error occurred during procedure: " & "Main.ExtractCourseNames" & vbNewLine & vbNewLine & _
+                   "Last action attempted by script: " & "Setting the variables and custom objects" & vbNewLine & vbNewLine & _
+                   "Recommended resolution:" & vbTab & "Unavailable" & vbNewLine & vbNewLine & _
+                   "Error # " & Str(Err.Number) & ": " & Err.Description
+    AppActivate "Excel"
+    MsgBox ErrorMessage, vbCritical, "An error occurred during procedure initialization"
 
-ClassError:
-    RedMessage = RedMessage & "[m_MainRegistration.RunRegistration]" & Space(1) & _
-        "> A critical error has occurred while initializing the class modules:" & vbNewLine & _
-        "Error #" & Err.Number & Space(1) & Err.Description & vbNewLine & vbNewLine
-    MsgBox RedMessage
-Resume Next
+Resume Cleanup
 
 UserformError:
-    Exception.Flag = True
-    RedMessage = RedMessage & Exception.StackTop & Space(1) & _
-        "> A userform object has failed to load" & Space(1) & "Error #" & Err.Number & vbNewLine & vbNewLine
-    MsgBox RedMessage
-Resume Next
+    
+    ErrorMessage = "Error occurred during procedure: " & Exception.StackTop & vbNewLine & vbNewLine & _
+                   "Last action attempted by script: " & Exception.Message & vbNewLine & vbNewLine & _
+                   "Recommended resolution:" & vbTab & "Unavailable" & _
+                   "" & vbNewLine & vbNewLine & _
+                   "Error # " & Str(Err.Number) & ": " & Err.Description
+    AppActivate "Excel"
+    MsgBox ErrorMessage, vbCritical, "An error occurred while accessing the userform"
+    
+Resume Cleanup
 
 AS400Error:
-    Exception.Flag = True
-    RedMessage = RedMessage & Exception.StackTop & Space(1) & _
-        "> The AS400 has failed to initialize" & vbNewLine & vbNewLine & _
-        "Please confirm the AS400 is active, and that the session letter is correct, " & _
-        "then try again." & _
-        "Error #" & Err.Number & Space(1) & Err.Description & vbNewLine & vbNewLine
-    MsgBox RedMessage
-Resume Next
 
-AcknowledgeError:
-    Exception.Flag = True
+    ErrorMessage = "Error occurred during procedure: " & Exception.StackTop & vbNewLine & vbNewLine & _
+                   "Last action attempted by script: " & Exception.Message & vbNewLine & vbNewLine & _
+                   "Recommended resolution: Please ensure the AS/400 is active, and the session letter " & _
+                   "is valid and correct, before proceeding." & vbNewLine & vbNewLine & _
+                   "Error # " & Str(Err.Number) & ": " & Err.Description
     AppActivate "Excel"
-    MsgBox "An unexpected error has occurred during the automation, and the application has been stopped." & _
-        vbNewLine & vbNewLine & "Please discover where the automation has stopped, and determine " & _
-        "if you need to proceed manually from here." & vbNewLine & vbNewLine & _
-        "Call Stack Position:" & vbTab & Exception.StackTop & vbNewLine & _
-        "Err Number:" & vbTab & Err.Number & vbNewLine & "Err Message:" & Err.Description, _
-        vbCritical, "An unknown error has occurred"
-GoTo Cleanup
+    MsgBox ErrorMessage, vbCritical, "An error occurred while connecting to the AS/400"
+    
+Resume Cleanup
 
-EndAutomation:
+ErrorOnEnrollmentCheck:
+
+    ErrorMessage = "Error occurred during procedure: " & Exception.StackTop & vbNewLine & vbNewLine & _
+                   "Last action attempted by script: " & Exception.Message & vbNewLine & vbNewLine & _
+                   "Recommended resolution:" & vbTab & "Unavailable" & _
+                   "" & vbNewLine & vbNewLine & _
+                   "Error # " & Str(Err.Number) & ": " & Err.Description
     AppActivate "Excel"
-    MsgBox "The automation has been canceled" & vbNewLine & vbNewLine & Exception.StackTop, _
-        vbInformation, "Enrollment"
-GoTo Cleanup
+    MsgBox ErrorMessage, vbCritical, "An error occurred during the pre-enrollment check"
+
+Resume Cleanup
+
+NavigationError:
+
+    ErrorMessage = "Error occurred during procedure: " & Exception.StackTop & vbNewLine & vbNewLine & _
+                   "Last action attempted by script: " & Exception.Message & vbNewLine & vbNewLine & _
+                   "Recommended resolution: Please ensure the AS/400 is on a valid screen " & _
+                   "before proceeding." & vbNewLine & vbNewLine & _
+                   "Error # " & Str(Err.Number) & ": " & Err.Description
+    AppActivate "Excel"
+    MsgBox ErrorMessage, vbCritical, "An error occurred while navigating the AS/400"
+
+Resume Cleanup
 
 NavigationFailure:
-    If NavigateToHome(AS400, Exception) = False Then
-        AppActivate "Excel"
-        MsgBox "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
-            "Please navigate manually to the home screen, then attempt to run the application again." & _
-            vbNewLine & vbNewLine & Exception.StackTop, vbCritical, "Navigation Failure"
-    Else
-        GoTo StartEnrollment
-    End If
+
+    ErrorMessage = "Failure occurred during procedure: " & Exception.StackTop & vbNewLine & vbNewLine & _
+                   "Last action attempted by script: " & Exception.Message & vbNewLine & vbNewLine & _
+                   "Recommended resolution: Please ensure the AS/400 is on a valid screen " & _
+                   "before proceeding." & vbNewLine & vbNewLine
+    AppActivate "Excel"
+    MsgBox ErrorMessage, vbCritical, "A failure occurred while navigating the AS/400"
+
 GoTo Cleanup
 
-MidEnrollmentNavigationFailure:
-    Dim MsgStr As String
-    MsgStr = "The AS/400 has failed to reach the correct screen." & vbNewLine & vbNewLine & _
-            "Confirm that the Address Book information has been entered successfully, then " & _
-            "proceed with the tuition registration manually." & vbNewLine & vbNewLine & Exception.StackTop
-    If Exception.Flag = True Then
-        MsgStr = MsgStr & vbTab & "Err Number: " & Exception.Number & vbNewLine & Exception.Description
-    End If
-    If NavigateToHome(AS400, Exception) = False Then
-            AppActivate "Excel"
-            MsgBox MsgStr, vbCritical, "Navigation Failure"
-    Else
-        GoTo MidEnrollment
-    End If
-GoTo Cleanup
+ExecutionError:
 
-HiddenTestOption:
-    RunUnitCheck RegForm, StudentFile, AS400, Exception
-GoTo Cleanup
+    ErrorMessage = "Error occurred during procedure: " & Exception.StackTop & vbNewLine & vbNewLine & _
+                   "Last action attempted by script: " & Exception.Message & vbNewLine & vbNewLine & _
+                   "Recommended resolution: An unknown error has occurred during the procedure." & vbNewLine & vbNewLine & _
+                   "Please determine where the procedure has ended, then with the enrollment manually." & vbNewLine & vbNewLine & _
+                   "Error # " & Str(Err.Number) & ": " & Err.Description
+    AppActivate "Excel"
+    MsgBox ErrorMessage, vbCritical, "An error occurred during normal execution"
+
+Resume Cleanup
 
 End Sub
