@@ -64,7 +64,7 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
     ' Navigation
     '''''''''''''''''''''''''''
     On Error GoTo NavigationError
-    Entry = "": Row = 1: Col = 3: Length = 5
+    GetTextString = "": Row = 1: Col = 3: Length = 5
     GetTextString = AS400.GetText(Row, Col, Length)
     
     If Not GetTextString = "42040" Then
@@ -134,12 +134,11 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
                 i = StartSize
                 Do
                 
-                    GetTextString = vbNullString
-                    Entry = "": Row = i: Col = 47: Length = 4
+                    GetTextString = "": Row = i: Col = 47: Length = 4
                     GetTextString = Trim(AS400.GetText(Row, Col, Length))
                     
                     CheckForTarget = vbNullString
-                    Entry = "": Row = i: Col = 77: Length = 3
+                    GetTextString = "": Row = i: Col = 77: Length = 3
                     CheckForTarget = Trim(AS400.GetText(Row, Col, Length))
                 
                     'If the line is empty...
@@ -163,8 +162,7 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
                     
                 Loop While i <= MaxSize
             
-                GetTextString = vbNullString
-                Entry = "": Row = 23: Col = 47: Length = 4
+                GetTextString = "": Row = 23: Col = 47: Length = 4
                 GetTextString = Trim(AS400.GetText(Row, Col, Length))
                 
                 If Len(GetTextString) < 2 Then
@@ -207,8 +205,7 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
             i = StartSize
             Do
             
-                GetTextString = vbNullString
-                Entry = "": Row = i: Col = 47: Length = 4
+                GetTextString = "": Row = i: Col = 47: Length = 4
                 GetTextString = Trim(AS400.GetText(Row, Col, Length))
                 
                 'If the line is empty...
@@ -228,8 +225,7 @@ Public Sub ManageShipments(ByVal AS400 As cAS400, ByVal SID As String, ByVal Sen
                 
             Loop While i <= MaxSize
                     
-            GetTextString = vbNullString
-            Entry = "": Row = 23: Col = 47: Length = 4
+            GetTextString = "": Row = 23: Col = 47: Length = 4
             GetTextString = Trim(AS400.GetText(Row, Col, Length))
             
             If Len(GetTextString) < 2 Then
