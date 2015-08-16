@@ -113,7 +113,7 @@ Public Sub RunStudentSearch(ByVal RegForm As MSForms.UserForm)
     '''''''''''''''''''''''''''
     On Error GoTo NavigationError
     
-    NavigateHome AS400, Exception
+    NavigateHome AS400
     
     Entry = "1": Row = 19: Col = 7: Length = 0
     AS400.SetText Entry, Row, Col
@@ -140,69 +140,69 @@ Public Sub RunStudentSearch(ByVal RegForm As MSForms.UserForm)
         then passes to the userform
     '''''''''''''''''''''''''''
     On Error Resume Next
-    Entry = "": Row = 7: Col = 8: Length = 37
+    GetTextString = "": Row = 7: Col = 8: Length = 37
     m1 = Trim(AS400.GetText(Row, Col, Length))
     If Len(m1) >= 1 Then RegForm.MailingNameL1_Textbox = m1 Else RegForm.MailingNameL1_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 8: Col = 8: Length = 37
+    GetTextString = "": Row = 8: Col = 8: Length = 37
     m2 = Trim(AS400.GetText(Row, Col, Length))
     If Len(m2) >= 1 Then RegForm.MailingNameL2_Textbox = m2 Else RegForm.MailingNameL2_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 9: Col = 8: Length = 37
+    GetTextString = "": Row = 9: Col = 8: Length = 37
     m3 = Trim(AS400.GetText(Row, Col, Length))
     If Len(m3) >= 1 Then RegForm.MailingNameL3_Textbox = m3 Else RegForm.MailingNameL3_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 10: Col = 8: Length = 37
+    GetTextString = "": Row = 10: Col = 8: Length = 37
     m4 = Trim(AS400.GetText(Row, Col, Length))
     If Len(m4) >= 1 Then RegForm.MailingNameL4_Textbox = m4 Else RegForm.MailingNameL4_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 11: Col = 8: Length = 37
+    GetTextString = "": Row = 11: Col = 8: Length = 37
     m5 = Trim(AS400.GetText(Row, Col, Length))
     If Len(m5) >= 1 Then RegForm.MailingNameL5_Textbox = m5 Else RegForm.MailingNameL5_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 12: Col = 8: Length = 37
+    GetTextString = "": Row = 12: Col = 8: Length = 37
     m6 = Trim(AS400.GetText(Row, Col, Length))
     If Len(m6) >= 1 Then RegForm.MailingNameL6_Textbox = m6 Else RegForm.MailingNameL6_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 13: Col = 8: Length = 37
+    GetTextString = "": Row = 13: Col = 8: Length = 37
     m7 = Trim(AS400.GetText(Row, Col, Length))
     If Len(m7) >= 1 Then RegForm.MailingNameL7_Textbox = m7 Else RegForm.MailingNameL7_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 14: Col = 8: Length = 37
+    GetTextString = "": Row = 14: Col = 8: Length = 37
     m8 = Trim(AS400.GetText(Row, Col, Length))
     If Len(m8) >= 1 Then RegForm.MailingNameL8_Textbox = m8 Else RegForm.MailingNameL8_Textbox = Space(5) & "(Empty)"
     
     Pause AS400
     
-    Entry = "": Row = 7: Col = 49: Length = 26
+    GetTextString = "": Row = 7: Col = 49: Length = 26
     p1 = Trim(AS400.GetText(Row, Col, Length))
     If Len(p1) >= 1 Then RegForm.ShowPhoneL1_Textbox = p1 Else RegForm.ShowPhoneL1_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 8: Col = 49: Length = 26
+    GetTextString = "": Row = 8: Col = 49: Length = 26
     p2 = Trim(AS400.GetText(Row, Col, Length))
     If Len(p2) >= 1 Then RegForm.ShowPhoneL2_Textbox = p2 Else RegForm.ShowPhoneL2_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 9: Col = 49: Length = 26
+    GetTextString = "": Row = 9: Col = 49: Length = 26
     p3 = Trim(AS400.GetText(Row, Col, Length))
     If Len(p3) >= 1 Then RegForm.ShowPhoneL3_Textbox = p3 Else RegForm.ShowPhoneL3_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 10: Col = 49: Length = 26
+    GetTextString = "": Row = 10: Col = 49: Length = 26
     p4 = Trim(AS400.GetText(Row, Col, Length))
     If Len(p4) >= 1 Then RegForm.ShowPhoneL4_Textbox = p4 Else RegForm.ShowPhoneL4_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 11: Col = 49: Length = 26
+    GetTextString = "": Row = 11: Col = 49: Length = 26
     p5 = Trim(AS400.GetText(Row, Col, Length))
     If Len(p5) >= 1 Then RegForm.ShowPhoneL5_Textbox = p5 Else RegForm.ShowPhoneL5_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 12: Col = 49: Length = 26
+    GetTextString = "": Row = 12: Col = 49: Length = 26
     p6 = Trim(AS400.GetText(Row, Col, Length))
     If Len(p6) >= 1 Then RegForm.ShowPhoneL6_Textbox = p6 Else RegForm.ShowPhoneL6_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 13: Col = 49: Length = 26
+    GetTextString = "": Row = 13: Col = 49: Length = 26
     p7 = Trim(AS400.GetText(Row, Col, Length))
     If Len(p7) >= 1 Then RegForm.ShowPhoneL7_Textbox = p7 Else RegForm.ShowPhoneL7_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 14: Col = 49: Length = 26
+    GetTextString = "": Row = 14: Col = 49: Length = 26
     p8 = Trim(AS400.GetText(Row, Col, Length))
     If Len(p8) >= 1 Then RegForm.ShowPhoneL8_Textbox = p8 Else RegForm.ShowPhoneL8_Textbox = Space(5) & "(Empty)"
     
@@ -359,7 +359,7 @@ Public Sub RunPageAction(ByVal RegForm As MSForms.UserForm, ByVal UpOrDown As Bo
     '''''''''''''''''''''''''''
     ' Perform Action
     '''''''''''''''''''''''''''
-    Entry = "": Row = 2: Col = 34: Length = 11
+    GetTextString = "": Row = 2: Col = 34: Length = 11
     GetTextString = AS400.GetText(Row, Col, Length)
     If Not GetTextString = "Name Search" Then GoTo IncorrectScreen
     
@@ -375,69 +375,69 @@ Public Sub RunPageAction(ByVal RegForm As MSForms.UserForm, ByVal UpOrDown As Bo
         then passes to the userform
     '''''''''''''''''''''''''''
     On Error Resume Next
-    Entry = "": Row = 7: Col = 8: Length = 37
+    GetTextString = "": Row = 7: Col = 8: Length = 37
     m1 = Trim(AS400.GetText(Row, Col, Length))
     If Len(m1) >= 1 Then RegForm.MailingNameL1_Textbox = m1 Else RegForm.MailingNameL1_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 8: Col = 8: Length = 37
+    GetTextString = "": Row = 8: Col = 8: Length = 37
     m2 = Trim(AS400.GetText(Row, Col, Length))
     If Len(m2) >= 1 Then RegForm.MailingNameL2_Textbox = m2 Else RegForm.MailingNameL2_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 9: Col = 8: Length = 37
+    GetTextString = "": Row = 9: Col = 8: Length = 37
     m3 = Trim(AS400.GetText(Row, Col, Length))
     If Len(m3) >= 1 Then RegForm.MailingNameL3_Textbox = m3 Else RegForm.MailingNameL3_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 10: Col = 8: Length = 37
+    GetTextString = "": Row = 10: Col = 8: Length = 37
     m4 = Trim(AS400.GetText(Row, Col, Length))
     If Len(m4) >= 1 Then RegForm.MailingNameL4_Textbox = m4 Else RegForm.MailingNameL4_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 11: Col = 8: Length = 37
+    GetTextString = "": Row = 11: Col = 8: Length = 37
     m5 = Trim(AS400.GetText(Row, Col, Length))
     If Len(m5) >= 1 Then RegForm.MailingNameL5_Textbox = m5 Else RegForm.MailingNameL5_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 12: Col = 8: Length = 37
+    GetTextString = "": Row = 12: Col = 8: Length = 37
     m6 = Trim(AS400.GetText(Row, Col, Length))
     If Len(m6) >= 1 Then RegForm.MailingNameL6_Textbox = m6 Else RegForm.MailingNameL6_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 13: Col = 8: Length = 37
+    GetTextString = "": Row = 13: Col = 8: Length = 37
     m7 = Trim(AS400.GetText(Row, Col, Length))
     If Len(m7) >= 1 Then RegForm.MailingNameL7_Textbox = m7 Else RegForm.MailingNameL7_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 14: Col = 8: Length = 37
+    GetTextString = "": Row = 14: Col = 8: Length = 37
     m8 = Trim(AS400.GetText(Row, Col, Length))
     If Len(m8) >= 1 Then RegForm.MailingNameL8_Textbox = m8 Else RegForm.MailingNameL8_Textbox = Space(5) & "(Empty)"
     
     Pause AS400
     
-    Entry = "": Row = 7: Col = 49: Length = 26
+    GetTextString = "": Row = 7: Col = 49: Length = 26
     p1 = Trim(AS400.GetText(Row, Col, Length))
     If Len(p1) >= 1 Then RegForm.ShowPhoneL1_Textbox = p1 Else RegForm.ShowPhoneL1_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 8: Col = 49: Length = 26
+    GetTextString = "": Row = 8: Col = 49: Length = 26
     p2 = Trim(AS400.GetText(Row, Col, Length))
     If Len(p2) >= 1 Then RegForm.ShowPhoneL2_Textbox = p2 Else RegForm.ShowPhoneL2_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 9: Col = 49: Length = 26
+    GetTextString = "": Row = 9: Col = 49: Length = 26
     p3 = Trim(AS400.GetText(Row, Col, Length))
     If Len(p3) >= 1 Then RegForm.ShowPhoneL3_Textbox = p3 Else RegForm.ShowPhoneL3_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 10: Col = 49: Length = 26
+    GetTextString = "": Row = 10: Col = 49: Length = 26
     p4 = Trim(AS400.GetText(Row, Col, Length))
     If Len(p4) >= 1 Then RegForm.ShowPhoneL4_Textbox = p4 Else RegForm.ShowPhoneL4_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 11: Col = 49: Length = 26
+    GetTextString = "": Row = 11: Col = 49: Length = 26
     p5 = Trim(AS400.GetText(Row, Col, Length))
     If Len(p5) >= 1 Then RegForm.ShowPhoneL5_Textbox = p5 Else RegForm.ShowPhoneL5_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 12: Col = 49: Length = 26
+    GetTextString = "": Row = 12: Col = 49: Length = 26
     p6 = Trim(AS400.GetText(Row, Col, Length))
     If Len(p6) >= 1 Then RegForm.ShowPhoneL6_Textbox = p6 Else RegForm.ShowPhoneL6_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 13: Col = 49: Length = 26
+    GetTextString = "": Row = 13: Col = 49: Length = 26
     p7 = Trim(AS400.GetText(Row, Col, Length))
     If Len(p7) >= 1 Then RegForm.ShowPhoneL7_Textbox = p7 Else RegForm.ShowPhoneL7_Textbox = Space(5) & "(Empty)"
     
-    Entry = "": Row = 14: Col = 49: Length = 26
+    GetTextString = "": Row = 14: Col = 49: Length = 26
     p8 = Trim(AS400.GetText(Row, Col, Length))
     If Len(p8) >= 1 Then RegForm.ShowPhoneL8_Textbox = p8 Else RegForm.ShowPhoneL8_Textbox = Space(5) & "(Empty)"
     
@@ -483,9 +483,9 @@ GoTo Cleanup
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Run_ActionButtonNumberTwo (Public Sub)
+' Run_ActionButton2 (Public Sub)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub Run_ActionButtonNumberTwo(ByVal RegForm As MSForms.UserForm, ByVal SessionLetter As String)
+Public Sub Run_ActionButton2(ByVal RegForm As MSForms.UserForm, ByVal SessionLetter As String)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Purpose:      TBD
 
@@ -561,12 +561,12 @@ Public Sub Run_ActionButtonNumberTwo(ByVal RegForm As MSForms.UserForm, ByVal Se
     ' Checks position, _
         then navigates if necessary
     '''''''''''''''''''''''''''
-    Entry = "": Row = 2: Col = 34: Length = 11
+    GetTextString = "": Row = 2: Col = 34: Length = 11
     GetTextString = AS400.GetText(Row, Col, Length)
     If Not GetTextString = "Name Search" Then
     
         On Error GoTo NavigationError
-        NavigateHome AS400, Exception
+        NavigateHome AS400
 
         Entry = "1": Row = 19: Col = 7: Length = 0
         AS400.SetText Entry, Row, Col
@@ -636,69 +636,69 @@ Public Sub Run_ActionButtonNumberTwo(ByVal RegForm As MSForms.UserForm, ByVal Se
         Pause AS400
         
         On Error Resume Next
-        Entry = "": Row = 7: Col = 8: Length = 37
+        GetTextString = "": Row = 7: Col = 8: Length = 37
         m1 = Trim(AS400.GetText(Row, Col, Length))
         If Len(m1) >= 1 Then RegForm.MailingNameL1_Textbox = m1 Else RegForm.MailingNameL1_Textbox = Space(5) & "(Empty)"
         
-        Entry = "": Row = 8: Col = 8: Length = 37
+        GetTextString = "": Row = 8: Col = 8: Length = 37
         m2 = Trim(AS400.GetText(Row, Col, Length))
         If Len(m2) >= 1 Then RegForm.MailingNameL2_Textbox = m2 Else RegForm.MailingNameL2_Textbox = Space(5) & "(Empty)"
         
-        Entry = "": Row = 9: Col = 8: Length = 37
+        GetTextString = "": Row = 9: Col = 8: Length = 37
         m3 = Trim(AS400.GetText(Row, Col, Length))
         If Len(m3) >= 1 Then RegForm.MailingNameL3_Textbox = m3 Else RegForm.MailingNameL3_Textbox = Space(5) & "(Empty)"
     
-        Entry = "": Row = 10: Col = 8: Length = 37
+        GetTextString = "": Row = 10: Col = 8: Length = 37
         m4 = Trim(AS400.GetText(Row, Col, Length))
         If Len(m4) >= 1 Then RegForm.MailingNameL4_Textbox = m4 Else RegForm.MailingNameL4_Textbox = Space(5) & "(Empty)"
     
-        Entry = "": Row = 11: Col = 8: Length = 37
+        GetTextString = "": Row = 11: Col = 8: Length = 37
         m5 = Trim(AS400.GetText(Row, Col, Length))
         If Len(m5) >= 1 Then RegForm.MailingNameL5_Textbox = m5 Else RegForm.MailingNameL5_Textbox = Space(5) & "(Empty)"
     
-        Entry = "": Row = 12: Col = 8: Length = 37
+        GetTextString = "": Row = 12: Col = 8: Length = 37
         m6 = Trim(AS400.GetText(Row, Col, Length))
         If Len(m6) >= 1 Then RegForm.MailingNameL6_Textbox = m6 Else RegForm.MailingNameL6_Textbox = Space(5) & "(Empty)"
     
-        Entry = "": Row = 13: Col = 8: Length = 37
+        GetTextString = "": Row = 13: Col = 8: Length = 37
         m7 = Trim(AS400.GetText(Row, Col, Length))
         If Len(m7) >= 1 Then RegForm.MailingNameL7_Textbox = m7 Else RegForm.MailingNameL7_Textbox = Space(5) & "(Empty)"
     
-        Entry = "": Row = 14: Col = 8: Length = 37
+        GetTextString = "": Row = 14: Col = 8: Length = 37
         m8 = Trim(AS400.GetText(Row, Col, Length))
         If Len(m8) >= 1 Then RegForm.MailingNameL8_Textbox = m8 Else RegForm.MailingNameL8_Textbox = Space(5) & "(Empty)"
         
         Pause AS400
     
-        Entry = "": Row = 7: Col = 49: Length = 26
+        GetTextString = "": Row = 7: Col = 49: Length = 26
         p1 = Trim(AS400.GetText(Row, Col, Length))
         If Len(p1) >= 1 Then RegForm.ShowPhoneL1_Textbox = p1 Else RegForm.ShowPhoneL1_Textbox = Space(5) & "(Empty)"
     
-        Entry = "": Row = 8: Col = 49: Length = 26
+        GetTextString = "": Row = 8: Col = 49: Length = 26
         p2 = Trim(AS400.GetText(Row, Col, Length))
         If Len(p2) >= 1 Then RegForm.ShowPhoneL2_Textbox = p2 Else RegForm.ShowPhoneL2_Textbox = Space(5) & "(Empty)"
     
-        Entry = "": Row = 9: Col = 49: Length = 26
+        GetTextString = "": Row = 9: Col = 49: Length = 26
         p3 = Trim(AS400.GetText(Row, Col, Length))
         If Len(p3) >= 1 Then RegForm.ShowPhoneL3_Textbox = p3 Else RegForm.ShowPhoneL3_Textbox = Space(5) & "(Empty)"
     
-        Entry = "": Row = 10: Col = 49: Length = 26
+        GetTextString = "": Row = 10: Col = 49: Length = 26
         p4 = Trim(AS400.GetText(Row, Col, Length))
         If Len(p4) >= 1 Then RegForm.ShowPhoneL4_Textbox = p4 Else RegForm.ShowPhoneL4_Textbox = Space(5) & "(Empty)"
     
-        Entry = "": Row = 11: Col = 49: Length = 26
+        GetTextString = "": Row = 11: Col = 49: Length = 26
         p5 = Trim(AS400.GetText(Row, Col, Length))
         If Len(p5) >= 1 Then RegForm.ShowPhoneL5_Textbox = p5 Else RegForm.ShowPhoneL5_Textbox = Space(5) & "(Empty)"
     
-        Entry = "": Row = 12: Col = 49: Length = 26
+        GetTextString = "": Row = 12: Col = 49: Length = 26
         p6 = Trim(AS400.GetText(Row, Col, Length))
         If Len(p6) >= 1 Then RegForm.ShowPhoneL6_Textbox = p6 Else RegForm.ShowPhoneL6_Textbox = Space(5) & "(Empty)"
     
-        Entry = "": Row = 13: Col = 49: Length = 26
+        GetTextString = "": Row = 13: Col = 49: Length = 26
         p7 = Trim(AS400.GetText(Row, Col, Length))
         If Len(p7) >= 1 Then RegForm.ShowPhoneL7_Textbox = p7 Else RegForm.ShowPhoneL7_Textbox = Space(5) & "(Empty)"
     
-        Entry = "": Row = 14: Col = 49: Length = 26
+        GetTextString = "": Row = 14: Col = 49: Length = 26
         p8 = Trim(AS400.GetText(Row, Col, Length))
         If Len(p8) >= 1 Then RegForm.ShowPhoneL8_Textbox = p8 Else RegForm.ShowPhoneL8_Textbox = Space(5) & "(Empty)"
     
@@ -770,10 +770,8 @@ Private Sub PostResultsToForm(ByVal RegForm As MSForms.UserForm, ByVal AS400 As 
     Pause AS400
     AS400.Metrics.Active = True
     
-    GetTextString = vbNullString
-    Entry = "": Row = 2: Col = 4: Length = 4
+    GetTextString = "": Row = 2: Col = 4: Length = 4
     GetTextString = AS400.GetText(Row, Col, Length)
-    GetTextString = vbNullString
     Pause AS400
     
     If Not GetTextString = "01NS" Then
@@ -783,25 +781,21 @@ Private Sub PostResultsToForm(ByVal RegForm As MSForms.UserForm, ByVal AS400 As 
         
         RegForm.MailingNameL2_Textbox = vbNullString
         
-        Entry = "": Row = 3: Col = 2: Length = 20
+        GetTextString = "": Row = 3: Col = 2: Length = 20
         GetTextString = Trim(AS400.GetText(Row, Col, Length))
         RegForm.MailingNameL3_Textbox = GetTextString
-        GetTextString = vbNullString
         
-        Entry = "": Row = 5: Col = 2: Length = 28
+        GetTextString = "": Row = 5: Col = 2: Length = 28
         GetTextString = Trim(AS400.GetText(Row, Col, Length))
         If Len(GetTextString) >= 1 Then RegForm.MailingNameL4_Textbox = GetTextString Else RegForm.MailingNameL4_Textbox = Space(4) & "[Empty]"
-        GetTextString = vbNullString
         
-        Entry = "": Row = 6: Col = 2: Length = 28
+        GetTextString = "": Row = 6: Col = 2: Length = 28
         GetTextString = Trim(AS400.GetText(Row, Col, Length))
         If Len(GetTextString) >= 1 Then RegForm.MailingNameL5_Textbox = GetTextString Else RegForm.MailingNameL5_Textbox = Space(4) & "[Empty]"
-        GetTextString = vbNullString
         
-        Entry = "": Row = 7: Col = 2: Length = 28
+        GetTextString = "": Row = 7: Col = 2: Length = 28
         GetTextString = Trim(AS400.GetText(Row, Col, Length))
         If Len(GetTextString) >= 1 Then RegForm.MailingNameL6_Textbox = GetTextString Else RegForm.MailingNameL6_Textbox = Space(4) & "[Empty]"
-        GetTextString = vbNullString
         
         RegForm.MailingNameL7_Textbox = vbNullString
         RegForm.MailingNameL8_Textbox = "  [Results posted to the AS/400]"
