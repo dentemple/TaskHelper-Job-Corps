@@ -69,7 +69,6 @@ Public Sub RunPopulateClasses(ByVal CreditsForm As MSForms.UserForm)
     
     On Error GoTo AS400Error
     InitializeApp AS400, SessionLetter, Exception
-    AS400.Handling = "Fast"
     AS400.Time = 25
     
     '''''''''''''''''''''''''''
@@ -83,11 +82,11 @@ Public Sub RunPopulateClasses(ByVal CreditsForm As MSForms.UserForm)
     
         Case "60210   "
         
+            AS400.SendKeys "[pf3]"
             Pause AS400, Exception
         
         Case "603132_B"
         
-            AS400.SendKeys "[pf11]"
             Pause AS400, Exception
         
         Case Else
@@ -102,25 +101,23 @@ Public Sub RunPopulateClasses(ByVal CreditsForm As MSForms.UserForm)
             AS400.SetText Entry, Row, Col
             AS400.SendKeys "[Enter]"
             Pause AS400, Exception
-            
-            Entry = SID: Row = 3: Col = 13: Length = 0
-            AS400.SetText Entry, Row, Col
-            AS400.SendKeys "[Enter]"
-            AS400.SendKeys "[pf11]"
-            Pause AS400, Exception
-            
-            GetTextString = vbNullString
-            Entry = "": Row = 1: Col = 2: Length = 5
-            GetTextString = AS400.GetText(Row, Col, Length)
-            If Not GetTextString = "60210" Then GoTo NavigationFailure
-            
-            Pause AS400, Exception
-            GetTextString = vbNullString
-            Entry = "": Row = 5: Col = 23: Length = ModLen
-            GetTextString = AS400.GetText(Row, Col, Length)
-            If Len(Trim(GetTextString)) < 2 Then GoTo DoesNotExist
 
     End Select
+    
+    Entry = SID: Row = 3: Col = 13: Length = 0
+    AS400.SetText Entry, Row, Col
+    AS400.SendKeys "[Enter]"
+    AS400.SendKeys "[pf11]"
+    Pause AS400, Exception
+            
+    Entry = "": Row = 1: Col = 2: Length = 5
+    GetTextString = AS400.GetText(Row, Col, Length)
+    If Not GetTextString = "60210" Then GoTo NavigationFailure
+            
+    Pause AS400, Exception
+    Entry = "": Row = 5: Col = 23: Length = ModLen
+    GetTextString = AS400.GetText(Row, Col, Length)
+    If Len(Trim(GetTextString)) < 2 Then GoTo DoesNotExist
 
     '''''''''''''''''''''''''''
     ' Loads array
@@ -255,7 +252,6 @@ Public Sub RunPopulateClasses(ByVal CreditsForm As MSForms.UserForm)
         Pause AS400, Exception
         
         'Check
-        GetTextString = vbNullString
         Entry = "": Row = 22: Col = 4: Length = 2
         GetTextString = AS400.GetText(Row, Col, Length)
         If Len(Trim(GetTextString)) < 1 Then
@@ -267,7 +263,6 @@ Public Sub RunPopulateClasses(ByVal CreditsForm As MSForms.UserForm)
     Loop
     
     Pause AS400, Exception
-    GetTextString = vbNullString
     Entry = "": Row = 4: Col = 32: Length = 38
     GetTextString = AS400.GetText(Row, Col, Length)
     
@@ -359,7 +354,7 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
     Dim SendShipments As Boolean: SendShipments = False
     
     Const MaxSize As Integer = 30
-    Const ModLen As Integer = 8
+    Const ModLen As Long = 8
     
     Dim i As Integer: i = 0
     Dim Counter As Integer: Counter = 0
@@ -372,10 +367,15 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
     Length = 0
     
     GetTextString = vbNullString
+    
+    Dim TransferCode As String: TransferCode = "H"
+    
     Dim SessionLetter As String: SessionLetter = vbNullString
     Dim SID As String: SID = vbNullString
+    
     Dim TRSuccessMessage As String
     TRSuccessMessage = "Transfer credits have been successfully applied!"
+    
     Dim ShipSuccessMessage As String
     ShipSuccessMessage = "The shipment option has been successfully applied!"
     
@@ -414,7 +414,6 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
     
     On Error GoTo AS400Error
     InitializeApp AS400, SessionLetter, Exception
-    AS400.Handling = "Fast"
     AS400.Time = 25
     
     '''''''''''''''''''''''''''
@@ -573,9 +572,10 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
         Pause AS400, Exception
         If BooleanArray(i) = True And Len(Trim(TextboxArray(i, 1).Value)) > 1 Then
         
-            GetTextString = vbNullString
-            Entry = "": Row = 17: Col = 2: Length = ModLen
+            Entry = "": Row = 17: Col = 4: Length = ModLen
             GetTextString = AS400.GetText(Row, Col, Length)
+            
+            MsgBox GetTextString
             
             If Trim(GetTextString) = Trim(TextboxArray(i, 1).Value) Then
                 Entry = "1": Row = 17: Col = 2: Length = 0
@@ -594,7 +594,6 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
         Pause AS400, Exception
         If BooleanArray(i) = True And Len(Trim(TextboxArray(i, 1).Value)) > 1 Then
         
-            GetTextString = vbNullString
             Entry = "": Row = 18: Col = 4: Length = ModLen
             GetTextString = AS400.GetText(Row, Col, Length)
             
@@ -615,7 +614,6 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
         Pause AS400, Exception
         If BooleanArray(i) = True And Len(Trim(TextboxArray(i, 1).Value)) > 1 Then
         
-            GetTextString = vbNullString
             Entry = "": Row = 19: Col = 4: Length = ModLen
             GetTextString = AS400.GetText(Row, Col, Length)
             
@@ -636,7 +634,6 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
         Pause AS400, Exception
         If BooleanArray(i) = True And Len(Trim(TextboxArray(i, 1).Value)) > 1 Then
         
-            GetTextString = vbNullString
             Entry = "": Row = 20: Col = 4: Length = ModLen
             GetTextString = AS400.GetText(Row, Col, Length)
             
@@ -657,7 +654,6 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
         Pause AS400, Exception
         If BooleanArray(i) = True And Len(Trim(TextboxArray(i, 1).Value)) > 1 Then
         
-            GetTextString = vbNullString
             Entry = "": Row = 21: Col = 4: Length = ModLen
             GetTextString = AS400.GetText(Row, Col, Length)
             
@@ -678,7 +674,6 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
         Pause AS400, Exception
         If BooleanArray(i) = True And Len(Trim(TextboxArray(i, 1).Value)) > 1 Then
         
-            GetTextString = vbNullString
             Entry = "": Row = 22: Col = 4: Length = ModLen
             GetTextString = AS400.GetText(Row, Col, Length)
             
@@ -696,7 +691,6 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
         Pause AS400, Exception
         
         'Check
-        GetTextString = vbNullString
         Entry = "": Row = 22: Col = 4: Length = 2
         GetTextString = AS400.GetText(Row, Col, Length)
         If Len(Trim(GetTextString)) < 1 Then
@@ -706,6 +700,8 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
         End If
     
     Loop
+    
+    MsgBox Counter
     
     If Counter < 1 Then
         
@@ -720,7 +716,6 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
         AS400.SendKeys "[Enter]"
     
         Pause AS400, Exception
-        GetTextString = vbNullString
         Entry = "": Row = 1: Col = 2: Length = 5
         GetTextString = AS400.GetText(Row, Col, Length)
         If Not Trim(GetTextString) = "60211" Then GoTo LocationMismatch
@@ -728,7 +723,6 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
         Do Until Counter <= 0
     
             Pause AS400, Exception
-            GetTextString = vbNullString
             Entry = "": Row = 10: Col = 19: Length = 1
             GetTextString = AS400.GetText(Row, Col, Length)
             If Len(Trim(GetTextString)) = 1 Then GoTo SkipIterationEntries
@@ -737,7 +731,7 @@ Public Sub ApplyTransferCredits(ByVal CreditsForm As MSForms.UserForm)
             AS400.SetText Entry, Row, Col
             Entry = "Y": Row = 8: Col = 19: Length = 0
             AS400.SetText Entry, Row, Col
-            Entry = "H": Row = 10: Col = 19: Length = 0
+            Entry = TransferCode: Row = 10: Col = 19: Length = 0
             AS400.SetText Entry, Row, Col
 
 SkipIterationEntries:
