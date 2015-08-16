@@ -98,14 +98,6 @@ Private Sub UserForm_Initialize()
     ShowPhoneL8_Textbox.BackColor = RGB(211, 211, 211)
 
     'Populates the selection boxes
-    With Automation_ComboBox
-        .Clear
-        .AddItem "Fast"
-        .AddItem "Slow"
-        .AddItem "StopEach"
-        .AddItem "Debug"
-        .Text = Automation_ComboBox.List(0)
-    End With
     With Session_ComboBox
         .Clear
         .AddItem Range("DefaultSession")
@@ -135,6 +127,9 @@ Private Sub RunAutomation_Button_Click()
     'Run the registration script
     RunRegistration u_RegistrationForm
     
+    'Run the unit test
+    'RunUnitCheck u_RegistrationForm
+    
     Status_Textbox = "Registration Complete!"
     
 End Sub
@@ -159,7 +154,7 @@ Private Sub SecondarySearch_Button_Click()
 
     Dim Letter As String: Letter = Session_ComboBox.Value
     
-    RunSecondaryAction u_RegistrationForm, Letter
+    Run_ActionButton2 u_RegistrationForm, Letter
     
     Status_Textbox = "Ready"
 
