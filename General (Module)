@@ -6,7 +6,7 @@
 Option Explicit
 
 'Set to True to turn off error handling
-    Public Const DebugFlag As Boolean = False
+    Public Const DebugFlag As Boolean = True
 
 'AS/400 modular values
     Public Entry As String
@@ -213,15 +213,16 @@ Public Sub NavigateHome(ByVal AS400 As cAS400, Optional ByRef Exception As cExce
     ' General variables
     '''''''''''''''''''''''''''
     Dim i As Integer: i = 0
-    
     Const MaxAttempts As Integer = 5
-    Const HomeTag As String = " BNIMAIN"
-    Const MaxAttempts As Integer = 5
+
     Const TagLength As Long = 8
     Const TagRow As Long = 1
     Const TagCol As Long = 2
+    
     Const MenuRow As Long = 19
     Const MenuCol As Long = 7
+    
+    Const HomeTag As String = " BNIMAIN"
     
     'AS/400 modular values
     Entry = vbNullString
@@ -247,7 +248,7 @@ Public Sub NavigateHome(ByVal AS400 As cAS400, Optional ByRef Exception As cExce
     
         Pause AS400, Exception
         
-        Entry = "": Row = TagRow: Col = TagCol: Length = TagLength
+        GetTextString = "": Row = TagRow: Col = TagCol: Length = TagLength
         GetTextString = AS400.GetText(Row, Col, Length)
         
         If Not Exception Is Nothing Then Exception.Message = _
