@@ -125,11 +125,10 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
     AS400.SendKeys "[Enter]"
     Pause AS400, Exception
     
-    Entry = "": Row = 1: Col = 2: Length = 5
+    GetTextString = "": Row = 1: Col = 2: Length = 5
     GetTextString = AS400.GetText(Row, Col, Length)
     
     If Not GetTextString = "01051" Then GoTo NavigationFailure
-    GetTextString = vbNullString
     
     '''''''''''''''''''''''''''
     ' Address Book registration
@@ -174,14 +173,13 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
     Exception.Message = "Pulling the Student ID#..."
     
     'StudentID#
-    Entry = "": Row = 1: Col = 3: Length = 6
+    GetTextString = "": Row = 1: Col = 3: Length = 6
     GetTextString = AS400.GetText(Row, Col, Length)
     
     If Not GetTextString = "010512" Then GoTo NavigationFailure
-    GetTextString = vbNullString
     Pause AS400, Exception
     
-    Entry = "": Row = 4: Col = 32: Length = ModLength
+    GetTextString = "": Row = 4: Col = 32: Length = ModLength
     StudentFile.StudentID = Trim(AS400.GetText(Row, Col, Length))
     
     AS400.SendKeys "[Enter]"
@@ -327,14 +325,13 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
     Pause AS400, Exception
     
     'Check for PS screen 66302
-    Entry = "": Row = 7: Col = 32: Length = 5
+    GetTextString = "": Row = 7: Col = 32: Length = 5
     GetTextString = Trim(AS400.GetText(Row, Col, Length))
     
     If GetTextString = "66302" Then
         AS400.SendKeys "[Enter]"
         Pause AS400, Exception
     End If
-    GetTextString = vbNullString
     
     Exception.Message = "Entering the tuition information..."
     
