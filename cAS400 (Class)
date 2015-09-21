@@ -1,171 +1,350 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' cAS400 (Class)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Provides containers for the Host Automation Class Library objects with the _
-    intent to reduce redundancy and simplify the code. The HACL allows the _
-    AS/400 to be controlled by Microsoft's COM-based technology.
+' Contains methods provided by IBM's Host Automation Class Library that have been _
+    confirmed to work within our user environment.
+'
+' The AS/400's I/O uses the string, numerical long, and collection object data types.
+'
+' // This object is incomplete as of this iteration
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Option Compare Database
 Option Explicit
 
-'GENERAL PROPERTIES
-Private pName As String '.Name
-Private pTime As Long '.Time
-Private pHandling As String '.Handling
+'Test Routine
+'   .RunTest_cAS400                 'I/O (to immediate window)
 
-'READ-ONLY PROPERTIES/SUBROUTINES
-'   .Operator (Stores the autECLOIA object)
-'   .Presentation (Stores the autECLPS object)
-'   .SetText
-'   .SendKeys
-'   .GetText
-'   .Wait
-'   .WaitForApp
-'   .Refresh
-'   .Activate
+' General Properties
+Private pIsInitialized As Boolean   'Set by initialization
+Private pSessionName As String      'Set by initialization
+Private pStoreStudentID As String   'Read/Write
 
-'OBJECT PROPERTIES
-Private pSession As Object '.Session
-Private pMetrics As Object '.Metrics
-Private pConnection As Object '.Connection
+' ConnList Properties (Collection)
+'   .Refresh                        'AS/400 action
+'   .ConnectionCount                'Returns long
+'   .ConnectionName                    'Returns string
+'   .ConnectionHandle                  'Returns long
+'   .ConnectionType                 'Returns string
+
+' Session Properties
+'   .IsStarted                      'Returns boolean
+'   .IsReady                        'Returns boolean
+
+' Presentation Space Properties
+'   .SetCursor                      'AS/400 action
+'   .SetText                        'AS/400 action
+'   .SendKeys                       'AS/400 action
+'   .GetText                        'Returns string
+'   .SearchText                     'Returns boolean
+'   .Wait                           'AS/400 action
+
+' Operator Properties
+'   .IsInhibited                    'Returns boolean
+'   .InhibitedType                  'Returns long
+'   .WaitForInputReady              'AS/400 action
+'   .WaitForSystemAvailable         'AS/400 action
+'   .WaitForAppAvailable            'AS/400 action
+'   .CancelWaits                    'AS/400 action
+
+' Object Properties
+Private pConnList As Object         'Set by initialization
+Private pSession As Object          'Set by initialization
+Private pPresentation As Object     'Set by initialization
+Private pOperator As Object         'Set by initialization
+Private pWinMetrics As Object       'Set by initialization
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' LOCAL PROCEDURES
+' Initialization
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Private Sub Class_Initialize()
     'Empty
 End Sub
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GENERAL PROPERTIES
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' .Name property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Let Name(Value As String)
-    pName = Value
-End Property
-Public Property Get Name() As String
-    Name = pName
-End Property
+Public Sub InitializeApp(ByVal Session_Name As String, Optional Exception As cException, _
+    Optional ByVal Add_Milliseconds As Long = 1)
+    
+    If Not Exception Is Nothing Then Exception.Push "cAS400.InitializeApp: START INITIALIZATION"
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' .Time property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Let Time(Value As Long)
-    pTime = Value
-End Property
-Public Property Get Time() As Long
-    Time = pTime
-End Property
+    On Error GoTo SkipToEnd
+    'The .IsReady/.IsStarted properties can be used to ensure the AS/400 _
+        has been successfully connected
+        
+    Set pConnList = CreateObject("PCOMM.autECLConnList")
+    Set pSession = CreateObject("PCOMM.autECLSession")
+    Set pWinMetrics = CreateObject("PCOMM.autECLWinMetrics")
+    Set pOperator = CreateObject("PCOMM.autECLOIA")
+    
+    pSession.SetConnectionByName (Session_Name)
+    pWinMetrics.SetConnectionByName (Session_Name)
+    pOperator.SetConnectionByName (Session_Name)
+    
+    Set pPresentation = pSession.autECLPS
+    
+    pConnList.Refresh
+    
+    If Add_Milliseconds > 0 Then
+        gv_WaitAdd = Add_Milliseconds
+    Else
+        gv_WaitAdd = 1
+    End If
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' .Handling property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Let Handling(Value As String)
-    pHandling = Value
-End Property
-Public Property Get Handling() As String
-    Handling = pHandling
-End Property
+    If Not Exception Is Nothing Then Exception.Pop
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' READ-ONLY PROPERTIES/SUBROUTINES
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' .Operator property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Get Operator() As Object
-    Set Operator = Session.autECLOIA
- End Property
- 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' .Presentation property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Get Presentation() As Object
-    Set Presentation = Session.autECLPS
-End Property
+Exit Sub
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' .SetText property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub SetText(Str As String, Row As Long, Col As Long)
-    Session.autECLPS.SetText Str, Row, Col
+SkipToEnd:
+
+    If Not Exception Is Nothing Then Exception.Flag = True
+    
 End Sub
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' .SendKeys property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub SendKeys(Str As String)
-    Session.autECLPS.SendKeys Str
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Test Routine
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub RunTest_cAS400()
+'An callable routine used to debug the cAS400 object
+    
 End Sub
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' .GetText property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Get GetText(Row As Long, Col As Long, Length As Long) As String
-    GetText = Session.autECLPS.GetText(Row, Col, Length)
-End Property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' General Properties
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'.IsInitialized (Initialized)
+Public Property Get IsInitialized() As Boolean: IsInitialized = pIsInitialized: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' .Wait property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub Wait(Milliseconds As Long)
-    Session.autECLPS.Wait Milliseconds
-End Sub
+'.SessionName (Initialized)
+Public Property Let SessionName(Value As String): pSessionName = Value: End Property
+Public Property Get SessionName() As String: SessionName = pSessionName: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' .WaitForApp property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub WaitForApp()
-    Session.autECLOIA.WaitForAppAvailable
-    Session.autECLOIA.WaitForInputReady
-End Sub
+'.StoreStudentID
+Public Property Let StoreStudentID(Value As String): pStoreStudentID = Value: End Property
+Public Property Get StoreStudentID() As String: StoreStudentID = pStoreStudentID: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' .Refresh property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'.Pause
+Public Function Pause(Optional ByVal Add_Milliseconds As Long = -1)
+
+    If Add_Milliseconds <= 0 Then
+        Add_Milliseconds = gv_WaitAdd
+    End If
+
+    Me.Operator.WaitForAppAvailable
+    Me.Operator.WaitForInputReady
+    Me.Wait Add_Milliseconds
+
+SkipToEnd:
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ConnList Properties (Collection)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'.Refresh
 Public Sub Refresh()
-    Connection.Refresh
+
+    Me.ConnList.Refresh
+    
 End Sub
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' .Activate property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub Activate()
-    Metrics.Active = True
+'.ConnectionCount
+Public Property Get ConnectionCount() As Long
+
+    Me.Refresh
+    ConnectionCount = Me.ConnList.Count
+    
+End Property
+
+'.ConnectionName
+Public Property Get ConnectionName(Optional ByVal Connection_Number As Long = 1) As String
+
+    ConnectionName = Me.ConnList(Connection_Number).Name
+    
+End Property
+
+'.ConnectionHandle
+Public Property Get ConnectionHandle(Optional ByVal Connection_Number As Long = 1) As Long
+
+    Me.Refresh
+    ConnectionHandle = Me.ConnList(Connection_Number).Handle
+    
+End Property
+
+'.ConnectionType
+Public Property Get ConnectionType(Optional ByVal Connection_Number As Long = 1) As String
+
+    Me.Refresh
+    ConnectionType = Me.ConnList(Connection_Number).ConnType
+    
+End Property
+
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Session Properties
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'.IsStarted
+Public Property Get IsStarted(Optional ByVal Connection_Number As Long = 1) As Boolean
+
+    Me.Refresh
+    IsStarted = Me.Session.Started
+    
+End Property
+
+'.IsReady
+Public Property Get IsReady(Optional ByVal Connection_Number As Long = 1) As Boolean
+    
+    Me.Refresh
+    IsReady = Me.Session.Ready
+
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Presentation Space Properties
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'.SetCursor
+Public Sub SetCursor(ByVal Row_Number As Long, ByVal Col_Number As Long)
+
+    Me.Presentation.SetCursorPos Row_Number, Col_Number
+    
+End Sub
+
+'.SetText
+Public Sub SetText(ByVal Text_To_Enter As String, ByVal Row_Number As Long, ByVal Col_Number As Long)
+
+    Me.Presentation.SetText Text_To_Enter, Row_Number, Col_Number
+    
+End Sub
+
+'.SendKeys
+Public Sub SendKeys(ByVal Text_To_Enter As String, Optional ByVal Row_Number As Long = -1, _
+    Optional ByVal Col_Number As Long = -1)
+    
+    If Row_Number > 0 And Col_Number > 0 Then
+        Me.Presentation.SendKeys Text_To_Enter, CLng(Row_Number), CLng(Col_Number)
+    Else
+        Me.Presentation.SendKeys Text_To_Enter
+    End If
+    
+End Sub
+
+'.GetText
+Public Property Get GetText(ByVal Row_Number As Long, ByVal Col_Number As Long, ByVal Character_Length As Long) As String
+    
+    GetText = Me.Presentation.GetText(Row_Number, Col_Number, Character_Length)
+    
+End Property
+
+'.SearchText
+Public Property Get SearchText(ByVal Search_String As String, Optional ByVal Row_Number As Long = -1, _
+    Optional ByVal Col_Number As Long = -1, Optional ByVal Search_Direction As Long = 1) As Boolean
+    
+    Const searchForward As Long = 1
+    Const searchBackward As Long = 2
+    Dim bool As Boolean
+    
+    If Not (Search_Direction = searchForward Or Search_Direction = searchBackward) Then
+        Search_Direction = searchForward
+    End If
+    
+    If Row_Number > 0 And Col_Number > 0 Then
+        bool = Me.Presentation.SearchText(Search_String, Search_Direction, Row_Number, Col_Number)
+    Else
+        bool = Me.Presentation.SearchText(Search_String, Search_Direction)
+    End If
+    
+    SearchText = bool
+
+End Property
+
+'.Wait
+Public Sub Wait(Optional ByVal Add_Milliseconds As Long = -1)
+
+    If Add_Milliseconds <= 0 Then
+        Add_Milliseconds = gv_WaitAdd
+    End If
+
+    Me.Presentation.Wait Add_Milliseconds
+    
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' OBJECT PROPERTIES
+' Operator Properties
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' .Session property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set Session(Value As Object)
-    Set pSession = Value
+'.IsInhibited
+Public Property Get IsInhibited() As Boolean
+'Overloaded to include a time-out check as well, due to the .Pause property causing _
+    the AS/400 to time-out prior to flagging the autECLOIA/Me.Operator object as being inhibited
+    
+    Dim inhibited As Boolean
+    Dim successful As Boolean
+    
+    If Me.Operator.InputInhibited = 0 Then
+        inhibited = False
+    Else
+        inhibited = True
+    End If
+    
+    successful = Me.Operator.WaitForAppAvailable(g_timeOut)
+    
+    If inhibited Or successful = False Then
+        IsInhibited = True
+    Else
+        IsInhibited = False
+    End If
+    
 End Property
-Public Property Get Session() As Object
-    Set Session = pSession
+    
+'.InhibitedType
+Public Property Get InhibitedType() As Long
+
+    Me.WaitForAppAvailable
+    Me.WaitForInputReady
+    InhibitedType = Me.Operator.InputInhibited
+    
 End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' .Metrics property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set Metrics(Value As Object)
-    Set pMetrics = Value
-End Property
-Public Property Get Metrics() As Object
-    Set Metrics = pMetrics
-End Property
+'.WaitForInputReady
+Public Sub WaitForInputReady(Optional ByVal Timeout_In_Milliseconds As Long = 0)
+'Note: "0" or no entry translates to a timeout setting of "infinite"
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' .Connection property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set Connection(Value As Object)
-    Set pConnection = Value
-End Property
-Public Property Get Connection() As Object
-    Set Connection = pConnection
-End Property
+    Me.Operator.WaitForInputReady Timeout_In_Milliseconds
+
+End Sub
+
+'.WaitForSystemAvailable
+Public Sub WaitForSystemAvailable(Optional ByVal Timeout_In_Milliseconds As Long = 0)
+'Note: "0" or no entry translates to a timeout setting of "infinite"
+
+    Me.Operator.WaitForSystemAvailable Timeout_In_Milliseconds
+
+End Sub
+
+'.WaitForAppAvailable
+Public Sub WaitForAppAvailable(Optional ByVal Timeout_In_Milliseconds As Long = 0)
+'Note: "0" or no entry translates to a timeout setting of "infinite"
+
+    Me.Operator.WaitForAppAvailable Timeout_In_Milliseconds
+    
+End Sub
+
+'.CancelWaits
+Public Sub CancelWaits(): Me.Operator.CancelWaits: End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Object Properties
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'.Operator (Initialized)
+Public Property Get Operator() As Object: Set Operator = pOperator: End Property
+
+'.ConnList (Initialized)
+Public Property Get ConnList() As Object: Set ConnList = pConnList: End Property
+
+'.Session (Initialized)
+Public Property Get Session() As Object: Set Session = pSession: End Property
+
+'.Presentation (Initialized)
+Public Property Get Presentation() As Object: Set Presentation = pPresentation: End Property
+
+'.WinMetrics (Initialized)
+Public Property Get WinMetrics() As Object: Set WinMetrics = pWinMetrics: End Property
+
+
 
 
