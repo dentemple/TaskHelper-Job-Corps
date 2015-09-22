@@ -1,0 +1,8 @@
+Private Sub CompileTest()
+    
+    Dim AS400 As cAS400: Set AS400 = New cAS400
+    Dim Command As cCommand: Set Command = New cCommand
+    Dim Exception As cException: Set Exception = New cException
+    Dim Student As cStudent: Set Student = New cStudent
+    
+End Sub
