@@ -157,7 +157,7 @@ End Property
 '.ConnectionName
 Public Property Get ConnectionName(Optional ByVal Connection_Number As Long = 1) As String
 
-    ConnectionName = Me.ConnList(Connection_Number).Name
+    ConnectionName = Me.ConnList(Connection_Number).name
     
 End Property
 
