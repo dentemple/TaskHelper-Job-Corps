@@ -1,8 +1,12 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' StackItem (Class)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' For use in call stack functionality
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Option Compare Database
+Option Explicit
 
-' Keep track of the next stack item,
-' and the value of this item.
-Public Value As Variant
+'Keep track of the next stack item, _
+    and the value of this item.
+Public StackValue As Variant
 Public NextItem As StackItem
