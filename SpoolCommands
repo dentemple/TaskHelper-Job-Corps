@@ -26,12 +26,12 @@ Public Function Spool(ByVal Label_for_Collection As String, ByRef Exception As c
 
 End Function
 
-Public Sub AddSetText(ByVal Sequence_Number As Integer, _
+Public Sub Add_Set(ByRef CommandCollection As Collection, _
     ByVal String_to_Enter As String, ByVal Row_to_Enter As Long, ByVal Col_to_Enter As Long, _
-    ByRef CommandCollection As Collection, ByVal Collection_Label As String, _
-    ByRef Exception As cException)
+    Optional ByRef Exception As cException)
     
-    Exception.Push "SpoolCommands.AddSetText || ... ... ... Sequence (" & CStr(Sequence_Number) & _
+    If Not Exception Is Nothing Then Exception.Push _
+        "SpoolCommands.AddSetText || ... ... ... Sequence (" & CStr(Sequence_Number) & _
         ") String ('" & String_to_Enter & "', " & CStr(Row_to_Enter) & ", " & CStr(Col_to_Enter)
     
     Dim Command As cCommand
@@ -45,42 +45,39 @@ Public Sub AddSetText(ByVal Sequence_Number As Integer, _
         Command.ColLong = Col_to_Enter
     
     CommandCollection.Add Command
-    Exception.Pop
+    If Not Exception Is Nothing Then Exception.Pop
         
 End Sub
 
-Public Sub AddSendKey(ByVal Sequence_Number As Integer, _
+Public Sub Add_Send(ByRef CommandCollection As Collection, _
     ByVal String_to_Enter As String, Optional ByVal Row_to_Enter As Long = 0, _
     Optional ByVal Col_to_Enter As Long = 0, _
-    Optional ByRef CommandCollection As Collection, Optional ByVal Collection_Label As String, _
     Optional ByRef Exception As cException)
-    'Not
     
-    Exception.Push "SpoolCommands.AddSendKey || ... ... ... Sequence (" & CStr(Sequence_Number) & _
+    If Not Exception Is Nothing Then Exception.Push _
+        "SpoolCommands.AddSendKey || ... ... ... Sequence (" & CStr(Sequence_Number) & _
         ") String ('" & String_to_Enter & "', " & CStr(Row_to_Enter) & ", " & CStr(Col_to_Enter)
     
     Dim Command As cCommand
     Set Command = New cCommand
     
         Command.CommandLabel = commSendKey
-        Command.Sequence = Sequence_Number
-        Command.ParentLabel = Collection_Label
         Command.EntryString = String_to_Enter
         Command.RowLong = Row_to_Enter
         Command.ColLong = Col_to_Enter
     
     CommandCollection.Add Command
-    Exception.Pop
+    If Not Exception Is Nothing Then Exception.Pop
         
 End Sub
 
-Public Sub AddGetText(ByVal Sequence_Number As Integer, _
+Public Sub Add_Get(ByRef CommandCollection As Collection, _
     ByVal Name_of_Value_to_Return As String, _
     ByVal String_to_Return As String, ByVal Row_to_Get As Long, ByVal Col_to_Get As Long, _
-    ByRef CommandCollection As Collection, ByVal Collection_Label As String, _
-    ByVal Length_to_Get As Long, ByRef Exception As cException)
+    ByVal Length_to_Get As Long, Optional ByRef Exception As cException)
     
-    Exception.Push "SpoolCommands.AddGetText || ... ... ... Sequence (" & CStr(Sequence_Number) & _
+    If Not Exception Is Nothing Then Exception.Push _
+        "SpoolCommands.AddGetText || ... ... ... Sequence (" & CStr(Sequence_Number) & _
         ") String ('" & String_to_Return & "', " & CStr(Row_to_Get) & ", " & CStr(Col_to_Get) & _
         ", " & CStr(Length_to_Get) & " characters"
     
@@ -88,8 +85,6 @@ Public Sub AddGetText(ByVal Sequence_Number As Integer, _
     Set Command = New cCommand
         
         Command.CommandLabel = commGetText
-        Command.Sequence = Sequence_Number
-        Command.ParentLabel = Collection_Label
         Command.NameOfValue = Name_of_Value_to_Return
         Command.ReturnString = String_to_Return
         Command.RowLong = Row_to_Get
@@ -97,53 +92,48 @@ Public Sub AddGetText(ByVal Sequence_Number As Integer, _
         Command.LenLong = Length_to_Get
     
     CommandCollection.Add Command
-    Exception.Pop
+    If Not Exception Is Nothing Then Exception.Pop
 
 End Sub
 
-Public Sub AddSearchText(ByVal Sequence_Number As Integer, _
+Public Sub Add_Search(ByRef CommandCollection As Collection, _
     ByVal String_to_Enter As String, Optional ByVal Start_Row As Long = 1, _
     Optional ByVal Start_Col As Long = 1, _
-    Optional ByRef CommandCollection As Collection, Optional ByVal Collection_Label As String, _
     Optional ByRef Exception As cException)
     
-    Exception.Push "SpoolCommands.AddSearchText || ... ... ... Sequence (" & CStr(Sequence_Number) & _
+    If Not Exception Is Nothing Then Exception.Push _
+        "SpoolCommands.AddSearchText || ... ... ... Sequence (" & CStr(Sequence_Number) & _
         ") String ('" & String_to_Enter & "', " & CStr(Start_Row) & ", " & CStr(Start_Col)
     
     Dim Command As cCommand
     Set Command = New cCommand
         
         Command.CommandLabel = commSearchText
-        Command.Sequence = Sequence_Number
-        Command.ParentLabel = Collection_Label
-        Command.ReturnString = String_to_Return
+        Command.ReturnString = String_to_Enter
         Command.RowLong = Row_to_Get
         Command.ColLong = Col_to_Get
         Command.LenLong = Length_to_Get
     
     CommandCollection.Add Command
-    Exception.Pop
+    If Not Exception Is Nothing Then Exception.Pop
 
 End Sub
 
-Public Sub AddCustomCommand(ByVal Sequence_Number As Integer, _
-    ByVal Name_of_Custom_Command As String, _
-    ByRef CommandCollection As Collection, ByVal Collection_Label As String, _
-    ByRef Exception As cException)
+Public Sub Add_Custom(ByRef CommandCollection As Collection, _
+    ByVal Name_of_Custom_Command As String, Optional ByRef Exception As cException)
     
-    Exception.Push "SpoolCommands.AddCustomCommand || ... ... ... Sequence (" & CStr(Sequence_Number) & _
+    If Not Exception Is Nothing Then Exception.Push _
+        "SpoolCommands.AddCustomCommand || ... ... ... Sequence (" & CStr(Sequence_Number) & _
         ") String ('" & Name_of_Custom_Command & "'"
     
     Dim Command As cCommand
     Set Command = New cCommand
     
         Command.CommandLabel = commCustom
-        Command.Sequence = Sequence_Number
-        Command.ParentLabel = Collection_Label
         Command.CallCustom = Name_of_Custom_Command
         
     CommandCollection.Add Command
-    Exception.Pop
+    If Not Exception Is Nothing Then Exception.Pop
 
 End Sub
 
