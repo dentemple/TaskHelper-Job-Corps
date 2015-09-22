@@ -5,17 +5,108 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Option Explicit
 
-Public Function PopulateRegistrationCommands(Optional ByRef Exception As cException) As Collection
+Public Function PopulateAddressBookCommands(ByRef Exception As cException) As Collection
 
-    Dim Temp As Collection
-    Set Temp = New Collection
+    'Pass error handling up the call stack
+    On Error GoTo 0
+
+    '''''''''''''''''''''''''''
+    ' Prepare
+    '''''''''''''''''''''''''''
+    Dim toCommands As Collection
+    Set toCommands = New Collection
     
-    Exception.Push "Commands_Registration.PopulateRegistrationCommands"
+    Exception.Push "Commands_Registration.PopulateAddressBookCommands"
+        
+    '''''''''''''''''''''''''''
+    ' Add Commands
+    '''''''''''''''''''''''''''
+    'Navigating to Address Book
+    AddCommand toCommands, commCustom, procNavigateHome
+    AddCommand toCommands, commSet, optionCustomerService, rowHome, rowCol
+    AddCommand toCommands, commSend, EnterKey
     
+    AddCommand toCommands, commSet, optionAddressBook, rowHome, rowCol
+    AddCommand toCommands, commSend, EnterKey
     
+    'Entering the student information
+    AddCommand toCommands, commSearch, locationAddressBook
+    AddCommand toCommands, commSet, actionCodeA, 3, 19
+    AddCommand toCommands, commSet, searchType, 14, 19
+    AddCommand toCommands, commSet, tagPrefixCode, 23, 19
+    AddCommand toCommands, savedSet, tagMailingName, 4, 19
+    AddCommand toCommands, savedSet, tagAlphaName, 6, 19
+    AddCommand toCommands, savedSet, tagParentCode, 17, 55
+    AddCommand toCommands, savedSet, tagLongNumber, 2, 60
+    AddCommand toCommands, commSend, EnterKey
     
-    Set PopulateRegistrationCommands = TempCollection
+    'Student ID# returned
+    AddCommand toCommands, savedGet, tagStudentID, 4, 32, modLength
+    AddCommand toCommands, commSend, EnterKey
+    
+    'Enter=>F3 sequence
+    AddCommand toCommands, commSend, EnterKey               '#1
+    AddCommand toCommands, commSend, F3Key
+    AddCommand toCommands, commSend, EnterKey               '#2
+    AddCommand toCommands, commSend, F3Key
+    AddCommand toCommands, commSend, EnterKey               '#3
+    AddCommand toCommands, commSend, F3Key
+    AddCommand toCommands, commSend, EnterKey               '#4
+    AddCommand toCommands, commSend, F3Key
+    
+    'Apply Web Times
+    AddCommand toCommands, savedSet, tagWebStart, 13, 23
+    AddCommand toCommands, savedSet, tagWebEnd, 14, 23
+    
+    'Enter=>F3 sequence
+    AddCommand toCommands, commSend, EnterKey               '#5
+    AddCommand toCommands, commSend, F3Key
+    
+    'Apply Account Info
+    AddCommand toCommands, commSet, schoolType, 6, 23
+    AddCommand toCommands, commSet, degreeCode, 10, 23
+    AddCommand toCommands, commSet, tagGender, 19, 57
+    
+    'Enter=>F3 sequence
+    AddCommand toCommands, commSend, EnterKey               '#6
+    AddCommand toCommands, commSend, F3Key
+    
+    'Return To Address Book
+    AddCommand toCommands, commSend, EnterKey
+    AddCommand toCommands, commSend, EnterKey
+    
+    'Apply the phone number
+    AddCommand toCommands, commSend, F12Key
+    AddCommand toCommands, commSet, actionCodeC, 4, 21
+    AddCommand toCommands, savedSet, tagAreaCode, 11, 9
+    AddCommand toCommands, savedSet, tagPhone, 11, 16
+    AddCommand toCommands, commSend, EnterKey
+    AddCommand toCommands, commSend, F3Key
+    
+    'Apply the email
+    AddCommand toCommands, commSend, F5Key
+    AddCommand toCommands, commSend, F4Key
+    AddCommand toCommands, commSet, actionCodeC, 3, 18
+    AddCommand toCommands, commSet, emailCode, 11, 62
+    AddCommand toCommands, commSend, EnterKey
+    AddCommand toCommands, commSend, F3Key
+    AddCommand toCommands, commSend, F3Key
+    
+    '''''''''''''''''''''''''''
+    ' Finalize
+    '''''''''''''''''''''''''''
+    Set PopulateAddressBookCommands = toCommands
     
     Exception.Pop
     
 End Function
+
+    'noEntry
+    'commSet
+    'savedSet
+    'commGet
+    'commSearch
+    'savedGet
+    'commSend
+    'commCustom
+    'procNavigateHome
