@@ -13,19 +13,21 @@ Public Function Spool(ByVal Label_for_Collection As String, ByRef Exception As c
     
     Select Case Label_for_Collection
     
-        Case generateAddressBook
+        Case forAddressBook
         
             Set Spool = PopulateAddressBookCommands(Exception)
         
-        Case generateEnrollment
+        Case forEnrollment
         
-        Case generateNameSearch
+            Set Spool = PopulateEnrollmentCommands(Exception)
         
-        Case generateReleaseShipments
+        Case forNameSearch
         
-        Case generateStopShipments
+        Case forReleaseShipments
         
-        Case generateTransferCredits
+        Case forStopShipments
+        
+        Case forTransferCredits
         
         Case Else
         
@@ -65,7 +67,7 @@ Public Sub AddCommand(ByRef Target_Collection As Collection, ByVal Name_of_Actio
         Extra_Value = noEntry
     End If
     
-    If Name_of_Action = savedSet Then
+    If Name_of_Action = savedSet Or Name_of_Action = commGet Then
         mustReplaceWithVariable = True
     End If
     
@@ -73,7 +75,7 @@ Public Sub AddCommand(ByRef Target_Collection As Collection, ByVal Name_of_Actio
     ' Add to Collection
     '''''''''''''''''''''''''''
     With Command
-        .CommandLabel = Name_of_Action
+        .Perform = Name_of_Action
         .StringToAction = String_to_Action
         .RowToAction = Row_to_Action
         .ColumnToAction = Column_to_Action
