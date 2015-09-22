@@ -8,16 +8,26 @@ Option Explicit
 'Activate/Deactivates the core error handling
     Public Const DebugFlag As Boolean = True 'False for error handling; True for no error handling
     
-'AS/400 static values
-    Public Const ModLength As Long = 8      'Course "mods" and StudentID numbers are always 8 digits long
+'AS/400 static values (required by IBM to be set as Long)
+    Public Const ModLength As Long = 8      'Course "mods" and Student ID numbers are always 8 digits long
     Public Const addTime As Long = 10       'In Milliseconds; cAS400 defaults this to "1"
-    
-'AS/400 modular values
-    Public entry As String                  'For use with cAS400 methods
-    Public row As Long                      'For use with cAS400 methods
-    Public col As Long                      'For use with cAS400 methods
-    Public length As Long                   'For use with cAS400 methods
-    Public stringContainer As String        'Target container for the .GetText method
+    Public Const forward As Long = 1        'For cAS400.SearchText, as per AS/400 method requirement
+    Public Const reverse As Long = 2        'For cAS400.SearchText, as per AS/400 method requirement
+
+'cCommand name labels
+    Public Const commSetText As String = "commSetText"
+    Public Const commGetText As String = "commGetText"
+    Public Const commSearchText As String = "commSearchText"
+    Public Const commSendKey As String = "commSendKey"
+    Public Const commCustom As String = "commCustom"
+    Public Const procNavigateHome As String = "procNavigateHome"
+    Public Const insertname As String = "insertname"
+
+'Labels for each collection of commands
+    Public Const selReg As String = "selReg"
+    Public Const selName As String = "selName"
+    Public Const selShip As String = "selShip"
+    Public Const selTR As String = "selTR"
     
 'Miscellaneous
     
@@ -25,14 +35,12 @@ Option Explicit
     Public Const g_lineSeperator As String = vbNewLine & _
         "||***************************************************||" & vbNewLine
 
-Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
+Public Sub RunRegistration(ByVal RegistrationForm As MSForms.UserForm)
     
     '''''''''''''''''''''''''''
     ' General values
     '''''''''''''''''''''''''''
-    
-    
-    
+
     '''''''''''''''''''''''''''
     ' Set objects
     '''''''''''''''''''''''''''
@@ -41,14 +49,14 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
     Dim Exception As cException             'Stores the error and stack information
     Dim Student As cStudent                 'Stores the student and userform information
     Dim AS400 As cAS400                     'Stores the AS/400 objects and methods
-    Dim RegCommands As Collection           'Stores the Registration command list
+    Dim RegistrationCommands As Collection  'Stores the Registration command list
     Dim StatusBox As Object                 'Stores reference to the userform's status textbox
     
     Set Exception = New cException
     Set Student = New cStudent
     Set AS400 = New cAS400
-    Set RegCommands = New Collection
-    Set StatusBox = RegForm.Status_Textbox
+    Set RegistrationCommands = New Collection
+    Set StatusBox = RegistrationForm.Status_Textbox
     
     '''''''''''''''''''''''''''
     ' Settings
@@ -69,10 +77,20 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
     Exception.ErrMessage = "Loading the class objects"
     If DebugFlag Then On Error GoTo 0 Else On Error GoTo UserformError
     
-    '// LoadUserformObjects StudentFile, RegForm, Exception
+    '// LoadUserformObjects StudentFile, RegistrationForm, Exception
     
     If DebugFlag Then On Error GoTo 0 Else On Error GoTo AS400Error
     AS400.InitializeApp StudentFile.GetSession, Exception, addTime
+    
+    '''''''''''''''''''''''''''
+    ' Pre-enrollment check
+    '''''''''''''''''''''''''''
+    Exception.ErrMessage = "Performing the pre-enrollment check"
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo ErrorOnEnrollmentCheck
+    
+    '// If ApproveRegistration(StudentFile, redMessage, blueMessage, Exception) = False Then
+    
+    
     
 Cleanup:
     
@@ -83,6 +101,7 @@ ClassDeclareError:
 UserformError:
 
 AS400Error:
+
+ErrorOnEnrollmentCheck:
     
 End Sub
-
