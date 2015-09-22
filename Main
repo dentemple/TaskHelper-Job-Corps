@@ -6,33 +6,68 @@
 Option Explicit
 
 'Activate/Deactivates the core error handling
-    Public Const DebugFlag As Boolean = True 'False for error handling; True for no error handling
+    Public Const DebugFlag As Boolean = True    'False for error handling; True for no error handling
     
 'AS/400 static values (required by IBM to be set as Long)
-    Public Const ModLength As Long = 8      'Course "mods" and Student ID numbers are always 8 digits long
-    Public Const addTime As Long = 10       'In Milliseconds; cAS400 defaults this to "1"
-    Public Const forward As Long = 1        'For cAS400.SearchText, as per AS/400 method requirement
-    Public Const reverse As Long = 2        'For cAS400.SearchText, as per AS/400 method requirement
+    Public Const modLength As Long = 8          'Course "mods" and Student ID numbers are always 8 digits long
+    Public Const addTime As Long = 10           'In Milliseconds; cAS400 defaults this to "1"
+    Public Const forward As Long = 1            'For cAS400.SearchText, as per AS/400 method requirement
+    Public Const reverse As Long = 2            'For cAS400.SearchText, as per AS/400 method requirement
+    Public Const EnterKey As String = "[Enter]" 'For cAS400.SendKeys; Enter keypress
+    Public Const F3Key As String = "[pf3]"      'For cAS400.SendKeys; F-Key keypress
+    Public Const F4Key As String = "[pf4]"      'For cAS400.SendKeys; F-Key keypress
+    Public Const F5Key As String = "[pf5]"      'For cAS400.SendKeys; F-Key keypress
+    Public Const F12Key As String = "[pf12]"    'For cAS400.SendKeys; F-Key keypress
 
-'cCommand name labels
-    Public Const commSetText As String = "commSetText"
-    Public Const commGetText As String = "commGetText"
-    Public Const commSearchText As String = "commSearchText"
-    Public Const commSendKey As String = "commSendKey"
-    Public Const commCustom As String = "commCustom"
-    Public Const procNavigateHome As String = "procNavigateHome"
+'Command labels
+    Public Const noEntry As String = "noEntry"
+    Public Const commSet As String = "Perform SetText"
+    Public Const commGet As String = "Perform GetText"
+    Public Const commSend As String = "Perform SendKeys"
+    Public Const commSearch As String = "Perform SearchText"
+    Public Const savedSet As String = "SetText from Variable"
+    Public Const savedGet As String = "Save GetText to Variable"
+    Public Const commCustom As String = "Call Custom Procedure"
+    Public Const procNavigateHome As String = "Custom Procedure: Navigate Home"
     Public Const insertname As String = "insertname"
+    
+'AS400 specific values
+    Public Const rowHome As Long = 19
+    Public Const rowCol As Long = 7
+    Public Const optionCustomerService As String = "1"
+    Public Const optionAddressBook As String = "3"
+    Public Const locationAddressBook As String = "01051"
+    Public Const actionCodeC As String = "C"
+    Public Const actionCodeI As String = "I"
+    Public Const actionCodeA As String = "A"
+    Public Const searchType As String = "TR"
+    Public Const schoolType As String = "HS"
+    Public Const degreeCode As String = "N"
+    Public Const emailCode As String = "E"
+    
+'Reference names for specific variables
+    Public Const tagMailingName As String = "tagMailingName"
+    Public Const tagAlphaName As String = "tagAlphaName"
+    Public Const tagParentCode As String = "tagParentCode"
+    Public Const tagPrefixCode As String = "tagPrefixCode"
+    Public Const tagLongNumber As String = "tagLongNumber"
+    Public Const tagStudentID As String = "tagStudentID"
+    Public Const tagWebStart As String = "tagWebStart"
+    Public Const tagWebEnd As String = "tagWebEnd"
+    Public Const tagGender As String = "tagGender"
+    Public Const tagAreaCode As String = "tagAreaCode"
+    Public Const tagPhone As String = "tagPhone"
 
-'Labels for each collection of commands
-    Public Const selReg As String = "selReg"
-    Public Const selName As String = "selName"
-    Public Const selShip As String = "selShip"
-    Public Const selTR As String = "selTR"
-    
-'Miscellaneous
-    
+'Collection labels
+    Public Const generateAddressBook As String = "Commands for AddressBook"
+    Public Const generateEnrollment As String = "Commands for Enrollment"
+    Public Const generateNameSearch As String = "Commands for NameSearch"
+    Public Const generateReleaseShipments As String = "Commands for ReleaseShipments"
+    Public Const generateStopShipments As String = "Commands for StopShipments"
+    Public Const generateTransferCredits As String = "Commands for TransferCredits"
+
 'For printing to the immediate window
-    Public Const g_lineSeperator As String = vbNewLine & _
+    Public Const windowLineSeperator As String = vbNewLine & _
         "||***************************************************||" & vbNewLine
 
 Public Sub RunRegistration(ByVal RegistrationForm As MSForms.UserForm)
@@ -46,11 +81,12 @@ Public Sub RunRegistration(ByVal RegistrationForm As MSForms.UserForm)
     '''''''''''''''''''''''''''
     If DebugFlag Then On Error GoTo 0 Else On Error GoTo ClassDeclareError
 
-    Dim Exception As cException             'Stores the error and stack information
-    Dim Student As cStudent                 'Stores the student and userform information
-    Dim AS400 As cAS400                     'Stores the AS/400 objects and methods
-    Dim RegistrationCommands As Collection  'Stores the Registration command list
-    Dim StatusBox As Object                 'Stores reference to the userform's status textbox
+    Dim Exception As cException                 'Stores the error and stack information
+    Dim Student As cStudent                     'Stores the student and userform information
+    Dim AS400 As cAS400                         'Stores the AS/400 objects and methods
+    Dim AddressBookCommands As Collection       'Stores the necessary Registration commands
+    Dim EnrollmentCommands As Collection        'Stores the necessary Registration commands
+    Dim StatusBox As Object                     'Stores reference to the userform's status textbox
     
     Set Exception = New cException
     Set Student = New cStudent
@@ -63,7 +99,7 @@ Public Sub RunRegistration(ByVal RegistrationForm As MSForms.UserForm)
     '''''''''''''''''''''''''''
     With Exception
         .ErrMessage = "" & vbNewLine
-        .ErrMessage = g_lineSeperator
+        .ErrMessage = windowLineSeperator
         .Push "Main.RunRegistration"
     End With
     
@@ -72,7 +108,7 @@ Public Sub RunRegistration(ByVal RegistrationForm As MSForms.UserForm)
     TurnOffExcelDefaults Exception
     
     '''''''''''''''''''''''''''
-    ' Load class objects
+    ' Load objects
     '''''''''''''''''''''''''''
     Exception.ErrMessage = "Loading the class objects"
     If DebugFlag Then On Error GoTo 0 Else On Error GoTo UserformError
@@ -82,6 +118,10 @@ Public Sub RunRegistration(ByVal RegistrationForm As MSForms.UserForm)
     If DebugFlag Then On Error GoTo 0 Else On Error GoTo AS400Error
     AS400.InitializeApp StudentFile.GetSession, Exception, addTime
     
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo CommandsError
+    Set AddressBookCommands = Spool(generateAddressBook, Exception)
+    Set EnrollmentCommands = Spool(generateEnrollment, Exception)
+    
     '''''''''''''''''''''''''''
     ' Pre-enrollment check
     '''''''''''''''''''''''''''
@@ -90,17 +130,25 @@ Public Sub RunRegistration(ByVal RegistrationForm As MSForms.UserForm)
     
     '// If ApproveRegistration(StudentFile, redMessage, blueMessage, Exception) = False Then
     
-    
-    
+
+'''''''''''''''''''''''''''
+' Cleanup
+'''''''''''''''''''''''''''
 Cleanup:
     
 Exit Sub
+
+'''''''''''''''''''''''''''
+' Error Handling
+'''''''''''''''''''''''''''
 
 ClassDeclareError:
 
 UserformError:
 
 AS400Error:
+
+CommandsError:
 
 ErrorOnEnrollmentCheck:
     
