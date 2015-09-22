@@ -10,15 +10,15 @@ Public Function Spool(ByVal Label_for_Collection As String, ByRef Exception As c
     
     Select Case Label_for_Collection
     
-        Case selectRegistration
+        Case selReg
         
             Set Spool = PopulateRegistrationCommands(Exception)
         
-        Case selectNameSearch
+        Case selName
         
-        Case selectShipments
+        Case selShip
         
-        Case selectTransferCredits
+        Case selTR
         
         Case Else
         
@@ -26,14 +26,124 @@ Public Function Spool(ByVal Label_for_Collection As String, ByRef Exception As c
 
 End Function
 
-Public Sub AddSetText(ByVal Command As cCommand, ByRef CommandCollection As Collection, _
-    ByVal String_To_Enter As String, ByVal Row_To_Enter As Long, ByVal Col_To_Enter As Long, _
-    Optional ByRef Exception As cException)
+Public Sub AddSetText(ByVal Sequence_Number As Integer, _
+    ByVal String_to_Enter As String, ByVal Row_to_Enter As Long, ByVal Col_to_Enter As Long, _
+    ByRef CommandCollection As Collection, ByVal Collection_Label As String, _
+    ByRef Exception As cException)
     
+    Exception.Push "SpoolCommands.AddSetText || ... ... ... Sequence (" & CStr(Sequence_Number) & _
+        ") String ('" & String_to_Enter & "', " & CStr(Row_to_Enter) & ", " & CStr(Col_to_Enter)
+    
+    Dim Command As cCommand
     Set Command = New cCommand
-    
+        
+        Command.CommandLabel = commSetText
+        Command.Sequence = Sequence_Number
+        Command.ParentLabel = Collection_Label
+        Command.EntryString = String_to_Enter
+        Command.RowLong = Row_to_Enter
+        Command.ColLong = Col_to_Enter
     
     CommandCollection.Add Command
+    Exception.Pop
         
+End Sub
+
+Public Sub AddSendKey(ByVal Sequence_Number As Integer, _
+    ByVal String_to_Enter As String, Optional ByVal Row_to_Enter As Long = 0, _
+    Optional ByVal Col_to_Enter As Long = 0, _
+    Optional ByRef CommandCollection As Collection, Optional ByVal Collection_Label As String, _
+    Optional ByRef Exception As cException)
+    'Not
+    
+    Exception.Push "SpoolCommands.AddSendKey || ... ... ... Sequence (" & CStr(Sequence_Number) & _
+        ") String ('" & String_to_Enter & "', " & CStr(Row_to_Enter) & ", " & CStr(Col_to_Enter)
+    
+    Dim Command As cCommand
+    Set Command = New cCommand
+    
+        Command.CommandLabel = commSendKey
+        Command.Sequence = Sequence_Number
+        Command.ParentLabel = Collection_Label
+        Command.EntryString = String_to_Enter
+        Command.RowLong = Row_to_Enter
+        Command.ColLong = Col_to_Enter
+    
+    CommandCollection.Add Command
+    Exception.Pop
+        
+End Sub
+
+Public Sub AddGetText(ByVal Sequence_Number As Integer, _
+    ByVal Name_of_Value_to_Return As String, _
+    ByVal String_to_Return As String, ByVal Row_to_Get As Long, ByVal Col_to_Get As Long, _
+    ByRef CommandCollection As Collection, ByVal Collection_Label As String, _
+    ByVal Length_to_Get As Long, ByRef Exception As cException)
+    
+    Exception.Push "SpoolCommands.AddGetText || ... ... ... Sequence (" & CStr(Sequence_Number) & _
+        ") String ('" & String_to_Return & "', " & CStr(Row_to_Get) & ", " & CStr(Col_to_Get) & _
+        ", " & CStr(Length_to_Get) & " characters"
+    
+    Dim Command As cCommand
+    Set Command = New cCommand
+        
+        Command.CommandLabel = commGetText
+        Command.Sequence = Sequence_Number
+        Command.ParentLabel = Collection_Label
+        Command.NameOfValue = Name_of_Value_to_Return
+        Command.ReturnString = String_to_Return
+        Command.RowLong = Row_to_Get
+        Command.ColLong = Col_to_Get
+        Command.LenLong = Length_to_Get
+    
+    CommandCollection.Add Command
+    Exception.Pop
+
+End Sub
+
+Public Sub AddSearchText(ByVal Sequence_Number As Integer, _
+    ByVal String_to_Enter As String, Optional ByVal Start_Row As Long = 1, _
+    Optional ByVal Start_Col As Long = 1, _
+    Optional ByRef CommandCollection As Collection, Optional ByVal Collection_Label As String, _
+    Optional ByRef Exception As cException)
+    
+    Exception.Push "SpoolCommands.AddSearchText || ... ... ... Sequence (" & CStr(Sequence_Number) & _
+        ") String ('" & String_to_Enter & "', " & CStr(Start_Row) & ", " & CStr(Start_Col)
+    
+    Dim Command As cCommand
+    Set Command = New cCommand
+        
+        Command.CommandLabel = commSearchText
+        Command.Sequence = Sequence_Number
+        Command.ParentLabel = Collection_Label
+        Command.ReturnString = String_to_Return
+        Command.RowLong = Row_to_Get
+        Command.ColLong = Col_to_Get
+        Command.LenLong = Length_to_Get
+    
+    CommandCollection.Add Command
+    Exception.Pop
+
+End Sub
+
+Public Sub AddCustomCommand(ByVal Sequence_Number As Integer, _
+    ByVal Name_of_Custom_Command As String, _
+    ByRef CommandCollection As Collection, ByVal Collection_Label As String, _
+    ByRef Exception As cException)
+    
+    Exception.Push "SpoolCommands.AddCustomCommand || ... ... ... Sequence (" & CStr(Sequence_Number) & _
+        ") String ('" & Name_of_Custom_Command & "'"
+    
+    Dim Command As cCommand
+    Set Command = New cCommand
+    
+        Command.CommandLabel = commCustom
+        Command.Sequence = Sequence_Number
+        Command.ParentLabel = Collection_Label
+        Command.CallCustom = Name_of_Custom_Command
+        
+    CommandCollection.Add Command
+    Exception.Pop
+
 End Sub
 
