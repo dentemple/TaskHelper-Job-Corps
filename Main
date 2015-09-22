@@ -5,9 +5,6 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Option Explicit
 
-'Activate/Deactivates the core error handling
-    Public Const DebugFlag As Boolean = True    'False for error handling; True for no error handling
-    
 'AS/400 static values (required by IBM to be set as Long)
     Public Const modLength As Long = 8          'Course "mods" and Student ID numbers are always 8 digits long
     Public Const addTime As Long = 10           'In Milliseconds; cAS400 defaults this to "1"
@@ -17,7 +14,11 @@ Option Explicit
     Public Const F3Key As String = "[pf3]"      'For cAS400.SendKeys; F-Key keypress
     Public Const F4Key As String = "[pf4]"      'For cAS400.SendKeys; F-Key keypress
     Public Const F5Key As String = "[pf5]"      'For cAS400.SendKeys; F-Key keypress
+    Public Const F11Key As String = "[pf11]"    'For cAS400.SendKeys; F-Key keypress
     Public Const F12Key As String = "[pf12]"    'For cAS400.SendKeys; F-Key keypress
+
+'Activate/Deactivates the core error handling
+    Public Const DebugFlag As Boolean = True    'False for error handling; True for no error handling
 
 'Command labels
     Public Const noEntry As String = "noEntry"
@@ -26,46 +27,8 @@ Option Explicit
     Public Const commSend As String = "Perform SendKeys"
     Public Const commSearch As String = "Perform SearchText"
     Public Const savedSet As String = "SetText from Variable"
-    Public Const savedGet As String = "Save GetText to Variable"
     Public Const commCustom As String = "Call Custom Procedure"
-    Public Const procNavigateHome As String = "Custom Procedure: Navigate Home"
-    Public Const insertname As String = "insertname"
     
-'AS400 specific values
-    Public Const rowHome As Long = 19
-    Public Const rowCol As Long = 7
-    Public Const optionCustomerService As String = "1"
-    Public Const optionAddressBook As String = "3"
-    Public Const locationAddressBook As String = "01051"
-    Public Const actionCodeC As String = "C"
-    Public Const actionCodeI As String = "I"
-    Public Const actionCodeA As String = "A"
-    Public Const searchType As String = "TR"
-    Public Const schoolType As String = "HS"
-    Public Const degreeCode As String = "N"
-    Public Const emailCode As String = "E"
-    
-'Reference names for specific variables
-    Public Const tagMailingName As String = "tagMailingName"
-    Public Const tagAlphaName As String = "tagAlphaName"
-    Public Const tagParentCode As String = "tagParentCode"
-    Public Const tagPrefixCode As String = "tagPrefixCode"
-    Public Const tagLongNumber As String = "tagLongNumber"
-    Public Const tagStudentID As String = "tagStudentID"
-    Public Const tagWebStart As String = "tagWebStart"
-    Public Const tagWebEnd As String = "tagWebEnd"
-    Public Const tagGender As String = "tagGender"
-    Public Const tagAreaCode As String = "tagAreaCode"
-    Public Const tagPhone As String = "tagPhone"
-
-'Collection labels
-    Public Const generateAddressBook As String = "Commands for AddressBook"
-    Public Const generateEnrollment As String = "Commands for Enrollment"
-    Public Const generateNameSearch As String = "Commands for NameSearch"
-    Public Const generateReleaseShipments As String = "Commands for ReleaseShipments"
-    Public Const generateStopShipments As String = "Commands for StopShipments"
-    Public Const generateTransferCredits As String = "Commands for TransferCredits"
-
 'For printing to the immediate window
     Public Const windowLineSeperator As String = vbNewLine & _
         "||***************************************************||" & vbNewLine
@@ -119,8 +82,8 @@ Public Sub RunRegistration(ByVal RegistrationForm As MSForms.UserForm)
     AS400.InitializeApp StudentFile.GetSession, Exception, addTime
     
     If DebugFlag Then On Error GoTo 0 Else On Error GoTo CommandsError
-    Set AddressBookCommands = Spool(generateAddressBook, Exception)
-    Set EnrollmentCommands = Spool(generateEnrollment, Exception)
+    Set AddressBookCommands = Spool(forAddressBook, Exception)
+    Set EnrollmentCommands = Spool(forEnrollment, Exception)
     
     '''''''''''''''''''''''''''
     ' Pre-enrollment check
@@ -129,6 +92,15 @@ Public Sub RunRegistration(ByVal RegistrationForm As MSForms.UserForm)
     If DebugFlag Then On Error GoTo 0 Else On Error GoTo ErrorOnEnrollmentCheck
     
     '// If ApproveRegistration(StudentFile, redMessage, blueMessage, Exception) = False Then
+    
+    '''''''''''''''''''''''''''
+    ' Main Execution
+    '''''''''''''''''''''''''''
+    Execute AddressBookCommands, Student, AS400, Exception
+    
+    '// Reveal StudentID
+    
+    Execute EnrollmentCommands, Student, AS400, Exception
     
 
 '''''''''''''''''''''''''''
