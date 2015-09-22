@@ -9,7 +9,7 @@ Private pIsVariableReference As Boolean
 Private pRowToAction As Long
 Private pColumnToAction As Long
 Private pLengthToAction As Long
-Private pCommandLabel As String
+Private pPerform As String
 Private pStringToAction As String
 Private pExtraValue As Variant
 
@@ -29,9 +29,9 @@ Public Property Get ColumnToAction() As Long: ColumnToAction = pColumnToAction: 
 Public Property Let LengthToAction(Value As Long): pLengthToAction = Value: End Property
 Public Property Get LengthToAction() As Long: LengthToAction = pLengthToAction: End Property
 
-'.CommandLabel
-Public Property Let CommandLabel(Value As String): pCommandLabel = Value: End Property
-Public Property Get CommandLabel() As String: CommandLabel = pCommandLabel: End Property
+'.Perform
+Public Property Let Perform(Value As String): pPerform = Value: End Property
+Public Property Get Perform() As String: Perform = pPerform: End Property
 
 '.StringToAction
 Public Property Let StringToAction(Value As String): pStringToAction = Value: End Property
