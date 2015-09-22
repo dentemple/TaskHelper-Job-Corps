@@ -1,5 +1,5 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' u_RegistrationForm (Userform)
+' form_Registration (Userform)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Option Explicit
@@ -120,15 +120,14 @@ End Sub
 Private Sub RunAutomation_Button_Click()
 
     On Error GoTo 0
-    
     'Sets multipage to its first page
     MultiPage1.Value = 0
     
     'Run the registration script
-    RunRegistration u_RegistrationForm
+    RunRegistration form_Registration
     
     'Run the unit test
-    'RunUnitCheck u_RegistrationForm
+    'RunUnitCheck form_Registration
     
     Status_Textbox = "Registration Complete!"
     
@@ -137,12 +136,11 @@ End Sub
 Private Sub PrimarySearch_Button_Click()
 
     On Error GoTo 0
-
     'Sets multipage to the second page
     MultiPage1.Value = 1
     
     'Run the student search
-    RunStudentSearch u_RegistrationForm
+    RunStudentSearch form_Registration
     
     Status_Textbox = "Ready"
     
@@ -151,10 +149,9 @@ End Sub
 Private Sub SecondarySearch_Button_Click()
 
     On Error GoTo 0
-
-    Dim Letter As String: Letter = Session_ComboBox.Value
+    Dim sessionLetter As String: sessionLetter = Session_ComboBox.Value
     
-    Run_ActionButton2 u_RegistrationForm, Letter
+    Run_ActionButton2 form_Registration, sessionLetter
     
     Status_Textbox = "Ready"
 
@@ -163,10 +160,9 @@ End Sub
 Private Sub PageUp_Button_Click()
 
     On Error GoTo 0
+    Dim sessionLetter As String: sessionLetter = Session_ComboBox.Value
 
-    Dim Letter As String: Letter = Session_ComboBox.Value
-
-    RunPageAction u_RegistrationForm, False, Letter
+    RunPageAction form_Registration, False, sessionLetter
     
     Status_Textbox = "Ready"
 
@@ -175,10 +171,9 @@ End Sub
 Private Sub PageDown_Button_Click()
 
     On Error GoTo 0
+    Dim sessionLetter As String: sessionLetter = Session_ComboBox.Value
 
-    Dim Letter As String: Letter = Session_ComboBox.Value
-
-    RunPageAction u_RegistrationForm, True, Letter
+    RunPageAction form_Registration, True, Letter
     
     Status_Textbox = "Ready"
 
