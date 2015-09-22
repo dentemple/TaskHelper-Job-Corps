@@ -1,28 +1,122 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' cException (Class)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Sets custom error functionality. Overloaded to include call stack procedures.
+' Custom error functionality. Overloaded to include call stack procedures as well.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Option Compare Database
 Option Explicit
 
+'SUBROUTINES
+'   .Throw                          'I/O (Output as MsgBox)
+
 'GENERAL PROPERTIES
-Private pFlag As Boolean '.Flag
-Private pNumber As Integer '.Number
-Private pDescription As String '.Description
-Private pMessage As String '.Message
+Private pFlag As Boolean            'Read/Write
+Private pIsError As Boolean         'Read/Write
+
+Private pErrNumber As Integer       'Read/Write
+
+Private pErrDescription As String   'Read/Write
+Private pErrMessage As String       'Read/Write
 
 'CALL STACK PROPERTIES
-'   .Push
-'   .Pop
-'   .StackEmpty
-'   .StackTop
-Public siTop As StackItem
+'   .Push                           'Write only
+'   .Pop                            'Removes the Last-In item on the call stack
+'   .StackEmpty                     'Returns boolean
+'   .StackTop                       'Returns variant (string)
+Public siTop As StackItem           'For internal use
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' LOCAL PROCEDURES
+' SUBROUTINES
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Private Sub Class_Initialize()
-    pFlag = False
+Public Sub Throw(Optional ByVal Resolution_Message As String = "Resolution: Unknown")
+
+    On Error Resume Next
+    Dim str As String
+    Dim insertMessage As String
+    
+    Debug.Print "WARNING: An Exception has been thrown"
+    Debug.Print Space(5) & "Custom Message: " & Resolution_Message
+    
+    '''''''''''''''''''''''''''
+    ' Settings
+    '''''''''''''''''''''''''''
+    On Error GoTo SkipLogProcedure
+    
+    Err.Clear
+
+    insertMessage = Resolution_Message
+    
+    '''''''''''''''''''''''''''
+    ' Present MessageBox
+    '''''''''''''''''''''''''''
+    If Me.IsError = True Or Me.Flag = True Then
+        
+        str = insertMessage & vbNewLine & vbNewLine & vbNewLine & vbNewLine & _
+                       "Error occurred during procedure: " & Me.StackTop & vbNewLine & vbNewLine & _
+                       Me.ErrMessage
+                       
+        If Not Me.ErrNumber = 0 Then
+        
+            str = str & vbNewLine & vbNewLine & "Error # " & Me.ErrNumber & ": " & Me.ErrDescription
+            
+        End If
+                       
+        MsgBox str, vbCritical, "An error has occurred"
+        
+    Else
+    
+        str = insertMessage & vbNewLine & vbNewLine & vbNewLine & vbNewLine & _
+                   "Failure occurred during procedure: " & Me.StackTop & vbNewLine & vbNewLine & _
+                   Me.ErrMessage
+        MsgBox str, vbInformation, "An error has occurred"
+        
+    End If
+
+'''''''''''''''''''''''''''
+' Cleanup
+'''''''''''''''''''''''''''
+Cleanup:
+
+  Debug.Print "END Exception.Throw"
+
+Exit Sub
+
+'''''''''''''''''''''''''''
+' Error Handler
+'''''''''''''''''''''''''''
+SkipLogProcedure:
+    
+    If Me.IsError = True Or Me.Flag = True Then
+
+        Debug.Print "WARNING: AN ADDITIONAL ERROR HAS OCCURRED WITHIN THE cException.Throw PROPERTY"
+        
+        str = insertMessage & vbNewLine & vbNewLine & vbNewLine & vbNewLine & _
+                       "Error occurred during procedure: " & Me.StackTop & vbNewLine & vbNewLine & _
+                       Me.ErrMessage
+                       
+        If Not Me.ErrNumber = 0 Then
+        
+            str = str & vbNewLine & vbNewLine & "Error # " & Me.ErrNumber & ": " & Me.ErrDescription
+            
+        End If
+                       
+        MsgBox str, vbCritical, "An error has occurred"
+        
+    Else
+
+        Debug.Print Space(5) & "WARNING: AN ADDITIONAL ERROR HAS OCCURRED WITHIN THE Exception.Throw PROPERTY"
+        
+        str = insertMessage & vbNewLine & vbNewLine & vbNewLine & vbNewLine & _
+                   "Failure occurred during procedure: " & Me.StackTop & vbNewLine & vbNewLine & _
+                   Me.ErrMessage & vbNewLine & vbNewLine & _
+                   "WARNING: AN ERROR HAS ALSO OCCURRED WITHIN THE ERROR HANDLING PROCEDURE"
+                   
+        MsgBox str, vbInformation, "An error has occurred"
+        
+    End If
+    
+Resume Cleanup
+    
 End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -36,36 +130,50 @@ Public Property Let Flag(Value As Boolean)
 End Property
 Public Property Get Flag() As Boolean
     Flag = pFlag
+    Debug.Print Space(15) & "Exception.Flag = " & CStr(pFlag)
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' .Number property
+' .IsError property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Let Number(Value As Integer)
-    pNumber = Value
+Public Property Let IsError(Value As Boolean)
+    pIsError = Value
 End Property
-Public Property Get Number() As Integer
-    Number = pNumber
-End Property
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' .Description property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Let Description(Value As String)
-    pDescription = Value
-End Property
-Public Property Get Description() As String
-    Description = pDescription
+Public Property Get IsError() As Boolean
+    IsError = pIsError
+    Debug.Print Space(15) & "Exception.IsError = " & CStr(pIsError)
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Message property
+' .ErrNumber property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Let Message(Value As String)
-    pMessage = Value
+Public Property Let ErrNumber(Value As Integer)
+    pErrNumber = Value
 End Property
-Public Property Get Message() As String
-    Message = pMessage
+Public Property Get ErrNumber() As Integer
+    ErrNumber = pErrNumber
+    Debug.Print Space(15) & "Err Number: " & CStr(pErrNumber)
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' .ErrDescription property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Let ErrDescription(Value As String)
+    pErrDescription = Value
+End Property
+Public Property Get ErrDescription() As String
+    ErrDescription = pErrDescription
+End Property
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ErrMessage property
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Property Let ErrMessage(Value As String)
+    Debug.Print Me.StackTop & " || " & CStr(Value)
+    pErrMessage = Value
+End Property
+Public Property Get ErrMessage() As String
+    ErrMessage = pErrMessage
 End Property
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -75,8 +183,9 @@ End Property
 
 Public Sub Push(ByVal varText As Variant)
     ' Add a new item to the top of the stack.
+    Debug.Print "Starting the " & varText & " routine"
     Dim siNewTop As New StackItem
-    siNewTop.Value = varText
+    siNewTop.StackValue = varText
     Set siNewTop.NextItem = siTop
     Set siTop = siNewTop
 End Sub
@@ -85,7 +194,8 @@ Public Function Pop() As Variant
     If Not StackEmpty Then
         ' Get the value from the current top stack element.
         ' Then, get a reference to the new stack top.
-        Pop = siTop.Value
+        Debug.Print "Ending the " & Me.StackTop & " routine"
+        Pop = siTop.StackValue
         Set siTop = siTop.NextItem
     End If
 End Function
@@ -100,6 +210,6 @@ Property Get StackTop() As Variant
     If StackEmpty Then
         StackTop = Null
     Else
-        StackTop = siTop.Value
+        StackTop = siTop.StackValue
     End If
 End Property
