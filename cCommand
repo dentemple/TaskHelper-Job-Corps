@@ -1,0 +1,59 @@
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' cCommand (class)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Option Explicit
+
+Private pSequence As Integer
+
+Private pRowLong As Long
+Private pColLong As Long
+Private pLenLong As Long
+
+Private pCommandLabel As String
+Private pCallCustom As String
+Private pEntryString As String
+Private pReturnString As String
+Private pNameOfValue As String
+Private pParentLabel As String
+
+'.Sequence
+Public Property Let Sequence(Value As Integer): pSequence = Value: End Property
+Public Property Get Sequence() As Integer: RowLong = pSequence: End Property
+
+'.RowLong
+Public Property Let RowLong(Value As Long): pRowLong = Value: End Property
+Public Property Get RowLong() As Long: RowLong = pRowLong: End Property
+
+'.ColLong
+Public Property Let ColLong(Value As Long): pColLong = Value: End Property
+Public Property Get ColLong() As Long: ColLong = pColLong: End Property
+
+'.LenLong
+Public Property Let LenLong(Value As Long): pLenLong = Value: End Property
+Public Property Get LenLong() As Long: LenLong = pLenLong: End Property
+
+'.CommandLabel
+Public Property Let CommandLabel(Value As String): pCommandLabel = Value: End Property
+Public Property Get CommandLabel() As String: CommandLabel = pCommandLabel: End Property
+
+'.CallCustom
+Public Property Let CallCustom(Value As String): pCallCustom = Value: End Property
+Public Property Get CallCustom() As String: CallCustom = pCallCustom: End Property
+
+'.EntryString
+Public Property Let EntryString(Value As String): pEntryString = Value: End Property
+Public Property Get EntryString() As String: EntryString = pEntryString: End Property
+
+'.ReturnString
+Public Property Let ReturnString(Value As String): pReturnString = Value: End Property
+Public Property Get ReturnString() As String: ReturnString = pReturnString: End Property
+
+'.NameOfValue
+Public Property Let NameOfValue(Value As String): pNameOfValue = Value: End Property
+Public Property Get NameOfValue() As String: NameOfValue = pNameOfValue: End Property
+
+'.ParentLabel
+Public Property Let ParentLabel(Value As String): pParentLabel = Value: End Property
+Public Property Get ParentLabel() As String: ParentLabel = pParentLabel: End Property
