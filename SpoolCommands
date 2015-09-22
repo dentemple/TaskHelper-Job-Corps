@@ -1,0 +1,39 @@
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' SpoolCommands (Module)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Option Explicit
+
+Public Function Spool(ByVal Label_for_Collection As String, ByRef Exception As cException) _
+    As Collection
+    
+    Select Case Label_for_Collection
+    
+        Case selectRegistration
+        
+            Set Spool = PopulateRegistrationCommands(Exception)
+        
+        Case selectNameSearch
+        
+        Case selectShipments
+        
+        Case selectTransferCredits
+        
+        Case Else
+        
+    End Select
+
+End Function
+
+Public Sub AddSetText(ByVal Command As cCommand, ByRef CommandCollection As Collection, _
+    ByVal String_To_Enter As String, ByVal Row_To_Enter As Long, ByVal Col_To_Enter As Long, _
+    Optional ByRef Exception As cException)
+    
+    Set Command = New cCommand
+    
+    
+    CommandCollection.Add Command
+        
+End Sub
+
