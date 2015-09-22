@@ -1,5 +1,5 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' cAS400 (Class)
+' cAS400 (class)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Contains methods provided by IBM's Host Automation Class Library that have been _
     confirmed to work within our user environment.
@@ -8,8 +8,10 @@
 '
 ' // This object is incomplete as of this iteration
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Option Compare Database
 Option Explicit
+
+' Internal variable
+Private add_milliseconds As Long
 
 'Test Routine
 '   .RunTest_cAS400                 'I/O (to immediate window)
@@ -61,7 +63,7 @@ Private Sub Class_Initialize()
 End Sub
 
 Public Sub InitializeApp(ByVal Session_Name As String, Optional Exception As cException, _
-    Optional ByVal Add_Milliseconds As Long = 1)
+    Optional ByVal add_milliseconds As Long = 1)
     
     If Not Exception Is Nothing Then Exception.Push "cAS400.InitializeApp: START INITIALIZATION"
 
@@ -82,10 +84,10 @@ Public Sub InitializeApp(ByVal Session_Name As String, Optional Exception As cEx
     
     pConnList.Refresh
     
-    If Add_Milliseconds > 0 Then
-        gv_WaitAdd = Add_Milliseconds
+    If add_milliseconds > 0 Then
+        add_milliseconds = add_milliseconds
     Else
-        gv_WaitAdd = 1
+        add_milliseconds = 1
     End If
 
     If Not Exception Is Nothing Then Exception.Pop
@@ -121,15 +123,15 @@ Public Property Let StoreStudentID(Value As String): pStoreStudentID = Value: En
 Public Property Get StoreStudentID() As String: StoreStudentID = pStoreStudentID: End Property
 
 '.Pause
-Public Function Pause(Optional ByVal Add_Milliseconds As Long = -1)
+Public Function Pause(Optional ByVal add_milliseconds As Long = -1)
 
-    If Add_Milliseconds <= 0 Then
-        Add_Milliseconds = gv_WaitAdd
+    If add_milliseconds <= 0 Then
+        add_milliseconds = add_milliseconds
     End If
 
     Me.Operator.WaitForAppAvailable
     Me.Operator.WaitForInputReady
-    Me.Wait Add_Milliseconds
+    Me.Wait add_milliseconds
 
 SkipToEnd:
 End Function
@@ -254,13 +256,13 @@ Public Property Get SearchText(ByVal Search_String As String, Optional ByVal Row
 End Property
 
 '.Wait
-Public Sub Wait(Optional ByVal Add_Milliseconds As Long = -1)
+Public Sub Wait(Optional ByVal add_milliseconds As Long = -1)
 
-    If Add_Milliseconds <= 0 Then
-        Add_Milliseconds = gv_WaitAdd
+    If add_milliseconds <= 0 Then
+        add_milliseconds = add_milliseconds
     End If
 
-    Me.Presentation.Wait Add_Milliseconds
+    Me.Presentation.Wait add_milliseconds
     
 End Sub
 
