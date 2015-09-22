@@ -1,6 +1,12 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' CommandList_Registration (Module)
+' Commands_Registration (Module)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Option Explicit
+
+Public Function PopulateRegistrationCommands(Optional ByRef Exception As cException) As Collection
+    
+    
+    
+End Function
