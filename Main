@@ -1,1 +1,88 @@
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Main (Module)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Option Explicit
+
+'Activate/Deactivates the core error handling
+    Public Const DebugFlag As Boolean = True 'False for error handling; True for no error handling
+    
+'AS/400 static values
+    Public Const ModLength As Long = 8      'Course "mods" and StudentID numbers are always 8 digits long
+    Public Const addTime As Long = 10       'In Milliseconds; cAS400 defaults this to "1"
+    
+'AS/400 modular values
+    Public entry As String                  'For use with cAS400 methods
+    Public row As Long                      'For use with cAS400 methods
+    Public col As Long                      'For use with cAS400 methods
+    Public length As Long                   'For use with cAS400 methods
+    Public stringContainer As String        'Target container for the .GetText method
+    
+'Miscellaneous
+    
+'For printing to the immediate window
+    Public Const g_lineSeperator As String = vbNewLine & _
+        "||***************************************************||" & vbNewLine
+
+Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
+    
+    '''''''''''''''''''''''''''
+    ' General values
+    '''''''''''''''''''''''''''
+    
+    
+    
+    '''''''''''''''''''''''''''
+    ' Set objects
+    '''''''''''''''''''''''''''
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo ClassDeclareError
+
+    Dim Exception As cException             'Stores the error and stack information
+    Dim Student As cStudent                 'Stores the student and userform information
+    Dim AS400 As cAS400                     'Stores the AS/400 objects and methods
+    Dim RegCommands As Collection           'Stores the Registration command list
+    Dim StatusBox As Object                 'Stores reference to the userform's status textbox
+    
+    Set Exception = New cException
+    Set Student = New cStudent
+    Set AS400 = New cAS400
+    Set RegCommands = New Collection
+    Set StatusBox = RegForm.Status_Textbox
+    
+    '''''''''''''''''''''''''''
+    ' Settings
+    '''''''''''''''''''''''''''
+    With Exception
+        .ErrMessage = "" & vbNewLine
+        .ErrMessage = g_lineSeperator
+        .Push "Main.RunRegistration"
+    End With
+    
+    StatusBox.Value = "...   ...   ...   Performing the pre-enrollment check   ...   ...   ..."
+
+    TurnOffExcelDefaults Exception
+    
+    '''''''''''''''''''''''''''
+    ' Load class objects
+    '''''''''''''''''''''''''''
+    Exception.ErrMessage = "Loading the class objects"
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo UserformError
+    
+    '// LoadUserformObjects StudentFile, RegForm, Exception
+    
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo AS400Error
+    AS400.InitializeApp StudentFile.GetSession, Exception, addTime
+    
+Cleanup:
+    
+Exit Sub
+
+ClassDeclareError:
+
+UserformError:
+
+AS400Error:
+    
+End Sub
 
