@@ -344,7 +344,3 @@ Public Property Get Presentation() As Object: Set Presentation = pPresentation: 
 
 '.WinMetrics (Initialized)
 Public Property Get WinMetrics() As Object: Set WinMetrics = pWinMetrics: End Property
-
-
-
-
