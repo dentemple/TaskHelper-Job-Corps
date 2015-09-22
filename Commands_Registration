@@ -6,7 +6,16 @@
 Option Explicit
 
 Public Function PopulateRegistrationCommands(Optional ByRef Exception As cException) As Collection
+
+    Dim Temp As Collection
+    Set Temp = New Collection
+    
+    Exception.Push "Commands_Registration.PopulateRegistrationCommands"
     
     
+    
+    Set PopulateRegistrationCommands = TempCollection
+    
+    Exception.Pop
     
 End Function
