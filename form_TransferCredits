@@ -1,10 +1,20 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' u_TransferCredits (Userform)
+' form_TransferCredits (Userform)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
 Option Explicit
 
-Dim HasBeenPopulated As Boolean
+'RGB for a selected textbox
+    Const Red_SelectionTrue As Integer = 255
+    Const Green_SelectionTrue As Integer = 251
+    Const Blue_SelectionTrue As Integer = 204
+    
+'RGB for an unselected textbox
+    Const Red_SelectionFalse As Integer = 211
+    Const Green_SelectionFalse As Integer = 211
+    Const Blue_SelectionFalse As Integer = 211
+    
+'General variables
+    Dim hasBeenPopulated As Boolean
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Initialization event
@@ -252,7 +262,7 @@ Private Sub UserForm_Initialize()
         .Text = Session_ComboBox.List(0)
     End With
     
-    HasBeenPopulated = False
+    hasBeenPopulated = False
     
     'Sets the initial focus
     SID_Textbox.SetFocus
@@ -264,18 +274,18 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Private Sub PopulateClasses_Button_Click()
 
-    RunPopulateClasses u_TransferCredits
+    RunPopulateClasses form_TransferCredits
     
-    HasBeenPopulated = True
+    hasBeenPopulated = True
     Status_Textbox = "Ready"
 
 End Sub
 
 Private Sub ApplyTransferCredits_Button_Click()
 
-    If HasBeenPopulated = True Then
+    If hasBeenPopulated = True Then
     
-        ApplyTransferCredits u_TransferCredits
+        ApplyTransferCredits form_TransferCredits
         
     Else
     
@@ -300,14 +310,29 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' FORM CONTROLS
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub FlipColors(Checkbox_Selected As MSForms.CheckBox, Mod_TextBox As MSForms.TextBox, _
+    Title_TextBox As MSForms.TextBox, isSelected As Boolean)
+    
+    If isSelected Then
+        
+        Mod_TextBox.BackColor = RGB(Red_SelectionTrue, Green_SelectionTrue, Blue_SelectionTrue)
+        Title_TextBox.BackColor = RGB(Red_SelectionTrue, Green_SelectionTrue, Blue_SelectionTrue)
+    
+    Else
+    
+        Mod_TextBox.BackColor = RGB(Red_SelectionFalse, Green_SelectionFalse, Blue_SelectionFalse)
+        Title_TextBox.BackColor = RGB(Red_SelectionFalse, Green_SelectionFalse, Blue_SelectionFalse)
+    
+    End If
+    
+End Sub
+
 Private Sub Class1_Checkbox_Click()
 
     If Class1_Checkbox = True Then
-        Mod1_Textbox.BackColor = RGB(255, 251, 204)
-        Title1_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class1_Checkbox, Mod1_Textbox, Title1_Textbox, True
     Else
-        Mod1_Textbox.BackColor = RGB(211, 211, 211)
-        Title1_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class1_Checkbox, Mod1_Textbox, Title1_Textbox, False
     End If
 
 End Sub
@@ -315,11 +340,9 @@ End Sub
 Private Sub Class2_Checkbox_Click()
 
     If Class2_Checkbox = True Then
-        Mod2_Textbox.BackColor = RGB(255, 251, 204)
-        Title2_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class2_Checkbox, Mod2_Textbox, Title2_Textbox, True
     Else
-        Mod2_Textbox.BackColor = RGB(211, 211, 211)
-        Title2_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class2_Checkbox, Mod2_Textbox, Title2_Textbox, False
     End If
 
 End Sub
@@ -327,11 +350,9 @@ End Sub
 Private Sub Class3_Checkbox_Click()
 
     If Class3_Checkbox = True Then
-        Mod3_Textbox.BackColor = RGB(255, 251, 204)
-        Title3_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class3_Checkbox, Mod3_Textbox, Title3_Textbox, True
     Else
-        Mod3_Textbox.BackColor = RGB(211, 211, 211)
-        Title3_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class3_Checkbox, Mod3_Textbox, Title3_Textbox, False
     End If
 
 End Sub
@@ -339,11 +360,9 @@ End Sub
 Private Sub Class4_Checkbox_Click()
 
     If Class4_Checkbox = True Then
-        Mod4_Textbox.BackColor = RGB(255, 251, 204)
-        Title4_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class4_Checkbox, Mod4_Textbox, Title4_Textbox, True
     Else
-        Mod4_Textbox.BackColor = RGB(211, 211, 211)
-        Title4_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class4_Checkbox, Mod4_Textbox, Title4_Textbox, False
     End If
 
 End Sub
@@ -351,11 +370,9 @@ End Sub
 Private Sub Class5_Checkbox_Click()
 
     If Class5_Checkbox = True Then
-        Mod5_Textbox.BackColor = RGB(255, 251, 204)
-        Title5_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class5_Checkbox, Mod5_Textbox, Title5_Textbox, True
     Else
-        Mod5_Textbox.BackColor = RGB(211, 211, 211)
-        Title5_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class5_Checkbox, Mod5_Textbox, Title5_Textbox, False
     End If
 
 End Sub
@@ -363,11 +380,9 @@ End Sub
 Private Sub Class6_Checkbox_Click()
 
     If Class6_Checkbox = True Then
-        Mod6_Textbox.BackColor = RGB(255, 251, 204)
-        Title6_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class6_Checkbox, Mod6_Textbox, Title6_Textbox, True
     Else
-        Mod6_Textbox.BackColor = RGB(211, 211, 211)
-        Title6_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class6_Checkbox, Mod6_Textbox, Title6_Textbox, False
     End If
 
 End Sub
@@ -375,11 +390,9 @@ End Sub
 Private Sub Class7_Checkbox_Click()
 
     If Class7_Checkbox = True Then
-        Mod7_Textbox.BackColor = RGB(255, 251, 204)
-        Title7_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class7_Checkbox, Mod7_Textbox, Title7_Textbox, True
     Else
-        Mod7_Textbox.BackColor = RGB(211, 211, 211)
-        Title7_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class7_Checkbox, Mod7_Textbox, Title7_Textbox, False
     End If
 
 End Sub
@@ -387,11 +400,9 @@ End Sub
 Private Sub Class8_Checkbox_Click()
 
     If Class8_Checkbox = True Then
-        Mod8_Textbox.BackColor = RGB(255, 251, 204)
-        Title8_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class8_Checkbox, Mod8_Textbox, Title8_Textbox, True
     Else
-        Mod8_Textbox.BackColor = RGB(211, 211, 211)
-        Title8_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class8_Checkbox, Mod8_Textbox, Title8_Textbox, False
     End If
 
 End Sub
@@ -399,11 +410,9 @@ End Sub
 Private Sub Class9_Checkbox_Click()
 
     If Class9_Checkbox = True Then
-        Mod9_Textbox.BackColor = RGB(255, 251, 204)
-        Title9_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class9_Checkbox, Mod9_Textbox, Title9_Textbox, True
     Else
-        Mod9_Textbox.BackColor = RGB(211, 211, 211)
-        Title9_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class9_Checkbox, Mod9_Textbox, Title9_Textbox, False
     End If
 
 End Sub
@@ -411,11 +420,9 @@ End Sub
 Private Sub Class10_Checkbox_Click()
 
     If Class10_Checkbox = True Then
-        Mod10_Textbox.BackColor = RGB(255, 251, 204)
-        Title10_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class10_Checkbox, Mod10_Textbox, Title10_Textbox, True
     Else
-        Mod10_Textbox.BackColor = RGB(211, 211, 211)
-        Title10_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class10_Checkbox, Mod10_Textbox, Title10_Textbox, False
     End If
 
 End Sub
@@ -423,11 +430,9 @@ End Sub
 Private Sub Class11_Checkbox_Click()
 
     If Class11_Checkbox = True Then
-        Mod11_Textbox.BackColor = RGB(255, 251, 204)
-        Title11_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class11_Checkbox, Mod11_Textbox, Title11_Textbox, True
     Else
-        Mod11_Textbox.BackColor = RGB(211, 211, 211)
-        Title11_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class11_Checkbox, Mod11_Textbox, Title11_Textbox, False
     End If
 
 End Sub
@@ -435,11 +440,9 @@ End Sub
 Private Sub Class12_Checkbox_Click()
 
     If Class12_Checkbox = True Then
-        Mod12_Textbox.BackColor = RGB(255, 251, 204)
-        Title12_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class12_Checkbox, Mod12_Textbox, Title12_Textbox, True
     Else
-        Mod12_Textbox.BackColor = RGB(211, 211, 211)
-        Title12_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class12_Checkbox, Mod12_Textbox, Title12_Textbox, False
     End If
 
 End Sub
@@ -447,11 +450,9 @@ End Sub
 Private Sub Class13_Checkbox_Click()
 
     If Class13_Checkbox = True Then
-        Mod13_Textbox.BackColor = RGB(255, 251, 204)
-        Title13_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class13_Checkbox, Mod13_Textbox, Title13_Textbox, True
     Else
-        Mod13_Textbox.BackColor = RGB(211, 211, 211)
-        Title13_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class13_Checkbox, Mod13_Textbox, Title13_Textbox, False
     End If
 
 End Sub
@@ -459,11 +460,9 @@ End Sub
 Private Sub Class14_Checkbox_Click()
 
     If Class14_Checkbox = True Then
-        Mod14_Textbox.BackColor = RGB(255, 251, 204)
-        Title14_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class14_Checkbox, Mod14_Textbox, Title14_Textbox, True
     Else
-        Mod14_Textbox.BackColor = RGB(211, 211, 211)
-        Title14_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class14_Checkbox, Mod14_Textbox, Title14_Textbox, False
     End If
 
 End Sub
@@ -471,11 +470,9 @@ End Sub
 Private Sub Class15_Checkbox_Click()
 
     If Class15_Checkbox = True Then
-        Mod15_Textbox.BackColor = RGB(255, 251, 204)
-        Title15_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class15_Checkbox, Mod15_Textbox, Title15_Textbox, True
     Else
-        Mod15_Textbox.BackColor = RGB(211, 211, 211)
-        Title15_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class15_Checkbox, Mod15_Textbox, Title15_Textbox, False
     End If
 
 End Sub
@@ -483,11 +480,9 @@ End Sub
 Private Sub Class16_Checkbox_Click()
 
     If Class16_Checkbox = True Then
-        Mod16_Textbox.BackColor = RGB(255, 251, 204)
-        Title16_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class16_Checkbox, Mod16_Textbox, Title16_Textbox, True
     Else
-        Mod16_Textbox.BackColor = RGB(211, 211, 211)
-        Title16_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class16_Checkbox, Mod16_Textbox, Title16_Textbox, False
     End If
 
 End Sub
@@ -495,11 +490,9 @@ End Sub
 Private Sub Class17_Checkbox_Click()
 
     If Class17_Checkbox = True Then
-        Mod17_Textbox.BackColor = RGB(255, 251, 204)
-        Title17_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class17_Checkbox, Mod17_Textbox, Title17_Textbox, True
     Else
-        Mod17_Textbox.BackColor = RGB(211, 211, 211)
-        Title17_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class17_Checkbox, Mod17_Textbox, Title17_Textbox, False
     End If
 
 End Sub
@@ -507,11 +500,9 @@ End Sub
 Private Sub Class18_Checkbox_Click()
 
     If Class18_Checkbox = True Then
-        Mod18_Textbox.BackColor = RGB(255, 251, 204)
-        Title18_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class18_Checkbox, Mod18_Textbox, Title18_Textbox, True
     Else
-        Mod18_Textbox.BackColor = RGB(211, 211, 211)
-        Title18_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class18_Checkbox, Mod18_Textbox, Title18_Textbox, False
     End If
 
 End Sub
@@ -519,11 +510,9 @@ End Sub
 Private Sub Class19_Checkbox_Click()
 
     If Class19_Checkbox = True Then
-        Mod19_Textbox.BackColor = RGB(255, 251, 204)
-        Title19_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class19_Checkbox, Mod19_Textbox, Title19_Textbox, True
     Else
-        Mod19_Textbox.BackColor = RGB(211, 211, 211)
-        Title19_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class19_Checkbox, Mod19_Textbox, Title19_Textbox, False
     End If
 
 End Sub
@@ -531,11 +520,9 @@ End Sub
 Private Sub Class20_Checkbox_Click()
 
     If Class20_Checkbox = True Then
-        Mod20_Textbox.BackColor = RGB(255, 251, 204)
-        Title20_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class20_Checkbox, Mod20_Textbox, Title20_Textbox, True
     Else
-        Mod20_Textbox.BackColor = RGB(211, 211, 211)
-        Title20_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class20_Checkbox, Mod20_Textbox, Title20_Textbox, False
     End If
 
 End Sub
@@ -543,11 +530,9 @@ End Sub
 Private Sub Class21_Checkbox_Click()
 
     If Class21_Checkbox = True Then
-        Mod21_Textbox.BackColor = RGB(255, 251, 204)
-        Title21_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class21_Checkbox, Mod21_Textbox, Title21_Textbox, True
     Else
-        Mod21_Textbox.BackColor = RGB(211, 211, 211)
-        Title21_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class21_Checkbox, Mod21_Textbox, Title21_Textbox, False
     End If
 
 End Sub
@@ -555,11 +540,9 @@ End Sub
 Private Sub Class22_Checkbox_Click()
 
     If Class22_Checkbox = True Then
-        Mod22_Textbox.BackColor = RGB(255, 251, 204)
-        Title22_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class22_Checkbox, Mod22_Textbox, Title22_Textbox, True
     Else
-        Mod22_Textbox.BackColor = RGB(211, 211, 211)
-        Title22_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class22_Checkbox, Mod22_Textbox, Title22_Textbox, False
     End If
 
 End Sub
@@ -567,11 +550,9 @@ End Sub
 Private Sub Class23_Checkbox_Click()
 
     If Class23_Checkbox = True Then
-        Mod23_Textbox.BackColor = RGB(255, 251, 204)
-        Title23_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class23_Checkbox, Mod23_Textbox, Title23_Textbox, True
     Else
-        Mod23_Textbox.BackColor = RGB(211, 211, 211)
-        Title23_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class23_Checkbox, Mod23_Textbox, Title23_Textbox, False
     End If
 
 End Sub
@@ -579,22 +560,18 @@ End Sub
 Private Sub Class24_Checkbox_Click()
 
     If Class24_Checkbox = True Then
-        Mod24_Textbox.BackColor = RGB(255, 251, 204)
-        Title24_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class24_Checkbox, Mod24_Textbox, Title24_Textbox, True
     Else
-        Mod24_Textbox.BackColor = RGB(211, 211, 211)
-        Title24_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class24_Checkbox, Mod24_Textbox, Title24_Textbox, False
     End If
 
 End Sub
 Private Sub Class25_Checkbox_Click()
 
     If Class25_Checkbox = True Then
-        Mod25_Textbox.BackColor = RGB(255, 251, 204)
-        Title25_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class25_Checkbox, Mod25_Textbox, Title25_Textbox, True
     Else
-        Mod25_Textbox.BackColor = RGB(211, 211, 211)
-        Title25_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class25_Checkbox, Mod25_Textbox, Title25_Textbox, False
     End If
 
 End Sub
@@ -602,11 +579,9 @@ End Sub
 Private Sub Class26_Checkbox_Click()
 
     If Class26_Checkbox = True Then
-        Mod26_Textbox.BackColor = RGB(255, 251, 204)
-        Title26_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class26_Checkbox, Mod26_Textbox, Title26_Textbox, True
     Else
-        Mod26_Textbox.BackColor = RGB(211, 211, 211)
-        Title26_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class26_Checkbox, Mod26_Textbox, Title26_Textbox, False
     End If
 
 End Sub
@@ -614,11 +589,9 @@ End Sub
 Private Sub Class27_Checkbox_Click()
 
     If Class27_Checkbox = True Then
-        Mod27_Textbox.BackColor = RGB(255, 251, 204)
-        Title27_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class27_Checkbox, Mod27_Textbox, Title27_Textbox, True
     Else
-        Mod27_Textbox.BackColor = RGB(211, 211, 211)
-        Title27_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class27_Checkbox, Mod27_Textbox, Title27_Textbox, False
     End If
 
 End Sub
@@ -626,11 +599,9 @@ End Sub
 Private Sub Class28_Checkbox_Click()
 
     If Class28_Checkbox = True Then
-        Mod28_Textbox.BackColor = RGB(255, 251, 204)
-        Title28_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class28_Checkbox, Mod28_Textbox, Title28_Textbox, True
     Else
-        Mod28_Textbox.BackColor = RGB(211, 211, 211)
-        Title28_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class28_Checkbox, Mod28_Textbox, Title28_Textbox, False
     End If
 
 End Sub
@@ -638,11 +609,9 @@ End Sub
 Private Sub Class29_Checkbox_Click()
 
     If Class29_Checkbox = True Then
-        Mod29_Textbox.BackColor = RGB(255, 251, 204)
-        Title29_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class29_Checkbox, Mod29_Textbox, Title29_Textbox, True
     Else
-        Mod29_Textbox.BackColor = RGB(211, 211, 211)
-        Title29_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class29_Checkbox, Mod29_Textbox, Title29_Textbox, False
     End If
 
 End Sub
@@ -650,11 +619,9 @@ End Sub
 Private Sub Class30_Checkbox_Click()
 
     If Class30_Checkbox = True Then
-        Mod30_Textbox.BackColor = RGB(255, 251, 204)
-        Title30_Textbox.BackColor = RGB(255, 251, 204)
+        FlipColors Class30_Checkbox, Mod30_Textbox, Title30_Textbox, True
     Else
-        Mod30_Textbox.BackColor = RGB(211, 211, 211)
-        Title30_Textbox.BackColor = RGB(211, 211, 211)
+        FlipColors Class30_Checkbox, Mod30_Textbox, Title30_Textbox, False
     End If
 
 End Sub
