@@ -4,3 +4,111 @@
 '
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Option Explicit
+
+Public Sub Execute(ByVal Commands As Collection, ByRef Student As cStudent, _
+    ByVal AS400 As cAS400, Optional ByRef Exception As cException)
+
+    Dim Command As cCommand
+    
+    For Each Command In Commands
+    
+        Select Case Command.Perform
+        
+            Case commSet
+            
+                'Perform .SetText (no variable pointer)
+                PerformSetText_NoVariable Command, AS400, Exception
+                
+            Case savedSet
+            
+                'Perform .SetText (with variable pointer)
+                PerformSetText_WithVariable Command, Student, AS400, Exception
+
+            Case commGet
+            
+                'Perform .GetText
+                PerformGetText Command, Student, AS400, Exception
+            
+            Case commSearch
+            
+                'Perform .SearchText
+                If SearchResult(Command, AS400, Exception) = False Then
+                    GoTo SearchHasFailed
+                End If
+            
+            Case commSend
+            
+                'Perform .SendKeys
+                PerformSendKeys Command, AS400, Exception
+            
+            Case commCustom
+            
+                'Call a custom environment procedure
+                HardCodedProcedure Command, Student, Exception
+            
+            Case Else
+            
+                'Command not found
+        
+        End Select
+        
+    Next Command
+
+Cleanup:
+
+Exit Sub
+
+SearchHasFailed:
+
+End Sub
+
+Private Sub PerformSetText_NoVariable(ByVal Command As cCommand, ByVal AS400 As cAS400, _
+    Optional ByRef Exception As cException)
+
+    AS400.SetText Command.StringToAction, Command.RowToAction, Command.ColumnToAction
+
+End Sub
+
+Private Sub PerformSetText_WithVariable(ByVal Command As cCommand, ByRef Student As cStudent, _
+    ByVal AS400 As cAS400, Optional ByRef Exception As cException)
+    
+    Dim setString As String
+    setString = ReturnStringToSet(Command, Student, Exception)
+    
+    AS400.SetText setString, Command.RowToAction, Command.ColumnToAction
+    
+End Sub
+
+Private Sub PerformGetText(ByVal Command As cCommand, ByRef Student As cStudent, _
+    ByVal AS400 As cAS400, Optional ByRef Exception As cException)
+
+    Dim container As String
+    container = AS400.GetText(Command.RowToAction, Command.ColumnToAction, Command.LengthToAction)
+    
+    SaveToLocation container, Command, Student, Exception
+    
+End Sub
+
+Private Function SearchResult(ByVal Command As cCommand, ByVal AS400 As cAS400, _
+    Optional ByRef Exception As cException) As Boolean
+    
+    Dim searchDirection As Long
+    
+    If Not Val(Command.ExtraValue) = forward Or Not Val(Command.ExtraValue) = reverse Then
+        searchDirection = forward
+    Else
+        searchDirection = Command.ExtraValue
+    End If
+
+    SearchResult = AS400.SearchText(Command.StringToAction, Command.RowToAction, Command.ColumnToAction, searchDirection)
+
+End Function
+
+Private Sub PerformSendKeys(ByVal Command As cCommand, ByVal AS400 As cAS400, _
+    Optional ByRef Exception As cException)
+    
+    AS400.SendKeys Command.StringToAction, Command.RowToAction, Command.ColumnToAction
+    AS400.Pause
+
+End Sub
+
