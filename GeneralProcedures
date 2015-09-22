@@ -1,1 +1,85 @@
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' GeneralProcedures (Module)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Option Explicit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' RestrictToPositiveWholeNumbers
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Restricts the textbox to accept only whole numbers
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub RestrictToPostiveWholeNumbers(KeyAscii As MSForms.ReturnInteger)
+
+Select Case KeyAscii
+     Case Asc("0") To Asc("9")
+     Case Else
+         KeyAscii = 0
+ End Select
+
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' RestrictToPostiveFloatNumbers
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'Restricts the textbox to accept only integers and floats
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub RestrictToPostiveFloatNumbers(KeyAscii As MSForms.ReturnInteger, str_textbox As String)
+
+Select Case KeyAscii
+     Case Asc("0") To Asc("9")
+     Case Asc(".")
+         If InStr(1, str_textbox, ".") > 0 Then
+             KeyAscii = 0
+         End If
+     Case Else
+         KeyAscii = 0
+ End Select
+
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' TurnOffExcelDefaults
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Turns off certain Excel settings to improve the overall processing speed
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub TurnOffExcelDefaults(Optional ByRef Exception As cException)
+
+    'Pass error handling up the call stack
+    On Error GoTo 0
+
+    If Not Exception Is Nothing Then Exception.Push "General.TurnOffExcelDefaults"
+
+    Application.ScreenUpdating = False
+    Application.DisplayAlerts = False
+    Application.Calculation = xlCalculationManual
+    
+Cleanup:
+    
+    If Not Exception Is Nothing Then Exception.Pop
+    
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' TurnOnExcelDefaults
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Returns the Excel settings to their default values
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub TurnOnExcelDefaults(Optional ByRef Exception As cException)
+
+    'Pass error handling up the call stack
+    On Error GoTo 0
+
+    If Not Exception Is Nothing Then Exception.Push "General.TurnOnExcelDefaults"
+    
+    Application.Calculation = xlCalculationAutomatic
+    Application.DisplayAlerts = True
+    Application.ScreenUpdating = True
+    
+Cleanup:
+    
+    If Not Exception Is Nothing Then Exception.Pop
+    
+End Sub
 
