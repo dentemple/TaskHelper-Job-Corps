@@ -1,0 +1,85 @@
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Environment (Module)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Option Explicit
+
+'Additional command labels
+    Public Const procNavigateHome As String = "Custom Procedure: Navigate Home"
+    Public Const procExtraEnrollScreen As String = "Custom Procedure: CheckForExtraEnrollmentScreen"
+    
+'AS400 specific values
+    Public Const rowHome As Long = 19
+    Public Const colHome As Long = 7
+    Public Const optionCustomerService As String = "1"
+    Public Const optionAddressBook As String = "3"
+    Public Const optionOrderEntry As String = "20"
+    Public Const optionEducationInquiry As String = "15"
+    Public Const locationAddressBook As String = "01051"
+    Public Const actionCodeC As String = "C"
+    Public Const actionCodeI As String = "I"
+    Public Const actionCodeA As String = "A"
+    Public Const searchType As String = "TR"
+    Public Const schoolType As String = "HS"
+    Public Const degreeCode As String = "N"
+    Public Const emailCode As String = "E"
+    Public Const PACode As String = "PA"
+    Public Const TUICode As String = "TUI"
+    
+'Reference names for specific variables
+    Public Const tagStudentID As String = "StudentID from AS/400"
+    Public Const tagMailingName As String = "MailingName from Textbox"
+    Public Const tagAlphaName As String = "AlphaName from Textbox"
+    Public Const tagParentCode As String = "ParentCode from Textbox"
+    Public Const tagPrefixCode As String = "PrefixCode from Textbox"
+    Public Const tagLongNumber As String = "LongNumber from Textbox"
+    Public Const tagWebStart As String = "WebStartTime from Textbox"
+    Public Const tagWebEnd As String = "WebEndTime from Textbox"
+    Public Const tagGender As String = "Gender from Textbox"
+    Public Const tagAreaCode As String = "AreaCode from Textbox"
+    Public Const tagPhone As String = "PhoneNumber from Textbox"
+    Public Const tagSalesperson As String = "Salesperson from Textbox"
+    Public Const tagProgram As String = "ProgramMod from Textbox"
+    Public Const tagPONumber As String = "PO Number from Textbox"
+    Public Const tagProgramCost As String = "Cost of Program from Textbox"
+
+'Collection labels
+    Public Const forAddressBook As String = "Commands for adding to the AddressBook"
+    Public Const forEnrollment As String = "Commands for performing an enrollment"
+    Public Const forNameSearch As String = "Commands for searching names"
+    Public Const forReleaseShipments As String = "Commands for releasing shipments"
+    Public Const forStopShipments As String = "Commands for stopping shipments"
+    Public Const forTransferCredits As String = "Commands for applying transfer credits"
+    
+Public Function ReturnStringToSet(ByVal Command As cCommand, ByVal Student As cStudent, _
+    Optional ByRef Exception As cException) As String
+    
+    ReturnStringToSet = ""
+
+End Function
+
+Public Sub SaveToLocation(ByVal Result_to_Save As String, ByVal Command As cCommand, _
+    ByRef Student As cStudent, Optional ByRef Exception As cException)
+    
+
+End Sub
+
+Public Sub HardCodedProcedure(ByVal Command As cCommand, ByRef Student As cStudent, _
+    Optional ByRef Exception As cException)
+    
+    
+    
+End Sub
+
+Public Sub NavigateHome()
+    
+    
+    
+End Sub
+
+Public Sub CheckForExtraEnrollmentScreen()
+
+    
+    
+End Sub
