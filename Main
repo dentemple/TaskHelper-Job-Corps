@@ -5,9 +5,12 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Option Explicit
 
+'Activate/Deactivates the primary error handling
+    Public Const DebugFlag As Boolean = True    'False for error handling; True for no error handling
+
 'AS/400 static values (required by IBM to be set as Long)
-    Public Const modLength As Long = 8          'Course "mods" and Student ID numbers are always 8 digits long
     Public Const addTime As Long = 10           'In Milliseconds; cAS400 defaults this to "1"
+    Public Const modLength As Long = 8          'Course "mods" and Student ID numbers are always 8 digits long
     Public Const forward As Long = 1            'For cAS400.SearchText, as per AS/400 method requirement
     Public Const reverse As Long = 2            'For cAS400.SearchText, as per AS/400 method requirement
     Public Const EnterKey As String = "[Enter]" 'For cAS400.SendKeys; Enter keypress
@@ -17,33 +20,43 @@ Option Explicit
     Public Const F11Key As String = "[pf11]"    'For cAS400.SendKeys; F-Key keypress
     Public Const F12Key As String = "[pf12]"    'For cAS400.SendKeys; F-Key keypress
 
-'Activate/Deactivates the core error handling
-    Public Const DebugFlag As Boolean = True    'False for error handling; True for no error handling
-
 'Command labels
     Public Const noEntry As String = "noEntry"
     Public Const commSet As String = "Perform SetText"
     Public Const commGet As String = "Perform GetText"
     Public Const commSend As String = "Perform SendKeys"
     Public Const commSearch As String = "Perform SearchText"
-    Public Const savedSet As String = "SetText from Variable"
+    Public Const variableSet As String = "SetText from Variable"
     Public Const commCustom As String = "Call Custom Procedure"
     
 'For printing to the immediate window
     Public Const windowLineSeperator As String = vbNewLine & _
         "||***************************************************||" & vbNewLine
 
-Public Sub RunRegistration(ByVal RegistrationForm As MSForms.UserForm)
-    
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' RunRegistration
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
     '''''''''''''''''''''''''''
     ' General values
     '''''''''''''''''''''''''''
+    Dim redMessage As String
+    redMessage = vbTab & "FINAL CONFIRMATION" & vbNewLine & vbNewLine & _
+                        "One or more errors have occurred. Please" & _
+                        "resolve the following issues before proceeding." & vbNewLine & vbNewLine
+    
+    Dim blueMessage As String
+    blueMessage = vbTab & "FINAL CONFIRMATION" & vbNewLine & vbNewLine & _
+                        "Please confirm the following information " & _
+                        "before proceeding with the enrollment script." & vbNewLine & vbNewLine
 
     '''''''''''''''''''''''''''
     ' Set objects
     '''''''''''''''''''''''''''
-    If DebugFlag Then On Error GoTo 0 Else On Error GoTo ClassDeclareError
-
     Dim Exception As cException                 'Stores the error and stack information
     Dim Student As cStudent                     'Stores the student and userform information
     Dim AS400 As cAS400                         'Stores the AS/400 objects and methods
@@ -55,7 +68,7 @@ Public Sub RunRegistration(ByVal RegistrationForm As MSForms.UserForm)
     Set Student = New cStudent
     Set AS400 = New cAS400
     Set RegistrationCommands = New Collection
-    Set StatusBox = RegistrationForm.Status_Textbox
+    Set StatusBox = RegForm.Status_Textbox
     
     '''''''''''''''''''''''''''
     ' Settings
@@ -66,62 +79,176 @@ Public Sub RunRegistration(ByVal RegistrationForm As MSForms.UserForm)
         .Push "Main.RunRegistration"
     End With
     
-    StatusBox.Value = "...   ...   ...   Performing the pre-enrollment check   ...   ...   ..."
+    StatusBox.Value = "...   ...   ...   Performing the pre-enrollment checks   ...   ...   ..."
 
     TurnOffExcelDefaults Exception
     
     '''''''''''''''''''''''''''
     ' Load objects
     '''''''''''''''''''''''''''
-    Exception.ErrMessage = "Loading the class objects"
     If DebugFlag Then On Error GoTo 0 Else On Error GoTo UserformError
-    
-    '// LoadUserformObjects StudentFile, RegistrationForm, Exception
+    LoadUserformObjects Student, RegForm, Exception
     
     If DebugFlag Then On Error GoTo 0 Else On Error GoTo AS400Error
     AS400.InitializeApp StudentFile.GetSession, Exception, addTime
     
     If DebugFlag Then On Error GoTo 0 Else On Error GoTo CommandsError
+    
     Set AddressBookCommands = Spool(forAddressBook, Exception)
+    Exception.ErrMessage = CStr(AddressBookCommands.Count) & _
+                        " commands have been loaded into the AddressBookCommands Collection"
+                        
     Set EnrollmentCommands = Spool(forEnrollment, Exception)
+    Exception.ErrMessage = CStr(EnrollmentCommands.Count) & _
+                        " commands have been loaded into the EnrollmentCommands Collection"
     
     '''''''''''''''''''''''''''
     ' Pre-enrollment check
     '''''''''''''''''''''''''''
-    Exception.ErrMessage = "Performing the pre-enrollment check"
     If DebugFlag Then On Error GoTo 0 Else On Error GoTo ErrorOnEnrollmentCheck
+    If ApproveRegistration(Student, redMessage, blueMessage, Exception) = False Then
+        GoTo RegistrationNotApproved
+    End If
     
-    '// If ApproveRegistration(StudentFile, redMessage, blueMessage, Exception) = False Then
+    Exception.ErrMessage = "Registration has been approved by the user"
+    StatusBox.Value = "...   ...   ...   " & "Actions Left: " & _
+                        CStr(AddressBookCommands.Count) & "   ...   ...   ..."
     
     '''''''''''''''''''''''''''
     ' Main Execution
     '''''''''''''''''''''''''''
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo AddressBookExecutionError
     Execute AddressBookCommands, Student, AS400, Exception
     
-    '// Reveal StudentID
+    If Exception.Flag = True Then GoTo AddressBookExecutionFailure
     
+    MsgBox "Student ID#: " & vbTab & Student.StudentID, vbInformation, _
+                    "The student has been successfully added to the Address Book"
+    
+    StatusBox.Value = "...   ... " & "Actions Left (Address Book): " & _
+                        CStr(EnrollmentCommands.Count) & " ...   ..."
+    
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo EnrollmentExecutionError
     Execute EnrollmentCommands, Student, AS400, Exception
     
+    If Exception.Flag = True Then GoTo EnrollmentExecutionFailure
+    
+    '''''''''''''''''''''''''''
+    ' Transfer Credits option
+    '''''''''''''''''''''''''''
+    If MsgBox("The student has been successfully enrolled.  (Student ID#: " & _
+                        Student.StudentID & ")" & vbNewLine & vbNewLine & _
+                        "DO YOU WISH TO APPLY TRANSFER CREDITS?", vbYesNo, _
+                        "Procedure Complete - Apply TR?") = vbYes Then
+                        
+        Unload RegForm
+        
+        form_TransferCredits.Show
+        
+    End If
 
 '''''''''''''''''''''''''''
 ' Cleanup
 '''''''''''''''''''''''''''
 Cleanup:
     
+    TurnOnExcelDefaults Exception
+    Exception.Pop
+    
 Exit Sub
 
 '''''''''''''''''''''''''''
 ' Error Handling
 '''''''''''''''''''''''''''
+RegistrationNotApproved:
 
-ClassDeclareError:
+    MsgBox "The procedure has been cancelled", vbInformation, "User Selection"
 
+GoTo Cleanup
+'''''''''''''''''''''''''''
 UserformError:
 
+    With Exception
+        .ErrNumber = Err.Number
+        .ErrDescription = Err.Description
+        .IsError = True
+        .Throw
+    End With
+
+Resume Cleanup
+'''''''''''''''''''''''''''
 AS400Error:
 
+    With Exception
+        .ErrNumber = Err.Number
+        .ErrDescription = Err.Description
+        .IsError = True
+        .Throw "Please ensure the AS/400 is valid and on an active screen before proceeding."
+    End With
+
+Resume Cleanup
+'''''''''''''''''''''''''''
 CommandsError:
 
+    With Exception
+        .ErrNumber = Err.Number
+        .ErrDescription = Err.Description
+        .IsError = True
+        .Throw
+    End With
+
+Resume Cleanup
+'''''''''''''''''''''''''''
 ErrorOnEnrollmentCheck:
-    
+
+    With Exception
+        .ErrNumber = Err.Number
+        .ErrDescription = Err.Description
+        .IsError = True
+        .Throw
+    End With
+
+Resume Cleanup
+'''''''''''''''''''''''''''
+AddressBookExecutionError:
+
+    With Exception
+        .ErrNumber = Err.Number
+        .ErrDescription = Err.Description
+        .IsError = True
+        .Throw
+    End With
+
+Resume Cleanup
+'''''''''''''''''''''''''''
+AddressBookExecutionFailure:
+
+    With Exception
+        If Not .ErrNumber = 0 Then .IsError = True
+        .Throw "The AS/400 has aborted the process during the AddressBook procedure."
+    End With
+
+GoTo Cleanup
+'''''''''''''''''''''''''''
+EnrollmentExecutionError:
+
+    With Exception
+        .ErrNumber = Err.Number
+        .ErrDescription = Err.Description
+        .IsError = True
+        .Throw
+    End With
+
+Resume Cleanup
+'''''''''''''''''''''''''''
+EnrollmentExecutionFailure:
+
+    With Exception
+        If Not .ErrNumber = 0 Then .IsError = True
+        .Throw "The AS/400 has aborted the process during the enrollment procedure."
+    End With
+
+GoTo Cleanup
+'''''''''''''''''''''''''''
 End Sub
+'''''''''''''''''''''''''''
