@@ -126,10 +126,7 @@ Private Sub RunAutomation_Button_Click()
     
     'Run the registration script
     RunRegistration form_Registration
-    
-    'Run the unit test
-    'RunUnitCheck form_Registration
-    
+
     Status_Textbox = "Registration Complete!"
     
 End Sub
@@ -149,8 +146,8 @@ End Sub
 
 Private Sub SecondarySearch_Button_Click()
 
-    On Error GoTo 0
-    Dim sessionLetter As String: sessionLetter = Session_ComboBox.Value
+    Dim sessionLetter As String
+    sessionLetter = Session_ComboBox.Value
     
     Run_ActionButton2 form_Registration, sessionLetter
     
@@ -160,8 +157,8 @@ End Sub
 
 Private Sub PageUp_Button_Click()
 
-    On Error GoTo 0
-    Dim sessionLetter As String: sessionLetter = Session_ComboBox.Value
+    Dim sessionLetter As String
+    sessionLetter = Session_ComboBox.Value
 
     RunPageAction form_Registration, False, sessionLetter
     
@@ -172,7 +169,8 @@ End Sub
 Private Sub PageDown_Button_Click()
 
     On Error GoTo 0
-    Dim sessionLetter As String: sessionLetter = Session_ComboBox.Value
+    Dim sessionLetter As String
+    sessionLetter = Session_ComboBox.Value
 
     RunPageAction form_Registration, True, Letter
     
