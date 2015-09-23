@@ -1,22 +1,31 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Commands_Registration (Module)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'
+' Provides the necessary commands for performing a program registration for _
+    Job Corps students.
+' Requires two sets of actions: Adding the student to the AddressBook, then _
+    performing the course enrollment.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Option Explicit
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' PopulateAddressBookCommands
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function PopulateAddressBookCommands(ByRef Exception As cException) As Collection
-
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Provides the set of commands for adding a student to the _
+    AddressBook for B2B/3rd Party enrollments
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     'Pass error handling up the call stack
     On Error GoTo 0
+    
+    Exception.Push "Commands_Registration.PopulateAddressBookCommands"
 
     '''''''''''''''''''''''''''
     ' Prepare
     '''''''''''''''''''''''''''
     Dim toCommands As Collection
     Set toCommands = New Collection
-    
-    Exception.Push "Commands_Registration.PopulateAddressBookCommands"
         
     '''''''''''''''''''''''''''
     ' Add Commands
@@ -34,10 +43,10 @@ Public Function PopulateAddressBookCommands(ByRef Exception As cException) As Co
     AddCommand toCommands, commSet, actionCodeA, 3, 19, , , Exception
     AddCommand toCommands, commSet, searchType, 14, 19, , , Exception
     AddCommand toCommands, commSet, tagPrefixCode, 23, 19, , , Exception
-    AddCommand toCommands, savedSet, tagMailingName, 4, 19, , , Exception
-    AddCommand toCommands, savedSet, tagAlphaName, 6, 19, , , Exception
-    AddCommand toCommands, savedSet, tagParentCode, 17, 55, , , Exception
-    AddCommand toCommands, savedSet, tagLongNumber, 2, 60, , , Exception
+    AddCommand toCommands, variableSet, tagMailingName, 4, 19, , , Exception
+    AddCommand toCommands, variableSet, tagAlphaName, 6, 19, , , Exception
+    AddCommand toCommands, variableSet, tagParentCode, 17, 55, , , Exception
+    AddCommand toCommands, variableSet, tagLongNumber, 2, 60, , , Exception
     AddCommand toCommands, commSend, EnterKey, , , , , Exception
     
     'Student ID# returned
@@ -55,8 +64,8 @@ Public Function PopulateAddressBookCommands(ByRef Exception As cException) As Co
     AddCommand toCommands, commSend, F3Key, , , , , Exception
     
     'Apply Web Times
-    AddCommand toCommands, savedSet, tagWebStart, 13, 23, , , Exception
-    AddCommand toCommands, savedSet, tagWebEnd, 14, 23, , , Exception
+    AddCommand toCommands, variableSet, tagWebStart, 13, 23, , , Exception
+    AddCommand toCommands, variableSet, tagWebEnd, 14, 23, , , Exception
     
     'Enter=>F3 sequence
     AddCommand toCommands, commSend, EnterKey, , , , , Exception
@@ -78,8 +87,8 @@ Public Function PopulateAddressBookCommands(ByRef Exception As cException) As Co
     'Apply the phone number
     AddCommand toCommands, commSend, F12Key, , , , , Exception
     AddCommand toCommands, commSet, actionCodeC, 4, 21, , , Exception
-    AddCommand toCommands, savedSet, tagAreaCode, 11, 9, , , Exception
-    AddCommand toCommands, savedSet, tagPhone, 11, 16, , , Exception
+    AddCommand toCommands, variableSet, tagAreaCode, 11, 9, , , Exception
+    AddCommand toCommands, variableSet, tagPhone, 11, 16, , , Exception
     AddCommand toCommands, commSend, EnterKey, , , , , Exception
     AddCommand toCommands, commSend, F3Key, , , , , Exception
     
@@ -101,18 +110,24 @@ Public Function PopulateAddressBookCommands(ByRef Exception As cException) As Co
     
 End Function
 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' PopulateEnrollmentCommands
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function PopulateEnrollmentCommands(ByRef Exception As cException) As Collection
-    
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Provides the set of commands for performing an enrollment _
+    through the B2B Order Entry screen
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     'Pass error handling up the call stack
     On Error GoTo 0
+    
+    Exception.Push "Commands_Registration.PopulateEnrollmentCommands"
 
     '''''''''''''''''''''''''''
     ' Prepare
     '''''''''''''''''''''''''''
     Dim toCommands As Collection
     Set toCommands = New Collection
-    
-    Exception.Push "Commands_Registration.PopulateEnrollmentCommands"
         
     '''''''''''''''''''''''''''
     ' Add Commands
@@ -124,10 +139,10 @@ Public Function PopulateEnrollmentCommands(ByRef Exception As cException) As Col
     
     'Apply enrollment info
     AddCommand toCommands, commSet, actionCodeA, 3, 20, , , Exception
-    AddCommand toCommands, savedSet, tagStudentID, 4, 20, , , Exception
-    AddCommand toCommands, savedSet, tagSalesperson, 6, 20, , , Exception
-    AddCommand toCommands, savedSet, tagProgram, 7, 20, , , Exception
-    AddCommand toCommands, savedSet, tagPONumber, 8, 20, , , Exception
+    AddCommand toCommands, variableSet, tagStudentID, 4, 20, , , Exception
+    AddCommand toCommands, variableSet, tagSalesperson, 6, 20, , , Exception
+    AddCommand toCommands, variableSet, tagProgram, 7, 20, , , Exception
+    AddCommand toCommands, variableSet, tagPONumber, 8, 20, , , Exception
     AddCommand toCommands, commSend, EnterKey, , , , , Exception
     
     'Check for extra screen
@@ -136,7 +151,7 @@ Public Function PopulateEnrollmentCommands(ByRef Exception As cException) As Col
     'Apply Tuition
     AddCommand toCommands, commSet, PACode, 11, 11, , , Exception
     AddCommand toCommands, commSet, TUICode, 11, 16, , , Exception
-    AddCommand toCommands, savedSet, tagProgramCost, 11, 54, , , Exception
+    AddCommand toCommands, variableSet, tagProgramCost, 11, 54, , , Exception
     AddCommand toCommands, commSend, EnterKey, , , , , Exception
     
     'Apply full payment
@@ -155,9 +170,8 @@ Public Function PopulateEnrollmentCommands(ByRef Exception As cException) As Col
     AddCommand toCommands, commSend, EnterKey, , , , , Exception
     
     'Enter StudentID
-    AddCommand toCommands, savedSet, tagStudentID, 3, 13, , , Exception
+    AddCommand toCommands, variableSet, tagStudentID, 3, 13, , , Exception
     AddCommand toCommands, commSend, EnterKey, , , , , Exception
-    
     
     '''''''''''''''''''''''''''
     ' Finalize
