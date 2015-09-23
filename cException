@@ -1,9 +1,8 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' cException (Class)
+' cException (class)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Custom error functionality. Overloaded to include call stack procedures as well.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Option Compare Database
 Option Explicit
 
 'SUBROUTINES
@@ -31,7 +30,7 @@ Public siTop As StackItem           'For internal use
 Public Sub Throw(Optional ByVal Resolution_Message As String = "Resolution: Unknown")
 
     On Error Resume Next
-    Dim str As String
+    Dim Str As String
     Dim insertMessage As String
     
     Debug.Print "WARNING: An Exception has been thrown"
@@ -51,24 +50,24 @@ Public Sub Throw(Optional ByVal Resolution_Message As String = "Resolution: Unkn
     '''''''''''''''''''''''''''
     If Me.IsError = True Or Me.Flag = True Then
         
-        str = insertMessage & vbNewLine & vbNewLine & vbNewLine & vbNewLine & _
+        Str = insertMessage & vbNewLine & vbNewLine & vbNewLine & vbNewLine & _
                        "Error occurred during procedure: " & Me.StackTop & vbNewLine & vbNewLine & _
                        Me.ErrMessage
                        
         If Not Me.ErrNumber = 0 Then
         
-            str = str & vbNewLine & vbNewLine & "Error # " & Me.ErrNumber & ": " & Me.ErrDescription
+            Str = Str & vbNewLine & vbNewLine & "Error # " & Me.ErrNumber & ": " & Me.ErrDescription
             
         End If
                        
-        MsgBox str, vbCritical, "An error has occurred"
+        MsgBox Str, vbCritical, "An error has occurred"
         
     Else
     
-        str = insertMessage & vbNewLine & vbNewLine & vbNewLine & vbNewLine & _
+        Str = insertMessage & vbNewLine & vbNewLine & vbNewLine & vbNewLine & _
                    "Failure occurred during procedure: " & Me.StackTop & vbNewLine & vbNewLine & _
                    Me.ErrMessage
-        MsgBox str, vbInformation, "An error has occurred"
+        MsgBox Str, vbInformation, "An error has occurred"
         
     End If
 
@@ -90,28 +89,28 @@ SkipLogProcedure:
 
         Debug.Print "WARNING: AN ADDITIONAL ERROR HAS OCCURRED WITHIN THE cException.Throw PROPERTY"
         
-        str = insertMessage & vbNewLine & vbNewLine & vbNewLine & vbNewLine & _
+        Str = insertMessage & vbNewLine & vbNewLine & vbNewLine & vbNewLine & _
                        "Error occurred during procedure: " & Me.StackTop & vbNewLine & vbNewLine & _
                        Me.ErrMessage
                        
         If Not Me.ErrNumber = 0 Then
         
-            str = str & vbNewLine & vbNewLine & "Error # " & Me.ErrNumber & ": " & Me.ErrDescription
+            Str = Str & vbNewLine & vbNewLine & "Error # " & Me.ErrNumber & ": " & Me.ErrDescription
             
         End If
                        
-        MsgBox str, vbCritical, "An error has occurred"
+        MsgBox Str, vbCritical, "An error has occurred"
         
     Else
 
         Debug.Print Space(5) & "WARNING: AN ADDITIONAL ERROR HAS OCCURRED WITHIN THE Exception.Throw PROPERTY"
         
-        str = insertMessage & vbNewLine & vbNewLine & vbNewLine & vbNewLine & _
+        Str = insertMessage & vbNewLine & vbNewLine & vbNewLine & vbNewLine & _
                    "Failure occurred during procedure: " & Me.StackTop & vbNewLine & vbNewLine & _
                    Me.ErrMessage & vbNewLine & vbNewLine & _
                    "WARNING: AN ERROR HAS ALSO OCCURRED WITHIN THE ERROR HANDLING PROCEDURE"
                    
-        MsgBox str, vbInformation, "An error has occurred"
+        MsgBox Str, vbInformation, "An error has occurred"
         
     End If
     
