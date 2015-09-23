@@ -51,35 +51,310 @@ Option Explicit
     Public Const forReleaseShipments As String = "Commands for releasing shipments"
     Public Const forStopShipments As String = "Commands for stopping shipments"
     Public Const forTransferCredits As String = "Commands for applying transfer credits"
-    
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ReturnStringToSet
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function ReturnStringToSet(ByVal Command As cCommand, ByVal Student As cStudent, _
     Optional ByRef Exception As cException) As String
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' References a hard-coded value so as to pass information _
+    from the cStudent object to the cAS400's SetText execution
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    On Error GoTo 0
+    
+    If Not Exception Is Nothing Then Exception.Push "Environment.ReturnStringToSet"
     
     ReturnStringToSet = ""
+    
+    If Not Exception Is Nothing Then Exception.Pop
+    
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' SaveToLocation
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub SaveToLocation(ByVal Result_to_Save As String, ByVal Command As cCommand, _
+    ByRef Student As cStudent, Optional ByRef Exception As cException)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' References a hard-coded value so as to pass information _
+    from the cStudent object to the cAS400's GetText execution
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    On Error GoTo 0
+    
+    If Not Exception Is Nothing Then Exception.Push "Environment.SaveToLocation"
+    
+    
+    
+    If Not Exception Is Nothing Then Exception.Pop
+    
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' HardCodedProcedure
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub HardCodedProcedure(ByVal Command As cCommand, ByRef Student As cStudent, _
+    Optional ByRef Exception As cException)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' References a hard-coded value so as to execute edge-case _
+    procedures during the cAS400's main execution cycle.
+' Note: Later iterations of this project should incorporate _
+    these edge cases into the execution's primary logic.
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    On Error GoTo 0
+    
+    If Not Exception Is Nothing Then Exception.Push "Environment.HardCodedProcedure"
+    
+    If Not Exception Is Nothing Then Exception.Pop
+    
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' NavigateHome
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub NavigateHome()
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Hard-coded Procedure: Navigates the user's AS/400 _
+    presentation space to its primary home screen
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    On Error GoTo 0
+    
+    If Not Exception Is Nothing Then Exception.Push "Environment.NavigateHome"
+    
+    If Not Exception Is Nothing Then Exception.Pop
+    
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' CheckForExtraEnrollmentScreen
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub CheckForExtraEnrollmentScreen()
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Hard-coded Procedure: IF logic for the extra screen that _
+    may or may not appear during a program enrollment
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    On Error GoTo 0
+    
+    If Not Exception Is Nothing Then Exception.Push "Environment.CheckForExtraEnrollmentScreen"
+    
+    If Not Exception Is Nothing Then Exception.Pop
+    
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' LoadUserformObjects
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub LoadUserformObjects(ByRef Student As cStudent, ByVal RegForm As MSForms.UserForm, _
+    Optional ByRef Exception As cException)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Stores the separate registration textboxes into the _
+    cStudent class object.
+' "Get" modifiers within the cStudent class object will _
+    extract the necessary information.
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    'Pass error handling up the call stack
+    On Error GoTo 0
+
+    If Not Exception Is Nothing Then Exception.Push "Environment.LoadUserformObjects"
+
+    'Pass userform
+    Set Student.UserFormObject = RegForm
+
+    'Pass textboxes
+    Set Student.SalespersonTextbox = RegForm.Salesperson_Textbox
+    Set Student.ParentCodeTextBox = RegForm.ParentCode_Textbox
+    Set Student.FirstNameTextbox = RegForm.Firstname_Textbox
+    Set Student.LastNameTextbox = RegForm.Lastname_Textbox
+    Set Student.MiddleNameTextbox = RegForm.Middlename_Textbox
+    Set Student.WebStartTimeTextbox = RegForm.WebStartTime_Textbox
+    Set Student.WebEndTimeTextbox = RegForm.WebEndTime_Textbox
+    Set Student.ProgramNumberTextbox = RegForm.ProgramNumber_Textbox
+    Set Student.ProgramTuitionTextbox = RegForm.ProgramTuition_Textbox
+    Set Student.EmailTextbox = RegForm.Email_Textbox
+    Set Student.PONumberTextbox = RegForm.PONumber_Textbox
+    Set Student.LongNumberTextbox = RegForm.LongNumber_Textbox
+    Set Student.AreaCodeTextbox = RegForm.AreaCode_Textbox
+    Set Student.PhoneNumberTextbox = RegForm.PhoneNumber_Textbox
+    
+    'Pass comboboxes
+    Set Student.SessionComboBox = RegForm.Session_ComboBox
+    Set Student.PrefixCodeTextbox = RegForm.PrefixCode_Textbox
+    
+    'Pass option selection
+    Set Student.MaleOptionButton = RegForm.Male_Optionselect
+    Set Student.FemaleOptionButton = RegForm.Female_Optionselect
+    
+Cleanup:
+
+    If Not Exception Is Nothing Then Exception.Pop
+
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ApproveRegistration
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function ApproveRegistration(ByVal Student As cStudent, ByRef redMessage As String, _
+    ByRef blueMessage As String, ByRef Exception As cException) As Boolean
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Allows the user to confirm the current enrollment _
+    information prior to executing the AS/400 procedures.
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    
+    Exception.Push "Environment.ApproveRegistration"
+    
+    Dim approvalFlag As Boolean
+    approvalFlag = True
+    
+    Dim userSelection As Integer
+    userSelection = 2
+    
+    If Exception.Flag = True Then approvalFlag = False
+    
+    ConfirmAccountInfo Student, approvalFlag, redMessage, blueMessage, Exception
+    ConfirmStudentFile Student, approvalFlag, redMessage, blueMessage, Exception
+    
+    If Not Exception Is Nothing Then Exception.Message = "Providing the final checklist..."
+    
+    If approvalFlag = False Then
+    
+        AppActivate "Excel"
+        MsgBox redMessage, vbCritical, "Pre-Enrollment Checklist"
+        
+    Else
+    
+        AppActivate "Excel"
+        userSelection = MsgBox(blueMessage, vbOKCancel, "Pre-Enrollment Checklist")
+        If userSelection = vbOK Then approvalFlag = True
+        If userSelection = vbCancel Then approvalFlag = False
+        
+    End If
+    
+    ApproveRegistration = approvalFlag
+    
+Cleanup:
+
+    Exception.Pop
 
 End Function
 
-Public Sub SaveToLocation(ByVal Result_to_Save As String, ByVal Command As cCommand, _
-    ByRef Student As cStudent, Optional ByRef Exception As cException)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ConfirmAccountInfo
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub ConfirmAccountInfo(ByVal Student As cStudent, ByRef approvalFlag As Boolean, _
+    ByRef redMessage As String, ByRef blueMessage As String, Optional ByRef Exception As cException)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' For the ApproveRegistration procedure
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    'Pass error handling up the call stack
+    On Error GoTo 0
     
+    If Not Exception Is Nothing Then Exception.Push "Environment.ConfirmAccountInfo"
+    
+    Dim temp As String: temp = vbNullString
+    
+    'AS/400 Session
+    temp = Student.GetSession
+    If Len(temp) = 1 And InStr("ABCDEFGHIJKLMNOPQRSTUVWXYZ", temp) >= 1 Then
+        blueMessage = blueMessage & "Session:" & vbTab & vbTab & temp & vbNewLine & vbNewLine
+    Else
+        approvalFlag = False
+        redMessage = redMessage & "* The AS/400 session name must be a single letter" & vbNewLine
+    End If
+    
+    'PrefixCode
+    temp = Student.GetPrefixCode
+    If Len(temp) = 3 Then
+        blueMessage = blueMessage & "PrefixCode:" & vbTab & temp & vbNewLine
+    Else
+        approvalFlag = False
+        redMessage = redMessage & "* The prefix code must be 3 characters long" & vbNewLine
+    End If
+    
+    'Program Number
+    temp = Student.GetProgramNumber
+    If IsNumeric(temp) And Len(temp) = 8 Then
+        blueMessage = blueMessage & "Program Number:" & vbTab & temp & vbNewLine
+    Else
+        approvalFlag = False
+        redMessage = redMessage & "* The program number must be numeric and 8 digits long" & vbNewLine
+    End If
+    
+    'Program Tuition
+    temp = Student.GetProgramTuition
+    If IsNumeric(temp) And Val(temp) >= 1 Then
+        blueMessage = blueMessage & "Program Tuition:" & vbTab & Format(temp, "Currency") & vbNewLine & vbNewLine
+    Else
+        approvalFlag = False
+        redMessage = redMessage & "* The program tuition must be numeric and greater than zero" & vbNewLine
+    End If
+    
+    'Web Start Time
+    temp = Student.GetWebStartTime
+    If IsNumeric(temp) And Len(temp) <= 6 Then
+        blueMessage = blueMessage & "WebStartTime:" & vbTab & temp & vbNewLine
+    Else
+        blueMessage = blueMessage & "WebStartTime:" & vbTab & "000000" & vbNewLine
+    End If
+    
+    'Web End Time
+    temp = Student.GetWebEndTime
+    If IsNumeric(temp) And Len(temp) <= 6 Then
+        blueMessage = blueMessage & "WebEndTime:" & vbTab & temp & vbNewLine & vbNewLine
+    Else
+        blueMessage = blueMessage & "WebEndTime:" & vbTab & "000000" & vbNewLine
+    End If
+    
+    If Len(Student.GetPONumber) >= 1 Then
+        blueMessage = blueMessage & "PO Number:" & vbTab & Student.GetPONumber & vbNewLine & vbNewLine
+    End If
+    
+Cleanup:
 
+    If Not Exception Is Nothing Then Exception.Pop
+    
 End Sub
 
-Public Sub HardCodedProcedure(ByVal Command As cCommand, ByRef Student As cStudent, _
-    Optional ByRef Exception As cException)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ConfirmStudentFile
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub ConfirmStudentFile(ByVal Student As cStudent, ByRef approvalFlag As Boolean, _
+    ByRef redMessage As String, ByRef blueMessage As String, Optional ByRef Exception As cException)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' For the ApproveRegistration procedure
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    'Pass error handling up the call stack
+    On Error GoTo 0
     
+    If Not Exception Is Nothing Then Exception.Push "Environment.ConfirmStudentFile"
     
+    'Student Name
+    If Len(Student.GetMailingName) < 4 Or Len(Student.GetMailingName) > 38 Then
+        approvalFlag = False
+        redMessage = redMessage & "* The student's full name must be between 4 and 38 characters" & vbNewLine
+    Else
+        blueMessage = blueMessage & "MailingName:" & vbTab & Student.GetMailingName & vbNewLine
+        blueMessage = blueMessage & "AlphaName:" & vbTab & Student.GetAlphaName & vbNewLine
+    End If
+    
+    blueMessage = blueMessage & "Gender:" & vbTab & vbTab & Student.GetGender & vbNewLine
+    
+    'Phone Number
+    blueMessage = blueMessage & "Phone:" & vbTab & vbTab & Student.GetAreaCode & "-" & Student.GetPhoneNumber & vbNewLine
+        
+    'Student Email
+    blueMessage = blueMessage & "Email:" & vbTab & vbTab & Student.GetEmail & vbNewLine & vbNewLine
+    
+    'Long Number
+    blueMessage = blueMessage & "Long#:" & vbTab & vbTab & Student.GetLongNumber & vbNewLine
+    
+    'PO Number
+    blueMessage = blueMessage & "PO#:" & vbTab & vbTab & Student.GetPONumber & vbNewLine
+    
+Cleanup:
+    
+    If Not Exception Is Nothing Then Exception.Pop
     
 End Sub
 
-Public Sub NavigateHome()
-    
-    
-    
-End Sub
-
-Public Sub CheckForExtraEnrollmentScreen()
-
-    
-    
-End Sub
