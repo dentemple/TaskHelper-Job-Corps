@@ -1,19 +1,17 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' form_TransferCredits (userform)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Option Explicit
 
 'RGB for a selected textbox
-    Const Red_SelectionTrue As Integer = 255
-    Const Green_SelectionTrue As Integer = 251
-    Const Blue_SelectionTrue As Integer = 204
+    Const RedFieldYes As Integer = 255
+    Const GreenFieldYes As Integer = 251
+    Const BlueFieldYes As Integer = 204
     
 'RGB for an unselected textbox
-    Const Red_SelectionFalse As Integer = 211
-    Const Green_SelectionFalse As Integer = 211
-    Const Blue_SelectionFalse As Integer = 211
+    Const RedFieldNot As Integer = 211
+    Const GreenFieldNot As Integer = 211
+    Const BlueFieldNot As Integer = 211
     
 'General variables
     Dim hasBeenPopulated As Boolean
@@ -23,10 +21,12 @@ Option Explicit
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Private Sub UserForm_Initialize()
 
-    SID_Textbox = vbNullString
-
+    'To generate a list of active sessions
+    Dim objAS400ConnList As Object
+    Dim i As Integer
+    
     Status_Textbox.Locked = True
-    Status_Textbox.BackColor = RGB(211, 211, 211)
+    Status_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
     Status_Textbox = "TO BEGIN:" & Space(3) & "Enter the Student ID# " & _
         "and the AS/400 session, then press POPULATE CLASSES to continue"
 
@@ -189,85 +189,117 @@ Private Sub UserForm_Initialize()
     Title29_Textbox.Locked = True
     Title30_Textbox.Locked = True
     
-    AlphaName_Textbox.BackColor = RGB(211, 211, 211)
+    AlphaName_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
     
-    Mod1_Textbox.BackColor = RGB(211, 211, 211)
-    Mod2_Textbox.BackColor = RGB(211, 211, 211)
-    Mod3_Textbox.BackColor = RGB(211, 211, 211)
-    Mod4_Textbox.BackColor = RGB(211, 211, 211)
-    Mod5_Textbox.BackColor = RGB(211, 211, 211)
-    Mod6_Textbox.BackColor = RGB(211, 211, 211)
-    Mod7_Textbox.BackColor = RGB(211, 211, 211)
-    Mod8_Textbox.BackColor = RGB(211, 211, 211)
-    Mod9_Textbox.BackColor = RGB(211, 211, 211)
-    Mod10_Textbox.BackColor = RGB(211, 211, 211)
-    Mod11_Textbox.BackColor = RGB(211, 211, 211)
-    Mod12_Textbox.BackColor = RGB(211, 211, 211)
-    Mod13_Textbox.BackColor = RGB(211, 211, 211)
-    Mod14_Textbox.BackColor = RGB(211, 211, 211)
-    Mod15_Textbox.BackColor = RGB(211, 211, 211)
-    Mod16_Textbox.BackColor = RGB(211, 211, 211)
-    Mod17_Textbox.BackColor = RGB(211, 211, 211)
-    Mod18_Textbox.BackColor = RGB(211, 211, 211)
-    Mod19_Textbox.BackColor = RGB(211, 211, 211)
-    Mod20_Textbox.BackColor = RGB(211, 211, 211)
-    Mod21_Textbox.BackColor = RGB(211, 211, 211)
-    Mod22_Textbox.BackColor = RGB(211, 211, 211)
-    Mod23_Textbox.BackColor = RGB(211, 211, 211)
-    Mod24_Textbox.BackColor = RGB(211, 211, 211)
-    Mod25_Textbox.BackColor = RGB(211, 211, 211)
-    Mod26_Textbox.BackColor = RGB(211, 211, 211)
-    Mod27_Textbox.BackColor = RGB(211, 211, 211)
-    Mod28_Textbox.BackColor = RGB(211, 211, 211)
-    Mod29_Textbox.BackColor = RGB(211, 211, 211)
-    Mod30_Textbox.BackColor = RGB(211, 211, 211)
+    Mod1_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod2_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod3_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod4_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod5_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod6_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod7_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod8_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod9_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod10_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod11_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod12_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod13_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod14_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod15_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod16_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod17_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod18_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod19_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod20_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod21_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod22_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod23_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod24_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod25_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod26_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod27_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod28_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod29_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod30_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
     
-    Title1_Textbox.BackColor = RGB(211, 211, 211)
-    Title2_Textbox.BackColor = RGB(211, 211, 211)
-    Title3_Textbox.BackColor = RGB(211, 211, 211)
-    Title4_Textbox.BackColor = RGB(211, 211, 211)
-    Title5_Textbox.BackColor = RGB(211, 211, 211)
-    Title6_Textbox.BackColor = RGB(211, 211, 211)
-    Title7_Textbox.BackColor = RGB(211, 211, 211)
-    Title8_Textbox.BackColor = RGB(211, 211, 211)
-    Title9_Textbox.BackColor = RGB(211, 211, 211)
-    Title10_Textbox.BackColor = RGB(211, 211, 211)
-    Title11_Textbox.BackColor = RGB(211, 211, 211)
-    Title12_Textbox.BackColor = RGB(211, 211, 211)
-    Title13_Textbox.BackColor = RGB(211, 211, 211)
-    Title14_Textbox.BackColor = RGB(211, 211, 211)
-    Title15_Textbox.BackColor = RGB(211, 211, 211)
-    Title16_Textbox.BackColor = RGB(211, 211, 211)
-    Title17_Textbox.BackColor = RGB(211, 211, 211)
-    Title18_Textbox.BackColor = RGB(211, 211, 211)
-    Title19_Textbox.BackColor = RGB(211, 211, 211)
-    Title20_Textbox.BackColor = RGB(211, 211, 211)
-    Title21_Textbox.BackColor = RGB(211, 211, 211)
-    Title22_Textbox.BackColor = RGB(211, 211, 211)
-    Title23_Textbox.BackColor = RGB(211, 211, 211)
-    Title24_Textbox.BackColor = RGB(211, 211, 211)
-    Title25_Textbox.BackColor = RGB(211, 211, 211)
-    Title26_Textbox.BackColor = RGB(211, 211, 211)
-    Title27_Textbox.BackColor = RGB(211, 211, 211)
-    Title28_Textbox.BackColor = RGB(211, 211, 211)
-    Title29_Textbox.BackColor = RGB(211, 211, 211)
-    Title30_Textbox.BackColor = RGB(211, 211, 211)
+    Title1_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title2_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title3_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title4_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title5_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title6_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title7_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title8_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title9_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title10_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title11_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title12_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title13_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title14_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title15_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title16_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title17_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title18_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title19_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title20_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title21_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title22_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title23_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title24_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title25_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title26_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title27_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title28_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title29_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title30_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    
+    'For defaulting a Student ID#
+    If DebugFlag Then On Error GoTo 0 Else On Error Resume Next
+    Set rngStudentID = Range("lastStudentID")
+    SID_Textbox = Trim(rngStudentID.Value)
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo 0
+    
+    'Connects to the AS/400 to generate a list of active session names
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo AS400NotActive
+    Set objAS400ConnList = CreateObject("PCOMM.autECLConnList")
+    objAS400ConnList.Refresh
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo 0
 
+    'Populates the selection boxes
     With Session_ComboBox
+    
         .Clear
         .AddItem Range("DefaultSession")
-        .AddItem "A"
-        .AddItem "B"
-        .AddItem "C"
-        .AddItem "D"
-        .AddItem "E"
+        .AddItem "=="
+        
+        For i = 1 To objAS400ConnList.Count
+            .AddItem objAS400ConnList(i).name
+        Next i
+        
         .Text = Session_ComboBox.List(0)
+        
     End With
+    
+    Set objAS400ConnList = Nothing
     
     hasBeenPopulated = False
     
     'Sets the initial focus
     SID_Textbox.SetFocus
+    
+Exit Sub
+
+ObjectNotFound:
+
+    SID_Textbox = vbNullString
+    
+Resume Next
+
+AS400NotActive:
+
+    MsgBox "Note: The AS/400 has not been detected", vbInformation, "Attempting to connect to the AS/400"
+    
+Resume Next
 
 End Sub
 
@@ -275,7 +307,7 @@ End Sub
 ' COMMAND BUTTON / Actions to be called and performed
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Private Sub PopulateClasses_Button_Click()
-
+    
     RunPopulateClasses form_TransferCredits
     
     hasBeenPopulated = True
@@ -317,13 +349,13 @@ Private Sub FlipColors(Checkbox_Selected As MSForms.CheckBox, Mod_TextBox As MSF
     
     If isSelected Then
         
-        Mod_TextBox.BackColor = RGB(Red_SelectionTrue, Green_SelectionTrue, Blue_SelectionTrue)
-        Title_TextBox.BackColor = RGB(Red_SelectionTrue, Green_SelectionTrue, Blue_SelectionTrue)
+        Mod_TextBox.BackColor = RGB(RedFieldYes, GreenFieldYes, BlueFieldYes)
+        Title_TextBox.BackColor = RGB(RedFieldYes, GreenFieldYes, BlueFieldYes)
     
     Else
     
-        Mod_TextBox.BackColor = RGB(Red_SelectionFalse, Green_SelectionFalse, Blue_SelectionFalse)
-        Title_TextBox.BackColor = RGB(Red_SelectionFalse, Green_SelectionFalse, Blue_SelectionFalse)
+        Mod_TextBox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+        Title_TextBox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
     
     End If
     
