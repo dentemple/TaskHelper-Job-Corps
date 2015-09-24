@@ -1,8 +1,6 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ExecuteCommands (Module)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Option Explicit
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -37,7 +35,7 @@ Public Sub Execute(ByVal Commands As Collection, ByRef Student As cStudent, _
                 PerformSetText_NoVariable Command, AS400, Exception
                 
             'Perform .SetText (with variable pointer)
-            Case variableSet
+            Case commSetFrom
 
                 PerformSetText_WithVariable Command, Student, AS400, Exception
 
@@ -64,7 +62,7 @@ Public Sub Execute(ByVal Commands As Collection, ByRef Student As cStudent, _
             'Call a custom environment procedure
             Case commCustom
                 
-                HardCodedProcedure Command, Student, Exception
+                Launch_PerformCustomProcedure Command, Student, Exception
             
             'Command not found
             Case Else
@@ -161,7 +159,7 @@ Private Sub PerformSetText_WithVariable(ByVal Command As cCommand, ByRef Student
     If Not Exception Is Nothing Then Exception.Push "ExecuteCommands.PerformSetText_WithVariable"
     
     Dim setString As String
-    setString = ReturnStringToSet(Command, Student, Exception)
+    setString = Launch_ReturnStringToSet(Command, Student, Exception)
     
     AS400.SetText setString, Command.RowToAction, Command.ColumnToAction
     
@@ -183,7 +181,7 @@ Private Sub PerformGetText(ByVal Command As cCommand, ByRef Student As cStudent,
     Dim container As String
     container = AS400.GetText(Command.RowToAction, Command.ColumnToAction, Command.LengthToAction)
     
-    SaveToLocation container, Command, Student, Exception
+    Launch_SaveToLocation container, Command, Student, Exception
     
     If Not Exception Is Nothing Then Exception.Pop
     
@@ -237,4 +235,3 @@ Private Sub PerformSendKeys(ByVal Command As cCommand, ByVal AS400 As cAS400, _
     If Not Exception Is Nothing Then Exception.Pop
 
 End Sub
-
