@@ -1,14 +1,21 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' form_Registration (userform)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Option Explicit
+
+'RGB for an unselected textbox
+    Const RedFieldNot As Integer = 211
+    Const GreenFieldNot As Integer = 211
+    Const BlueFieldNot As Integer = 211
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Initialization event
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Private Sub UserForm_Initialize()
+
+    'To generate a list of active sessions
+    Dim objAS400ConnList As Object
+    Dim i As Integer
 
     'Defaults multipage to the first page
     MultiPage1.Value = 0
@@ -80,38 +87,63 @@ Private Sub UserForm_Initialize()
     ShowPhoneL8_Textbox.Locked = True
     
     'Greys out the locked textboxes
-    Status_Textbox.BackColor = RGB(211, 211, 211)
-    MailingNameL1_Textbox.BackColor = RGB(211, 211, 211)
-    MailingNameL2_Textbox.BackColor = RGB(211, 211, 211)
-    MailingNameL3_Textbox.BackColor = RGB(211, 211, 211)
-    MailingNameL4_Textbox.BackColor = RGB(211, 211, 211)
-    MailingNameL5_Textbox.BackColor = RGB(211, 211, 211)
-    MailingNameL6_Textbox.BackColor = RGB(211, 211, 211)
-    MailingNameL7_Textbox.BackColor = RGB(211, 211, 211)
-    MailingNameL8_Textbox.BackColor = RGB(211, 211, 211)
-    ShowPhoneL1_Textbox.BackColor = RGB(211, 211, 211)
-    ShowPhoneL2_Textbox.BackColor = RGB(211, 211, 211)
-    ShowPhoneL3_Textbox.BackColor = RGB(211, 211, 211)
-    ShowPhoneL4_Textbox.BackColor = RGB(211, 211, 211)
-    ShowPhoneL5_Textbox.BackColor = RGB(211, 211, 211)
-    ShowPhoneL6_Textbox.BackColor = RGB(211, 211, 211)
-    ShowPhoneL7_Textbox.BackColor = RGB(211, 211, 211)
-    ShowPhoneL8_Textbox.BackColor = RGB(211, 211, 211)
-
-    'Populates the selection boxes
-    With Session_ComboBox
-        .Clear
-        .AddItem Range("DefaultSession")
-        .AddItem "A"
-        .AddItem "B"
-        .AddItem "C"
-        .AddItem "D"
-        .AddItem "E"
-        .Text = Session_ComboBox.List(0)
-    End With
+    Status_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    MailingNameL1_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    MailingNameL2_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    MailingNameL3_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    MailingNameL4_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    MailingNameL5_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    MailingNameL6_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    MailingNameL7_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    MailingNameL8_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    ShowPhoneL1_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    ShowPhoneL2_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    ShowPhoneL3_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    ShowPhoneL4_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    ShowPhoneL5_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    ShowPhoneL6_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    ShowPhoneL7_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    ShowPhoneL8_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    
+    'Sets the Student ID container for passing to separate userforms
+    If DebugFlag Then On Error GoTo 0 Else On Error Resume Next
+    Set rngStudentID = Range("lastStudentID")
+    rngStudentID = vbNullString
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo 0
     
     'Sets the initial focus
     Salesperson_Textbox.SetFocus
+    
+    'Connects to the AS/400 to generate a list of active session names
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo AS400NotActive
+    Set objAS400ConnList = CreateObject("PCOMM.autECLConnList")
+    objAS400ConnList.Refresh
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo 0
+
+    'Populates the selection boxes
+    With Session_ComboBox
+    
+        .Clear
+        .AddItem Range("DefaultSession")
+        .AddItem "=="
+        
+        For i = 1 To objAS400ConnList.Count
+            .AddItem objAS400ConnList(i).name
+        Next i
+        
+        .Text = Session_ComboBox.List(0)
+        
+    End With
+    
+    Set objAS400ConnList = Nothing
+    
+Exit Sub
+
+AS400NotActive:
+
+    MsgBox "Note: The AS/400 has not been detected", vbInformation, "Attempting to connect to the AS/400"
+    
+Resume Next
 
 End Sub
 
@@ -120,7 +152,6 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Private Sub RunAutomation_Button_Click()
 
-    On Error GoTo 0
     'Sets multipage to its first page
     MultiPage1.Value = 0
     
@@ -133,23 +164,19 @@ End Sub
 
 Private Sub PrimarySearch_Button_Click()
 
-    On Error GoTo 0
     'Sets multipage to the second page
     MultiPage1.Value = 1
     
     'Run the student search
-    RunStudentSearch form_Registration
+    RunSearchButton buttonPrimary, form_Registration
     
     Status_Textbox = "Ready"
     
 End Sub
 
 Private Sub SecondarySearch_Button_Click()
-
-    Dim sessionLetter As String
-    sessionLetter = Session_ComboBox.Value
     
-    Run_ActionButton2 form_Registration, sessionLetter
+    RunSearchButton buttonMulti, form_Registration, , Session_ComboBox.Value
     
     Status_Textbox = "Ready"
 
@@ -157,10 +184,7 @@ End Sub
 
 Private Sub PageUp_Button_Click()
 
-    Dim sessionLetter As String
-    sessionLetter = Session_ComboBox.Value
-
-    RunPageAction form_Registration, False, sessionLetter
+    RunSearchButton buttonPrimary, form_Registration, PageUpKey, Session_ComboBox.Value
     
     Status_Textbox = "Ready"
 
@@ -168,11 +192,7 @@ End Sub
 
 Private Sub PageDown_Button_Click()
 
-    On Error GoTo 0
-    Dim sessionLetter As String
-    sessionLetter = Session_ComboBox.Value
-
-    RunPageAction form_Registration, True, Letter
+    RunSearchButton buttonPrimary, form_Registration, PageDownKey, Session_ComboBox.Value
     
     Status_Textbox = "Ready"
 
