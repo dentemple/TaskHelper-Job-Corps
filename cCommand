@@ -11,6 +11,7 @@ Private pColumnToAction As Long
 Private pLengthToAction As Long
 Private pPerform As String
 Private pStringToAction As String
+Private pParentModule As String
 Private pExtraValue As Variant
 
 '.IsReferenceToVariable
@@ -36,6 +37,10 @@ Public Property Get Perform() As String: Perform = pPerform: End Property
 '.StringToAction
 Public Property Let StringToAction(Value As String): pStringToAction = Value: End Property
 Public Property Get StringToAction() As String: StringToAction = pStringToAction: End Property
+
+'.ParentModule
+Public Property Let ParentModule(Value As String): pParentModule = Value: End Property
+Public Property Get ParentModule() As String: ParentModule = pParentModule: End Property
 
 '.ExtraValue
 Public Property Let ExtraValue(Value As Variant): pExtraValue = Value: End Property
