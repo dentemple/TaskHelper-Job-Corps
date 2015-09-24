@@ -1,7 +1,6 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' cStudentFile (Class)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
 Option Explicit
 
 ' GENERAL PROPERTIES
@@ -89,8 +88,10 @@ The following is a list of glue functions used to interpret the information take
 
 ' OBJECT PROPERTIES
 'Stores the cStudentFile objects
+
 'UserFormObject
 Private pUserFormObject As MSForms.UserForm
+
 'Textboxes
 Private pFirstNameTextbox As MSForms.TextBox
 Private pMiddleNameTextbox As MSForms.TextBox
@@ -136,11 +137,14 @@ Private pParentCodeTextbox As MSForms.TextBox
 Private pPrefixCodeTextbox As MSForms.TextBox
 Private pPONumberTextbox As MSForms.TextBox
 Private pLongNumberTextbox As MSForms.TextBox
+
 'ComboBoxes
 Private pSessionComboBox As MSForms.ComboBox
 Private pAutomationComboBox As MSForms.ComboBox
+
 'Checkboxes
 Private pProofHSCheckbox As MSForms.CheckBox
+
 'Option Buttons
 Private pParentStatusOptionButton As MSForms.OptionButton
 Private pStudentStatusOptionButton As MSForms.OptionButton
@@ -153,6 +157,24 @@ Private pCollegeSemesterOptionButton As MSForms.OptionButton
 Private pCalcByNumOfMonthsOptionButton As MSForms.OptionButton
 Private pPayInFullOptionButton As MSForms.OptionButton
 Private pNoCostOptionButton As MSForms.OptionButton
+
+'Name Search fields
+Private pFieldMailingName1 As MSForms.TextBox
+Private pFieldMailingName2 As MSForms.TextBox
+Private pFieldMailingName3 As MSForms.TextBox
+Private pFieldMailingName4 As MSForms.TextBox
+Private pFieldMailingName5 As MSForms.TextBox
+Private pFieldMailingName6 As MSForms.TextBox
+Private pFieldMailingName7 As MSForms.TextBox
+Private pFieldMailingName8 As MSForms.TextBox
+Private pFieldPhone1 As MSForms.TextBox
+Private pFieldPhone2 As MSForms.TextBox
+Private pFieldPhone3 As MSForms.TextBox
+Private pFieldPhone4 As MSForms.TextBox
+Private pFieldPhone5 As MSForms.TextBox
+Private pFieldPhone6 As MSForms.TextBox
+Private pFieldPhone7 As MSForms.TextBox
+Private pFieldPhone8 As MSForms.TextBox
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' LOCAL PROCEDURES
@@ -720,591 +742,301 @@ End Function
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' UserFormObject property
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set UserFormObject(Value As MSForms.UserForm)
-    Set pUserFormObject = Value
-End Property
-Public Property Get UserFormObject() As MSForms.UserForm
-    Set UserFormObject = pUserFormObject
-End Property
+Public Property Set UserFormObject(Value As MSForms.UserForm): Set pUserFormObject = Value: End Property
+Public Property Get UserFormObject() As MSForms.UserForm: Set UserFormObject = pUserFormObject: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' FirstNameTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set FirstNameTextbox(Value As MSForms.TextBox)
-    Set pFirstNameTextbox = Value
-End Property
-Public Property Get FirstNameTextbox() As MSForms.TextBox
-    Set FirstNameTextbox = pFirstNameTextbox
-End Property
+Public Property Set FirstNameTextbox(Value As MSForms.TextBox): Set pFirstNameTextbox = Value: End Property
+Public Property Get FirstNameTextbox() As MSForms.TextBox: Set FirstNameTextbox = pFirstNameTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' MiddleNameTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set MiddleNameTextbox(Value As MSForms.TextBox)
-    Set pMiddleNameTextbox = Value
-End Property
-Public Property Get MiddleNameTextbox() As MSForms.TextBox
-    Set MiddleNameTextbox = pMiddleNameTextbox
-End Property
+Public Property Set MiddleNameTextbox(Value As MSForms.TextBox): Set pMiddleNameTextbox = Value: End Property
+Public Property Get MiddleNameTextbox() As MSForms.TextBox: Set MiddleNameTextbox = pMiddleNameTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' LastNameTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set LastNameTextbox(Value As MSForms.TextBox)
-    Set pLastNameTextbox = Value
-End Property
-Public Property Get LastNameTextbox() As MSForms.TextBox
-    Set LastNameTextbox = pLastNameTextbox
-End Property
+Public Property Set LastNameTextbox(Value As MSForms.TextBox): Set pLastNameTextbox = Value: End Property
+Public Property Get LastNameTextbox() As MSForms.TextBox: Set LastNameTextbox = pLastNameTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' SalespersonTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set SalespersonTextbox(Value As MSForms.TextBox)
-    Set pSalespersonTextbox = Value
-End Property
-Public Property Get SalespersonTextbox() As MSForms.TextBox
-    Set SalespersonTextbox = pSalespersonTextbox
-End Property
+Public Property Set SalespersonTextbox(Value As MSForms.TextBox): Set pSalespersonTextbox = Value: End Property
+Public Property Get SalespersonTextbox() As MSForms.TextBox: Set SalespersonTextbox = pSalespersonTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' StudentIDTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set StudentIDTextbox(Value As MSForms.TextBox)
-    Set pStudentIDTextbox = Value
-End Property
-Public Property Get StudentIDTextbox() As MSForms.TextBox
-    Set StudentIDTextbox = pStudentIDTextbox
-End Property
+Public Property Set StudentIDTextbox(Value As MSForms.TextBox): Set pStudentIDTextbox = Value: End Property
+Public Property Get StudentIDTextbox() As MSForms.TextBox: Set StudentIDTextbox = pStudentIDTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' AreaCodeTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set AreaCodeTextbox(Value As MSForms.TextBox)
-    Set pAreaCodeTextbox = Value
-End Property
-Public Property Get AreaCodeTextbox() As MSForms.TextBox
-    Set AreaCodeTextbox = pAreaCodeTextbox
-End Property
+Public Property Set AreaCodeTextbox(Value As MSForms.TextBox): Set pAreaCodeTextbox = Value: End Property
+Public Property Get AreaCodeTextbox() As MSForms.TextBox: Set AreaCodeTextbox = pAreaCodeTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' PhoneNumberTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set PhoneNumberTextbox(Value As MSForms.TextBox)
-    Set pPhoneNumberTextbox = Value
-End Property
-Public Property Get PhoneNumberTextbox() As MSForms.TextBox
-    Set PhoneNumberTextbox = pPhoneNumberTextbox
-End Property
+Public Property Set PhoneNumberTextbox(Value As MSForms.TextBox): Set pPhoneNumberTextbox = Value: End Property
+Public Property Get PhoneNumberTextbox() As MSForms.TextBox: Set PhoneNumberTextbox = pPhoneNumberTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' EmailTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set EmailTextbox(Value As MSForms.TextBox)
-    Set pEmailTextbox = Value
-End Property
-Public Property Get EmailTextbox() As MSForms.TextBox
-    Set EmailTextbox = pEmailTextbox
-End Property
+Public Property Set EmailTextbox(Value As MSForms.TextBox): Set pEmailTextbox = Value: End Property
+Public Property Get EmailTextbox() As MSForms.TextBox: Set EmailTextbox = pEmailTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' AddressL1Textbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set AddressL1Textbox(Value As MSForms.TextBox)
-    Set pAddressL1Textbox = Value
-End Property
-Public Property Get AddressL1Textbox() As MSForms.TextBox
-    Set AddressL1Textbox = pAddressL1Textbox
-End Property
+Public Property Set AddressL1Textbox(Value As MSForms.TextBox): Set pAddressL1Textbox = Value: End Property
+Public Property Get AddressL1Textbox() As MSForms.TextBox: Set AddressL1Textbox = pAddressL1Textbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' AddressL2Textbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set AddressL2Textbox(Value As MSForms.TextBox)
-    Set pAddressL2Textbox = Value
-End Property
-Public Property Get AddressL2Textbox() As MSForms.TextBox
-    Set AddressL2Textbox = pAddressL2Textbox
-End Property
+Public Property Set AddressL2Textbox(Value As MSForms.TextBox): Set pAddressL2Textbox = Value: End Property
+Public Property Get AddressL2Textbox() As MSForms.TextBox: Set AddressL2Textbox = pAddressL2Textbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' AddressL3Textbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set AddressL3Textbox(Value As MSForms.TextBox)
-    Set pAddressL3Textbox = Value
-End Property
-Public Property Get AddressL3Textbox() As MSForms.TextBox
-    Set AddressL3Textbox = pAddressL3Textbox
-End Property
+Public Property Set AddressL3Textbox(Value As MSForms.TextBox): Set pAddressL3Textbox = Value: End Property
+Public Property Get AddressL3Textbox() As MSForms.TextBox: Set AddressL3Textbox = pAddressL3Textbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' AddressL4Textbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set AddressL4Textbox(Value As MSForms.TextBox)
-    Set pAddressL4Textbox = Value
-End Property
-Public Property Get AddressL4Textbox() As MSForms.TextBox
-    Set AddressL4Textbox = pAddressL4Textbox
-End Property
+Public Property Set AddressL4Textbox(Value As MSForms.TextBox): Set pAddressL4Textbox = Value: End Property
+Public Property Get AddressL4Textbox() As MSForms.TextBox: Set AddressL4Textbox = pAddressL4Textbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' CityTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set CityTextbox(Value As MSForms.TextBox)
-    Set pCityTextbox = Value
-End Property
-Public Property Get CityTextbox() As MSForms.TextBox
-    Set CityTextbox = pCityTextbox
-End Property
+Public Property Set CityTextbox(Value As MSForms.TextBox): Set pCityTextbox = Value: End Property
+Public Property Get CityTextbox() As MSForms.TextBox: Set CityTextbox = pCityTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' StateTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set StateTextbox(Value As MSForms.TextBox)
-    Set pStateTextbox = Value
-End Property
-Public Property Get StateTextbox() As MSForms.TextBox
-    Set StateTextbox = pStateTextbox
-End Property
+Public Property Set StateTextbox(Value As MSForms.TextBox): Set pStateTextbox = Value: End Property
+Public Property Get StateTextbox() As MSForms.TextBox: Set StateTextbox = pStateTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ZipCodeTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ZipCodeTextbox(Value As MSForms.TextBox)
-    Set pZipCodeTextbox = Value
-End Property
-Public Property Get ZipCodeTextbox() As MSForms.TextBox
-    Set ZipCodeTextbox = pZipCodeTextbox
-End Property
+Public Property Set ZipCodeTextbox(Value As MSForms.TextBox): Set pZipCodeTextbox = Value: End Property
+Public Property Get ZipCodeTextbox() As MSForms.TextBox: Set ZipCodeTextbox = pZipCodeTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ProgramNumberTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ProgramNumberTextbox(Value As MSForms.TextBox)
-    Set pProgramNumberTextbox = Value
-End Property
-Public Property Get ProgramNumberTextbox() As MSForms.TextBox
-    Set ProgramNumberTextbox = pProgramNumberTextbox
-End Property
+Public Property Set ProgramNumberTextbox(Value As MSForms.TextBox): Set pProgramNumberTextbox = Value: End Property
+Public Property Get ProgramNumberTextbox() As MSForms.TextBox: Set ProgramNumberTextbox = pProgramNumberTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ProgramTuitionTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ProgramTuitionTextbox(Value As MSForms.TextBox)
-    Set pProgramTuitionTextbox = Value
-End Property
-Public Property Get ProgramTuitionTextbox() As MSForms.TextBox
-    Set ProgramTuitionTextbox = pProgramTuitionTextbox
-End Property
+Public Property Set ProgramTuitionTextbox(Value As MSForms.TextBox): Set pProgramTuitionTextbox = Value: End Property
+Public Property Get ProgramTuitionTextbox() As MSForms.TextBox: Set ProgramTuitionTextbox = pProgramTuitionTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassMod1Textbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassMod1Textbox(Value As MSForms.TextBox)
-    Set pClassMod1Textbox = Value
-End Property
-Public Property Get ClassMod1Textbox() As MSForms.TextBox
-    Set ClassMod1Textbox = pClassMod1Textbox
-End Property
+Public Property Set ClassMod1Textbox(Value As MSForms.TextBox): Set pClassMod1Textbox = Value: End Property
+Public Property Get ClassMod1Textbox() As MSForms.TextBox: Set ClassMod1Textbox = pClassMod1Textbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassMod2Textbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassMod2Textbox(Value As MSForms.TextBox)
-    Set pClassMod2Textbox = Value
-End Property
-Public Property Get ClassMod2Textbox() As MSForms.TextBox
-    Set ClassMod2Textbox = pClassMod2Textbox
-End Property
+Public Property Set ClassMod2Textbox(Value As MSForms.TextBox): Set pClassMod2Textbox = Value: End Property
+Public Property Get ClassMod2Textbox() As MSForms.TextBox: Set ClassMod2Textbox = pClassMod2Textbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassMod3Textbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassMod3Textbox(Value As MSForms.TextBox)
-    Set pClassMod3Textbox = Value
-End Property
-Public Property Get ClassMod3Textbox() As MSForms.TextBox
-    Set ClassMod3Textbox = pClassMod3Textbox
-End Property
+Public Property Set ClassMod3Textbox(Value As MSForms.TextBox): Set pClassMod3Textbox = Value: End Property
+Public Property Get ClassMod3Textbox() As MSForms.TextBox: Set ClassMod3Textbox = pClassMod3Textbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassMod4Textbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassMod4Textbox(Value As MSForms.TextBox)
-    Set pClassMod4Textbox = Value
-End Property
-Public Property Get ClassMod4Textbox() As MSForms.TextBox
-    Set ClassMod4Textbox = pClassMod4Textbox
-End Property
+Public Property Set ClassMod4Textbox(Value As MSForms.TextBox): Set pClassMod4Textbox = Value: End Property
+Public Property Get ClassMod4Textbox() As MSForms.TextBox: Set ClassMod4Textbox = pClassMod4Textbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassMod5Textbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassMod5Textbox(Value As MSForms.TextBox)
-    Set pClassMod5Textbox = Value
-End Property
-Public Property Get ClassMod5Textbox() As MSForms.TextBox
-    Set ClassMod5Textbox = pClassMod5Textbox
-End Property
+Public Property Set ClassMod5Textbox(Value As MSForms.TextBox): Set pClassMod5Textbox = Value: End Property
+Public Property Get ClassMod5Textbox() As MSForms.TextBox: Set ClassMod5Textbox = pClassMod5Textbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassMod6Textbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassMod6Textbox(Value As MSForms.TextBox)
-    Set pClassMod6Textbox = Value
-End Property
-Public Property Get ClassMod6Textbox() As MSForms.TextBox
-    Set ClassMod6Textbox = pClassMod6Textbox
-End Property
+Public Property Set ClassMod6Textbox(Value As MSForms.TextBox): Set pClassMod6Textbox = Value: End Property
+Public Property Get ClassMod6Textbox() As MSForms.TextBox: Set ClassMod6Textbox = pClassMod6Textbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassMod7Textbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassMod7Textbox(Value As MSForms.TextBox)
-    Set pClassMod7Textbox = Value
-End Property
-Public Property Get ClassMod7Textbox() As MSForms.TextBox
-    Set ClassMod7Textbox = pClassMod7Textbox
-End Property
+Public Property Set ClassMod7Textbox(Value As MSForms.TextBox): Set pClassMod7Textbox = Value: End Property
+Public Property Get ClassMod7Textbox() As MSForms.TextBox: Set ClassMod7Textbox = pClassMod7Textbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassTuition1Textbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassTuition1Textbox(Value As MSForms.TextBox)
-    Set pClassTuition1Textbox = Value
-End Property
-Public Property Get ClassTuition1Textbox() As MSForms.TextBox
-    Set ClassTuition1Textbox = pClassTuition1Textbox
-End Property
+Public Property Set ClassTuition1Textbox(Value As MSForms.TextBox): Set pClassTuition1Textbox = Value: End Property
+Public Property Get ClassTuition1Textbox() As MSForms.TextBox: Set ClassTuition1Textbox = pClassTuition1Textbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassTuition2Textbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassTuition2Textbox(Value As MSForms.TextBox)
-    Set pClassTuition2Textbox = Value
-End Property
-Public Property Get ClassTuition2Textbox() As MSForms.TextBox
-    Set ClassTuition2Textbox = pClassTuition2Textbox
-End Property
+Public Property Set ClassTuition2Textbox(Value As MSForms.TextBox): Set pClassTuition2Textbox = Value: End Property
+Public Property Get ClassTuition2Textbox() As MSForms.TextBox: Set ClassTuition2Textbox = pClassTuition2Textbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassTuition3Textbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassTuition3Textbox(Value As MSForms.TextBox)
-    Set pClassTuition3Textbox = Value
-End Property
-Public Property Get ClassTuition3Textbox() As MSForms.TextBox
-    Set ClassTuition3Textbox = pClassTuition3Textbox
-End Property
+Public Property Set ClassTuition3Textbox(Value As MSForms.TextBox): Set pClassTuition3Textbox = Value: End Property
+Public Property Get ClassTuition3Textbox() As MSForms.TextBox: Set ClassTuition3Textbox = pClassTuition3Textbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassTuition4Textbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassTuition4Textbox(Value As MSForms.TextBox)
-    Set pClassTuition4Textbox = Value
-End Property
-Public Property Get ClassTuition4Textbox() As MSForms.TextBox
-    Set ClassTuition4Textbox = pClassTuition4Textbox
-End Property
+Public Property Set ClassTuition4Textbox(Value As MSForms.TextBox): Set pClassTuition4Textbox = Value: End Property
+Public Property Get ClassTuition4Textbox() As MSForms.TextBox: Set ClassTuition4Textbox = pClassTuition4Textbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassTuition5Textbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassTuition5Textbox(Value As MSForms.TextBox)
-    Set pClassTuition5Textbox = Value
-End Property
-Public Property Get ClassTuition5Textbox() As MSForms.TextBox
-    Set ClassTuition5Textbox = pClassTuition5Textbox
-End Property
+Public Property Set ClassTuition5Textbox(Value As MSForms.TextBox): Set pClassTuition5Textbox = Value: End Property
+Public Property Get ClassTuition5Textbox() As MSForms.TextBox: Set ClassTuition5Textbox = pClassTuition5Textbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassTuition6Textbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassTuition6Textbox(Value As MSForms.TextBox)
-    Set pClassTuition6Textbox = Value
-End Property
-Public Property Get ClassTuition6Textbox() As MSForms.TextBox
-    Set ClassTuition6Textbox = pClassTuition6Textbox
-End Property
+Public Property Set ClassTuition6Textbox(Value As MSForms.TextBox): Set pClassTuition6Textbox = Value: End Property
+Public Property Get ClassTuition6Textbox() As MSForms.TextBox: Set ClassTuition6Textbox = pClassTuition6Textbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ClassTuition7Textbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ClassTuition7Textbox(Value As MSForms.TextBox)
-    Set pClassTuition7Textbox = Value
-End Property
-Public Property Get ClassTuition7Textbox() As MSForms.TextBox
-    Set ClassTuition7Textbox = pClassTuition7Textbox
-End Property
+Public Property Set ClassTuition7Textbox(Value As MSForms.TextBox): Set pClassTuition7Textbox = Value: End Property
+Public Property Get ClassTuition7Textbox() As MSForms.TextBox: Set ClassTuition7Textbox = pClassTuition7Textbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ParentInvoiceTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ParentInvoiceTextbox(Value As MSForms.TextBox)
-    Set pParentInvoiceTextbox = Value
-End Property
-Public Property Get ParentInvoiceTextbox() As MSForms.TextBox
-    Set ParentInvoiceTextbox = pParentInvoiceTextbox
-End Property
+Public Property Set ParentInvoiceTextbox(Value As MSForms.TextBox): Set pParentInvoiceTextbox = Value: End Property
+Public Property Get ParentInvoiceTextbox() As MSForms.TextBox: Set ParentInvoiceTextbox = pParentInvoiceTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' StudentTuitionTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set StudentTuitionTextbox(Value As MSForms.TextBox)
-    Set pStudentTuitionTextbox = Value
-End Property
-Public Property Get StudentTuitionTextbox() As MSForms.TextBox
-    Set StudentTuitionTextbox = pStudentTuitionTextbox
-End Property
+Public Property Set StudentTuitionTextbox(Value As MSForms.TextBox): Set pStudentTuitionTextbox = Value: End Property
+Public Property Get StudentTuitionTextbox() As MSForms.TextBox: Set StudentTuitionTextbox = pStudentTuitionTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' StudentFeesTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set StudentFeesTextbox(Value As MSForms.TextBox)
-    Set pStudentFeesTextbox = Value
-End Property
-Public Property Get StudentFeesTextbox() As MSForms.TextBox
-    Set StudentFeesTextbox = pStudentFeesTextbox
-End Property
+Public Property Set StudentFeesTextbox(Value As MSForms.TextBox): Set pStudentFeesTextbox = Value: End Property
+Public Property Get StudentFeesTextbox() As MSForms.TextBox: Set StudentFeesTextbox = pStudentFeesTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' StudentInvoiceTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set StudentInvoiceTextbox(Value As MSForms.TextBox)
-    Set pStudentInvoiceTextbox = Value
-End Property
-Public Property Get StudentInvoiceTextbox() As MSForms.TextBox
-    Set StudentInvoiceTextbox = pStudentInvoiceTextbox
-End Property
+Public Property Set StudentInvoiceTextbox(Value As MSForms.TextBox): Set pStudentInvoiceTextbox = Value: End Property
+Public Property Get StudentInvoiceTextbox() As MSForms.TextBox: Set StudentInvoiceTextbox = pStudentInvoiceTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' DownPayTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set DownPayTextbox(Value As MSForms.TextBox)
-    Set pDownPayTextbox = Value
-End Property
-Public Property Get DownPayTextbox() As MSForms.TextBox
-    Set DownPayTextbox = pDownPayTextbox
-End Property
+Public Property Set DownPayTextbox(Value As MSForms.TextBox): Set pDownPayTextbox = Value: End Property
+Public Property Get DownPayTextbox() As MSForms.TextBox: Set DownPayTextbox = pDownPayTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' NumberOfMonthsTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set NumberOfMonthsTextbox(Value As MSForms.TextBox)
-    Set pNumberOfMonthsTextbox = Value
-End Property
-Public Property Get NumberOfMonthsTextbox() As MSForms.TextBox
-    Set NumberOfMonthsTextbox = pNumberOfMonthsTextbox
-End Property
+Public Property Set NumberOfMonthsTextbox(Value As MSForms.TextBox): Set pNumberOfMonthsTextbox = Value: End Property
+Public Property Get NumberOfMonthsTextbox() As MSForms.TextBox: Set NumberOfMonthsTextbox = pNumberOfMonthsTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' DollarPerMonthTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set DollarPerMonthTextbox(Value As MSForms.TextBox)
-    Set pDollarPerMonthTextbox = Value
-End Property
-Public Property Get DollarPerMonthTextbox() As MSForms.TextBox
-    Set DollarPerMonthTextbox = pDollarPerMonthTextbox
-End Property
+Public Property Set DollarPerMonthTextbox(Value As MSForms.TextBox): Set pDollarPerMonthTextbox = Value: End Property
+Public Property Get DollarPerMonthTextbox() As MSForms.TextBox: Set DollarPerMonthTextbox = pDollarPerMonthTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' SessionComboBox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set SessionComboBox(Value As MSForms.ComboBox)
-    Set pSessionComboBox = Value
-End Property
-Public Property Get SessionComboBox() As MSForms.ComboBox
-    Set SessionComboBox = pSessionComboBox
-End Property
+Public Property Set SessionComboBox(Value As MSForms.ComboBox): Set pSessionComboBox = Value: End Property
+Public Property Get SessionComboBox() As MSForms.ComboBox: Set SessionComboBox = pSessionComboBox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ParentCodeTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ParentCodeTextBox(Value As MSForms.TextBox)
-    Set pParentCodeTextbox = Value
-End Property
-Public Property Get ParentCodeTextBox() As MSForms.TextBox
-    Set ParentCodeTextBox = pParentCodeTextbox
-End Property
+Public Property Set ParentCodeTextBox(Value As MSForms.TextBox): Set pParentCodeTextbox = Value: End Property
+Public Property Get ParentCodeTextBox() As MSForms.TextBox: Set ParentCodeTextBox = pParentCodeTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' PrefixCodeTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set PrefixCodeTextbox(Value As MSForms.TextBox)
-    Set pPrefixCodeTextbox = Value
-End Property
-Public Property Get PrefixCodeTextbox() As MSForms.TextBox
-    Set PrefixCodeTextbox = pPrefixCodeTextbox
-End Property
+Public Property Set PrefixCodeTextbox(Value As MSForms.TextBox): Set pPrefixCodeTextbox = Value: End Property
+Public Property Get PrefixCodeTextbox() As MSForms.TextBox: Set PrefixCodeTextbox = pPrefixCodeTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' AutomationComboBox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set AutomationComboBox(Value As MSForms.ComboBox)
-    Set pAutomationComboBox = Value
-End Property
-Public Property Get AutomationComboBox() As MSForms.ComboBox
-    Set AutomationComboBox = pAutomationComboBox
-End Property
+Public Property Set AutomationComboBox(Value As MSForms.ComboBox): Set pAutomationComboBox = Value: End Property
+Public Property Get AutomationComboBox() As MSForms.ComboBox: Set AutomationComboBox = pAutomationComboBox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ProofHSCheckbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ProofHSCheckbox(Value As MSForms.CheckBox)
-    Set pProofHSCheckbox = Value
-End Property
-Public Property Get ProofHSCheckbox() As MSForms.CheckBox
-    Set ProofHSCheckbox = pProofHSCheckbox
-End Property
+Public Property Set ProofHSCheckbox(Value As MSForms.CheckBox): Set pProofHSCheckbox = Value: End Property
+Public Property Get ProofHSCheckbox() As MSForms.CheckBox: Set ProofHSCheckbox = pProofHSCheckbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ParentStatusOptionButton property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set ParentStatusOptionButton(Value As MSForms.OptionButton)
-    Set pParentStatusOptionButton = Value
-End Property
-Public Property Get ParentStatusOptionButton() As MSForms.OptionButton
-    Set ParentStatusOptionButton = pParentStatusOptionButton
-End Property
+Public Property Set ParentStatusOptionButton(Value As MSForms.OptionButton): Set pParentStatusOptionButton = Value: End Property
+Public Property Get ParentStatusOptionButton() As MSForms.OptionButton: Set ParentStatusOptionButton = pParentStatusOptionButton: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' StudentStatusOptionButton property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set StudentStatusOptionButton(Value As MSForms.OptionButton)
-    Set pStudentStatusOptionButton = Value
-End Property
-Public Property Get StudentStatusOptionButton() As MSForms.OptionButton
-    Set StudentStatusOptionButton = pStudentStatusOptionButton
-End Property
+Public Property Set StudentStatusOptionButton(Value As MSForms.OptionButton): Set pStudentStatusOptionButton = Value: End Property
+Public Property Get StudentStatusOptionButton() As MSForms.OptionButton: Set StudentStatusOptionButton = pStudentStatusOptionButton: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' MaleOptionButton property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set MaleOptionButton(Value As MSForms.OptionButton)
-    Set pMaleOptionButton = Value
-End Property
-Public Property Get MaleOptionButton() As MSForms.OptionButton
-    Set MaleOptionButton = pMaleOptionButton
-End Property
+Public Property Set MaleOptionButton(Value As MSForms.OptionButton): Set pMaleOptionButton = Value: End Property
+Public Property Get MaleOptionButton() As MSForms.OptionButton: Set MaleOptionButton = pMaleOptionButton: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' FemaleOptionButton property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set FemaleOptionButton(Value As MSForms.OptionButton)
-    Set pFemaleOptionButton = Value
-End Property
-Public Property Get FemaleOptionButton() As MSForms.OptionButton
-    Set FemaleOptionButton = pFemaleOptionButton
-End Property
+Public Property Set FemaleOptionButton(Value As MSForms.OptionButton): Set pFemaleOptionButton = Value: End Property
+Public Property Get FemaleOptionButton() As MSForms.OptionButton: Set FemaleOptionButton = pFemaleOptionButton: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' CalcByDollarPerMonthOptionButton property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set CalcByDollarPerMonthOptionButton(Value As MSForms.OptionButton)
-    Set pCalcByDollarPerMonthOptionButton = Value
-End Property
-Public Property Get CalcByDollarPerMonthOptionButton() As MSForms.OptionButton
-    Set CalcByDollarPerMonthOptionButton = pCalcByDollarPerMonthOptionButton
-End Property
+Public Property Set CalcByDollarPerMonthOptionButton(Value As MSForms.OptionButton): Set pCalcByDollarPerMonthOptionButton = Value: End Property
+Public Property Get CalcByDollarPerMonthOptionButton() As MSForms.OptionButton: Set CalcByDollarPerMonthOptionButton = pCalcByDollarPerMonthOptionButton: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' IndividualCreditsOptionButton property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set IndividualCreditsOptionButton(Value As MSForms.OptionButton)
-    Set pIndividualCreditsOptionButton = Value
-End Property
-Public Property Get IndividualCreditsOptionButton() As MSForms.OptionButton
-    Set IndividualCreditsOptionButton = pIndividualCreditsOptionButton
-End Property
+Public Property Set IndividualCreditsOptionButton(Value As MSForms.OptionButton): Set pIndividualCreditsOptionButton = Value: End Property
+Public Property Get IndividualCreditsOptionButton() As MSForms.OptionButton: Set IndividualCreditsOptionButton = pIndividualCreditsOptionButton: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' CareerProgramOptionButton property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set CareerProgramOptionButton(Value As MSForms.OptionButton)
-    Set pCareerProgramOptionButton = Value
-End Property
-Public Property Get CareerProgramOptionButton() As MSForms.OptionButton
-    Set CareerProgramOptionButton = pCareerProgramOptionButton
-End Property
+Public Property Set CareerProgramOptionButton(Value As MSForms.OptionButton): Set pCareerProgramOptionButton = Value: End Property
+Public Property Get CareerProgramOptionButton() As MSForms.OptionButton: Set CareerProgramOptionButton = pCareerProgramOptionButton: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' CollegeSemesterOptionButton property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set CollegeSemesterOptionButton(Value As MSForms.OptionButton)
-    Set pCollegeSemesterOptionButton = Value
-End Property
-Public Property Get CollegeSemesterOptionButton() As MSForms.OptionButton
-    Set CollegeSemesterOptionButton = pCollegeSemesterOptionButton
-End Property
+Public Property Set CollegeSemesterOptionButton(Value As MSForms.OptionButton): Set pCollegeSemesterOptionButton = Value: End Property
+Public Property Get CollegeSemesterOptionButton() As MSForms.OptionButton: Set CollegeSemesterOptionButton = pCollegeSemesterOptionButton: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' CalcByNumOfMonthsOptionButton property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set CalcByNumOfMonthsOptionButton(Value As MSForms.OptionButton)
-    Set pCalcByNumOfMonthsOptionButton = Value
-End Property
-Public Property Get CalcByNumOfMonthsOptionButton() As MSForms.OptionButton
-    Set CalcByNumOfMonthsOptionButton = pCalcByNumOfMonthsOptionButton
-End Property
+Public Property Set CalcByNumOfMonthsOptionButton(Value As MSForms.OptionButton): Set pCalcByNumOfMonthsOptionButton = Value: End Property
+Public Property Get CalcByNumOfMonthsOptionButton() As MSForms.OptionButton: Set CalcByNumOfMonthsOptionButton = pCalcByNumOfMonthsOptionButton: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' PayInFullOptionButton property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set PayInFullOptionButton(Value As MSForms.OptionButton)
-    Set pPayInFullOptionButton = Value
-End Property
-Public Property Get PayInFullOptionButton() As MSForms.OptionButton
-    Set PayInFullOptionButton = pPayInFullOptionButton
-End Property
+Public Property Set PayInFullOptionButton(Value As MSForms.OptionButton): Set pPayInFullOptionButton = Value: End Property
+Public Property Get PayInFullOptionButton() As MSForms.OptionButton: Set PayInFullOptionButton = pPayInFullOptionButton: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' NoCostOptionButton property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set NoCostOptionButton(Value As MSForms.OptionButton)
-    Set pNoCostOptionButton = Value
-End Property
-Public Property Get NoCostOptionButton() As MSForms.OptionButton
-    Set NoCostOptionButton = pNoCostOptionButton
-End Property
+Public Property Set NoCostOptionButton(Value As MSForms.OptionButton): Set pNoCostOptionButton = Value: End Property
+Public Property Get NoCostOptionButton() As MSForms.OptionButton: Set NoCostOptionButton = pNoCostOptionButton: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' WebStartTimeTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set WebStartTimeTextbox(Value As MSForms.TextBox)
-    Set pWebStartTimeTextbox = Value
-End Property
-Public Property Get WebStartTimeTextbox() As MSForms.TextBox
-    Set WebStartTimeTextbox = pWebStartTimeTextbox
-End Property
+Public Property Set WebStartTimeTextbox(Value As MSForms.TextBox): Set pWebStartTimeTextbox = Value: End Property
+Public Property Get WebStartTimeTextbox() As MSForms.TextBox: Set WebStartTimeTextbox = pWebStartTimeTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' WebEndTimeTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set WebEndTimeTextbox(Value As MSForms.TextBox)
-    Set pWebEndTimeTextbox = Value
-End Property
-Public Property Get WebEndTimeTextbox() As MSForms.TextBox
-    Set WebEndTimeTextbox = pWebEndTimeTextbox
-End Property
+Public Property Set WebEndTimeTextbox(Value As MSForms.TextBox): Set pWebEndTimeTextbox = Value: End Property
+Public Property Get WebEndTimeTextbox() As MSForms.TextBox: Set WebEndTimeTextbox = pWebEndTimeTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' PONumberTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set PONumberTextbox(Value As MSForms.TextBox)
-    Set pPONumberTextbox = Value
-End Property
-Public Property Get PONumberTextbox() As MSForms.TextBox
-    Set PONumberTextbox = pPONumberTextbox
-End Property
+Public Property Set PONumberTextbox(Value As MSForms.TextBox): Set pPONumberTextbox = Value: End Property
+Public Property Get PONumberTextbox() As MSForms.TextBox: Set PONumberTextbox = pPONumberTextbox: End Property
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' LongNumberTextbox property
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Property Set LongNumberTextbox(Value As MSForms.TextBox)
-    Set pLongNumberTextbox = Value
-End Property
-Public Property Get LongNumberTextbox() As MSForms.TextBox
-    Set LongNumberTextbox = pLongNumberTextbox
-End Property
+Public Property Set LongNumberTextbox(Value As MSForms.TextBox): Set pLongNumberTextbox = Value: End Property
+Public Property Get LongNumberTextbox() As MSForms.TextBox: Set LongNumberTextbox = pLongNumberTextbox: End Property
 
+' FieldMailingName1 property
+Public Property Set FieldMailingName1(Value As MSForms.TextBox): Set pFieldMailingName1 = Value: End Property
+Public Property Get FieldMailingName1() As MSForms.TextBox: Set FieldMailingName1 = pFieldMailingName1: End Property
 
+' FieldMailingName2 property
+Public Property Set FieldMailingName2(Value As MSForms.TextBox): Set pFieldMailingName2 = Value: End Property
+Public Property Get FieldMailingName2() As MSForms.TextBox: Set FieldMailingName2 = pFieldMailingName2: End Property
+
+' FieldMailingName3 property
+Public Property Set FieldMailingName3(Value As MSForms.TextBox): Set pFieldMailingName3 = Value: End Property
+Public Property Get FieldMailingName3() As MSForms.TextBox: Set FieldMailingName3 = pFieldMailingName3: End Property
+
+' FieldMailingName4 property
+Public Property Set FieldMailingName4(Value As MSForms.TextBox): Set pFieldMailingName4 = Value: End Property
+Public Property Get FieldMailingName4() As MSForms.TextBox: Set FieldMailingName4 = pFieldMailingName4: End Property
+
+' FieldMailingName5 property
+Public Property Set FieldMailingName5(Value As MSForms.TextBox): Set pFieldMailingName5 = Value: End Property
+Public Property Get FieldMailingName5() As MSForms.TextBox: Set FieldMailingName5 = pFieldMailingName5: End Property
+
+' FieldMailingName6 property
+Public Property Set FieldMailingName6(Value As MSForms.TextBox): Set pFieldMailingName6 = Value: End Property
+Public Property Get FieldMailingName6() As MSForms.TextBox: Set FieldMailingName6 = pFieldMailingName6: End Property
+
+' FieldMailingName7 property
+Public Property Set FieldMailingName7(Value As MSForms.TextBox): Set pFieldMailingName7 = Value: End Property
+Public Property Get FieldMailingName7() As MSForms.TextBox: Set FieldMailingName7 = pFieldMailingName7: End Property
+
+' FieldMailingName8 property
+Public Property Set FieldMailingName8(Value As MSForms.TextBox): Set pFieldMailingName8 = Value: End Property
+Public Property Get FieldMailingName8() As MSForms.TextBox: Set FieldMailingName8 = pFieldMailingName8: End Property
+
+' FieldPhone1 property
+Public Property Set FieldPhone1(Value As MSForms.TextBox): Set pFieldPhone1 = Value: End Property
+Public Property Get FieldPhone1() As MSForms.TextBox: Set FieldPhone1 = pFieldPhone1: End Property
+
+' FieldPhone2 property
+Public Property Set FieldPhone2(Value As MSForms.TextBox): Set pFieldPhone2 = Value: End Property
+Public Property Get FieldPhone2() As MSForms.TextBox: Set FieldPhone2 = pFieldPhone2: End Property
+
+' FieldPhone3 property
+Public Property Set FieldPhone3(Value As MSForms.TextBox): Set pFieldPhone3 = Value: End Property
+Public Property Get FieldPhone3() As MSForms.TextBox: Set FieldPhone3 = pFieldPhone3: End Property
+
+' FieldPhone4 property
+Public Property Set FieldPhone4(Value As MSForms.TextBox): Set pFieldPhone4 = Value: End Property
+Public Property Get FieldPhone4() As MSForms.TextBox: Set FieldPhone4 = pFieldPhone4: End Property
+
+' FieldPhone5 property
+Public Property Set FieldPhone5(Value As MSForms.TextBox): Set pFieldPhone5 = Value: End Property
+Public Property Get FieldPhone5() As MSForms.TextBox: Set FieldPhone5 = pFieldPhone5: End Property
+
+' FieldPhone6 property
+Public Property Set FieldPhone6(Value As MSForms.TextBox): Set pFieldPhone6 = Value: End Property
+Public Property Get FieldPhone6() As MSForms.TextBox: Set FieldPhone6 = pFieldPhone6: End Property
+
+' FieldPhone7 property
+Public Property Set FieldPhone7(Value As MSForms.TextBox): Set pFieldPhone7 = Value: End Property
+Public Property Get FieldPhone7() As MSForms.TextBox: Set FieldPhone7 = pFieldPhone7: End Property
+
+' FieldPhone8 property
+Public Property Set FieldPhone8(Value As MSForms.TextBox): Set pFieldPhone8 = Value: End Property
+Public Property Get FieldPhone8() As MSForms.TextBox: Set FieldPhone8 = pFieldPhone8: End Property
