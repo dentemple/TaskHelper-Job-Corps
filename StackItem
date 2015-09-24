@@ -1,9 +1,8 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' StackItem (Class)
+' StackItem (class)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' For use in call stack functionality
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Option Compare Database
 Option Explicit
 
 'Keep track of the next stack item, _
