@@ -5,13 +5,52 @@
     Job Corps students.
 ' Requires two sets of actions: Adding the student to the AddressBook, then _
     performing the course enrollment.
+'
+' In later iterations, the functionality of this module can be converted to a _
+    table or recordset.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Option Explicit
+
+'AS400 specific values
+    Const rowHome As Long = 19
+    Const colHome As Long = 7
+    Const optionCustomerService As String = "1"
+    Const optionAddressBook As String = "3"
+    Const optionOrderEntry As String = "20"
+    Const optionEducationInquiry As String = "15"
+    Const locationAddressBook As String = "01051"
+    Const actionCodeC As String = "C"
+    Const actionCodeI As String = "I"
+    Const actionCodeA As String = "A"
+    Const searchType As String = "TR"
+    Const schoolType As String = "HS"
+    Const degreeCode As String = "N"
+    Const emailCode As String = "E"
+    Const PACode As String = "PA"
+    Const TUICode As String = "TUI"
+    
+'Reference names for specific variables
+    Const tagStudentID As String = "StudentID from AS/400"
+    Const tagMailingName As String = "MailingName from Textbox"
+    Const tagAlphaName As String = "AlphaName from Textbox"
+    Const tagParentCode As String = "ParentCode from Textbox"
+    Const tagPrefixCode As String = "PrefixCode from Textbox"
+    Const tagLongNumber As String = "LongNumber from Textbox"
+    Const tagWebStart As String = "WebStartTime from Textbox"
+    Const tagWebEnd As String = "WebEndTime from Textbox"
+    Const tagGender As String = "Gender from Textbox"
+    Const tagAreaCode As String = "AreaCode from Textbox"
+    Const tagPhone As String = "PhoneNumber from Textbox"
+    Const tagSalesperson As String = "Salesperson from Textbox"
+    Const tagProgram As String = "ProgramMod from Textbox"
+    Const tagPONumber As String = "PO Number from Textbox"
+    Const tagProgramCost As String = "Cost of Program from Textbox"
+    Const tagEmail As String = "Email from Textbox"
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' PopulateAddressBookCommands
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function PopulateAddressBookCommands(ByRef Exception As cException) As Collection
+Public Function PopulateAddressBookCommands(Optional ByRef Exception As cException) As Collection
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Provides the set of commands for adding a student to the _
     AddressBook for B2B/3rd Party enrollments
@@ -19,7 +58,7 @@ Public Function PopulateAddressBookCommands(ByRef Exception As cException) As Co
     'Pass error handling up the call stack
     On Error GoTo 0
     
-    Exception.Push "Commands_Registration.PopulateAddressBookCommands"
+    If Not Exception Is Nothing Then Exception.Push "Commands_Registration.PopulateAddressBookCommands"
 
     '''''''''''''''''''''''''''
     ' Prepare
@@ -31,89 +70,90 @@ Public Function PopulateAddressBookCommands(ByRef Exception As cException) As Co
     ' Add Commands
     '''''''''''''''''''''''''''
     'Navigating to Address Book
-    AddCommand toCommands, commCustom, procNavigateHome, , , , , Exception
-    AddCommand toCommands, commSet, optionCustomerService, rowHome, colHome, , , Exception
-    AddCommand toCommands, commSend, EnterKey, , , , , Exception
+    AddCommand toCommands, commCustom, procNavigateHome, , , , , moduleReg, Exception
+    AddCommand toCommands, commSet, optionCustomerService, rowHome, colHome, , , moduleReg, Exception
+    AddCommand toCommands, commSend, EnterKey, , , , , moduleReg, Exception
     
-    AddCommand toCommands, commSet, optionAddressBook, rowHome, colHome, , , Exception
-    AddCommand toCommands, commSend, EnterKey, , , , , Exception
+    AddCommand toCommands, commSet, optionAddressBook, rowHome, colHome, , , moduleReg, Exception
+    AddCommand toCommands, commSend, EnterKey, , , , , moduleReg, Exception
     
     'Entering the student information
-    AddCommand toCommands, commSearch, locationAddressBook, , , , forward, Exception
-    AddCommand toCommands, commSet, actionCodeA, 3, 19, , , Exception
-    AddCommand toCommands, commSet, searchType, 14, 19, , , Exception
-    AddCommand toCommands, commSet, tagPrefixCode, 23, 19, , , Exception
-    AddCommand toCommands, variableSet, tagMailingName, 4, 19, , , Exception
-    AddCommand toCommands, variableSet, tagAlphaName, 6, 19, , , Exception
-    AddCommand toCommands, variableSet, tagParentCode, 17, 55, , , Exception
-    AddCommand toCommands, variableSet, tagLongNumber, 2, 60, , , Exception
-    AddCommand toCommands, commSend, EnterKey, , , , , Exception
+    AddCommand toCommands, commSearch, locationAddressBook, , , , forward, moduleReg, Exception
+    AddCommand toCommands, commSet, actionCodeA, 3, 19, , , moduleReg, Exception
+    AddCommand toCommands, commSet, searchType, 14, 19, , , moduleReg, Exception
+    AddCommand toCommands, commSet, tagPrefixCode, 23, 19, , , moduleReg, Exception
+    AddCommand toCommands, commSetFrom, tagMailingName, 4, 19, , , moduleReg, Exception
+    AddCommand toCommands, commSetFrom, tagAlphaName, 6, 19, , , moduleReg, Exception
+    AddCommand toCommands, commSetFrom, tagParentCode, 17, 55, , , moduleReg, Exception
+    AddCommand toCommands, commSetFrom, tagLongNumber, 2, 60, , , moduleReg, Exception
+    AddCommand toCommands, commSend, EnterKey, , , , , moduleReg, Exception
     
     'Student ID# returned
-    AddCommand toCommands, commGet, tagStudentID, 4, 32, modLength, , Exception
-    AddCommand toCommands, commSend, EnterKey, , , , , Exception
+    AddCommand toCommands, commGet, tagStudentID, 4, 32, modLength, , moduleReg, Exception
+    AddCommand toCommands, commSend, EnterKey, , , , , moduleReg, Exception
     
     'Enter=>F3 sequence
-    AddCommand toCommands, commSend, EnterKey, , , , , Exception
-    AddCommand toCommands, commSend, F3Key, , , , , Exception
-    AddCommand toCommands, commSend, EnterKey, , , , , Exception
-    AddCommand toCommands, commSend, F3Key, , , , , Exception
-    AddCommand toCommands, commSend, EnterKey, , , , , Exception
-    AddCommand toCommands, commSend, F3Key, , , , , Exception
-    AddCommand toCommands, commSend, EnterKey, , , , , Exception
-    AddCommand toCommands, commSend, F3Key, , , , , Exception
+    AddCommand toCommands, commSend, EnterKey, , , , , moduleReg, Exception
+    AddCommand toCommands, commSend, F3Key, , , , , moduleReg, Exception
+    AddCommand toCommands, commSend, EnterKey, , , , , moduleReg, Exception
+    AddCommand toCommands, commSend, F3Key, , , , , moduleReg, Exception
+    AddCommand toCommands, commSend, EnterKey, , , , , moduleReg, Exception
+    AddCommand toCommands, commSend, F3Key, , , , , moduleReg, Exception
+    AddCommand toCommands, commSend, EnterKey, , , , , moduleReg, Exception
+    AddCommand toCommands, commSend, F3Key, , , , , moduleReg, Exception
     
     'Apply Web Times
-    AddCommand toCommands, variableSet, tagWebStart, 13, 23, , , Exception
-    AddCommand toCommands, variableSet, tagWebEnd, 14, 23, , , Exception
+    AddCommand toCommands, commSetFrom, tagWebStart, 13, 23, , , moduleReg, Exception
+    AddCommand toCommands, commSetFrom, tagWebEnd, 14, 23, , , moduleReg, Exception
     
     'Enter=>F3 sequence
-    AddCommand toCommands, commSend, EnterKey, , , , , Exception
-    AddCommand toCommands, commSend, F3Key, , , , , Exception
+    AddCommand toCommands, commSend, EnterKey, , , , , moduleReg, Exception
+    AddCommand toCommands, commSend, F3Key, , , , , moduleReg, Exception
     
     'Apply Account Info
-    AddCommand toCommands, commSet, schoolType, 6, 23, , , Exception
-    AddCommand toCommands, commSet, degreeCode, 10, 23, , , Exception
-    AddCommand toCommands, commSet, tagGender, 19, 57, , , Exception
+    AddCommand toCommands, commSet, schoolType, 6, 23, , , moduleReg, Exception
+    AddCommand toCommands, commSet, degreeCode, 10, 23, , , moduleReg, Exception
+    AddCommand toCommands, commSetFrom, tagGender, 19, 57, , , moduleReg, Exception
     
     'Enter=>F3 sequence
-    AddCommand toCommands, commSend, EnterKey, , , , , Exception
-    AddCommand toCommands, commSend, F3Key, , , , , Exception
+    AddCommand toCommands, commSend, EnterKey, , , , , moduleReg, Exception
+    AddCommand toCommands, commSend, F3Key, , , , , moduleReg, Exception
     
     'Return To Address Book
-    AddCommand toCommands, commSend, EnterKey, , , , , Exception
-    AddCommand toCommands, commSend, EnterKey, , , , , Exception
+    AddCommand toCommands, commSend, EnterKey, , , , , moduleReg, Exception
+    AddCommand toCommands, commSend, EnterKey, , , , , moduleReg, Exception
     
     'Apply the phone number
-    AddCommand toCommands, commSend, F12Key, , , , , Exception
-    AddCommand toCommands, commSet, actionCodeC, 4, 21, , , Exception
-    AddCommand toCommands, variableSet, tagAreaCode, 11, 9, , , Exception
-    AddCommand toCommands, variableSet, tagPhone, 11, 16, , , Exception
-    AddCommand toCommands, commSend, EnterKey, , , , , Exception
-    AddCommand toCommands, commSend, F3Key, , , , , Exception
+    AddCommand toCommands, commSend, F12Key, , , , , moduleReg, Exception
+    AddCommand toCommands, commSet, actionCodeC, 4, 21, , , moduleReg, Exception
+    AddCommand toCommands, commSetFrom, tagAreaCode, 11, 9, , , moduleReg, Exception
+    AddCommand toCommands, commSetFrom, tagPhone, 11, 16, , , moduleReg, Exception
+    AddCommand toCommands, commSend, EnterKey, , , , , moduleReg, Exception
+    AddCommand toCommands, commSend, F3Key, , , , , moduleReg, Exception
     
     'Apply the email
-    AddCommand toCommands, commSend, F5Key, , , , , Exception
-    AddCommand toCommands, commSend, F4Key, , , , , Exception
-    AddCommand toCommands, commSet, actionCodeC, 3, 18, , , Exception
-    AddCommand toCommands, commSet, emailCode, 11, 62, , , Exception
-    AddCommand toCommands, commSend, EnterKey, , , , , Exception
-    AddCommand toCommands, commSend, F3Key, , , , , Exception
-    AddCommand toCommands, commSend, F3Key, , , , , Exception
+    AddCommand toCommands, commSend, F5Key, , , , , moduleReg, Exception
+    AddCommand toCommands, commSend, F4Key, , , , , moduleReg, Exception
+    AddCommand toCommands, commSet, actionCodeC, 3, 18, , , moduleReg, Exception
+    AddCommand toCommands, commSet, emailCode, 11, 62, , , moduleReg, Exception
+    AddCommand toCommands, commSetFrom, tagEmail, 10, 4, , , moduleReg, Exception
+    AddCommand toCommands, commSend, EnterKey, , , , , moduleReg, Exception
+    AddCommand toCommands, commSend, F3Key, , , , , moduleReg, Exception
+    AddCommand toCommands, commSend, F3Key, , , , , moduleReg, Exception
     
     '''''''''''''''''''''''''''
     ' Finalize
     '''''''''''''''''''''''''''
     Set PopulateAddressBookCommands = toCommands
     
-    Exception.Pop
+    If Not Exception Is Nothing Then Exception.Pop
     
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' PopulateEnrollmentCommands
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function PopulateEnrollmentCommands(ByRef Exception As cException) As Collection
+Public Function PopulateEnrollmentCommands(Optional ByRef Exception As cException) As Collection
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Provides the set of commands for performing an enrollment _
     through the B2B Order Entry screen
@@ -121,7 +161,7 @@ Public Function PopulateEnrollmentCommands(ByRef Exception As cException) As Col
     'Pass error handling up the call stack
     On Error GoTo 0
     
-    Exception.Push "Commands_Registration.PopulateEnrollmentCommands"
+    If Not Exception Is Nothing Then Exception.Push "Commands_Registration.PopulateEnrollmentCommands"
 
     '''''''''''''''''''''''''''
     ' Prepare
@@ -133,51 +173,384 @@ Public Function PopulateEnrollmentCommands(ByRef Exception As cException) As Col
     ' Add Commands
     '''''''''''''''''''''''''''
     'Navigate
-    AddCommand toCommands, commCustom, procNavigateHome, , , , , Exception
-    AddCommand toCommands, commSet, optionOrderEntry, rowHome, colHome, , , Exception
-    AddCommand toCommands, commSend, EnterKey, , , , , Exception
+    AddCommand toCommands, commCustom, procNavigateHome, , , , , moduleReg, Exception
+    AddCommand toCommands, commSet, optionOrderEntry, rowHome, colHome, , , moduleReg, Exception
+    AddCommand toCommands, commSend, EnterKey, , , , , moduleReg, Exception
     
     'Apply enrollment info
-    AddCommand toCommands, commSet, actionCodeA, 3, 20, , , Exception
-    AddCommand toCommands, variableSet, tagStudentID, 4, 20, , , Exception
-    AddCommand toCommands, variableSet, tagSalesperson, 6, 20, , , Exception
-    AddCommand toCommands, variableSet, tagProgram, 7, 20, , , Exception
-    AddCommand toCommands, variableSet, tagPONumber, 8, 20, , , Exception
-    AddCommand toCommands, commSend, EnterKey, , , , , Exception
+    AddCommand toCommands, commSet, actionCodeA, 3, 20, , , moduleReg, Exception
+    AddCommand toCommands, commSetFrom, tagStudentID, 4, 20, , , moduleReg, Exception
+    AddCommand toCommands, commSetFrom, tagSalesperson, 6, 20, , , moduleReg, Exception
+    AddCommand toCommands, commSetFrom, tagProgram, 7, 20, , , moduleReg, Exception
+    AddCommand toCommands, commSetFrom, tagPONumber, 8, 20, , , moduleReg, Exception
+    AddCommand toCommands, commSend, EnterKey, , , , , moduleReg, Exception
     
     'Check for extra screen
-    AddCommand toCommands, commCustom, procExtraEnrollScreen, , , , , Exception
+    AddCommand toCommands, commCustom, procExtraEnrollScreen, , , , , moduleReg, Exception
     
     'Apply Tuition
-    AddCommand toCommands, commSet, PACode, 11, 11, , , Exception
-    AddCommand toCommands, commSet, TUICode, 11, 16, , , Exception
-    AddCommand toCommands, variableSet, tagProgramCost, 11, 54, , , Exception
-    AddCommand toCommands, commSend, EnterKey, , , , , Exception
+    AddCommand toCommands, commSet, PACode, 11, 11, , , moduleReg, Exception
+    AddCommand toCommands, commSet, TUICode, 11, 16, , , moduleReg, Exception
+    AddCommand toCommands, commSetFrom, tagProgramCost, 11, 54, , , moduleReg, Exception
+    AddCommand toCommands, commSend, EnterKey, , , , , moduleReg, Exception
     
     'Apply full payment
-    AddCommand toCommands, commSend, EnterKey, , , , , Exception
-    AddCommand toCommands, commSend, EnterKey, , , , , Exception
-    AddCommand toCommands, commSend, F3Key, , , , , Exception
+    AddCommand toCommands, commSend, EnterKey, , , , , moduleReg, Exception
+    AddCommand toCommands, commSend, EnterKey, , , , , moduleReg, Exception
+    AddCommand toCommands, commSend, F3Key, , , , , moduleReg, Exception
     
     'Apply enrollment
-    AddCommand toCommands, commSend, F11Key, , , , , Exception
+    AddCommand toCommands, commSend, F11Key, , , , , moduleReg, Exception
     
     'Navigate to Education Inquiry
-    AddCommand toCommands, commSet, optionCustomerService, rowHome, colHome, , , Exception
-    AddCommand toCommands, commSend, EnterKey, , , , , Exception
+    AddCommand toCommands, commSend, F3Key, , , , , moduleReg, Exception
+    AddCommand toCommands, commSet, optionCustomerService, rowHome, colHome, , , moduleReg, Exception
+    AddCommand toCommands, commSend, EnterKey, , , , , moduleReg, Exception
     
-    AddCommand toCommands, commSet, optionEducationInquiry, rowHome, colHome, , , Exception
-    AddCommand toCommands, commSend, EnterKey, , , , , Exception
+    AddCommand toCommands, commSet, optionEducationInquiry, rowHome, colHome, , , moduleReg, Exception
+    AddCommand toCommands, commSend, EnterKey, , , , , moduleReg, Exception
     
     'Enter StudentID
-    AddCommand toCommands, variableSet, tagStudentID, 3, 13, , , Exception
-    AddCommand toCommands, commSend, EnterKey, , , , , Exception
+    AddCommand toCommands, commSetFrom, tagStudentID, 3, 13, , , moduleReg, Exception
+    AddCommand toCommands, commSend, EnterKey, , , , , moduleReg, Exception
     
     '''''''''''''''''''''''''''
     ' Finalize
     '''''''''''''''''''''''''''
     Set PopulateEnrollmentCommands = toCommands
     
-    Exception.Pop
+    If Not Exception Is Nothing Then Exception.Pop
     
 End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Registration_ReturnStringToSet
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function Registration_ReturnStringToSet(ByVal Command As cCommand, ByVal Student As cStudent, _
+    Optional ByRef Exception As cException) As String
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' For the Commands_Registration module
+' References a hard-coded value so as to pass information _
+    from the cStudent object to the cAS400's SetText execution
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    On Error GoTo 0
+    
+    Dim tempString As String
+    
+    If Not Exception Is Nothing Then Exception.Push "Commands_Registration.ReturnStringToSet"
+    
+    Select Case Command.StringToAction
+    
+        Case tagMailingName: tempString = Student.GetMailingName
+            
+        Case tagAlphaName: tempString = Student.GetAlphaName
+            
+        Case tagParentCode: tempString = Student.GetParentCode
+            
+        Case tagLongNumber: tempString = Student.GetLongNumber
+        
+        Case tagWebStart: tempString = Student.GetWebStartTime
+            
+        Case tagWebEnd: tempString = Student.GetWebEndTime
+            
+        Case tagGender: tempString = Student.GetGender
+            
+        Case tagAreaCode: tempString = Student.GetAreaCode
+            
+        Case tagPhone: tempString = Student.GetPhoneNumber
+            
+        Case tagEmail: tempString = Student.GetEmail
+            
+        Case tagStudentID: tempString = Student.StudentID
+            
+        Case tagSalesperson: tempString = Student.GetSalesperson
+            
+        Case tagProgram: tempString = Student.GetProgramNumber
+            
+        Case tagPONumber: tempString = Student.GetPONumber
+            
+        Case tagProgramCost: tempString = Student.GetProgramTuition
+            
+        Case Else: tempString = ""
+    
+    End Select
+    
+    Registration_ReturnStringToSet = tempString
+    
+    If Not Exception Is Nothing Then Exception.Pop
+    
+End Function
+    
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Registration_SaveToLocation
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub Registration_SaveToLocation(ByVal Result_to_Save As String, ByVal Command As cCommand, _
+    ByRef Student As cStudent, Optional ByRef Exception As cException)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' For the Commands_Registration module
+' References a hard-coded value so as to pass information _
+    from the cStudent object to the cAS400's GetText execution
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    On Error GoTo 0
+    
+    If Not Exception Is Nothing Then Exception.Push "Commands_Registration.SaveToLocation"
+    
+    Select Case Command.StringToAction
+    
+        Case tagStudentID: Student.StudentID = Result_to_Save
+    
+    End Select
+    
+    
+    If Not Exception Is Nothing Then Exception.Pop
+    
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Registration_PerformCustomProcedure
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub Registration_PerformCustomProcedure(ByVal Command As cCommand, ByRef Student As cStudent, _
+    Optional ByRef Exception As cException)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' For the Commands_Registration module
+' References a hard-coded value so as to execute edge-case _
+    procedures during the cAS400's main execution cycle.
+' Note: Later iterations of this project should incorporate _
+    these edge cases into the execution's primary logic.
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    On Error GoTo 0
+    
+    If Not Exception Is Nothing Then Exception.Push "Commands_Registration.PerformCustomProcedure"
+    
+    Select Case Command.StringToAction
+    
+        Case procNavigateHome
+        
+            ' // Not Complete
+            
+        Case procExtraEnrollScreen
+        
+            ' // Not Complete
+            
+    End Select
+    
+    If Not Exception Is Nothing Then Exception.Pop
+    
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' LoadUserformObjects
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub LoadUserformObjects(ByRef Student As cStudent, ByVal RegForm As MSForms.UserForm, _
+    Optional ByRef Exception As cException)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Stores the separate registration textboxes into the _
+    cStudent class object.
+' "Get" modifiers within the cStudent class object will _
+    extract the necessary information.
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    'Pass error handling up the call stack
+    On Error GoTo 0
+
+    If Not Exception Is Nothing Then Exception.Push "Commands_Registration.LoadUserformObjects"
+
+    'Pass userform
+    Set Student.UserFormObject = RegForm
+
+    'Pass textboxes
+    Set Student.SalespersonTextbox = RegForm.Salesperson_Textbox
+    Set Student.ParentCodeTextBox = RegForm.ParentCode_Textbox
+    Set Student.FirstNameTextbox = RegForm.Firstname_Textbox
+    Set Student.LastNameTextbox = RegForm.Lastname_Textbox
+    Set Student.MiddleNameTextbox = RegForm.Middlename_Textbox
+    Set Student.WebStartTimeTextbox = RegForm.WebStartTime_Textbox
+    Set Student.WebEndTimeTextbox = RegForm.WebEndTime_Textbox
+    Set Student.ProgramNumberTextbox = RegForm.ProgramNumber_Textbox
+    Set Student.ProgramTuitionTextbox = RegForm.ProgramTuition_Textbox
+    Set Student.EmailTextbox = RegForm.Email_Textbox
+    Set Student.PONumberTextbox = RegForm.PONumber_Textbox
+    Set Student.LongNumberTextbox = RegForm.LongNumber_Textbox
+    Set Student.AreaCodeTextbox = RegForm.AreaCode_Textbox
+    Set Student.PhoneNumberTextbox = RegForm.PhoneNumber_Textbox
+    
+    'Pass comboboxes
+    Set Student.SessionComboBox = RegForm.Session_ComboBox
+    Set Student.PrefixCodeTextbox = RegForm.PrefixCode_Textbox
+    
+    'Pass option selection
+    Set Student.MaleOptionButton = RegForm.Male_Optionselect
+    Set Student.FemaleOptionButton = RegForm.Female_Optionselect
+    
+Cleanup:
+
+    If Not Exception Is Nothing Then Exception.Pop
+
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ApproveRegistration
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function ApproveRegistration(ByVal Student As cStudent, ByRef redMessage As String, _
+    ByRef blueMessage As String, ByRef Exception As cException) As Boolean
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Allows the user to confirm the current enrollment _
+    information prior to executing the AS/400 procedures.
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    
+    Exception.Push "Commands_Registration.ApproveRegistration"
+    
+    Dim approvalFlag As Boolean
+    approvalFlag = True
+    
+    Dim userSelection As Integer
+    userSelection = 2
+    
+    If Exception.Flag = True Then approvalFlag = False
+    
+    ConfirmAccountInfo Student, approvalFlag, redMessage, blueMessage, Exception
+    ConfirmStudentFile Student, approvalFlag, redMessage, blueMessage, Exception
+    
+    If Not Exception Is Nothing Then Exception.Message = "Providing the final checklist..."
+    
+    If approvalFlag = False Then
+    
+        AppActivate "Excel"
+        MsgBox redMessage, vbCritical, "Pre-Enrollment Checklist"
+        
+    Else
+    
+        AppActivate "Excel"
+        userSelection = MsgBox(blueMessage, vbOKCancel, "Pre-Enrollment Checklist")
+        If userSelection = vbOK Then approvalFlag = True
+        If userSelection = vbCancel Then approvalFlag = False
+        
+    End If
+    
+    ApproveRegistration = approvalFlag
+    
+Cleanup:
+
+    Exception.Pop
+
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ConfirmAccountInfo
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub ConfirmAccountInfo(ByVal Student As cStudent, ByRef approvalFlag As Boolean, _
+    ByRef redMessage As String, ByRef blueMessage As String, Optional ByRef Exception As cException)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' For the ApproveRegistration procedure
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    
+    If Not Exception Is Nothing Then Exception.Push "Commands_Registration.ConfirmAccountInfo"
+    
+    Dim temp As String: temp = vbNullString
+    
+    'AS/400 Session
+    temp = Student.GetSession
+    If Len(temp) = 1 And InStr("ABCDEFGHIJKLMNOPQRSTUVWXYZ", temp) >= 1 Then
+        blueMessage = blueMessage & "Session:" & vbTab & vbTab & temp & vbNewLine & vbNewLine
+    Else
+        approvalFlag = False
+        redMessage = redMessage & "* The AS/400 session name must be a single letter" & vbNewLine
+    End If
+    
+    'PrefixCode
+    temp = Student.GetPrefixCode
+    If Len(temp) = 3 Then
+        blueMessage = blueMessage & "PrefixCode:" & vbTab & temp & vbNewLine
+    Else
+        approvalFlag = False
+        redMessage = redMessage & "* The prefix code must be 3 characters long" & vbNewLine
+    End If
+    
+    'Program Number
+    temp = Student.GetProgramNumber
+    If IsNumeric(temp) And Len(temp) = 8 Then
+        blueMessage = blueMessage & "Program Number:" & vbTab & temp & vbNewLine
+    Else
+        approvalFlag = False
+        redMessage = redMessage & "* The program number must be numeric and 8 digits long" & vbNewLine
+    End If
+    
+    'Program Tuition
+    temp = Student.GetProgramTuition
+    If IsNumeric(temp) And Val(temp) >= 1 Then
+        blueMessage = blueMessage & "Program Tuition:" & vbTab & Format(temp, "Currency") & vbNewLine & vbNewLine
+    Else
+        approvalFlag = False
+        redMessage = redMessage & "* The program tuition must be numeric and greater than zero" & vbNewLine
+    End If
+    
+    'Web Start Time
+    temp = Student.GetWebStartTime
+    If IsNumeric(temp) And Len(temp) <= 6 Then
+        blueMessage = blueMessage & "WebStartTime:" & vbTab & temp & vbNewLine
+    Else
+        blueMessage = blueMessage & "WebStartTime:" & vbTab & "000000" & vbNewLine
+    End If
+    
+    'Web End Time
+    temp = Student.GetWebEndTime
+    If IsNumeric(temp) And Len(temp) <= 6 Then
+        blueMessage = blueMessage & "WebEndTime:" & vbTab & temp & vbNewLine & vbNewLine
+    Else
+        blueMessage = blueMessage & "WebEndTime:" & vbTab & "000000" & vbNewLine
+    End If
+    
+    If Len(Student.GetPONumber) >= 1 Then
+        blueMessage = blueMessage & "PO Number:" & vbTab & Student.GetPONumber & vbNewLine & vbNewLine
+    End If
+    
+Cleanup:
+
+    If Not Exception Is Nothing Then Exception.Pop
+    
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ConfirmStudentFile
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub ConfirmStudentFile(ByVal Student As cStudent, ByRef approvalFlag As Boolean, _
+    ByRef redMessage As String, ByRef blueMessage As String, Optional ByRef Exception As cException)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' For the ApproveRegistration procedure
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    
+    If Not Exception Is Nothing Then Exception.Push "Commands_Registration.ConfirmStudentFile"
+    
+    'Student Name
+    If Len(Student.GetMailingName) < 4 Or Len(Student.GetMailingName) > 38 Then
+        approvalFlag = False
+        redMessage = redMessage & "* The student's full name must be between 4 and 38 characters" & vbNewLine
+    Else
+        blueMessage = blueMessage & "MailingName:" & vbTab & Student.GetMailingName & vbNewLine
+        blueMessage = blueMessage & "AlphaName:" & vbTab & Student.GetAlphaName & vbNewLine
+    End If
+    
+    blueMessage = blueMessage & "Gender:" & vbTab & vbTab & Student.GetGender & vbNewLine
+    
+    'Phone Number
+    blueMessage = blueMessage & "Phone:" & vbTab & vbTab & Student.GetAreaCode & "-" & Student.GetPhoneNumber & vbNewLine
+        
+    'Student Email
+    blueMessage = blueMessage & "Email:" & vbTab & vbTab & Student.GetEmail & vbNewLine & vbNewLine
+    
+    'Long Number
+    blueMessage = blueMessage & "Long#:" & vbTab & vbTab & Student.GetLongNumber & vbNewLine
+    
+    'PO Number
+    blueMessage = blueMessage & "PO#:" & vbTab & vbTab & Student.GetPONumber & vbNewLine
+    
+Cleanup:
+    
+    If Not Exception Is Nothing Then Exception.Pop
+    
+End Sub
