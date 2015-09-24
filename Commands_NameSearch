@@ -299,3 +299,44 @@ Public Function StoreActionTextboxes(ByRef NameForm As MSForms.UserForm, _
     StoreActionTextboxes = tempArray()
 
 End Function
+
+Public Function UserHasSelectedName(ByRef NameForm As MSForms.Userform, Optional ByRef Exception As cException) As Boolean
+    
+    Dim i As Integer
+    Const arrSize As Integer = 8
+
+    Dim baseRow As Long
+    Const actionCol As Long = 5
+    
+    Dim storeTextboxes() As Object
+    ReDim storeTextboxes(arrSize) As Object
+    
+    UserHasSelectedName = False
+    
+    baseRow = 7
+    storeTextboxes = StoreActionTextboxes(NameForm, Exception)
+    
+    Do
+    
+        If Len(Trim(storeTextboxes(i).Value)) >= 1 Then
+        
+            AS400.SetText Trim(storeTextboxes(i).Value), baseRow, actionCol
+            ' // PostResultsToForm
+            UserHasSelectedName = True
+                
+        Else
+                
+            baseRow = baseRow + 1
+                
+        End If
+                
+        i = i + 1
+                
+    Loop While UserHasSelectedName = False Or i <= arrSize 
+    
+End Function
+
+Public Sub ClearActionBoxes(ByRef NameForm As MSForms.Userform, Optional ByRef Exception As cException)
+    
+    
+End Sub
