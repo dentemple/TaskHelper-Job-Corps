@@ -1,0 +1,206 @@
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Procedures_Registration (Module)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Provides the necessary commands for performing a program registration for _
+    Job Corps students.
+' Requires two sets of actions: Adding the student to the AddressBook, then _
+    performing the course enrollment.
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Option Explicit
+
+'AS400 specific values
+    Const rowHome As Long = 19
+    Const colHome As Long = 7
+    Const optionCustomerService As String = "1"
+    Const optionAddressBook As String = "3"
+    Const optionOrderEntry As String = "20"
+    Const optionEducationInquiry As String = "15"
+    Const locationAddressBook As String = "01051"
+    Const locationExtraEnrollScreen As String = "66302"
+    Const actionCodeC As String = "C"
+    Const actionCodeI As String = "I"
+    Const actionCodeA As String = "A"
+    Const searchType As String = "TR"
+    Const schoolType As String = "HS"
+    Const degreeCode As String = "N"
+    Const emailCode As String = "E"
+    Const PACode As String = "PA"
+    Const TUICode As String = "TUI"
+
+Public Sub Execute_AddressBookRegistration(ByRef Student As cStudent, _
+    ByVal AS400 As cAS400, ByRef Exception As cException)
+    
+    'Passes error handling up the call stack
+    On Error GoTo 0
+    
+    Exception.Push "Procedures_Registration.Execute_AddressBookRegistration"
+    
+    Exception.ErrMessage = "Navigating to the AddressBook"
+    ' //NavigateHome
+    ' //NavigationCheck
+    
+    AS400.SetText optionCustomerService, rowHome, colHome
+    AS400.SendKeys EnterKey
+    
+    AS400.SetText optionAddressBook, rowHome, colHome
+    AS400.SendKeys EnterKey
+    
+    Exception.ErrMessage = "Checking if navigation successful"
+    If AS400.SearchText(locationAddressBook, 1, 1, forward) = False Then GoTo NavigationFailure
+    
+    Exception.ErrMessage = "Entering the student information"
+    With AS400
+        .SetText actionCodeA, 3, 19
+        .SetText searchType, 14, 19
+        .SetText Student.GetPrefixCode, 23, 19
+        .SetText Student.GetMailingName, 4, 19
+        .SetText Student.GetAlphaName, 6, 19
+        .SetText Student.GetParentCode, 17, 55
+    
+    
+    If Len(Student.GetLongNumber) >= 1 Then
+            .SetText Student.GetLongNumber, 2, 60
+    End If
+    
+        .SendKeys EnterKey
+    
+    Exception.ErrMessage = "Pulling the Student ID#"
+    Student.StudentID = Trim(.GetText(4, 32, modLength))
+    
+    End With
+    
+    If Len(Student.StudentID) < modLength Or Not IsNumeric(Student.StudentID) Then GoTo NavigationFailure
+    
+    Exception.ErrMessage = "Navigating the Enter=>F3 sequence"
+    With AS400
+        .SendKeys EnterKey
+        .SendKeys F3Key
+        .SendKeys EnterKey
+        .SendKeys F3Key
+        .SendKeys EnterKey
+        .SendKeys F3Key
+        .SendKeys EnterKey
+        .SendKeys F3Key
+        
+    Exception.ErrMessage = "Entering the Web Times"
+        .SetText Student.GetWebStartTime, 13, 23
+        .SetText Student.GetWebEndTime, 14, 23
+        .SendKeys EnterKey
+        .SendKeys F3Key
+        
+    Exception.ErrMessage = "Entering the Account Info"
+        .SetText schoolType, 6, 23
+        .SetText degreeCode, 10, 23
+        .SetText Student.GetGender, 19, 57
+        .SendKeys EnterKey
+        .SendKeys F3Key
+        .SendKeys EnterKey
+        .SendKeys EnterKey
+        
+    Exception.ErrMessage = "Entering the phone number"
+    If Len(Trim(Student.GetPhoneNumber)) > 0 Then
+            .SendKeys F12Key
+            .SetText actionCodeC, 4, 21
+            .SetText Student.GetAreaCode, 11, 9
+            .SetText Student.GetPhoneNumber, 11, 16
+            .SendKeys EnterKey
+            .SendKeys F3Key
+    End If
+    
+    Exception.ErrMessage = "Entering the email"
+        .SendKeys F5Key
+        .SendKeys F4Key
+        .SetText actionCodeC, 3, 18
+        .SetText emailCode, 11, 62
+        .SetText Student.GetEmail, 10, 4
+        .SendKeys EnterKey
+        .SendKeys F3Key
+        .SendKeys F3Key
+        
+    End With
+    
+Cleanup:
+
+    Exception.Pop
+    
+Exit Sub
+
+NavigationFailure:
+    ' // NavigationFailure code
+GoTo Cleanup
+
+End Sub
+
+Public Sub Execute_CourseEntryRegistration(ByRef Student As cStudent, _
+    ByVal AS400 As cAS400, ByRef Exception As cException, Optional ByRef StatusBox As Object)
+    
+    'Passes error handling up the call stack
+    On Error GoTo 0
+    
+    Exception.Push "Procedures_Registration.Execute_AddressBookRegistration"
+    
+    Exception.ErrMessage = "Navigating to OrderEntry"
+    ' //NavigateHome
+    ' //NavigationCheck
+    
+    With AS400
+        
+        .SetText optionOrderEntry, rowHome, colHome
+        .SendKeys EnterKey
+        
+    Exception.ErrMessage = "Applying the enrollment information"
+        .SetText actionCodeA, 3, 20
+        .SetText Student.StudentID, 4, 20
+        .SetText Student.GetSalesperson, 6, 20
+        .SetText Student.GetProgramNumber, 7, 20
+        
+    If Len(Trim(Student.GetPONumber)) > 0 Then
+            .SetText Student.GetPONumber, 8, 20
+    End If
+    
+        .SendKeys EnterKey
+
+    Exception.ErrMessage = "Checking for PS screen 66302"
+    If .SearchText(locationExtraEnrollScreen, 1, 1, forward) Then
+            .SendKeys EnterKey
+    End If
+    
+    Exception.ErrMessage = "Entering the tuition information"
+        .SetText PACode, 11, 11
+        .SetText TUICode, 11, 16
+        .SetText Student.GetProgramTuition, 11, 54
+        .SendKeys EnterKey
+        
+    Exception.ErrMessage = "Entering the payment terms"
+        .SendKeys EnterKey
+        .SendKeys EnterKey
+        .SendKeys F3Key
+    
+    End With
+    
+    Exception.ErrMessage = "Executing final registration"
+    AS400.SendKeys F11Key
+    
+    Exception.ErrMessage = "Navigating the Eduction Inquiry screen"
+    With AS400
+        .SendKeys F3Key
+        .SetText optionCustomerService, rowHome, colHome
+        .SendKeys EnterKey
+        .SetText optionEducationInquiry, rowHome, colHome
+        .SendKeys EnterKey
+        .SetText Student.StudentID, 3, 13
+        .SendKeys EnterKey
+    End With
+    
+Cleanup:
+
+    Exception.Pop
+    
+Exit Sub
+
+NavigationFailure:
+    ' // NavigationFailure code
+GoTo Cleanup
+    
+End Sub
+    
