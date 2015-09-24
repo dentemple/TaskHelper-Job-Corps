@@ -390,8 +390,7 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ApproveRegistration
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function ApproveRegistration(ByVal Student As cStudent, ByRef redMessage As String, _
-    ByRef blueMessage As String, ByRef Exception As cException) As Boolean
+Public Function ApproveRegistration(ByVal Student As cStudent, ByRef Exception As cException) As Boolean
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Allows the user to confirm the current enrollment _
     information prior to executing the AS/400 procedures.
@@ -400,6 +399,16 @@ Public Function ApproveRegistration(ByVal Student As cStudent, ByRef redMessage 
     On Error GoTo 0
     
     Exception.Push "Commands_Registration.ApproveRegistration"
+    
+    Dim redMessage As String
+    redMessage = vbTab & "FINAL CONFIRMATION" & vbNewLine & vbNewLine & _
+                        "One or more errors have occurred. Please" & _
+                        "resolve the following issues before proceeding." & vbNewLine & vbNewLine
+    
+    Dim blueMessage As String
+    blueMessage = vbTab & "FINAL CONFIRMATION" & vbNewLine & vbNewLine & _
+                        "Please confirm the following information " & _
+                        "before proceeding with the enrollment script." & vbNewLine & vbNewLine
     
     Dim approvalFlag As Boolean
     approvalFlag = True
