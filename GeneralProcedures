@@ -1,9 +1,73 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GeneralProcedures (Module)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Option Explicit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' AddCommand
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub AddCommand(ByRef Target_Collection As Collection, ByVal name_of_action As String, _
+    Optional ByVal string_to_action As String = noEntry, _
+    Optional ByVal row_to_action As Long = 0, _
+    Optional ByVal column_to_action As Long = 0, _
+    Optional ByVal length_to_action As Long = 0, _
+    Optional ByVal extra_value As Variant = noEntry, _
+    Optional ByVal parent_module As String = noEntry, _
+    Optional Exception As cException = Nothing)
+
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    
+    '''''''''''''''''''''''''''
+    ' General values
+    '''''''''''''''''''''''''''
+    Dim mustReplaceWithVariable As Boolean
+    
+    Dim Command As cCommand
+    Set Command = New cCommand
+    
+    If Not Exception = Nothing Then Exception.Push "SpoolCommands.Add"
+    If Not Exception = Nothing Then Exception.Message = "... ... ..." & " || " & _
+                        name_of_action & ": " & string_to_action & " (string), " & _
+                        CStr(row_to_action) & " (row), " & CStr(column_to_action) & " (column), " & _
+                        Additional_String & " (additional)"
+    
+    '''''''''''''''''''''''''''
+    ' Set additional logic
+    '''''''''''''''''''''''''''
+    If extra_value = "0" Or Len(Trim(extra_value)) = 0 Then
+        extra_value = noEntry
+    End If
+    
+    If name_of_action = commSetFrom Or name_of_action = commGet Then
+        mustReplaceWithVariable = True
+    End If
+    
+    If parent_module = noEntry Then
+        parent_module = moduleEnv
+    End If
+    
+    '''''''''''''''''''''''''''
+    ' Add to Collection
+    '''''''''''''''''''''''''''
+    With Command
+        .Perform = name_of_action
+        .StringToAction = string_to_action
+        .RowToAction = row_to_action
+        .ColumnToAction = column_to_action
+        .LengthToAction = length_to_action
+        .IsReferenceToVariable = mustReplaceWithVariable
+        .ExtraValue = extra_value
+        .ParentModule = parent_module
+    End With
+    
+    '''''''''''''''''''''''''''
+    ' Finalize
+    '''''''''''''''''''''''''''
+    Target_Collection.Add Command
+    If Not Exception = Nothing Then Exception.Pop
+
+End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' RestrictToPositiveWholeNumbers
