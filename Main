@@ -57,15 +57,7 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
     '''''''''''''''''''''''''''
     ' General values
     '''''''''''''''''''''''''''
-    Dim redMessage As String
-    redMessage = vbTab & "FINAL CONFIRMATION" & vbNewLine & vbNewLine & _
-                        "One or more errors have occurred. Please" & _
-                        "resolve the following issues before proceeding." & vbNewLine & vbNewLine
     
-    Dim blueMessage As String
-    blueMessage = vbTab & "FINAL CONFIRMATION" & vbNewLine & vbNewLine & _
-                        "Please confirm the following information " & _
-                        "before proceeding with the enrollment script." & vbNewLine & vbNewLine
 
     '''''''''''''''''''''''''''
     ' Set objects
