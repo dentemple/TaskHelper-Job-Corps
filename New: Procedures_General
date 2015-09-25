@@ -1,15 +1,28 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' GeneralProcedures (Module)
+' Procedures_General (Module)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Option Explicit
+
+'Tag for the user's home page
+    Const tagHome As String = " BNIMAIN"
+    
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' RestrictToPositiveWholeNumbers
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub RestrictToPostiveWholeNumbers(KeyAscii As MSForms.ReturnInteger)
+
+Select Case KeyAscii
+     Case Asc("0") To Asc("9")
+     Case Else
+         KeyAscii = 0
+ End Select
+
+End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' RestrictToPostiveFloatNumbers
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub RestrictToPostiveFloatNumbers(KeyAscii As MSForms.ReturnInteger, str_textbox As String)
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'Restricts the textbox to accept only integers and floats
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Select Case KeyAscii
      Case Asc("0") To Asc("9")
@@ -27,14 +40,10 @@ End Sub
 ' TurnOffExcelDefaults
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub TurnOffExcelDefaults(Optional ByRef Exception As cException)
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Turns off certain Excel settings to improve the overall processing speed
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
     'Pass error handling up the call stack
     On Error GoTo 0
-
-    If Not Exception Is Nothing Then Exception.Push "GeneralProcedures.TurnOffExcelDefaults"
+    If Not Exception Is Nothing Then Exception.Push "Procedures_General.TurnOffExcelDefaults"
 
     Application.ScreenUpdating = False
     Application.DisplayAlerts = False
@@ -50,13 +59,10 @@ End Sub
 ' TurnOnExcelDefaults
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub TurnOnExcelDefaults(Optional ByRef Exception As cException)
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Returns the Excel settings to their default values
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
     'Pass error handling up the call stack
     On Error GoTo 0
-
-    If Not Exception Is Nothing Then Exception.Push "GeneralProcedures.TurnOnExcelDefaults"
+    If Not Exception Is Nothing Then Exception.Push "Procedures_General.TurnOnExcelDefaults"
     
     Application.Calculation = xlCalculationAutomatic
     Application.DisplayAlerts = True
@@ -75,8 +81,7 @@ Public Sub NavigateHome(ByVal AS400 As cAS400, ByRef Exception As cException)
 
     'Pass error handling up the call stack
     On Error GoTo 0
-    
-    Exception.Push "GeneralProcedures.NavigateHome"
+    Exception.Push "Procedures_General.NavigateHome"
     
     Dim i As Integer                        'Loop counter
     Const maxAttempts As Integer = 5        'Max loop count
@@ -85,7 +90,6 @@ Public Sub NavigateHome(ByVal AS400 As cAS400, ByRef Exception As cException)
     Const tagLength As Long = 8             'Location of page tag
     Const tagRow As Long = 1                'Location of page tag
     Const tagCol As Long = 2                'Location of page tag
-    Const tagHome As String = " BNIMAIN"    'Tag for the user's home page
     
     Exception.ErrMessage = "Starting the navigation loop"
     Do
@@ -95,7 +99,7 @@ Public Sub NavigateHome(ByVal AS400 As cAS400, ByRef Exception As cException)
         Select Case AS400.GetText(tagRow, tagCol, tagLength)
         
             'PS: BNIMAIN (Destination)
-            Case Is = homeTag
+            Case Is = tagHome
                 'Note: Certain screens have a "pop-up" screen _
                     that must be F3'd out of as well
                 AS400.SendKeys F3Key
@@ -152,13 +156,13 @@ Public Sub NavigateHome(ByVal AS400 As cAS400, ByRef Exception As cException)
 
             'PS: Main Menu
             Case "ICSMAIN "
-                Pause AS400, Exception
+                AS400.Pause
                 AS400.SetText "6", 20, 7
                 AS400.SendKeys EnterKey
 
             'Library List Selection
             Case " 98VL   "
-                Pause AS400, Exception
+                AS400.Pause
                 AS400.SetText "1", 6, 10
                 AS400.SendKeys EnterKey
 
@@ -250,3 +254,15 @@ Cleanup:
     Exception.Pop
     
 End Sub
+
+Public Function HomeScreenConfirmed(ByVal AS400 As cAS400, ByRef Exception As cException) As Boolean
+
+    'Passes error handling up the call stack
+    On Error GoTo 0
+    If Not Exception Is Nothing Then Exception.Push "Procedures_General.ConfirmHomeScreen"
+    
+    HomeScreenConfirmed = AS400.SearchText(Trim(tagHome), 1, 1, forward)
+    
+    Exception.Pop
+    
+End Function
