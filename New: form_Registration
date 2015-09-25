@@ -1,0 +1,267 @@
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' form_Registration (userform)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Option Explicit
+
+'RGB for an unselected textbox
+    Const RedFieldNot As Integer = 211
+    Const GreenFieldNot As Integer = 211
+    Const BlueFieldNot As Integer = 211
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Initialization event
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub UserForm_Initialize()
+
+    'To generate a list of active sessions
+    Dim objAS400ConnList As Object
+    Dim i As Integer
+    Dim container As String
+
+    'Defaults multipage to the first page
+    MultiPage1.Value = 0
+    
+    'Sets default value
+    PrefixCode_Textbox = "HJC"
+    Salesperson_Textbox = Range("DefaultSalesperson")
+    WebStartTime_Textbox = "000000"
+    WebEndTime_Textbox = "000000"
+    Status_Textbox = "Ready"
+
+    'Empties the textboxes (first page)
+    ParentCode_Textbox = vbNullString
+    Firstname_Textbox = vbNullString
+    Lastname_Textbox = vbNullString
+    Middlename_Textbox = vbNullString
+    ProgramNumber_Textbox = vbNullString
+    ProgramTuition_Textbox = vbNullString
+    PONumber_Textbox = vbNullString
+    LongNumber_Textbox = vbNullString
+    AreaCode_Textbox = vbNullString
+    PhoneNumber_Textbox = vbNullString
+    Email_Textbox = vbNullString
+    
+    'Empties the textboxes (second page)
+    AlphaName_Textbox = vbNullString
+    ActionL1_Textbox = vbNullString
+    ActionL2_Textbox = vbNullString
+    ActionL3_Textbox = vbNullString
+    ActionL4_Textbox = vbNullString
+    ActionL5_Textbox = vbNullString
+    ActionL6_Textbox = vbNullString
+    ActionL7_Textbox = vbNullString
+    ActionL8_Textbox = vbNullString
+    MailingNameL1_Textbox = vbNullString
+    MailingNameL2_Textbox = vbNullString
+    MailingNameL3_Textbox = vbNullString
+    MailingNameL4_Textbox = vbNullString
+    MailingNameL5_Textbox = vbNullString
+    MailingNameL6_Textbox = vbNullString
+    MailingNameL7_Textbox = vbNullString
+    MailingNameL8_Textbox = vbNullString
+    ShowPhoneL1_Textbox = vbNullString
+    ShowPhoneL2_Textbox = vbNullString
+    ShowPhoneL3_Textbox = vbNullString
+    ShowPhoneL4_Textbox = vbNullString
+    ShowPhoneL5_Textbox = vbNullString
+    ShowPhoneL6_Textbox = vbNullString
+    ShowPhoneL7_Textbox = vbNullString
+    ShowPhoneL8_Textbox = vbNullString
+    
+    'Locking certain textboxes
+    Status_Textbox.Locked = True
+    MailingNameL1_Textbox.Locked = True
+    MailingNameL2_Textbox.Locked = True
+    MailingNameL3_Textbox.Locked = True
+    MailingNameL4_Textbox.Locked = True
+    MailingNameL5_Textbox.Locked = True
+    MailingNameL6_Textbox.Locked = True
+    MailingNameL7_Textbox.Locked = True
+    MailingNameL8_Textbox.Locked = True
+    ShowPhoneL1_Textbox.Locked = True
+    ShowPhoneL2_Textbox.Locked = True
+    ShowPhoneL3_Textbox.Locked = True
+    ShowPhoneL4_Textbox.Locked = True
+    ShowPhoneL5_Textbox.Locked = True
+    ShowPhoneL6_Textbox.Locked = True
+    ShowPhoneL7_Textbox.Locked = True
+    ShowPhoneL8_Textbox.Locked = True
+    
+    'Greys out the locked textboxes
+    Status_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    MailingNameL1_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    MailingNameL2_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    MailingNameL3_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    MailingNameL4_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    MailingNameL5_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    MailingNameL6_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    MailingNameL7_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    MailingNameL8_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    ShowPhoneL1_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    ShowPhoneL2_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    ShowPhoneL3_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    ShowPhoneL4_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    ShowPhoneL5_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    ShowPhoneL6_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    ShowPhoneL7_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    ShowPhoneL8_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    
+    'Sets the Student ID container for passing to separate userforms
+    If DebugFlag Then On Error GoTo 0 Else On Error Resume Next
+    Set rngStudentID = Range("lastStudentID")
+    rngStudentID = vbNullString
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo 0
+    
+    'Sets the initial focus
+    Salesperson_Textbox.SetFocus
+    
+    'Connects to the AS/400 to generate a list of active session names
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo AS400NotActive
+    Set objAS400ConnList = CreateObject("PCOMM.autECLConnList")
+    objAS400ConnList.Refresh
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo 0
+    
+    container = Trim(Range("DefaultSession"))
+    'Populates the selection boxes
+    With Session_ComboBox
+    
+        .Clear
+        
+        If Len(container) = 1 And InStr(1, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", container) >= 1 Then
+            .AddItem container
+        End If
+        
+        For i = 1 To objAS400ConnList.Count
+            .AddItem objAS400ConnList(i).name
+        Next i
+        
+        .Text = Session_ComboBox.List(0)
+        
+    End With
+    
+    Set objAS400ConnList = Nothing
+    
+Exit Sub
+
+AS400NotActive:
+
+    MsgBox "Note: The AS/400 has not been detected", vbInformation, "Attempting to connect to the AS/400"
+    
+Resume Next
+
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' COMMAND BUTTON / Actions to be called and performed
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub RunAutomation_Button_Click()
+
+    'Sets multipage to its first page
+    MultiPage1.Value = 0
+    
+    'Run the registration script
+    RunRegistration form_Registration
+
+    Status_Textbox = "Registration Complete!"
+    
+End Sub
+
+Private Sub PrimarySearch_Button_Click()
+
+    'Sets multipage to the second page
+    MultiPage1.Value = 1
+    
+    'Run the student search
+    RunSearchButton buttonPrimary, form_Registration
+    
+    Status_Textbox = "Ready"
+    
+End Sub
+
+Private Sub SecondarySearch_Button_Click()
+    
+    RunSearchButton buttonMulti, form_Registration, , Session_ComboBox.Value
+    
+    Status_Textbox = "Ready"
+
+End Sub
+
+Private Sub PageUp_Button_Click()
+
+    RunSearchButton buttonPrimary, form_Registration, PageUpKey, Session_ComboBox.Value
+    
+    Status_Textbox = "Ready"
+
+End Sub
+
+Private Sub PageDown_Button_Click()
+
+    RunSearchButton buttonPrimary, form_Registration, PageDownKey, Session_ComboBox.Value
+    
+    Status_Textbox = "Ready"
+
+End Sub
+
+Private Sub Return_Button_Click()
+
+    On Error GoTo 0
+
+    'Sets multipage to the first page
+    MultiPage1.Value = 0
+    
+    Firstname_Textbox.SetFocus
+    Status_Textbox = "Ready"
+
+End Sub
+
+Private Sub Clear_Button_Click()
+    UserForm_Initialize
+End Sub
+
+Private Sub Cancel_Button_Click()
+    Unload Me
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' FORM CONTROLS
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'Restrict to whole numbers
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub Salesperson_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+    RestrictToPostiveWholeNumbers KeyAscii
+End Sub
+Private Sub Zipcode_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+    RestrictToPostiveWholeNumbers KeyAscii
+End Sub
+
+Private Sub ProgramNumber_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+    RestrictToPostiveWholeNumbers KeyAscii
+End Sub
+
+Private Sub WebStartTime_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+    RestrictToPostiveWholeNumbers KeyAscii
+End Sub
+
+Private Sub WebEndTime_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+    RestrictToPostiveWholeNumbers KeyAscii
+End Sub
+
+Private Sub LongNumber_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+    RestrictToPostiveWholeNumbers KeyAscii
+End Sub
+
+Private Sub AreaCode_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+    RestrictToPostiveWholeNumbers KeyAscii
+End Sub
+
+Private Sub PhoneNumber_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+    RestrictToPostiveWholeNumbers KeyAscii
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'Restrict to floats
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub ProgramTuition_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+    RestrictToPostiveFloatNumbers KeyAscii, ProgramTuition_Textbox
+End Sub
