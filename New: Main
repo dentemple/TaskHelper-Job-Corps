@@ -98,6 +98,8 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
     Execute_AddressBookRegistration Student, AS400, Exception
     If Exception.Flag Then GoTo NavigationFailure
     
+    MsgBox Student.StudentID
+    
     Execute_CourseEntryRegistration Student, AS400, Exception
     If Exception.Flag Then GoTo NavigationFailure
     
