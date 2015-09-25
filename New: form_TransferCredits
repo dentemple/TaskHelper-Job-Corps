@@ -1,0 +1,665 @@
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' form_TransferCredits (userform)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Option Explicit
+
+'RGB for a selected textbox
+    Const RedFieldYes As Integer = 255
+    Const GreenFieldYes As Integer = 251
+    Const BlueFieldYes As Integer = 204
+    
+'RGB for an unselected textbox
+    Const RedFieldNot As Integer = 211
+    Const GreenFieldNot As Integer = 211
+    Const BlueFieldNot As Integer = 211
+    
+'General variables
+    Dim hasBeenPopulated As Boolean
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Initialization event
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub UserForm_Initialize()
+
+    'To generate a list of active sessions
+    Dim objAS400ConnList As Object
+    Dim i As Integer
+    Dim container As String
+    
+    Status_Textbox.Locked = True
+    Status_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Status_Textbox = "TO BEGIN:" & Space(3) & "Enter the Student ID# " & _
+        "and the AS/400 session, then press POPULATE CLASSES to continue"
+
+    AlphaName_Textbox = vbNullString
+    
+    Mod1_Textbox = vbNullString
+    Mod2_Textbox = vbNullString
+    Mod3_Textbox = vbNullString
+    Mod4_Textbox = vbNullString
+    Mod5_Textbox = vbNullString
+    Mod6_Textbox = vbNullString
+    Mod7_Textbox = vbNullString
+    Mod8_Textbox = vbNullString
+    Mod9_Textbox = vbNullString
+    Mod10_Textbox = vbNullString
+    Mod11_Textbox = vbNullString
+    Mod12_Textbox = vbNullString
+    Mod13_Textbox = vbNullString
+    Mod14_Textbox = vbNullString
+    Mod15_Textbox = vbNullString
+    Mod16_Textbox = vbNullString
+    Mod17_Textbox = vbNullString
+    Mod18_Textbox = vbNullString
+    Mod19_Textbox = vbNullString
+    Mod20_Textbox = vbNullString
+    Mod21_Textbox = vbNullString
+    Mod22_Textbox = vbNullString
+    Mod23_Textbox = vbNullString
+    Mod24_Textbox = vbNullString
+    Mod25_Textbox = vbNullString
+    Mod26_Textbox = vbNullString
+    Mod27_Textbox = vbNullString
+    Mod28_Textbox = vbNullString
+    Mod29_Textbox = vbNullString
+    Mod30_Textbox = vbNullString
+    
+    Title1_Textbox = vbNullString
+    Title2_Textbox = vbNullString
+    Title3_Textbox = vbNullString
+    Title4_Textbox = vbNullString
+    Title5_Textbox = vbNullString
+    Title6_Textbox = vbNullString
+    Title7_Textbox = vbNullString
+    Title8_Textbox = vbNullString
+    Title9_Textbox = vbNullString
+    Title10_Textbox = vbNullString
+    Title11_Textbox = vbNullString
+    Title12_Textbox = vbNullString
+    Title13_Textbox = vbNullString
+    Title14_Textbox = vbNullString
+    Title15_Textbox = vbNullString
+    Title16_Textbox = vbNullString
+    Title17_Textbox = vbNullString
+    Title18_Textbox = vbNullString
+    Title19_Textbox = vbNullString
+    Title20_Textbox = vbNullString
+    Title21_Textbox = vbNullString
+    Title22_Textbox = vbNullString
+    Title23_Textbox = vbNullString
+    Title24_Textbox = vbNullString
+    Title25_Textbox = vbNullString
+    Title26_Textbox = vbNullString
+    Title27_Textbox = vbNullString
+    Title28_Textbox = vbNullString
+    Title29_Textbox = vbNullString
+    Title30_Textbox = vbNullString
+    
+    Class1_Checkbox = False
+    Class2_Checkbox = False
+    Class3_Checkbox = False
+    Class4_Checkbox = False
+    Class5_Checkbox = False
+    Class6_Checkbox = False
+    Class7_Checkbox = False
+    Class8_Checkbox = False
+    Class9_Checkbox = False
+    Class10_Checkbox = False
+    Class11_Checkbox = False
+    Class12_Checkbox = False
+    Class13_Checkbox = False
+    Class14_Checkbox = False
+    Class15_Checkbox = False
+    Class16_Checkbox = False
+    Class17_Checkbox = False
+    Class18_Checkbox = False
+    Class19_Checkbox = False
+    Class20_Checkbox = False
+    Class21_Checkbox = False
+    Class22_Checkbox = False
+    Class23_Checkbox = False
+    Class24_Checkbox = False
+    Class25_Checkbox = False
+    Class26_Checkbox = False
+    Class27_Checkbox = False
+    Class28_Checkbox = False
+    Class29_Checkbox = False
+    Class30_Checkbox = False
+    
+    AlphaName_Textbox.Locked = True
+    
+    Mod1_Textbox.Locked = True
+    Mod2_Textbox.Locked = True
+    Mod3_Textbox.Locked = True
+    Mod4_Textbox.Locked = True
+    Mod5_Textbox.Locked = True
+    Mod6_Textbox.Locked = True
+    Mod7_Textbox.Locked = True
+    Mod8_Textbox.Locked = True
+    Mod9_Textbox.Locked = True
+    Mod10_Textbox.Locked = True
+    Mod11_Textbox.Locked = True
+    Mod12_Textbox.Locked = True
+    Mod13_Textbox.Locked = True
+    Mod14_Textbox.Locked = True
+    Mod15_Textbox.Locked = True
+    Mod16_Textbox.Locked = True
+    Mod17_Textbox.Locked = True
+    Mod18_Textbox.Locked = True
+    Mod19_Textbox.Locked = True
+    Mod20_Textbox.Locked = True
+    Mod21_Textbox.Locked = True
+    Mod22_Textbox.Locked = True
+    Mod23_Textbox.Locked = True
+    Mod24_Textbox.Locked = True
+    Mod25_Textbox.Locked = True
+    Mod26_Textbox.Locked = True
+    Mod27_Textbox.Locked = True
+    Mod28_Textbox.Locked = True
+    Mod29_Textbox.Locked = True
+    Mod30_Textbox.Locked = True
+    
+    Title1_Textbox.Locked = True
+    Title2_Textbox.Locked = True
+    Title3_Textbox.Locked = True
+    Title4_Textbox.Locked = True
+    Title5_Textbox.Locked = True
+    Title6_Textbox.Locked = True
+    Title7_Textbox.Locked = True
+    Title8_Textbox.Locked = True
+    Title9_Textbox.Locked = True
+    Title10_Textbox.Locked = True
+    Title11_Textbox.Locked = True
+    Title12_Textbox.Locked = True
+    Title13_Textbox.Locked = True
+    Title14_Textbox.Locked = True
+    Title15_Textbox.Locked = True
+    Title16_Textbox.Locked = True
+    Title17_Textbox.Locked = True
+    Title18_Textbox.Locked = True
+    Title19_Textbox.Locked = True
+    Title20_Textbox.Locked = True
+    Title21_Textbox.Locked = True
+    Title22_Textbox.Locked = True
+    Title23_Textbox.Locked = True
+    Title24_Textbox.Locked = True
+    Title25_Textbox.Locked = True
+    Title26_Textbox.Locked = True
+    Title27_Textbox.Locked = True
+    Title28_Textbox.Locked = True
+    Title29_Textbox.Locked = True
+    Title30_Textbox.Locked = True
+    
+    AlphaName_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    
+    Mod1_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod2_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod3_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod4_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod5_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod6_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod7_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod8_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod9_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod10_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod11_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod12_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod13_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod14_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod15_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod16_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod17_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod18_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod19_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod20_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod21_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod22_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod23_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod24_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod25_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod26_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod27_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod28_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod29_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Mod30_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    
+    Title1_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title2_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title3_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title4_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title5_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title6_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title7_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title8_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title9_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title10_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title11_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title12_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title13_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title14_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title15_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title16_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title17_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title18_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title19_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title20_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title21_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title22_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title23_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title24_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title25_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title26_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title27_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title28_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title29_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Title30_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    
+    'For defaulting a Student ID#
+    If DebugFlag Then On Error GoTo 0 Else On Error Resume Next
+    Set rngStudentID = Range("lastStudentID")
+    SID_Textbox = Trim(rngStudentID.Value)
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo 0
+    
+    'Connects to the AS/400 to generate a list of active session names
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo AS400NotActive
+    Set objAS400ConnList = CreateObject("PCOMM.autECLConnList")
+    objAS400ConnList.Refresh
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo 0
+    
+    container = Trim(Range("DefaultSession"))
+    'Populates the selection boxes
+    With Session_ComboBox
+    
+        .Clear
+        
+        If Len(container) = 1 And InStr(1, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", container) >= 1 Then
+            .AddItem container
+        End If
+        
+        For i = 1 To objAS400ConnList.Count
+            .AddItem objAS400ConnList(i).name
+        Next i
+        
+        .Text = Session_ComboBox.List(0)
+        
+    End With
+    
+    Set objAS400ConnList = Nothing
+    
+    hasBeenPopulated = False
+    
+    'Sets the initial focus
+    SID_Textbox.SetFocus
+    
+Exit Sub
+
+ObjectNotFound:
+
+    SID_Textbox = vbNullString
+    
+Resume Next
+
+AS400NotActive:
+
+    MsgBox "Note: The AS/400 has not been detected", vbInformation, "Attempting to connect to the AS/400"
+    
+Resume Next
+
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' COMMAND BUTTON / Actions to be called and performed
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub PopulateClasses_Button_Click()
+    
+    RunPopulateClasses form_TransferCredits
+    
+    hasBeenPopulated = True
+    Status_Textbox = "Ready"
+
+End Sub
+
+Private Sub ApplyTransferCredits_Button_Click()
+
+    If hasBeenPopulated = True Then
+    
+        ApplyTransferCredits form_TransferCredits
+        
+    Else
+    
+        MsgBox "Please populate the classes before attempting to apply transfer credits", vbInformation, "Classes must be populated"
+    
+    End If
+    
+End Sub
+
+Private Sub Clear_Button_Click()
+    UserForm_Initialize
+End Sub
+
+Private Sub Cancel_Button_Click()
+    Unload Me
+End Sub
+
+Private Sub SID_Textbox_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+    RestrictToPostiveWholeNumbers KeyAscii
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' FORM CONTROLS
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Private Sub FlipColors(Checkbox_Selected As MSForms.CheckBox, Mod_TextBox As MSForms.TextBox, _
+    Title_TextBox As MSForms.TextBox, isSelected As Boolean)
+    
+    If isSelected Then
+        
+        Mod_TextBox.BackColor = RGB(RedFieldYes, GreenFieldYes, BlueFieldYes)
+        Title_TextBox.BackColor = RGB(RedFieldYes, GreenFieldYes, BlueFieldYes)
+    
+    Else
+    
+        Mod_TextBox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+        Title_TextBox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    
+    End If
+    
+End Sub
+
+Private Sub Class1_Checkbox_Click()
+
+    If Class1_Checkbox = True Then
+        FlipColors Class1_Checkbox, Mod1_Textbox, Title1_Textbox, True
+    Else
+        FlipColors Class1_Checkbox, Mod1_Textbox, Title1_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class2_Checkbox_Click()
+
+    If Class2_Checkbox = True Then
+        FlipColors Class2_Checkbox, Mod2_Textbox, Title2_Textbox, True
+    Else
+        FlipColors Class2_Checkbox, Mod2_Textbox, Title2_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class3_Checkbox_Click()
+
+    If Class3_Checkbox = True Then
+        FlipColors Class3_Checkbox, Mod3_Textbox, Title3_Textbox, True
+    Else
+        FlipColors Class3_Checkbox, Mod3_Textbox, Title3_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class4_Checkbox_Click()
+
+    If Class4_Checkbox = True Then
+        FlipColors Class4_Checkbox, Mod4_Textbox, Title4_Textbox, True
+    Else
+        FlipColors Class4_Checkbox, Mod4_Textbox, Title4_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class5_Checkbox_Click()
+
+    If Class5_Checkbox = True Then
+        FlipColors Class5_Checkbox, Mod5_Textbox, Title5_Textbox, True
+    Else
+        FlipColors Class5_Checkbox, Mod5_Textbox, Title5_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class6_Checkbox_Click()
+
+    If Class6_Checkbox = True Then
+        FlipColors Class6_Checkbox, Mod6_Textbox, Title6_Textbox, True
+    Else
+        FlipColors Class6_Checkbox, Mod6_Textbox, Title6_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class7_Checkbox_Click()
+
+    If Class7_Checkbox = True Then
+        FlipColors Class7_Checkbox, Mod7_Textbox, Title7_Textbox, True
+    Else
+        FlipColors Class7_Checkbox, Mod7_Textbox, Title7_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class8_Checkbox_Click()
+
+    If Class8_Checkbox = True Then
+        FlipColors Class8_Checkbox, Mod8_Textbox, Title8_Textbox, True
+    Else
+        FlipColors Class8_Checkbox, Mod8_Textbox, Title8_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class9_Checkbox_Click()
+
+    If Class9_Checkbox = True Then
+        FlipColors Class9_Checkbox, Mod9_Textbox, Title9_Textbox, True
+    Else
+        FlipColors Class9_Checkbox, Mod9_Textbox, Title9_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class10_Checkbox_Click()
+
+    If Class10_Checkbox = True Then
+        FlipColors Class10_Checkbox, Mod10_Textbox, Title10_Textbox, True
+    Else
+        FlipColors Class10_Checkbox, Mod10_Textbox, Title10_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class11_Checkbox_Click()
+
+    If Class11_Checkbox = True Then
+        FlipColors Class11_Checkbox, Mod11_Textbox, Title11_Textbox, True
+    Else
+        FlipColors Class11_Checkbox, Mod11_Textbox, Title11_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class12_Checkbox_Click()
+
+    If Class12_Checkbox = True Then
+        FlipColors Class12_Checkbox, Mod12_Textbox, Title12_Textbox, True
+    Else
+        FlipColors Class12_Checkbox, Mod12_Textbox, Title12_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class13_Checkbox_Click()
+
+    If Class13_Checkbox = True Then
+        FlipColors Class13_Checkbox, Mod13_Textbox, Title13_Textbox, True
+    Else
+        FlipColors Class13_Checkbox, Mod13_Textbox, Title13_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class14_Checkbox_Click()
+
+    If Class14_Checkbox = True Then
+        FlipColors Class14_Checkbox, Mod14_Textbox, Title14_Textbox, True
+    Else
+        FlipColors Class14_Checkbox, Mod14_Textbox, Title14_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class15_Checkbox_Click()
+
+    If Class15_Checkbox = True Then
+        FlipColors Class15_Checkbox, Mod15_Textbox, Title15_Textbox, True
+    Else
+        FlipColors Class15_Checkbox, Mod15_Textbox, Title15_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class16_Checkbox_Click()
+
+    If Class16_Checkbox = True Then
+        FlipColors Class16_Checkbox, Mod16_Textbox, Title16_Textbox, True
+    Else
+        FlipColors Class16_Checkbox, Mod16_Textbox, Title16_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class17_Checkbox_Click()
+
+    If Class17_Checkbox = True Then
+        FlipColors Class17_Checkbox, Mod17_Textbox, Title17_Textbox, True
+    Else
+        FlipColors Class17_Checkbox, Mod17_Textbox, Title17_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class18_Checkbox_Click()
+
+    If Class18_Checkbox = True Then
+        FlipColors Class18_Checkbox, Mod18_Textbox, Title18_Textbox, True
+    Else
+        FlipColors Class18_Checkbox, Mod18_Textbox, Title18_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class19_Checkbox_Click()
+
+    If Class19_Checkbox = True Then
+        FlipColors Class19_Checkbox, Mod19_Textbox, Title19_Textbox, True
+    Else
+        FlipColors Class19_Checkbox, Mod19_Textbox, Title19_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class20_Checkbox_Click()
+
+    If Class20_Checkbox = True Then
+        FlipColors Class20_Checkbox, Mod20_Textbox, Title20_Textbox, True
+    Else
+        FlipColors Class20_Checkbox, Mod20_Textbox, Title20_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class21_Checkbox_Click()
+
+    If Class21_Checkbox = True Then
+        FlipColors Class21_Checkbox, Mod21_Textbox, Title21_Textbox, True
+    Else
+        FlipColors Class21_Checkbox, Mod21_Textbox, Title21_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class22_Checkbox_Click()
+
+    If Class22_Checkbox = True Then
+        FlipColors Class22_Checkbox, Mod22_Textbox, Title22_Textbox, True
+    Else
+        FlipColors Class22_Checkbox, Mod22_Textbox, Title22_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class23_Checkbox_Click()
+
+    If Class23_Checkbox = True Then
+        FlipColors Class23_Checkbox, Mod23_Textbox, Title23_Textbox, True
+    Else
+        FlipColors Class23_Checkbox, Mod23_Textbox, Title23_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class24_Checkbox_Click()
+
+    If Class24_Checkbox = True Then
+        FlipColors Class24_Checkbox, Mod24_Textbox, Title24_Textbox, True
+    Else
+        FlipColors Class24_Checkbox, Mod24_Textbox, Title24_Textbox, False
+    End If
+
+End Sub
+Private Sub Class25_Checkbox_Click()
+
+    If Class25_Checkbox = True Then
+        FlipColors Class25_Checkbox, Mod25_Textbox, Title25_Textbox, True
+    Else
+        FlipColors Class25_Checkbox, Mod25_Textbox, Title25_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class26_Checkbox_Click()
+
+    If Class26_Checkbox = True Then
+        FlipColors Class26_Checkbox, Mod26_Textbox, Title26_Textbox, True
+    Else
+        FlipColors Class26_Checkbox, Mod26_Textbox, Title26_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class27_Checkbox_Click()
+
+    If Class27_Checkbox = True Then
+        FlipColors Class27_Checkbox, Mod27_Textbox, Title27_Textbox, True
+    Else
+        FlipColors Class27_Checkbox, Mod27_Textbox, Title27_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class28_Checkbox_Click()
+
+    If Class28_Checkbox = True Then
+        FlipColors Class28_Checkbox, Mod28_Textbox, Title28_Textbox, True
+    Else
+        FlipColors Class28_Checkbox, Mod28_Textbox, Title28_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class29_Checkbox_Click()
+
+    If Class29_Checkbox = True Then
+        FlipColors Class29_Checkbox, Mod29_Textbox, Title29_Textbox, True
+    Else
+        FlipColors Class29_Checkbox, Mod29_Textbox, Title29_Textbox, False
+    End If
+
+End Sub
+
+Private Sub Class30_Checkbox_Click()
+
+    If Class30_Checkbox = True Then
+        FlipColors Class30_Checkbox, Mod30_Textbox, Title30_Textbox, True
+    Else
+        FlipColors Class30_Checkbox, Mod30_Textbox, Title30_Textbox, False
+    End If
+
+End Sub
