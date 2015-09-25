@@ -1,0 +1,11 @@
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' StackItem (class)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' For use in call stack functionality
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Option Explicit
+
+'Keep track of the next stack item, _
+    and the value of this item.
+Public StackValue As Variant
+Public NextItem As StackItem
