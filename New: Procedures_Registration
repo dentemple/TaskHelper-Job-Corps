@@ -17,6 +17,7 @@ Option Explicit
     Const optionEducationInquiry As String = "15"
     Const locationAddressBook As String = "01051"
     Const locationExtraEnrollScreen As String = "66302"
+    Const locationPaymentTerms As String = "66314"
     Const actionCodeC As String = "C"
     Const actionCodeI As String = "I"
     Const actionCodeA As String = "A"
@@ -35,7 +36,7 @@ Public Sub Execute_AddressBookRegistration(ByRef Student As cStudent, _
     Exception.Push "Procedures_Registration.Execute_AddressBookRegistration"
     
     NavigateHome AS400, Exception
-    If HomeScreenConfirmed(AS400, Exception) = False Then NavigationFailure
+    If HomeScreenConfirmed(AS400, Exception) = False Then GoTo NavigationFailure
     
     Exception.ErrMessage = "Navigating to the AddressBook"
     AS400.SetText optionCustomerService, rowHome, colHome
@@ -140,7 +141,7 @@ Public Sub Execute_CourseEntryRegistration(ByRef Student As cStudent, _
     Exception.Push "Procedures_Registration.Execute_AddressBookRegistration"
     
     NavigateHome AS400, Exception
-    If HomeScreenConfirmed(AS400, Exception) = False Then NavigationFailure
+    If HomeScreenConfirmed(AS400, Exception) = False Then GoTo NavigationFailure
     
     Exception.ErrMessage = "Navigating to OrderEntry"
     
@@ -172,7 +173,13 @@ Public Sub Execute_CourseEntryRegistration(ByRef Student As cStudent, _
         .SetText Student.GetProgramTuition, 11, 54
         .SendKeys EnterKey
         
+    End With
+        
     Exception.ErrMessage = "Entering the payment terms"
+    If AS400.SearchText(locationPaymentTerms, 1, 1, forward) = False Then GoTo ItemNotFound
+    
+    With AS400
+    
         .SendKeys EnterKey
         .SendKeys EnterKey
         .SendKeys F3Key
@@ -199,9 +206,23 @@ Cleanup:
     
 Exit Sub
 
+ItemNotFound:
+
+    With Exception
+        .Flag = True
+        .IsError = False
+        .ErrMessage = "The AS/400 has red bar'd an entry field"
+        .Throw "The Parent, Salesperson, or Course Number is invalid and " & _
+                    "has prevented the AS/400 from proceeding forward."
+    End With
+
 NavigationFailure:
 
-    Exception.Flag = True
+    With Exception
+        .Flag = True
+        .IsError = False
+        .ErrMessage = "Navigation has failed"
+    End With
     
 GoTo Cleanup
     
@@ -286,16 +307,16 @@ Public Function ApproveRegistration(ByVal Student As cStudent, ByRef Exception A
     ConfirmAccountInfo Student, approvalFlag, redMessage, blueMessage, Exception
     ConfirmStudentFile Student, approvalFlag, redMessage, blueMessage, Exception
     
-    If Not Exception Is Nothing Then Exception.Message = "Providing the final checklist..."
+    If Not Exception Is Nothing Then Exception.ErrMessage = "Providing the final checklist..."
     
     If approvalFlag = False Then
     
-        AppActivate "Excel"
+         
         MsgBox redMessage, vbCritical, "Pre-Enrollment Checklist"
         
     Else
     
-        AppActivate "Excel"
+         
         userSelection = MsgBox(blueMessage, vbOKCancel, "Pre-Enrollment Checklist")
         If userSelection = vbOK Then approvalFlag = True
         If userSelection = vbCancel Then approvalFlag = False
