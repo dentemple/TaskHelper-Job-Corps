@@ -1,0 +1,282 @@
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Procedures_NameSearch (Module)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Option Explicit
+
+'Action based on the command button pressed
+    Public Const buttonPrimary As String = "Run Primary Name Search Button"
+    Public Const buttonAction As String = "Run Page Up/Down Button"
+    Public Const buttonMulti As String = "Run Multi-Choice Button"
+    
+'AS400 specific values
+    Const rowHome As Long = 19
+    Const colHome As Long = 7
+    Const colMailing As Long = 8
+    Const lenMailing As Long = 37
+    Const colPhone As Long = 49
+    Const lenPhone As Long = 26
+    Const optionCustomerService As String = "1"
+    Const optionEducationInquiry As String = "15"
+    
+Public Sub Execute_NavigateToNameSearch(ByVal AS400 As cAS400, ByRef Exception As cException)
+    
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    Exception.Push "Procedures_NameSearch.Execute_NavigateToNameSearch"
+    
+    NavigateHome AS400, Exception
+    If HomeScreenConfirmed(AS400, Exception) = False Then GoTo NavigationFailure
+    
+    Exception.ErrMessage = "Navigating to NameSearch"
+    AS400.SetText optionCustomerService, rowHome, colHome
+    AS400.SendKeys EnterKey
+    
+    AS400.SetText optionEducationInquiry, rowHome, colHome
+    AS400.SendKeys EnterKey
+
+    AS400.SendKeys F1Key
+    AS400.SendKeys EnterKey
+    
+Cleanup:
+    
+    Exception.Pop
+
+Exit Sub
+    
+NavigationFailure:
+
+    Exception.Flag = True
+    
+GoTo Cleanup
+    
+End Sub
+
+Public Sub Execute_PrimaryNameSearch(ByRef Student As cStudent, ByVal AS400 As cAS400, _
+    ByRef Exception As cException)
+    
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    Exception.Push "Procedures_NameSearch.Execute_NavigateToNameSearch"
+    
+    Dim baseRow As Long
+    
+    With Student
+        
+        baseRow = 7
+        .FieldMailingName1 = CheckString(AS400.GetText(baseRow, colMailing, lenMailing)): baseRow = baseRow + 1
+        .FieldMailingName2 = CheckString(AS400.GetText(baseRow, colMailing, lenMailing)): baseRow = baseRow + 1
+        .FieldMailingName3 = CheckString(AS400.GetText(baseRow, colMailing, lenMailing)): baseRow = baseRow + 1
+        .FieldMailingName4 = CheckString(AS400.GetText(baseRow, colMailing, lenMailing)): baseRow = baseRow + 1
+        .FieldMailingName5 = CheckString(AS400.GetText(baseRow, colMailing, lenMailing)): baseRow = baseRow + 1
+        .FieldMailingName6 = CheckString(AS400.GetText(baseRow, colMailing, lenMailing)): baseRow = baseRow + 1
+        .FieldMailingName7 = CheckString(AS400.GetText(baseRow, colMailing, lenMailing)): baseRow = baseRow + 1
+        .FieldMailingName8 = CheckString(AS400.GetText(baseRow, colMailing, lenMailing)): baseRow = 7
+        .FieldPhone1 = CheckString(AS400.GetText(baseRow, colPhone, lenPhone)): baseRow = baseRow + 1
+        .FieldPhone2 = CheckString(AS400.GetText(baseRow, colPhone, lenPhone)): baseRow = baseRow + 1
+        .FieldPhone3 = CheckString(AS400.GetText(baseRow, colPhone, lenPhone)): baseRow = baseRow + 1
+        .FieldPhone4 = CheckString(AS400.GetText(baseRow, colPhone, lenPhone)): baseRow = baseRow + 1
+        .FieldPhone5 = CheckString(AS400.GetText(baseRow, colPhone, lenPhone)): baseRow = baseRow + 1
+        .FieldPhone6 = CheckString(AS400.GetText(baseRow, colPhone, lenPhone)): baseRow = baseRow + 1
+        .FieldPhone7 = CheckString(AS400.GetText(baseRow, colPhone, lenPhone)): baseRow = baseRow + 1
+        .FieldPhone8 = CheckString(AS400.GetText(baseRow, colPhone, lenPhone))
+        
+    End With
+
+    Exception.Pop
+    
+End Sub
+
+Public Sub PrepareNameSearchTextboxes(ByRef NameForm As MSForms.UserForm, ByRef Exception As cException)
+    
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    Exception.Push "Procedures_NameSearch.PrepareNameSearchTextboxes"
+    
+    Exception.ErrMessage = "Setting initial values within the textboxes"
+    With NameForm
+        .ActionL1_Textbox = vbNullString
+        .ActionL2_Textbox = vbNullString
+        .ActionL3_Textbox = vbNullString
+        .ActionL4_Textbox = vbNullString
+        .ActionL5_Textbox = vbNullString
+        .ActionL6_Textbox = vbNullString
+        .ActionL7_Textbox = vbNullString
+        .ActionL8_Textbox = vbNullString
+        .MailingNameL1_Textbox = " ..." & Space(5) & " ..."
+        .MailingNameL2_Textbox = " ..." & Space(5) & " ..."
+        .MailingNameL3_Textbox = " ..." & Space(5) & " ..."
+        .MailingNameL4_Textbox = " ..." & Space(5) & " ..."
+        .MailingNameL5_Textbox = " ..." & Space(5) & " ..."
+        .MailingNameL6_Textbox = " ..." & Space(5) & " ..."
+        .MailingNameL7_Textbox = " ..." & Space(5) & " ..."
+        .MailingNameL8_Textbox = " ..." & Space(5) & " ..."
+        .ShowPhoneL1_Textbox = " ..." & Space(5) & " ..."
+        .ShowPhoneL2_Textbox = " ..." & Space(5) & " ..."
+        .ShowPhoneL3_Textbox = " ..." & Space(5) & " ..."
+        .ShowPhoneL4_Textbox = " ..." & Space(5) & " ..."
+        .ShowPhoneL5_Textbox = " ..." & Space(5) & " ..."
+        .ShowPhoneL6_Textbox = " ..." & Space(5) & " ..."
+        .ShowPhoneL7_Textbox = " ..." & Space(5) & " ..."
+        .ShowPhoneL8_Textbox = " ..." & Space(5) & " ..."
+    End With
+    
+    Exception.Pop
+    
+End Sub
+
+Public Sub StoreSettingsForNameSearches(ByRef Student As cStudent, ByRef NameForm As MSForms.UserForm, _
+    ByRef Exception As cException)
+    
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    Exception.Push "Procedures_NameSearch.StoreSettingsForNameSearches"
+    
+    Exception.ErrMessage = "Saving the textboxes to the cStudent object"
+    With NameForm
+        Set Student.SessionComboBox = .Session_ComboBox
+        Set Student.FirstNameTextbox = .Firstname_Textbox
+        Set Student.LastNameTextbox = .Lastname_Textbox
+        Set Student.MiddleNameTextbox = .Middlename_Textbox
+        
+        Set Student.FieldMailingName1 = .MailingNameL1_Textbox
+        Set Student.FieldMailingName2 = .MailingNameL2_Textbox
+        Set Student.FieldMailingName3 = .MailingNameL3_Textbox
+        Set Student.FieldMailingName4 = .MailingNameL4_Textbox
+        Set Student.FieldMailingName5 = .MailingNameL5_Textbox
+        Set Student.FieldMailingName6 = .MailingNameL6_Textbox
+        Set Student.FieldMailingName7 = .MailingNameL7_Textbox
+        Set Student.FieldMailingName8 = .MailingNameL8_Textbox
+        
+        Set Student.FieldPhone1 = .ShowPhoneL1_Textbox
+        Set Student.FieldPhone2 = .ShowPhoneL2_Textbox
+        Set Student.FieldPhone3 = .ShowPhoneL3_Textbox
+        Set Student.FieldPhone4 = .ShowPhoneL4_Textbox
+        Set Student.FieldPhone5 = .ShowPhoneL5_Textbox
+        Set Student.FieldPhone6 = .ShowPhoneL6_Textbox
+        Set Student.FieldPhone7 = .ShowPhoneL7_Textbox
+        Set Student.FieldPhone8 = .ShowPhoneL8_Textbox
+    End With
+    
+    Exception.Pop
+    
+End Sub
+
+Public Function UserHasSelectedName(ByRef NameForm As MSForms.UserForm, ByRef Exception As cException) As Boolean
+    
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    Exception.Push "Procedures_NameSearch.UserHasSelectedName"
+    
+    Dim i As Integer
+    Const arrSize As Integer = 8
+
+    Dim baseRow As Long
+    Const actionCol As Long = 5
+    
+    Dim storeTextboxes() As Object
+    ReDim storeTextboxes(arrSize) As Object
+    
+    UserHasSelectedName = False
+    
+    baseRow = 7
+    storeTextboxes = StoreActionTextboxes(NameForm, Exception)
+    
+    Do
+    
+        If Len(Trim(storeTextboxes(i).Value)) >= 1 Then
+        
+            AS400.SetText Trim(storeTextboxes(i).Value), baseRow, actionCol
+            PostResultsToForm NameForm, AS400, Exception
+            UserHasSelectedName = True
+                
+        Else
+                
+            baseRow = baseRow + 1
+                
+        End If
+                
+        i = i + 1
+                
+    Loop While UserHasSelectedName = False Or i <= arrSize
+    
+    Exception.Pop
+    
+End Function
+
+Private Sub PostResultsToForm(ByRef NameForm As MSForms.UserForm, ByVal AS400 As cAS400, ByRef Exception As cException)
+    
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    Exception.Push "Procedures_NameSearch.PostResultsToForm"
+    
+    With NameForm
+    
+        AS400.SendKeys EnterKey
+        
+        If AS400.SearchText("01NS", 1, 1, forward) = False Then
+            
+            .AlphaName_Textbox = vbNullString
+            .MailingNameL1_Textbox = "  [Results posted to the AS/400]"
+            .MailingNameL2_Textbox = vbNullString
+            
+            .MailingNameL3_Textbox = Trim(AS400.GetText(3, 2, 20))
+            
+            .MailingNameL4_Textbox = CheckString(AS400.GetText(5, 2, 28))
+            .MailingNameL5_Textbox = CheckString(AS400.GetText(6, 2, 28))
+            .MailingNameL6_Textbox = CheckString(AS400.GetText(7, 2, 28))
+            
+            .MailingNameL7_Textbox = vbNullString
+            .MailingNameL8_Textbox = "  [Results posted to the AS/400]"
+            
+            .ShowPhoneL1_Textbox = vbNullString
+            .ShowPhoneL2_Textbox = vbNullString
+            .ShowPhoneL3_Textbox = vbNullString
+            .ShowPhoneL4_Textbox = vbNullString
+            .ShowPhoneL5_Textbox = vbNullString
+            .ShowPhoneL6_Textbox = vbNullString
+            .ShowPhoneL7_Textbox = vbNullString
+            .ShowPhoneL8_Textbox = vbNullString
+            
+        End If
+    
+    End With
+    
+    Exception.Pop
+    
+End Sub
+
+Public Sub ClearActionBoxes(ByRef NameForm As MSForms.UserForm, ByRef Exception As cException)
+
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    Exception.Push "Procedures_NameSearch.PostResultsToForm"
+    
+    With NameForm
+        
+        .ActionL1_Textbox = vbNullString
+        .ActionL2_Textbox = vbNullString
+        .ActionL3_Textbox = vbNullString
+        .ActionL4_Textbox = vbNullString
+        .ActionL5_Textbox = vbNullString
+        .ActionL6_Textbox = vbNullString
+        .ActionL7_Textbox = vbNullString
+        .ActionL8_Textbox = vbNullString
+    
+    End With
+    
+    Exception.Pop
+    
+End Sub
+
+Private Function CheckString(result_to_save) As String
+
+    Dim lenCount As Integer
+    
+    lenCount = Len(Trim(result_to_save))
+    If lenCount >= 1 Then
+        CheckString = Trim(result_to_save)
+    Else
+        CheckString = Space(5) & "(Empty)"
+    End If
+    
+End Function
