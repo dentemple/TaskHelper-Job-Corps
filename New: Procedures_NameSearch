@@ -94,14 +94,6 @@ Public Sub PrepareNameSearchTextboxes(ByRef NameForm As MSForms.UserForm, ByRef 
     
     Exception.ErrMessage = "Setting initial values within the textboxes"
     With NameForm
-        .ActionL1_Textbox = vbNullString
-        .ActionL2_Textbox = vbNullString
-        .ActionL3_Textbox = vbNullString
-        .ActionL4_Textbox = vbNullString
-        .ActionL5_Textbox = vbNullString
-        .ActionL6_Textbox = vbNullString
-        .ActionL7_Textbox = vbNullString
-        .ActionL8_Textbox = vbNullString
         .MailingNameL1_Textbox = " ..." & Space(5) & " ..."
         .MailingNameL2_Textbox = " ..." & Space(5) & " ..."
         .MailingNameL3_Textbox = " ..." & Space(5) & " ..."
@@ -161,7 +153,8 @@ Public Sub StoreSettingsForNameSearches(ByRef Student As cStudent, ByRef NameFor
     
 End Sub
 
-Public Function UserHasSelectedName(ByRef NameForm As MSForms.UserForm, ByRef Exception As cException) As Boolean
+Public Function UserHasSelectedName(ByVal AS400 As cAS400, ByRef NameForm As MSForms.UserForm, _
+    ByRef Exception As cException) As Boolean
     
     'Pass error handling up the call stack
     On Error GoTo 0
@@ -173,16 +166,28 @@ Public Function UserHasSelectedName(ByRef NameForm As MSForms.UserForm, ByRef Ex
     Dim baseRow As Long
     Const actionCol As Long = 5
     
-    Dim storeTextboxes() As Object
-    ReDim storeTextboxes(arrSize) As Object
+    Dim storeTextboxes() As Variant
+    ReDim storeTextboxes(1 To arrSize) As Variant
     
     UserHasSelectedName = False
     
     baseRow = 7
-    storeTextboxes = StoreActionTextboxes(NameForm, Exception)
     
+    With NameForm
+        Set storeTextboxes(1) = .ActionL1_Textbox
+        Set storeTextboxes(2) = .ActionL2_Textbox
+        Set storeTextboxes(3) = .ActionL3_Textbox
+        Set storeTextboxes(4) = .ActionL4_Textbox
+        Set storeTextboxes(5) = .ActionL5_Textbox
+        Set storeTextboxes(6) = .ActionL6_Textbox
+        Set storeTextboxes(7) = .ActionL7_Textbox
+        Set storeTextboxes(8) = .ActionL8_Textbox
+    End With
+    
+    i = 1
     Do
-    
+        
+        Debug.Print storeTextboxes(i).Value
         If Len(Trim(storeTextboxes(i).Value)) >= 1 Then
         
             AS400.SetText Trim(storeTextboxes(i).Value), baseRow, actionCol
@@ -197,7 +202,7 @@ Public Function UserHasSelectedName(ByRef NameForm As MSForms.UserForm, ByRef Ex
                 
         i = i + 1
                 
-    Loop While UserHasSelectedName = False Or i <= arrSize
+    Loop While UserHasSelectedName = False And i <= arrSize
     
     Exception.Pop
     
