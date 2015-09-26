@@ -1,0 +1,179 @@
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' TransferCredits (Module)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Option Explicit
+
+'AS400 specific values
+    Const rowHome As Long = 19
+    Const colHome As Long = 7
+    Const optionCustomerService As String = "1"
+    Const optionEducationInquiry As String = "15"
+
+Public Sub Execute_NavigateToNameSearch(ByRef CreditsForm As MSForms.UserForm, _
+    ByVal AS400 As cAS400, ByRef Exception As cException)
+    
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    Exception.Push "Procedures_TransferCredits.Execute_NavigateToNameSearch"
+    
+    Dim i As Integer
+    Dim j As Integer
+    Const maxSize As Integer = 30
+    Dim SID As String
+    Dim textboxArray() As Object
+    ReDim textboxArray(1 To maxSize, 1 To 2)
+    
+    SID = Trim(CreditsForm.SID_Textbox)
+    
+    Select Case AS400.GetText(1, 2, 8)
+    
+        Case "60210   ": AS400.SendKeys F3Key
+        
+        Case "603132_B": AS400.Pause
+        
+        Case Else
+    
+            NavigateHome AS400, Exception
+            If HomeScreenConfirmed(AS400, Exception) = False Then GoTo NavigationFailure
+            
+            AS400.SetText optionCustomerService, rowHome, colHome
+            AS400.SendKeys EnterKey
+            
+            AS400.SetText optionEducationInquiry, rowHome, colHome
+            AS400.SendKeys EnterKey
+            
+    End Select
+
+    AS400.SetText SID, 3, 13
+    AS400.SendKeys EnterKey
+    AS400.SendKeys F11Key
+    
+    If AS400.SearchText("60210", 1, 1, forward) = False Then GoTo NavigationFailure
+    
+    AS400.Pause
+    
+    If Len(Trim(AS400.GetText(5, 23, modLength))) < 2 Then GoTo DoesNotExist
+    
+    LoadTextboxesFromCredits textboxArray(), CreditsForm, Exception
+    
+    With AS400
+    
+        Do While i <= maxSize
+        
+            For j = 17 To 22    'Rows 17 to 22 within the AS/400
+    
+                textboxArray(i, 1) = Trim(.GetText(j, 4, modLength))
+                textboxArray(i, 2) = Trim(.GetText(j, 13, 30))
+                
+                i = i + 1
+            
+            Next j
+        
+            If Len(Trim(AS400.GetText(22, 4, 2))) = 0 Then
+                Exit Do
+            Else
+                .SendKeys "[pagedn]"
+            End If
+            
+        Loop
+    
+    End With
+    
+'''''''''''''''''''''''''''
+' Cleanup
+'''''''''''''''''''''''''''
+Cleanup:
+    
+    TurnOnExcelDefaults Exception
+    Exception.Pop
+
+Exit Sub
+
+'''''''''''''''''''''''''''
+' Error Handling
+'''''''''''''''''''''''''''
+NavigationFailure:
+
+    Exception.Flag = True
+    
+GoTo Cleanup
+'''''''''''''''''''''''''''
+DoesNotExist:
+GoTo Cleanup
+'''''''''''''''''''''''''''
+End Sub
+'''''''''''''''''''''''''''
+    
+Private Sub LoadTextboxesFromCredits(ByRef textboxArray() As Object, _
+    ByVal CreditsForm As MSForms.UserForm, ByRef Exception As cException)
+    
+    On Error Resume Next
+    Exception.Push "Procedures_TransferCredits.LoadTextboxesFromCredits"
+    
+    With CreditsForm
+        Set textboxArray(1, 1) = .Mod1_Textbox
+        Set textboxArray(2, 1) = .Mod2_Textbox
+        Set textboxArray(3, 1) = .Mod3_Textbox
+        Set textboxArray(4, 1) = .Mod4_Textbox
+        Set textboxArray(5, 1) = .Mod5_Textbox
+        Set textboxArray(6, 1) = .Mod6_Textbox
+        Set textboxArray(7, 1) = .Mod7_Textbox
+        Set textboxArray(8, 1) = .Mod8_Textbox
+        Set textboxArray(9, 1) = .Mod9_Textbox
+        Set textboxArray(10, 1) = .Mod10_Textbox
+        Set textboxArray(11, 1) = .Mod11_Textbox
+        Set textboxArray(12, 1) = .Mod12_Textbox
+        Set textboxArray(13, 1) = .Mod13_Textbox
+        Set textboxArray(14, 1) = .Mod14_Textbox
+        Set textboxArray(15, 1) = .Mod15_Textbox
+        Set textboxArray(16, 1) = .Mod16_Textbox
+        Set textboxArray(17, 1) = .Mod17_Textbox
+        Set textboxArray(18, 1) = .Mod18_Textbox
+        Set textboxArray(19, 1) = .Mod19_Textbox
+        Set textboxArray(20, 1) = .Mod20_Textbox
+        Set textboxArray(21, 1) = .Mod21_Textbox
+        Set textboxArray(22, 1) = .Mod22_Textbox
+        Set textboxArray(23, 1) = .Mod23_Textbox
+        Set textboxArray(24, 1) = .Mod24_Textbox
+        Set textboxArray(25, 1) = .Mod25_Textbox
+        Set textboxArray(26, 1) = .Mod26_Textbox
+        Set textboxArray(27, 1) = .Mod27_Textbox
+        Set textboxArray(28, 1) = .Mod28_Textbox
+        Set textboxArray(29, 1) = .Mod29_Textbox
+        Set textboxArray(30, 1) = .Mod30_Textbox
+        
+        Set textboxArray(1, 2) = .Title1_Textbox
+        Set textboxArray(2, 2) = .Title2_Textbox
+        Set textboxArray(3, 2) = .Title3_Textbox
+        Set textboxArray(4, 2) = .Title4_Textbox
+        Set textboxArray(5, 2) = .Title5_Textbox
+        Set textboxArray(6, 2) = .Title6_Textbox
+        Set textboxArray(7, 2) = .Title7_Textbox
+        Set textboxArray(8, 2) = .Title8_Textbox
+        Set textboxArray(9, 2) = .Title9_Textbox
+        Set textboxArray(10, 2) = .Title10_Textbox
+        Set textboxArray(11, 2) = .Title11_Textbox
+        Set textboxArray(12, 2) = .Title12_Textbox
+        Set textboxArray(13, 2) = .Title13_Textbox
+        Set textboxArray(14, 2) = .Title14_Textbox
+        Set textboxArray(15, 2) = .Title15_Textbox
+        Set textboxArray(16, 2) = .Title16_Textbox
+        Set textboxArray(17, 2) = .Title17_Textbox
+        Set textboxArray(18, 2) = .Title18_Textbox
+        Set textboxArray(19, 2) = .Title19_Textbox
+        Set textboxArray(20, 2) = .Title20_Textbox
+        Set textboxArray(21, 2) = .Title21_Textbox
+        Set textboxArray(22, 2) = .Title22_Textbox
+        Set textboxArray(23, 2) = .Title23_Textbox
+        Set textboxArray(24, 2) = .Title24_Textbox
+        Set textboxArray(25, 2) = .Title25_Textbox
+        Set textboxArray(26, 2) = .Title26_Textbox
+        Set textboxArray(27, 2) = .Title27_Textbox
+        Set textboxArray(28, 2) = .Title28_Textbox
+        Set textboxArray(29, 2) = .Title29_Textbox
+        Set textboxArray(30, 2) = .Title30_Textbox
+    End With
+    
+    Exception.Pop
+    
+End Sub
