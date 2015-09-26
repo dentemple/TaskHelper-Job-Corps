@@ -229,7 +229,7 @@ Public Sub RunSearchButton(ByVal action_type As String, ByVal NameForm As MSForm
     StoreSettingsForNameSearches Student, NameForm, Exception
     
     If DebugFlag Then On Error GoTo 0 Else On Error GoTo AS400Error
-    AS400.InitializeApp session_letter, Exception, addTime
+    AS400.InitializeApp session_letter, Exception, 1
     
     '''''''''''''''''''''''''''
     ' Perform actions
@@ -250,14 +250,21 @@ Public Sub RunSearchButton(ByVal action_type As String, ByVal NameForm As MSForm
             
         Case buttonAction
         
-            If AS400.SearchText("Name Search", 1, 1) Then GoTo IncorrectScreen
+            If AS400.SearchText("01NS", 1, 1) = False Then GoTo IncorrectScreen
             AS400.SendKeys page_to_keypress
             
             Execute_PrimaryNameSearch Student, AS400, Exception
             
         Case buttonMulti
         
-            If Not UserHasSelectedName(NameForm, Exception) Then
+            If UserHasSelectedName(AS400, NameForm, Exception) = False Then
+            
+                If AS400.SearchText("01NS", 1, 1, forward) = False Then
+                
+                    Execute_NavigateToNameSearch AS400, Exception
+                    If Exception.Flag = True Then GoTo NavigationFailure
+                
+                End If
             
                 AS400.SetText NameForm.AlphaName_Textbox, 4, 20
                 AS400.SendKeys EnterKey
