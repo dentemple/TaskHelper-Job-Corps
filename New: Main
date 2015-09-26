@@ -322,3 +322,40 @@ GoTo Cleanup
 '''''''''''''''''''''''''''
 End Sub
 '''''''''''''''''''''''''''
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' RunPopulateClasses
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub RunPopulateClasses(ByVal CreditsForm As MSForms.UserForm)
+
+    Dim Exception As cException                 'Stores the error and stack information
+    Dim AS400 As cAS400                         'Stores the AS/400 objects and methods
+    Dim StatusBox As Object                     'Stores reference to the userform's status textbox
+
+    Set Exception = New cException
+    Set AS400 = New cAS400
+    Set StatusBox = CreditsForm.Status_Textbox
+    
+    With Exception
+        .ErrMessage = "" & vbNewLine
+        .ErrMessage = windowLineSeperator
+        .Push "Main.RunPopulateClasses"
+    End With
+    
+    TurnOffExcelDefaults Exception
+    
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo AS400Error
+    AS400.InitializeApp Trim(CreditsForm.Session_ComboBox.Value), Exception, 10
+
+    If Len(Trim(CreditsForm.SID_Textbox)) < 1 Then GoTo SIDNotFound
+    
+Cleanup:
+Exit Sub
+
+AS400Error:
+Resume Cleanup
+
+SIDNotFound:
+GoTo Cleanup
+    
+End Sub
