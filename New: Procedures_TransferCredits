@@ -3,6 +3,10 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Option Explicit
 
+'User action
+    Const applyTR As String = "Apply Transder Credits"
+    Const populateTR As String = "Populate the student's courses"
+
 'AS400 specific values
     Const rowHome As Long = 19
     Const colHome As Long = 7
@@ -105,6 +109,13 @@ GoTo Cleanup
 '''''''''''''''''''''''''''
 End Sub
 '''''''''''''''''''''''''''
+
+Public Sub Execute_CourseTransfer(ByRef CreditsForm As MSForms.UserForm, _
+    ByVal AS400 As cAS400, ByRef Exception As cException)
+    
+    
+
+End Sub
     
 Private Sub LoadTextboxesFromCredits(ByRef textboxArray() As Object, _
     ByVal CreditsForm As MSForms.UserForm, ByRef Exception As cException)
