@@ -324,9 +324,9 @@ End Sub
 '''''''''''''''''''''''''''
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' RunPopulateClasses
+' RunTransferProcedures
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub RunPopulateClasses(ByVal CreditsForm As MSForms.UserForm)
+Public Sub RunTransferProcedures(ByVal CreditsForm As MSForms.UserForm, ByVal action_type As String)
 
     Dim Exception As cException                 'Stores the error and stack information
     Dim AS400 As cAS400                         'Stores the AS/400 objects and methods
@@ -339,7 +339,7 @@ Public Sub RunPopulateClasses(ByVal CreditsForm As MSForms.UserForm)
     With Exception
         .ErrMessage = "" & vbNewLine
         .ErrMessage = windowLineSeperator
-        .Push "Main.RunPopulateClasses"
+        .Push "Main.RunTransferProcedures"
     End With
     
     TurnOffExcelDefaults Exception
@@ -349,7 +349,18 @@ Public Sub RunPopulateClasses(ByVal CreditsForm As MSForms.UserForm)
 
     If Len(Trim(CreditsForm.SID_Textbox)) < 1 Then GoTo SIDNotFound
     
+    If action_type = populateTR Then
+        Execute_CoursePopulation CreditsForm, AS400, Exception
+    ElseIf action_type = applyTR Then
+        Execute_CourseTransfer
+    End If
+    
+    
 Cleanup:
+
+    TurnOnExcelDefaults Exception
+    Exception.Pop
+    
 Exit Sub
 
 AS400Error:
