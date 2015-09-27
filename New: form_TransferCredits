@@ -312,7 +312,7 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Private Sub PopulateClasses_Button_Click()
     
-    RunPopulateClasses form_TransferCredits
+    RunTransferProcedures form_TransferCredits, populateTR
     
     hasBeenPopulated = True
     Status_Textbox = "Ready"
@@ -323,7 +323,7 @@ Private Sub ApplyTransferCredits_Button_Click()
 
     If hasBeenPopulated = True Then
     
-        ApplyTransferCredits form_TransferCredits
+        RunTransferProcedures form_TransferCredits, applyTR
         
     Else
     
