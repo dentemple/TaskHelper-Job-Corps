@@ -272,16 +272,3 @@ Public Sub ClearActionBoxes(ByRef NameForm As MSForms.UserForm, ByRef Exception 
     Exception.Pop
     
 End Sub
-
-Private Function CheckString(result_to_save) As String
-
-    Dim lenCount As Integer
-    
-    lenCount = Len(Trim(result_to_save))
-    If lenCount >= 1 Then
-        CheckString = Trim(result_to_save)
-    Else
-        CheckString = Space(5) & "(Empty)"
-    End If
-    
-End Function
