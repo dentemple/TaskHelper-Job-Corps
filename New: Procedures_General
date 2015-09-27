@@ -266,3 +266,16 @@ Public Function HomeScreenConfirmed(ByVal AS400 As cAS400, ByRef Exception As cE
     Exception.Pop
     
 End Function
+
+Public Function CheckString(ByVal result_to_save As String, Optional ByVal extra_spaces As Integer = 5) As String
+
+    Dim lenCount As Integer
+    
+    lenCount = Len(Trim(result_to_save))
+    If lenCount >= 1 Then
+        CheckString = Trim(result_to_save)
+    Else
+        CheckString = Space(extra_spaces) & "(Empty)"
+    End If
+    
+End Function
