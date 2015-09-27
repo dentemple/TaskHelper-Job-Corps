@@ -9,7 +9,7 @@ Option Explicit
     Const optionCustomerService As String = "1"
     Const optionEducationInquiry As String = "15"
 
-Public Sub Execute_NavigateToNameSearch(ByRef CreditsForm As MSForms.UserForm, _
+Public Sub Execute_CoursePopulation(ByRef CreditsForm As MSForms.UserForm, _
     ByVal AS400 As cAS400, ByRef Exception As cException)
     
     'Pass error handling up the call stack
@@ -78,6 +78,8 @@ Public Sub Execute_NavigateToNameSearch(ByRef CreditsForm As MSForms.UserForm, _
         Loop
     
     End With
+    
+    CreditsForm.AlphaName_Textbox = CheckString(AS400.GetText(4, 32, 38), 1)
     
 '''''''''''''''''''''''''''
 ' Cleanup
