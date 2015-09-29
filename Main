@@ -10,8 +10,9 @@ Option Explicit
 
 'Value containers
     Const noEntry As String = "No Entry"            'As a procedure argument
-    Public rngStudentID As Excel.Range              'From userform to userform
-
+    Public rngStudentID As Excel.Range              'For info to pass from userform to userform
+    Public rnglastSession As Excel.Range            'For info to pass from userform to userform
+    
 'AS/400 static values (required by IBM to be set as Long)
     Public Const addTime As Long = 10               'In Milliseconds; cAS400 defaults this to "1"
     Public gv_WaitAdd As Long                       'For adding milliseconds within the cAS400 module
@@ -41,7 +42,7 @@ Option Explicit
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' RunRegistration
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
+Public Sub RunRegistration(ByRef RegForm As MSForms.UserForm)
 
     '''''''''''''''''''''''''''
     ' Declarations
@@ -79,6 +80,8 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
     If DebugFlag Then On Error GoTo 0 Else On Error GoTo AS400Error
     AS400.InitializeApp Student.GetSession, Exception, addTime
     
+    rnglastSession = Student.GetSession
+    
     '''''''''''''''''''''''''''
     ' Pre-enrollment check
     '''''''''''''''''''''''''''
@@ -104,13 +107,14 @@ Public Sub RunRegistration(ByVal RegForm As MSForms.UserForm)
     If Exception.Flag Then GoTo NavigationFailure
     
     StatusBox.Value = "...   ...   ...  (Please Wait)  ...   ...   ..."
+    rngStudentID = Student.StudentID
     
     '''''''''''''''''''''''''''
     ' Message and next procedure
     '''''''''''''''''''''''''''
     Exception.ErrMessage = "Presenting dialogue box"
     
-    finalMessage = "The Student has been successfully registered." & vbNewLine & vbNewLine & _
+    finalMessage = "The student has been successfully registered." & vbNewLine & vbNewLine & _
                         vbTab & "Student ID#: " & CStr(Student.StudentID) & vbNewLine & vbNewLine & _
                         "DO YOU WISH TO APPLY TRANSFER CREDITS?"
     
@@ -187,7 +191,7 @@ GoTo Cleanup
 End Sub
 '''''''''''''''''''''''''''
 
-Public Sub RunSearchButton(ByVal action_type As String, ByVal NameForm As MSForms.UserForm, _
+Public Sub RunSearchButton(ByVal action_type As String, ByRef NameForm As MSForms.UserForm, _
     Optional ByVal page_to_keypress As String, Optional ByVal session_letter As String = noEntry)
     
     '''''''''''''''''''''''''''
@@ -230,6 +234,8 @@ Public Sub RunSearchButton(ByVal action_type As String, ByVal NameForm As MSForm
     
     If DebugFlag Then On Error GoTo 0 Else On Error GoTo AS400Error
     AS400.InitializeApp session_letter, Exception, 1
+    
+    rnglastSession = session_letter
     
     '''''''''''''''''''''''''''
     ' Perform actions
@@ -326,8 +332,9 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' RunTransferProcedures
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub RunTransferProcedures(ByVal CreditsForm As MSForms.UserForm, ByVal action_type As String)
-
+Public Sub RunTransferProcedures(ByRef CreditsForm As MSForms.UserForm, ByVal action_type As String)
+    
+    Dim finalMessage As String
     Dim Exception As cException                 'Stores the error and stack information
     Dim AS400 As cAS400                         'Stores the AS/400 objects and methods
     Dim StatusBox As Object                     'Stores reference to the userform's status textbox
@@ -348,14 +355,32 @@ Public Sub RunTransferProcedures(ByVal CreditsForm As MSForms.UserForm, ByVal ac
     AS400.InitializeApp Trim(CreditsForm.Session_ComboBox.Value), Exception, 10
 
     If Len(Trim(CreditsForm.SID_Textbox)) < 1 Then GoTo SIDNotFound
+    rngStudentID = CreditsForm.SID_Textbox
+    
+    StatusBox = "...   ...   ...   Applying TR   ...   ...   ..."
     
     If action_type = populateTR Then
+    
         Execute_CoursePopulation CreditsForm, AS400, Exception
+        
     ElseIf action_type = applyTR Then
-        Execute_CourseTransfer
+    
+        Execute_CourseTransfer CreditsForm, AS400, Exception
+
+        Exception.ErrMessage = "Presenting dialogue box"
+    
+        finalMessage = "The Transfer Credits procedure has completed successfully." & vbNewLine & vbNewLine & _
+                        "Do you wish to view the Shipments Form?"
+    
+        If MsgBox(finalMessage, vbYesNo, "Procedure complete - Apply TR?") = vbYes Then
+    
+            Unload CreditsForm
+            form_Shipments.Show
+
+        End If
+        
     End If
-    
-    
+
 Cleanup:
 
     TurnOnExcelDefaults Exception
@@ -369,4 +394,11 @@ Resume Cleanup
 SIDNotFound:
 GoTo Cleanup
     
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' RunShipmentSelection
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Sub RunShipmentSelection(ByRef ShipForm As MSForms.UserForm, ByVal send_Shipments As Boolean)
+
 End Sub
