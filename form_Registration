@@ -4,9 +4,9 @@
 Option Explicit
 
 'RGB for an unselected textbox
-    Const RedFieldNot As Integer = 211
-    Const GreenFieldNot As Integer = 211
-    Const BlueFieldNot As Integer = 211
+    Const lockedRed As Integer = 211
+    Const lockedGreen As Integer = 211
+    Const lockedBlue As Integer = 211
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Initialization event
@@ -88,26 +88,27 @@ Private Sub UserForm_Initialize()
     ShowPhoneL8_Textbox.Locked = True
     
     'Greys out the locked textboxes
-    Status_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
-    MailingNameL1_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
-    MailingNameL2_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
-    MailingNameL3_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
-    MailingNameL4_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
-    MailingNameL5_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
-    MailingNameL6_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
-    MailingNameL7_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
-    MailingNameL8_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
-    ShowPhoneL1_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
-    ShowPhoneL2_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
-    ShowPhoneL3_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
-    ShowPhoneL4_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
-    ShowPhoneL5_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
-    ShowPhoneL6_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
-    ShowPhoneL7_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
-    ShowPhoneL8_Textbox.BackColor = RGB(RedFieldNot, GreenFieldNot, BlueFieldNot)
+    Status_Textbox.BackColor = RGB(lockedRed, lockedGreen, lockedBlue)
+    MailingNameL1_Textbox.BackColor = RGB(lockedRed, lockedGreen, lockedBlue)
+    MailingNameL2_Textbox.BackColor = RGB(lockedRed, lockedGreen, lockedBlue)
+    MailingNameL3_Textbox.BackColor = RGB(lockedRed, lockedGreen, lockedBlue)
+    MailingNameL4_Textbox.BackColor = RGB(lockedRed, lockedGreen, lockedBlue)
+    MailingNameL5_Textbox.BackColor = RGB(lockedRed, lockedGreen, lockedBlue)
+    MailingNameL6_Textbox.BackColor = RGB(lockedRed, lockedGreen, lockedBlue)
+    MailingNameL7_Textbox.BackColor = RGB(lockedRed, lockedGreen, lockedBlue)
+    MailingNameL8_Textbox.BackColor = RGB(lockedRed, lockedGreen, lockedBlue)
+    ShowPhoneL1_Textbox.BackColor = RGB(lockedRed, lockedGreen, lockedBlue)
+    ShowPhoneL2_Textbox.BackColor = RGB(lockedRed, lockedGreen, lockedBlue)
+    ShowPhoneL3_Textbox.BackColor = RGB(lockedRed, lockedGreen, lockedBlue)
+    ShowPhoneL4_Textbox.BackColor = RGB(lockedRed, lockedGreen, lockedBlue)
+    ShowPhoneL5_Textbox.BackColor = RGB(lockedRed, lockedGreen, lockedBlue)
+    ShowPhoneL6_Textbox.BackColor = RGB(lockedRed, lockedGreen, lockedBlue)
+    ShowPhoneL7_Textbox.BackColor = RGB(lockedRed, lockedGreen, lockedBlue)
+    ShowPhoneL8_Textbox.BackColor = RGB(lockedRed, lockedGreen, lockedBlue)
     
-    'Sets the Student ID container for passing to separate userforms
+    'For defaulting the session and Student ID values
     If DebugFlag Then On Error GoTo 0 Else On Error Resume Next
+    Set rnglastSession = Range("lastSession")
     Set rngStudentID = Range("lastStudentID")
     rngStudentID = vbNullString
     If DebugFlag Then On Error GoTo 0 Else On Error GoTo 0
@@ -118,9 +119,10 @@ Private Sub UserForm_Initialize()
     'Connects to the AS/400 to generate a list of active session names
     If DebugFlag Then On Error GoTo 0 Else On Error GoTo AS400NotActive
     Set objAS400ConnList = CreateObject("PCOMM.autECLConnList")
-    objAS400ConnList.Refresh
-    If DebugFlag Then On Error GoTo 0 Else On Error GoTo 0
     
+    objAS400ConnList.Refresh
+    
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo 0
     container = Trim(Range("DefaultSession"))
     'Populates the selection boxes
     With Session_ComboBox
@@ -138,6 +140,8 @@ Private Sub UserForm_Initialize()
         .Text = Session_ComboBox.List(0)
         
     End With
+    
+    rnglastSession = vbNullString
     
     Set objAS400ConnList = Nothing
     
@@ -188,7 +192,7 @@ End Sub
 
 Private Sub PageUp_Button_Click()
 
-    RunSearchButton buttonPrimary, form_Registration, PageUpKey, Session_ComboBox.Value
+    RunSearchButton buttonAction, form_Registration, PageUpKey, Session_ComboBox.Value
     
     Status_Textbox = "Ready"
 
@@ -196,7 +200,7 @@ End Sub
 
 Private Sub PageDown_Button_Click()
 
-    RunSearchButton buttonPrimary, form_Registration, PageDownKey, Session_ComboBox.Value
+    RunSearchButton buttonAction, form_Registration, PageDownKey, Session_ComboBox.Value
     
     Status_Textbox = "Ready"
 
