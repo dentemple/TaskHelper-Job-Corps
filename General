@@ -1,5 +1,5 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Procedures_General (Module)
+' General (Module)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Option Explicit
 
@@ -43,7 +43,7 @@ Public Sub TurnOffExcelDefaults(Optional ByRef Exception As cException)
 
     'Pass error handling up the call stack
     On Error GoTo 0
-    If Not Exception Is Nothing Then Exception.Push "Procedures_General.TurnOffExcelDefaults"
+    If Not Exception Is Nothing Then Exception.Push "General.TurnOffExcelDefaults"
 
     Application.ScreenUpdating = False
     Application.DisplayAlerts = False
@@ -62,7 +62,7 @@ Public Sub TurnOnExcelDefaults(Optional ByRef Exception As cException)
 
     'Pass error handling up the call stack
     On Error GoTo 0
-    If Not Exception Is Nothing Then Exception.Push "Procedures_General.TurnOnExcelDefaults"
+    If Not Exception Is Nothing Then Exception.Push "General.TurnOnExcelDefaults"
     
     Application.Calculation = xlCalculationAutomatic
     Application.DisplayAlerts = True
@@ -81,7 +81,7 @@ Public Sub NavigateHome(ByVal AS400 As cAS400, ByRef Exception As cException)
 
     'Pass error handling up the call stack
     On Error GoTo 0
-    Exception.Push "Procedures_General.NavigateHome"
+    Exception.Push "General.NavigateHome"
     
     Dim i As Integer                        'Loop counter
     Const maxAttempts As Integer = 5        'Max loop count
@@ -259,7 +259,7 @@ Public Function HomeScreenConfirmed(ByVal AS400 As cAS400, ByRef Exception As cE
 
     'Passes error handling up the call stack
     On Error GoTo 0
-    If Not Exception Is Nothing Then Exception.Push "Procedures_General.ConfirmHomeScreen"
+    If Not Exception Is Nothing Then Exception.Push "General.ConfirmHomeScreen"
     
     HomeScreenConfirmed = AS400.SearchText(Trim(tagHome), 1, 1, forward)
     
