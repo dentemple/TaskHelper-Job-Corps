@@ -1,5 +1,5 @@
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-' Procedures_Registration (Module)
+' Registration (Module)
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Provides the necessary commands for performing a program registration for _
     Job Corps students.
@@ -33,7 +33,7 @@ Public Sub Execute_AddressBookRegistration(ByRef Student As cStudent, _
     
     'Passes error handling up the call stack
     On Error GoTo 0
-    Exception.Push "Procedures_Registration.Execute_AddressBookRegistration"
+    Exception.Push "Registration.Execute_AddressBookRegistration"
     
     NavigateHome AS400, Exception
     If HomeScreenConfirmed(AS400, Exception) = False Then GoTo NavigationFailure
@@ -138,7 +138,7 @@ Public Sub Execute_CourseEntryRegistration(ByRef Student As cStudent, _
     
     'Passes error handling up the call stack
     On Error GoTo 0
-    Exception.Push "Procedures_Registration.Execute_AddressBookRegistration"
+    Exception.Push "Registration.Execute_AddressBookRegistration"
     
     NavigateHome AS400, Exception
     If HomeScreenConfirmed(AS400, Exception) = False Then GoTo NavigationFailure
@@ -236,7 +236,7 @@ Public Sub LoadUserformObjects(ByRef Student As cStudent, ByVal RegForm As MSFor
     
     'Pass error handling up the call stack
     On Error GoTo 0
-    Exception.Push "Procedures_Registration.LoadUserformObjects"
+    Exception.Push "Registration.LoadUserformObjects"
 
     'Pass userform
     Set Student.UserFormObject = RegForm
@@ -284,7 +284,7 @@ Public Function ApproveRegistration(ByVal Student As cStudent, ByRef Exception A
     'Pass error handling up the call stack
     On Error GoTo 0
     
-    Exception.Push "Procedures_Registration.ApproveRegistration"
+    Exception.Push "Registration.ApproveRegistration"
     
     Dim redMessage As String
     redMessage = vbTab & "FINAL CONFIRMATION" & vbNewLine & vbNewLine & _
@@ -342,7 +342,7 @@ Private Sub ConfirmAccountInfo(ByVal Student As cStudent, ByRef approvalFlag As 
     'Pass error handling up the call stack
     On Error GoTo 0
     
-    If Not Exception Is Nothing Then Exception.Push "Procedures_Registration.ConfirmAccountInfo"
+    If Not Exception Is Nothing Then Exception.Push "Registration.ConfirmAccountInfo"
     
     Dim temp As String
     With Student
@@ -420,7 +420,7 @@ Private Sub ConfirmStudentFile(ByVal Student As cStudent, ByRef approvalFlag As 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     'Pass error handling up the call stack
     On Error GoTo 0
-    If Not Exception Is Nothing Then Exception.Push "Procedures_Registration.ConfirmStudentFile"
+    If Not Exception Is Nothing Then Exception.Push "Registration.ConfirmStudentFile"
     
     With Student
     
