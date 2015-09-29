@@ -4,30 +4,46 @@
 Option Explicit
 
 'User action
-    Const applyTR As String = "Apply Transder Credits"
-    Const populateTR As String = "Populate the student's courses"
+    Public Const applyTR As String = "Apply Transder Credits"
+    Public Const populateTR As String = "Populate the student's courses"
+    
+'RGB for completed actions
+    Const completedRed As Integer = 135
+    Const completedGreen As Integer = 206
+    Const completedBlue As Integer = 280
 
 'AS400 specific values
     Const rowHome As Long = 19
     Const colHome As Long = 7
+    Const startRow As Long = 17
+    Const endRow As Long = 22
+    Const selectCourse As Long = 1
     Const optionCustomerService As String = "1"
     Const optionEducationInquiry As String = "15"
+    Const locationTR As String = "60211"
+    Const actionCodeC As String = "C"
+    Const applyCodeY As String = "Y"
+    Const schoolCode As String = "H"
 
 Public Sub Execute_CoursePopulation(ByRef CreditsForm As MSForms.UserForm, _
     ByVal AS400 As cAS400, ByRef Exception As cException)
     
     'Pass error handling up the call stack
     On Error GoTo 0
-    Exception.Push "Procedures_TransferCredits.Execute_NavigateToNameSearch"
+    Exception.Push "TransferCredits.Execute_NavigateToNameSearch"
     
     Dim i As Integer
-    Dim j As Integer
-    Const maxSize As Integer = 30
+    Dim j As Long
     Dim SID As String
+    
+    Const maxSize As Integer = 30
     Dim textboxArray() As Object
     ReDim textboxArray(1 To maxSize, 1 To 2)
     
     SID = Trim(CreditsForm.SID_Textbox)
+    
+    Exception.ErrMessage = "Student ID: " & SID
+    Exception.ErrMessage = "Navigating"
     
     Select Case AS400.GetText(1, 2, 8)
     
@@ -52,20 +68,22 @@ Public Sub Execute_CoursePopulation(ByRef CreditsForm As MSForms.UserForm, _
     AS400.SendKeys EnterKey
     AS400.SendKeys F11Key
     
+    Exception.ErrMessage = "Confirming location"
     If AS400.SearchText("60210", 1, 1, forward) = False Then GoTo NavigationFailure
-    
-    AS400.Pause
-    
     If Len(Trim(AS400.GetText(5, 23, modLength))) < 2 Then GoTo DoesNotExist
     
     LoadTextboxesFromCredits textboxArray(), CreditsForm, Exception
     
     With AS400
-    
+        
+        Exception.ErrMessage = "Passing information from the AS/400 to the userform"
+        i = 1
         Do While i <= maxSize
         
-            For j = 17 To 22    'Rows 17 to 22 within the AS/400
-    
+            For j = startRow To endRow
+                
+                Exception.ErrMessage = "... ... Course #" & CStr(i) & " Line #" & CStr(j)
+                
                 textboxArray(i, 1) = Trim(.GetText(j, 4, modLength))
                 textboxArray(i, 2) = Trim(.GetText(j, 13, 30))
                 
@@ -73,9 +91,11 @@ Public Sub Execute_CoursePopulation(ByRef CreditsForm As MSForms.UserForm, _
             
             Next j
         
-            If Len(Trim(AS400.GetText(22, 4, 2))) = 0 Then
+            If Len(Trim(AS400.GetText(endRow, 4, 2))) = 0 Then
+                Exception.ErrMessage = "... ... At the final page, exiting loop"
                 Exit Do
             Else
+                Exception.ErrMessage = "... ... Moving to the next page"
                 .SendKeys "[pagedn]"
             End If
             
@@ -113,15 +133,180 @@ End Sub
 Public Sub Execute_CourseTransfer(ByRef CreditsForm As MSForms.UserForm, _
     ByVal AS400 As cAS400, ByRef Exception As cException)
     
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    Exception.Push "TransferCredits.Execute_CourseTransfer"
     
+    Dim i As Integer
+    Dim j As Long
+    Dim TRcounter As Integer
+    Dim SID As String
+    Dim finalMessage As String
+    
+    Const maxSize As Integer = 30
+    
+    Dim bools() As Boolean
+    ReDim bools(1 To maxSize)
+    
+    Dim textboxArray() As Object
+    ReDim textboxArray(1 To maxSize, 1 To 2)
+    
+    SID = Trim(CreditsForm.SID_Textbox)
+    finalMessage = "Transfer credits for SID: " & SID & " have been successfully applied."
+    
+    Exception.ErrMessage = "Student ID: " & SID
+    Exception.ErrMessage = "Navigating"
+    
+    Select Case AS400.GetText(1, 2, 8)
+    
+        Case "60210   "
+        
+            With AS400
+                .SendKeys F3Key
+                .SendKeys F11Key
+            End With
+        
+        Case "603132_B"
+        
+            AS400.SendKeys F11Key
+        
+        Case Else
+        
+            NavigateHome AS400, Exception
+            If HomeScreenConfirmed(AS400, Exception) = False Then GoTo NavigationFailure
+            
+            With AS400
+                .SetText optionCustomerService, rowHome, colHome
+                .SendKeys EnterKey
+            
+                .SetText optionEducationInquiry, rowHome, colHome
+                .SendKeys EnterKey
+            
+                .SetText SID, 3, 13
+                .SendKeys EnterKey
+                .SendKeys F11Key
+            End With
+            
+            If AS400.SearchText("60210", 1, 1, forward) = False Then SIDNotAMatch
+    
+    End Select
+    
+    If AS400.SearchText(SID, 1, 1, forward) = False Then SIDNotAMatch
+    
+    LoadTextboxesFromCredits textboxArray(), CreditsForm, Exception
+    LoadBools bools(), CreditsForm, Exception
+    
+    With AS400
 
+        Exception.ErrMessage = "Selecting courses for transfer"
+        i = 1
+        Do While i <= maxSize
+        
+            For j = startRow To endRow
+            
+                Exception.ErrMessage = "... ... Course #" & CStr(i) & " Line #" & CStr(j)
+            
+                If bools(i) = True And Len(Trim(textboxArray(i, 1).Value)) > 1 Then
+    
+                    .SetText selectCourse, j, 2
+                    textboxArray(i, 1).BackColor = RGB(completedRed, completedGreen, completedBlue)
+                    textboxArray(i, 2).BackColor = RGB(completedRed, completedGreen, completedBlue)
+                    
+                    TRcounter = TRcounter + 1
+                    
+                    Exception.ErrMessage = "... ... A course has been added to the list (" & CStr(TRcounter) & ")"
+                    
+                End If
+                
+                i = i + 1
+            
+            Next j
+        
+            If Len(Trim(AS400.GetText(endRow, 4, 2))) = 0 Then
+                Exit Do
+            Else
+                .SendKeys "[pagedn]"
+            End If
+            
+        Loop
+    
+    End With
+
+    If TRcounter <> 0 Then
+    
+        If AS400.SearchText(locationTR, 1, 1, forward) Then GoTo LocationMismatch
+
+        With AS400
+        
+            Exception.ErrMessage = "Applying transfer credits to the selected courses"
+            Do Until TRcounter <= 0
+            
+                Exception.ErrMessage = "... ... Courses remaining: " & CStr(TRcounter)
+
+                .SetText actionCodeC, 3, 19
+                .SetText applyCodeY, 8, 19
+                .SetText schoolCode, 10, 19
+                
+                .SendKeys EnterKey
+                .SendKeys F3Key
+                
+                TRcounter = TRcounter - 1
+
+            Loop
+        
+            Exception.ErrMessage = "Setting the student account to acknowledge the applied TR"
+            .SetText actionCodeC, 3, 23
+            .SetText applyCodeY, 14, 60
+            .SendKeys EnterKey
+            .SendKeys F3Key
+            
+            MsgBox finalMessage, vbInformation, "Transfer Credits"
+        
+        End With
+        
+    Else
+    
+        Exception.ErrMessage = "No courses have been selected for transfer"
+        AS400.SendKeys F3Key
+        MsgBox "No class has been selected for transfer", vbInformation, "Transfer Credits"
+        
+    End If
+
+'''''''''''''''''''''''''''
+' Cleanup
+'''''''''''''''''''''''''''
+Cleanup:
+    
+    TurnOnExcelDefaults Exception
+    Exception.Pop
+
+Exit Sub
+
+'''''''''''''''''''''''''''
+' Error Handling
+'''''''''''''''''''''''''''
+NavigationFailure:
+
+    Exception.Flag = True
+    
+GoTo Cleanup
+'''''''''''''''''''''''''''
+SIDNotAMatch:
+
+GoTo Cleanup
+'''''''''''''''''''''''''''
+LocationMismatchL
+
+GoTo Cleanup
+'''''''''''''''''''''''''''
 End Sub
+'''''''''''''''''''''''''''
     
 Private Sub LoadTextboxesFromCredits(ByRef textboxArray() As Object, _
     ByVal CreditsForm As MSForms.UserForm, ByRef Exception As cException)
     
     On Error Resume Next
-    Exception.Push "Procedures_TransferCredits.LoadTextboxesFromCredits"
+    Exception.Push "TransferCredits.LoadTextboxesFromCredits"
     
     With CreditsForm
         Set textboxArray(1, 1) = .Mod1_Textbox
@@ -185,6 +370,51 @@ Private Sub LoadTextboxesFromCredits(ByRef textboxArray() As Object, _
         Set textboxArray(28, 2) = .Title28_Textbox
         Set textboxArray(29, 2) = .Title29_Textbox
         Set textboxArray(30, 2) = .Title30_Textbox
+    End With
+    
+    Exception.Pop
+    
+End Sub
+
+Private Sub LoadBools(ByRef bools() As Boolean, _
+    ByVal CreditsForm As MSForms.UserForm, ByRef Exception As cException)
+    
+    On Error Resume Next
+    Exception.Push "TransferCredits.LoadBools"
+    
+    With CreditsForm
+        
+        bools(1) = .Class1_Checkbox.Value
+        bools(2) = .Class2_Checkbox.Value
+        bools(3) = .Class3_Checkbox.Value
+        bools(4) = .Class4_Checkbox.Value
+        bools(5) = .Class5_Checkbox.Value
+        bools(6) = .Class6_Checkbox.Value
+        bools(7) = .Class7_Checkbox.Value
+        bools(8) = .Class8_Checkbox.Value
+        bools(9) = .Class9_Checkbox.Value
+        bools(10) = .Class10_Checkbox.Value
+        bools(11) = .Class11_Checkbox.Value
+        bools(12) = .Class12_Checkbox.Value
+        bools(13) = .Class13_Checkbox.Value
+        bools(14) = .Class14_Checkbox.Value
+        bools(15) = .Class15_Checkbox.Value
+        bools(16) = .Class16_Checkbox.Value
+        bools(17) = .Class17_Checkbox.Value
+        bools(18) = .Class18_Checkbox.Value
+        bools(19) = .Class19_Checkbox.Value
+        bools(20) = .Class20_Checkbox.Value
+        bools(21) = .Class21_Checkbox.Value
+        bools(22) = .Class22_Checkbox.Value
+        bools(23) = .Class23_Checkbox.Value
+        bools(24) = .Class24_Checkbox.Value
+        bools(25) = .Class25_Checkbox.Value
+        bools(26) = .Class26_Checkbox.Value
+        bools(27) = .Class27_Checkbox.Value
+        bools(28) = .Class28_Checkbox.Value
+        bools(29) = .Class29_Checkbox.Value
+        bools(30) = .Class30_Checkbox.Value
+        
     End With
     
     Exception.Pop
