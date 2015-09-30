@@ -6,10 +6,10 @@
 Option Explicit
 
 'Activate/Deactivates the primary error handling
-    Public Const DebugFlag As Boolean = True    'False for error handling; True for no error handling
+    Public Const DebugFlag As Boolean = True        'False for error handling; True for no error handling
 
 'Value containers
-    Const noEntry As String = "No Entry"            'As a procedure argument
+    Public Const noEntry As String = "No Entry"     'As a procedure argument
     Public rngStudentID As Excel.Range              'For info to pass from userform to userform
     Public rnglastSession As Excel.Range            'For info to pass from userform to userform
     
@@ -94,16 +94,16 @@ Public Sub RunRegistration(ByRef RegForm As MSForms.UserForm)
     StatusBox.Value = "...   ...   ...   Performing Enrollment (Please Wait)   ...   ...   ..."
     
     '''''''''''''''''''''''''''
-    ' Main Execution
+    ' Core Execution
     '''''''''''''''''''''''''''
     If DebugFlag Then On Error GoTo 0 Else On Error GoTo ErrorOnEnrollmentCheck
     
-    Execute_AddressBookRegistration Student, AS400, Exception
+    RegisterToAddressBook Student, AS400, Exception
     If Exception.Flag Then GoTo NavigationFailure
     
     MsgBox Student.StudentID
     
-    Execute_CourseEntryRegistration Student, AS400, Exception
+    RegisterToProgramEntry Student, AS400, Exception
     If Exception.Flag Then GoTo NavigationFailure
     
     StatusBox.Value = "...   ...   ...  (Please Wait)  ...   ...   ..."
@@ -225,6 +225,8 @@ Public Sub RunSearchButton(ByVal action_type As String, ByRef NameForm As MSForm
         session_letter = Student.GetSession
     End If
     
+    rnglastSession = session_letter
+    
     '''''''''''''''''''''''''''
     ' Load objects
     '''''''''''''''''''''''''''
@@ -234,11 +236,9 @@ Public Sub RunSearchButton(ByVal action_type As String, ByRef NameForm As MSForm
     
     If DebugFlag Then On Error GoTo 0 Else On Error GoTo AS400Error
     AS400.InitializeApp session_letter, Exception, 1
-    
-    rnglastSession = session_letter
-    
+
     '''''''''''''''''''''''''''
-    ' Perform actions
+    ' Core Execution
     '''''''''''''''''''''''''''
     Exception.ErrMessage = "Performing actions based on which button is selected"
     
@@ -246,20 +246,20 @@ Public Sub RunSearchButton(ByVal action_type As String, ByRef NameForm As MSForm
     
         Case buttonPrimary
         
-            Execute_NavigateToNameSearch AS400, Exception
+            NavigateToNameSearch AS400, Exception
             If Exception.Flag = True Then GoTo NavigationFailure
             
             AS400.SetText Student.GetAlphaName, 4, 20
             AS400.SendKeys EnterKey
             
-            Execute_PrimaryNameSearch Student, AS400, Exception
+            SearchNameFromPrimaryButton Student, AS400, Exception
             
         Case buttonAction
         
             If AS400.SearchText("01NS", 1, 1) = False Then GoTo IncorrectScreen
             AS400.SendKeys page_to_keypress
             
-            Execute_PrimaryNameSearch Student, AS400, Exception
+            SearchNameFromPrimaryButton Student, AS400, Exception
             
         Case buttonMulti
         
@@ -267,14 +267,14 @@ Public Sub RunSearchButton(ByVal action_type As String, ByRef NameForm As MSForm
             
                 If AS400.SearchText("01NS", 1, 1, forward) = False Then
                 
-                    Execute_NavigateToNameSearch AS400, Exception
+                    NavigateToNameSearch AS400, Exception
                     If Exception.Flag = True Then GoTo NavigationFailure
                 
                 End If
             
                 AS400.SetText NameForm.AlphaName_Textbox, 4, 20
                 AS400.SendKeys EnterKey
-                Execute_PrimaryNameSearch Student, AS400, Exception
+                SearchNameFromPrimaryButton Student, AS400, Exception
                 
             End If
             
@@ -334,6 +334,9 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub RunTransferProcedures(ByRef CreditsForm As MSForms.UserForm, ByVal action_type As String)
     
+    '''''''''''''''''''''''''''
+    ' Declarations
+    '''''''''''''''''''''''''''
     Dim finalMessage As String
     Dim Exception As cException                 'Stores the error and stack information
     Dim AS400 As cAS400                         'Stores the AS/400 objects and methods
@@ -343,6 +346,9 @@ Public Sub RunTransferProcedures(ByRef CreditsForm As MSForms.UserForm, ByVal ac
     Set AS400 = New cAS400
     Set StatusBox = CreditsForm.Status_Textbox
     
+    '''''''''''''''''''''''''''
+    ' Settings
+    '''''''''''''''''''''''''''
     With Exception
         .ErrMessage = "" & vbNewLine
         .ErrMessage = windowLineSeperator
@@ -351,21 +357,27 @@ Public Sub RunTransferProcedures(ByRef CreditsForm As MSForms.UserForm, ByVal ac
     
     TurnOffExcelDefaults Exception
     
-    If DebugFlag Then On Error GoTo 0 Else On Error GoTo AS400Error
-    AS400.InitializeApp Trim(CreditsForm.Session_ComboBox.Value), Exception, 10
-
     If Len(Trim(CreditsForm.SID_Textbox)) < 1 Then GoTo SIDNotFound
     rngStudentID = CreditsForm.SID_Textbox
     
     StatusBox = "...   ...   ...   Applying TR   ...   ...   ..."
     
+    '''''''''''''''''''''''''''
+    ' Load objects
+    '''''''''''''''''''''''''''
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo AS400Error
+    AS400.InitializeApp Trim(CreditsForm.Session_ComboBox.Value), Exception, 10
+    
+    '''''''''''''''''''''''''''
+    ' Core Execution
+    '''''''''''''''''''''''''''
     If action_type = populateTR Then
     
-        Execute_CoursePopulation CreditsForm, AS400, Exception
+        PopulateCoursesFromAccount CreditsForm, AS400, Exception
         
     ElseIf action_type = applyTR Then
     
-        Execute_CourseTransfer CreditsForm, AS400, Exception
+        ApplyTransferCredits CreditsForm, AS400, Exception
 
         Exception.ErrMessage = "Presenting dialogue box"
     
@@ -381,24 +393,94 @@ Public Sub RunTransferProcedures(ByRef CreditsForm As MSForms.UserForm, ByVal ac
         
     End If
 
+'''''''''''''''''''''''''''
+' Cleanup
+'''''''''''''''''''''''''''
 Cleanup:
 
     TurnOnExcelDefaults Exception
     Exception.Pop
     
 Exit Sub
-
+'''''''''''''''''''''''''''
+' Error Handling
+'''''''''''''''''''''''''''
 AS400Error:
 Resume Cleanup
-
+'''''''''''''''''''''''''''
 SIDNotFound:
 GoTo Cleanup
-    
+'''''''''''''''''''''''''''
 End Sub
+'''''''''''''''''''''''''''
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' RunShipmentSelection
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub RunShipmentSelection(ByRef ShipForm As MSForms.UserForm, ByVal send_Shipments As Boolean)
+    
+    '''''''''''''''''''''''''''
+    ' Declarations
+    '''''''''''''''''''''''''''
+    Dim finalMessage As String
+    Dim Exception As cException                 'Stores the error and stack information
+    Dim AS400 As cAS400                         'Stores the AS/400 objects and methods
+    Dim StatusBox As Object                     'Stores reference to the userform's status textbox
 
+    Set Exception = New cException
+    Set AS400 = New cAS400
+    Set StatusBox = CreditsForm.Status_Textbox
+    
+    '''''''''''''''''''''''''''
+    ' Settings
+    '''''''''''''''''''''''''''
+    With Exception
+        .ErrMessage = "" & vbNewLine
+        .ErrMessage = windowLineSeperator
+        .Push "Main.RunShipmentSelection"
+    End With
+    
+    TurnOffExcelDefaults Exception
+    
+    If Len(Trim(ShipForm.SID_Textbox)) < 1 Then GoTo SIDNotFound
+    rngStudentID = CreditsForm.SID_Textbox
+    
+    StatusBox = "...   ...   ...   Processing Shipments   ...   ...   ..."
+    
+    '''''''''''''''''''''''''''
+    ' Load objects
+    '''''''''''''''''''''''''''
+    If DebugFlag Then On Error GoTo 0 Else On Error GoTo AS400Error
+    AS400.InitializeApp Trim(CreditsForm.Session_ComboBox.Value), Exception, 10
+    
+    '''''''''''''''''''''''''''
+    ' Core Execution
+    '''''''''''''''''''''''''''
+    If send_Shipments Then
+        
+        ReleaseAllShipments ShipForm, AS400, Exception
+        
+    ElseIf send_Shipments = False Then
+    
+    End If
+    
+'''''''''''''''''''''''''''
+' Cleanup
+'''''''''''''''''''''''''''
+Cleanup:
+
+    TurnOnExcelDefaults Exception
+    Exception.Pop
+    
+Exit Sub
+'''''''''''''''''''''''''''
+' Error Handling
+'''''''''''''''''''''''''''
+AS400Error:
+Resume Cleanup
+'''''''''''''''''''''''''''
+SIDNotFound:
+GoTo Cleanup
+'''''''''''''''''''''''''''
 End Sub
+'''''''''''''''''''''''''''
