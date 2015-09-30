@@ -91,6 +91,7 @@ Private Sub button_FullRelease_Click()
     If MsgBox("This will RELEASE every shipment on the account." & vbNewLine & vbNewLine & _
         "Do you wish to proceed?", vbYesNo, "Shipment Selection: Release All Shipments") = vbYes Then
         
+        Status_Textbox.BackColor = RGB(lockedRed, lockedGreen, lockedBlue)
         RunShipmentSelection form_Shipments, True
         
     Else
@@ -109,7 +110,8 @@ Private Sub button_FullStop_Click()
 
     If MsgBox("This will STOP every shipment on the account." & vbNewLine & vbNewLine & _
             "Do you wish to proceed?", vbYesNo, "Shipment Selection: Stop All Shipments") = vbYes Then
-    
+        
+        Status_Textbox.BackColor = RGB(lockedRed, lockedGreen, lockedBlue)
         RunShipmentSelection form_Shipments, False
     
     Else
