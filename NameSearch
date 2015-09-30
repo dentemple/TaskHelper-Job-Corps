@@ -9,6 +9,7 @@ Option Explicit
     Public Const buttonMulti As String = "Run Multi-Choice Button"
     
 'AS400 specific values
+    Public Const nameSearchTag As String = "01NS"
     Const rowHome As Long = 19
     Const colHome As Long = 7
     Const colMailing As Long = 8
@@ -17,7 +18,6 @@ Option Explicit
     Const lenPhone As Long = 26
     Const optionCustomerService As String = "1"
     Const optionEducationInquiry As String = "15"
-    Const nameSearchTag As String = "01NS"
     
 Public Sub NavigateToNameSearch(ByVal AS400 As cAS400, ByRef Exception As cException)
     
