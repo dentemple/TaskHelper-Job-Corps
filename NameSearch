@@ -19,14 +19,14 @@ Option Explicit
     Const optionEducationInquiry As String = "15"
     Const nameSearchTag As String = "01NS"
     
-Public Sub Execute_NavigateToNameSearch(ByVal AS400 As cAS400, ByRef Exception As cException)
+Public Sub NavigateToNameSearch(ByVal AS400 As cAS400, ByRef Exception As cException)
     
     'Pass error handling up the call stack
     On Error GoTo 0
-    Exception.Push "NameSearch.Execute_NavigateToNameSearch"
+    Exception.Push "NameSearch.NavigateToNameSearch"
     
     NavigateHome AS400, Exception
-    If HomeScreenConfirmed(AS400, Exception) = False Then GoTo NavigationFailure
+    If ConfirmHomeScreen(AS400, Exception) = False Then GoTo NavigationFailure
     
     Exception.ErrMessage = "Navigating to NameSearch"
     AS400.SetText optionCustomerService, rowHome, colHome
@@ -52,12 +52,12 @@ GoTo Cleanup
     
 End Sub
 
-Public Sub Execute_PrimaryNameSearch(ByRef Student As cStudent, ByVal AS400 As cAS400, _
+Public Sub SearchNameFromPrimaryButton(ByRef Student As cStudent, ByVal AS400 As cAS400, _
     ByRef Exception As cException)
     
     'Pass error handling up the call stack
     On Error GoTo 0
-    Exception.Push "NameSearch.Execute_NavigateToNameSearch"
+    Exception.Push "NameSearch.NavigateToNameSearch"
     
     Dim baseRow As Long
     
