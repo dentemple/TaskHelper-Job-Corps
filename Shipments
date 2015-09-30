@@ -1,0 +1,243 @@
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Shipments (Module)
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Option Explicit
+
+'AS400 specific values
+    Const rowHome As Long = 19
+    Const colHome As Long = 7
+    Const startRow As Long = 12
+    Const endRow As Long = 23
+    Const flagRelease As String = "1"
+    Const courseElective As String = "ELEC"
+    Const courseAssessment As String = "M1PR"
+    Const optionCustomerService As String = "1"
+    Const optionOrderProcessing As String = "8"
+    Const optionStopShipments As String = "17"
+    Const optionReleaseShipments As String = "18"
+    Const locationShipments As String = "42040"
+
+Public Sub ReleaseAllShipments(ByRef ShipForm As MSForms.UserForm, ByVal AS400 As cAS400, _
+    ByRef Exception As cException)
+    
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    Exception.Push "Shipments.ReleaseAllShipments"
+    
+    Dim finalPage As Boolean
+    Const maxLoops As Integer = 25
+    Dim checkInfiniteLoop As Integer
+    Dim i As Long
+    Dim SID As String
+    
+    SID = Trim(CreditsForm.SID_Textbox)
+    Exception.ErrMessage = "Student ID: " & SID
+    Exception.ErrMessage = "Navigating ..."
+    
+    Select Case AS400.GetText(1, 3, 5)
+    
+        Case locationShipments: AS400.SendKeys EnterKey
+        
+        Case Else
+        
+            NavigateHome AS400, Exception
+            If ConfirmHomeScreen(AS400, Exception) = False Then GoTo NavigationFailure
+            
+            AS400.SetText optionCustomerService, rowHome, colHome
+            AS400.SendKeys EnterKey
+            
+            AS400.SetText optionOrderProcessing, rowHome, colHome
+            AS400.SendKeys EnterKey
+            
+    End Select
+    
+    AS400.SetText optionReleaseShipments, rowHome, colHome
+    AS400.SendKeys EnterKey
+    
+    AS400.SetText SID, 4, 22
+    AS400.SendKeys EnterKey
+    
+    Exception.ErrMessage = "Checking if shipments are available for release"
+    If Len(Trim(AS400.GetText(startRow, 47, 25))) = 0 Then GoTo NoShipmentsToRelease
+    
+    Exception.ErrMessage = "Flagging each course for release"
+    
+    Do
+
+        For i = startRow To endRow
+        
+            Select Case Trim(AS400.GetText(i, 47, 4))
+            
+                Case ""
+                    
+                    finalPage = True
+                    Exit For
+
+                Case courseElective 'Do Nothing
+                
+                Case courseAssessment 'Do Nothing
+                
+                Case Else
+                
+                    AS400.SetText flagRelease, i, 3
+                
+            End Select
+            
+        Next i
+        
+        AS400.SendKeys PageDownKey
+        
+        checkInfiniteLoop = checkInfiniteLoop + 1
+        
+    Loop While finalPage = False And checkInfiniteLoop <= maxLoops
+    
+    AS400.SendKeys EnterKey
+    AS400.SendKeys F3Key
+    AS400.SendKeys F12Key
+    AS400.SendKeys F12Key
+    
+'''''''''''''''''''''''''''
+' Cleanup
+'''''''''''''''''''''''''''
+Cleanup:
+    
+    TurnOnExcelDefaults Exception
+    Exception.Pop
+
+Exit Sub
+
+'''''''''''''''''''''''''''
+' Error Handling
+'''''''''''''''''''''''''''
+NavigationFailure:
+
+GoTo Cleanup
+'''''''''''''''''''''''''''
+NoShipmentsToRelease:
+
+GoTo Cleanup
+'''''''''''''''''''''''''''
+End Sub
+
+Public Sub StopAllShipments(ByRef ShipForm As MSForms.UserForm, ByVal AS400 As cAS400, _
+    ByRef Exception As cException)
+    
+    'Pass error handling up the call stack
+    On Error GoTo 0
+    Exception.Push "TransferCredits.StopAllShipments"
+    
+    Dim finalPage As Boolean
+    
+    Dim setCount As Integer
+    Dim checkInfiniteLoop As Integer
+    Const maxLoops As Integer = 25
+    Dim i As Long
+    Dim SID As String
+    Dim target As String
+    Const flagStop As String = "1"
+    
+    Const type540 As String = "540"
+    Const type560 As String = "560"
+    Const type620 As String = "620"
+    
+    Const for540 As String = "539"
+    Const for560 As String = "540"
+    Const for620 As String = "560"
+    
+    Dim shipSet() As Variant
+    shipSet() = Array(type540, type560, type620)
+    
+    SID = Trim(CreditsForm.SID_Textbox)
+    Exception.ErrMessage = "Student ID: " & SID
+    Exception.ErrMessage = "Navigating ..."
+    
+    Select Case AS400.GetText(1, 3, 5)
+    
+        Case locationShipments: AS400.SendKeys EnterKey
+        
+        Case Else
+        
+            NavigateHome AS400, Exception
+            If ConfirmHomeScreen(AS400, Exception) = False Then GoTo NavigationFailure
+            
+            AS400.SetText optionCustomerService, rowHome, colHome
+            AS400.SendKeys EnterKey
+            
+            AS400.SetText optionOrderProcessing, rowHome, colHome
+            AS400.SendKeys EnterKey
+            
+    End Select
+    
+    AS400.SetText optionStopShipments, rowHome, colHome
+    AS400.SendKeys EnterKey
+    
+    Exception.ErrMessage = "Performing shipment Stop on each set of shipments"
+    
+    
+    For setCount = LBound(shipSet) To UBound(shipSet)
+    
+        Select Case shipSet(setCount)
+            
+            Case type540: target = for540
+            Case type560: target = for560
+            Case type620: target = for620
+        
+        End Select
+        
+        AS400.SetText SID, 4, 22
+        AS400.SetText shipSet(setCount), 2, 78
+        AS400.SendKeys EnterKey
+        
+        Do
+        
+            For i = startRow To endRow
+            
+                Select Case Trim(AS400.GetText(i, 47, 4))
+                
+                    Case ""
+                        
+                        finalPage = True
+                        Exit For
+    
+                    Case courseElective 'Do Nothing
+                    
+                    Case courseAssessment 'Do Nothing
+                    
+                    Case target
+                    
+                        AS400.SetText flagStop, i, 3
+                    
+                End Select
+            
+            Next i
+            
+            AS400.SendKeys PageDownKey
+        
+            checkInfiniteLoop = checkInfiniteLoop + 1
+        
+        Loop While finalPage = False And checkInfiniteLoop <= maxLoops
+        
+    Next setCount
+    
+    AS400.SendKeys EnterKey
+    AS400.SendKeys F3Key
+    AS400.SendKeys F12Key
+    AS400.SendKeys F12Key
+
+Cleanup:
+    
+    TurnOnExcelDefaults Exception
+    Exception.Pop
+
+Exit Sub
+
+'''''''''''''''''''''''''''
+' Error Handling
+'''''''''''''''''''''''''''
+NavigationFailure:
+
+GoTo Cleanup
+
+End Sub
+
+
