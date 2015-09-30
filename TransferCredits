@@ -25,12 +25,12 @@ Option Explicit
     Const applyCodeY As String = "Y"
     Const schoolCode As String = "H"
 
-Public Sub Execute_CoursePopulation(ByRef CreditsForm As MSForms.UserForm, _
+Public Sub PopulateCoursesFromAccount(ByRef CreditsForm As MSForms.UserForm, _
     ByVal AS400 As cAS400, ByRef Exception As cException)
     
     'Pass error handling up the call stack
     On Error GoTo 0
-    Exception.Push "TransferCredits.Execute_NavigateToNameSearch"
+    Exception.Push "TransferCredits.PopulateCoursesFromAccount"
     
     Dim i As Integer
     Dim j As Long
@@ -43,7 +43,7 @@ Public Sub Execute_CoursePopulation(ByRef CreditsForm As MSForms.UserForm, _
     SID = Trim(CreditsForm.SID_Textbox)
     
     Exception.ErrMessage = "Student ID: " & SID
-    Exception.ErrMessage = "Navigating"
+    Exception.ErrMessage = "Navigating ..."
     
     Select Case AS400.GetText(1, 2, 8)
     
@@ -54,7 +54,7 @@ Public Sub Execute_CoursePopulation(ByRef CreditsForm As MSForms.UserForm, _
         Case Else
     
             NavigateHome AS400, Exception
-            If HomeScreenConfirmed(AS400, Exception) = False Then GoTo NavigationFailure
+            If ConfirmHomeScreen(AS400, Exception) = False Then GoTo NavigationFailure
             
             AS400.SetText optionCustomerService, rowHome, colHome
             AS400.SendKeys EnterKey
@@ -130,12 +130,12 @@ GoTo Cleanup
 End Sub
 '''''''''''''''''''''''''''
 
-Public Sub Execute_CourseTransfer(ByRef CreditsForm As MSForms.UserForm, _
+Public Sub ApplyTransferCredits(ByRef CreditsForm As MSForms.UserForm, _
     ByVal AS400 As cAS400, ByRef Exception As cException)
     
     'Pass error handling up the call stack
     On Error GoTo 0
-    Exception.Push "TransferCredits.Execute_CourseTransfer"
+    Exception.Push "TransferCredits.ApplyTransferCredits"
     
     Dim i As Integer
     Dim j As Long
@@ -173,7 +173,7 @@ Public Sub Execute_CourseTransfer(ByRef CreditsForm As MSForms.UserForm, _
         Case Else
         
             NavigateHome AS400, Exception
-            If HomeScreenConfirmed(AS400, Exception) = False Then GoTo NavigationFailure
+            If ConfirmHomeScreen(AS400, Exception) = False Then GoTo NavigationFailure
             
             With AS400
                 .SetText optionCustomerService, rowHome, colHome
