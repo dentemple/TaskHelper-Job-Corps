@@ -256,7 +256,7 @@ Public Sub RunSearchButton(ByVal action_type As String, ByRef NameForm As MSForm
             
         Case buttonAction
         
-            If AS400.SearchText("01NS", 1, 1) = False Then GoTo IncorrectScreen
+            If AS400.SearchText(nameSearchTag, 1, 1) = False Then GoTo IncorrectScreen
             AS400.SendKeys page_to_keypress
             
             SearchNameFromPrimaryButton Student, AS400, Exception
@@ -297,8 +297,15 @@ Exit Sub
 ' Error Handling
 '''''''''''''''''''''''''''
 ProceduresError:
+
+    With Exception
+        .ErrNumber = Err.Number
+        .ErrDescription = Err.Description
+        .IsError = True
+        .Throw "An unexpected error has occurred."
+    End With
+    
 Resume Cleanup
-'''''''''''''''''''''''''''
 '''''''''''''''''''''''''''
 AS400Error:
 
@@ -310,9 +317,6 @@ AS400Error:
     End With
     
 Resume Cleanup
-'''''''''''''''''''''''''''
-IncorrectScreen:
-GoTo Cleanup
 '''''''''''''''''''''''''''
 NavigationFailure:
 
@@ -357,7 +361,7 @@ Public Sub RunTransferProcedures(ByRef CreditsForm As MSForms.UserForm, ByVal ac
     
     TurnOffExcelDefaults Exception
     
-    If Len(Trim(CreditsForm.SID_Textbox)) < 1 Then GoTo SIDNotFound
+    If Len(Trim(CreditsForm.SID_Textbox)) < 1 Then GoTo SIDNotValid
     rngStudentID = CreditsForm.SID_Textbox
     
     StatusBox = "...   ...   ...   Applying TR   ...   ...   ..."
@@ -375,9 +379,13 @@ Public Sub RunTransferProcedures(ByRef CreditsForm As MSForms.UserForm, ByVal ac
     
         PopulateCoursesFromAccount CreditsForm, AS400, Exception
         
+        If Exception.Flag = True Then GoTo ExceptionHasBeenThrown
+        
     ElseIf action_type = applyTR Then
     
         ApplyTransferCredits CreditsForm, AS400, Exception
+        
+        If Exception.Flag = True Then GoTo ExceptionHasBeenThrown
 
         Exception.ErrMessage = "Presenting dialogue box"
     
@@ -406,9 +414,30 @@ Exit Sub
 ' Error Handling
 '''''''''''''''''''''''''''
 AS400Error:
+
+    With Exception
+        .ErrNumber = Err.Number
+        .ErrDescription = Err.Description
+        .IsError = True
+        .Throw "Please ensure the AS/400 is active and on the correct screen before proceeding."
+    End With
+    
 Resume Cleanup
 '''''''''''''''''''''''''''
-SIDNotFound:
+ExceptionHasBeenThrown:
+
+    'Error Message provided within the child procedure
+    
+GoTo Cleanup
+'''''''''''''''''''''''''''
+SIDNotValid:
+
+    With Exception
+        .IsError = False
+        .Throw "The selected Student ID# is invalid." & vbNewLine & vbNewLine & _
+                    "Please enter a valid Student ID# before proceeding."
+    End With
+    
 GoTo Cleanup
 '''''''''''''''''''''''''''
 End Sub
@@ -442,7 +471,7 @@ Public Sub RunShipmentSelection(ByRef ShipForm As MSForms.UserForm, ByVal send_S
     
     TurnOffExcelDefaults Exception
     
-    If Len(Trim(ShipForm.SID_Textbox)) < 1 Then GoTo SIDNotFound
+    If Len(Trim(ShipForm.SID_Textbox)) < 1 Then GoTo SIDNotValid
     rngStudentID = CreditsForm.SID_Textbox
     
     StatusBox = "...   ...   ...   Processing Shipments   ...   ...   ..."
@@ -460,15 +489,21 @@ Public Sub RunShipmentSelection(ByRef ShipForm As MSForms.UserForm, ByVal send_S
         
         ReleaseAllShipments ShipForm, AS400, Exception
         
+        If Exception.Flag = True Then GoTo ExceptionHasBeenThrown
+        
     ElseIf send_Shipments = False Then
     
+        StopAllShipments ShipForm, AS400, Exception
+    
     End If
+    
+    Unload ShipForm
     
 '''''''''''''''''''''''''''
 ' Cleanup
 '''''''''''''''''''''''''''
 Cleanup:
-
+    
     TurnOnExcelDefaults Exception
     Exception.Pop
     
@@ -477,9 +512,30 @@ Exit Sub
 ' Error Handling
 '''''''''''''''''''''''''''
 AS400Error:
+
+    With Exception
+        .ErrNumber = Err.Number
+        .ErrDescription = Err.Description
+        .IsError = True
+        .Throw "Please ensure the AS/400 is active and on the correct screen before proceeding."
+    End With
+    
 Resume Cleanup
 '''''''''''''''''''''''''''
-SIDNotFound:
+SIDNotValid:
+
+    With Exception
+        .IsError = False
+        .Throw "The selected Student ID# is invalid." & vbNewLine & vbNewLine & _
+                    "Please enter a valid Student ID# before proceeding."
+    End With
+    
+GoTo Cleanup
+'''''''''''''''''''''''''''
+ExceptionHasBeenThrown:
+
+    'Error Message provided within the child procedure
+    
 GoTo Cleanup
 '''''''''''''''''''''''''''
 End Sub
