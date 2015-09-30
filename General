@@ -255,13 +255,13 @@ Cleanup:
     
 End Sub
 
-Public Function HomeScreenConfirmed(ByVal AS400 As cAS400, ByRef Exception As cException) As Boolean
+Public Function ConfirmHomeScreen(ByVal AS400 As cAS400, ByRef Exception As cException) As Boolean
 
     'Passes error handling up the call stack
     On Error GoTo 0
     If Not Exception Is Nothing Then Exception.Push "General.ConfirmHomeScreen"
     
-    HomeScreenConfirmed = AS400.SearchText(Trim(tagHome), 1, 1, forward)
+    ConfirmHomeScreen = AS400.SearchText(Trim(tagHome), 1, 1, forward)
     
     Exception.Pop
     
