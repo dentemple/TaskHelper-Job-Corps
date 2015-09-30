@@ -110,7 +110,6 @@ Private Sub UserForm_Initialize()
     If DebugFlag Then On Error GoTo 0 Else On Error Resume Next
     Set rnglastSession = Range("lastSession")
     Set rngStudentID = Range("lastStudentID")
-    rngStudentID = vbNullString
     If DebugFlag Then On Error GoTo 0 Else On Error GoTo 0
     
     'Sets the initial focus
@@ -127,6 +126,10 @@ Private Sub UserForm_Initialize()
     'Populates the selection boxes
     With Session_ComboBox
     
+        If Len(Trim(rnglastSession)) = 1 Then
+            .AddItem rnglastSession
+        End If
+    
         .Clear
         
         If Len(container) = 1 And InStr(1, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", container) >= 1 Then
@@ -140,8 +143,6 @@ Private Sub UserForm_Initialize()
         .Text = Session_ComboBox.List(0)
         
     End With
-    
-    rnglastSession = vbNullString
     
     Set objAS400ConnList = Nothing
     
