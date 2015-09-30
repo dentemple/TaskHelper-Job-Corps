@@ -28,15 +28,15 @@ Option Explicit
     Const PACode As String = "PA"
     Const TUICode As String = "TUI"
 
-Public Sub Execute_AddressBookRegistration(ByRef Student As cStudent, _
+Public Sub RegisterToAddressBook(ByRef Student As cStudent, _
     ByVal AS400 As cAS400, ByRef Exception As cException)
     
     'Passes error handling up the call stack
     On Error GoTo 0
-    Exception.Push "Registration.Execute_AddressBookRegistration"
+    Exception.Push "Registration.RegisterToAddressBook"
     
     NavigateHome AS400, Exception
-    If HomeScreenConfirmed(AS400, Exception) = False Then GoTo NavigationFailure
+    If ConfirmHomeScreen(AS400, Exception) = False Then GoTo NavigationFailure
     
     Exception.ErrMessage = "Navigating to the AddressBook"
     AS400.SetText optionCustomerService, rowHome, colHome
@@ -133,15 +133,15 @@ GoTo Cleanup
 
 End Sub
 
-Public Sub Execute_CourseEntryRegistration(ByRef Student As cStudent, _
+Public Sub RegisterToProgramEntry(ByRef Student As cStudent, _
     ByVal AS400 As cAS400, ByRef Exception As cException, Optional ByRef StatusBox As Object)
     
     'Passes error handling up the call stack
     On Error GoTo 0
-    Exception.Push "Registration.Execute_AddressBookRegistration"
+    Exception.Push "Registration.RegisterToAddressBook"
     
     NavigateHome AS400, Exception
-    If HomeScreenConfirmed(AS400, Exception) = False Then GoTo NavigationFailure
+    If ConfirmHomeScreen(AS400, Exception) = False Then GoTo NavigationFailure
     
     Exception.ErrMessage = "Navigating to OrderEntry"
     
