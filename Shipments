@@ -96,6 +96,9 @@ Public Sub ReleaseAllShipments(ByRef ShipForm As MSForms.UserForm, ByVal AS400 A
     AS400.SendKeys F12Key
     AS400.SendKeys F12Key
     
+    MsgBox "The Release Shipments procedure has been successfully completed." & vbNewLine & vbNewLine & _
+            "Thank you for using the TaskHelper.", vbInformation, "Release All Shipments"
+    
 '''''''''''''''''''''''''''
 ' Cleanup
 '''''''''''''''''''''''''''
@@ -111,9 +114,24 @@ Exit Sub
 '''''''''''''''''''''''''''
 NavigationFailure:
 
+    With Exception
+        .IsError = False
+        .Flag = True
+        .Throw "An issue has occurred: The AS/400 has not found the correct screen location.  " & _
+                    "The procedure has been cancelled." & vbNewLine & vbNewLine & _
+                    "Please ensure the AS/400 is on the correct session, " & _
+                    "and on a friendly screen location, before proceeding."
+    End With
+    
 GoTo Cleanup
 '''''''''''''''''''''''''''
 NoShipmentsToRelease:
+
+    With Exception
+        .IsError = False
+        .Flag = True
+        .Throw "No shipments are available on the account for release"
+    End With
 
 GoTo Cleanup
 '''''''''''''''''''''''''''
@@ -173,7 +191,6 @@ Public Sub StopAllShipments(ByRef ShipForm As MSForms.UserForm, ByVal AS400 As c
     
     Exception.ErrMessage = "Performing shipment Stop on each set of shipments"
     
-    
     For setCount = LBound(shipSet) To UBound(shipSet)
     
         Select Case shipSet(setCount)
@@ -187,6 +204,9 @@ Public Sub StopAllShipments(ByRef ShipForm As MSForms.UserForm, ByVal AS400 As c
         AS400.SetText SID, 4, 22
         AS400.SetText shipSet(setCount), 2, 78
         AS400.SendKeys EnterKey
+        
+        Exception.ErrMessage = "Checking to see if courses exist on the account"
+        If Len(Trim(AS400.GetText(startRow, 47, 25))) = 0 Then GoTo NoShipmentsToStop
         
         Do
         
@@ -223,6 +243,9 @@ Public Sub StopAllShipments(ByRef ShipForm As MSForms.UserForm, ByVal AS400 As c
     AS400.SendKeys F3Key
     AS400.SendKeys F12Key
     AS400.SendKeys F12Key
+    
+    MsgBox "The Stop Shipments procedure has been successfully completed." & vbNewLine & vbNewLine & _
+            "Thank you for using the TaskHelper.", vbInformation, "Stop All Shipments"
 
 Cleanup:
     
@@ -236,8 +259,26 @@ Exit Sub
 '''''''''''''''''''''''''''
 NavigationFailure:
 
+    With Exception
+        .IsError = False
+        .Flag = True
+        .Throw "An issue has occurred: The AS/400 has not found the correct screen location.  " & _
+                    "The procedure has been cancelled." & vbNewLine & vbNewLine & _
+                    "Please ensure the AS/400 is on the correct session, " & _
+                    "and on a friendly screen location, before proceeding."
+    End With
+    
 GoTo Cleanup
+'''''''''''''''''''''''''''
+NoShipmentsToStop:
 
+    With Exception
+        .IsError = False
+        .Flag = True
+        .Throw "No courses exist on this account"
+    End With
+
+GoTo Cleanup
+'''''''''''''''''''''''''''
 End Sub
-
-
+'''''''''''''''''''''''''''
