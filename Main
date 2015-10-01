@@ -34,6 +34,7 @@ Option Explicit
     Public Const F12Key As String = "[pf12]"        'For cAS400.SendKeys; F-Key keypress
     Public Const PageUpKey As String = "[pageup]"   'For cAS400.SendKeys; PageUp keypress
     Public Const PageDownKey As String = "[pagedn]" 'For cAS400.SendKeys; PageDown keypress
+    Public Const messageMustSignIn As String = "Please log into the AS/400 again before proceeding"
 
 'When printing to the immediate window
     Public Const windowLineSeperator As String = vbNewLine & _
@@ -120,7 +121,6 @@ Public Sub RunRegistration(ByRef RegForm As MSForms.UserForm)
     
     If MsgBox(finalMessage, vbYesNo, "Procedure complete - Apply TR?") = vbYes Then
     
-        Unload RegForm
         form_TransferCredits.Show
         
     Else
@@ -256,7 +256,7 @@ Public Sub RunSearchButton(ByVal action_type As String, ByRef NameForm As MSForm
             
         Case buttonAction
         
-            If AS400.SearchText(nameSearchTag, 1, 1) = False Then GoTo IncorrectScreen
+            If AS400.SearchText(nameSearchTag, 1, 1) = False Then GoTo NavigationFailure
             AS400.SendKeys page_to_keypress
             
             SearchNameFromPrimaryButton Student, AS400, Exception
@@ -394,7 +394,6 @@ Public Sub RunTransferProcedures(ByRef CreditsForm As MSForms.UserForm, ByVal ac
     
         If MsgBox(finalMessage, vbYesNo, "Procedure complete - Apply TR?") = vbYes Then
     
-            Unload CreditsForm
             form_Shipments.Show
 
         End If
@@ -458,7 +457,7 @@ Public Sub RunShipmentSelection(ByRef ShipForm As MSForms.UserForm, ByVal send_S
 
     Set Exception = New cException
     Set AS400 = New cAS400
-    Set StatusBox = CreditsForm.Status_Textbox
+    Set StatusBox = ShipForm.Status_Textbox
     
     '''''''''''''''''''''''''''
     ' Settings
@@ -472,7 +471,7 @@ Public Sub RunShipmentSelection(ByRef ShipForm As MSForms.UserForm, ByVal send_S
     TurnOffExcelDefaults Exception
     
     If Len(Trim(ShipForm.SID_Textbox)) < 1 Then GoTo SIDNotValid
-    rngStudentID = CreditsForm.SID_Textbox
+    rngStudentID = ShipForm.SID_Textbox
     
     StatusBox = "...   ...   ...   Processing Shipments   ...   ...   ..."
     
@@ -480,7 +479,11 @@ Public Sub RunShipmentSelection(ByRef ShipForm As MSForms.UserForm, ByVal send_S
     ' Load objects
     '''''''''''''''''''''''''''
     If DebugFlag Then On Error GoTo 0 Else On Error GoTo AS400Error
-    AS400.InitializeApp Trim(CreditsForm.Session_ComboBox.Value), Exception, 10
+    AS400.InitializeApp Trim(ShipForm.Session_ComboBox.Value), Exception, 10
+    
+    '//
+    If AS400.IsInhibited = True Then MsgBox "Inhibited"
+    '//
     
     '''''''''''''''''''''''''''
     ' Core Execution
@@ -496,8 +499,6 @@ Public Sub RunShipmentSelection(ByRef ShipForm As MSForms.UserForm, ByVal send_S
         StopAllShipments ShipForm, AS400, Exception
     
     End If
-    
-    Unload ShipForm
     
 '''''''''''''''''''''''''''
 ' Cleanup
