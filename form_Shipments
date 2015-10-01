@@ -55,7 +55,9 @@ Private Sub UserForm_Initialize()
         End If
         
         For i = 1 To objAS400ConnList.Count
-            .AddItem objAS400ConnList(i).name
+            If objAS400ConnList(i).Ready Then
+                .AddItem objAS400ConnList(i).name
+            End If
         Next i
         
         .Text = Session_ComboBox.List(0)
@@ -97,7 +99,7 @@ Private Sub button_FullRelease_Click()
     Else
     
         Status_Textbox = "Select a shipment option."
-        Status_Textbox.BackColor = RGB(lockedRed, lockedGreen, lockedBlue)
+        Status_Textbox = "All shipments have been released!"
     
     End If
     
@@ -117,7 +119,7 @@ Private Sub button_FullStop_Click()
     Else
     
         Status_Textbox = "Select a shipment option."
-        Status_Textbox.BackColor = RGB(lockedRed, lockedGreen, lockedBlue)
+        Status_Textbox = "All shipments have been stopped!"
     
     End If
     
