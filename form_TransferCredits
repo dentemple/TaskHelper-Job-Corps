@@ -283,7 +283,9 @@ Private Sub UserForm_Initialize()
         End If
         
         For i = 1 To objAS400ConnList.Count
-            .AddItem objAS400ConnList(i).name
+            If objAS400ConnList(i).Ready Then
+                .AddItem objAS400ConnList(i).name
+            End If
         Next i
         
         .Text = Session_ComboBox.List(0)
