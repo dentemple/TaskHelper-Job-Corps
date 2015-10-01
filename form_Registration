@@ -126,18 +126,20 @@ Private Sub UserForm_Initialize()
     'Populates the selection boxes
     With Session_ComboBox
     
+        .Clear
+    
         If Len(Trim(rnglastSession)) = 1 Then
             .AddItem rnglastSession
         End If
-    
-        .Clear
         
         If Len(container) = 1 And InStr(1, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", container) >= 1 Then
             .AddItem container
         End If
         
         For i = 1 To objAS400ConnList.Count
-            .AddItem objAS400ConnList(i).name
+            If objAS400ConnList(i).Ready Then
+                .AddItem objAS400ConnList(i).name
+            End If
         Next i
         
         .Text = Session_ComboBox.List(0)
