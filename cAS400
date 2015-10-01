@@ -284,7 +284,11 @@ Public Property Get IsInhibited() As Boolean
         inhibited = True
     End If
     
-    successful = Me.Operator.WaitForAppAvailable(g_timeOut)
+    If Me.Operator.WaitForInputReady(10000) Then
+        successful = True
+    Else
+        successful = False
+    End If
     
     If inhibited Or successful = False Then
         IsInhibited = True
