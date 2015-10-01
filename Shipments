@@ -30,7 +30,7 @@ Public Sub ReleaseAllShipments(ByRef ShipForm As MSForms.UserForm, ByVal AS400 A
     Dim i As Long
     Dim SID As String
     
-    SID = Trim(CreditsForm.SID_Textbox)
+    SID = Trim(ShipForm.SID_Textbox)
     Exception.ErrMessage = "Student ID: " & SID
     Exception.ErrMessage = "Navigating ..."
     
@@ -165,7 +165,7 @@ Public Sub StopAllShipments(ByRef ShipForm As MSForms.UserForm, ByVal AS400 As c
     Dim shipSet() As Variant
     shipSet() = Array(type540, type560, type620)
     
-    SID = Trim(CreditsForm.SID_Textbox)
+    SID = Trim(ShipForm.SID_Textbox)
     Exception.ErrMessage = "Student ID: " & SID
     Exception.ErrMessage = "Navigating ..."
     
