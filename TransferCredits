@@ -21,7 +21,7 @@ Option Explicit
     Const optionCustomerService As String = "1"
     Const optionEducationInquiry As String = "15"
     Const locationTR As String = "60211"
-    Const actionCodeC As String = "C"
+    Const actionCodeC As String = "I"
     Const applyCodeY As String = "Y"
     Const schoolCode As String = "H"
 
@@ -120,11 +120,25 @@ Exit Sub
 '''''''''''''''''''''''''''
 NavigationFailure:
 
-    Exception.Flag = True
+    With Exception
+        .IsError = False
+        .Flag = True
+        .Throw "An issue has occurred: The AS/400 has not found the correct screen location.  " & _
+                    "The procedure has been cancelled." & vbNewLine & vbNewLine & _
+                    "Please ensure the AS/400 is on the correct session, " & _
+                    "and on a friendly screen location, before proceeding."
+    End With
     
 GoTo Cleanup
 '''''''''''''''''''''''''''
 DoesNotExist:
+
+    With Exception
+        .IsError = False
+        .Flag = True
+        .Throw "The course list on the given student account is empty."
+    End With
+    
 GoTo Cleanup
 '''''''''''''''''''''''''''
 End Sub
@@ -187,11 +201,11 @@ Public Sub ApplyTransferCredits(ByRef CreditsForm As MSForms.UserForm, _
                 .SendKeys F11Key
             End With
             
-            If AS400.SearchText("60210", 1, 1, forward) = False Then SIDNotAMatch
+            If AS400.SearchText("60210", 1, 1, forward) = False Then GoTo NavigationFailure
     
     End Select
     
-    If AS400.SearchText(SID, 1, 1, forward) = False Then SIDNotAMatch
+    If AS400.SearchText(SID, 1, 1, forward) = False Then GoTo SIDNotAMatch
     
     LoadTextboxesFromCredits textboxArray(), CreditsForm, Exception
     LoadBools bools(), CreditsForm, Exception
@@ -234,7 +248,7 @@ Public Sub ApplyTransferCredits(ByRef CreditsForm As MSForms.UserForm, _
 
     If TRcounter <> 0 Then
     
-        If AS400.SearchText(locationTR, 1, 1, forward) Then GoTo LocationMismatch
+        If AS400.SearchText(locationTR, 1, 1, forward) Then GoTo NavigationFailure
 
         With AS400
         
@@ -287,15 +301,26 @@ Exit Sub
 '''''''''''''''''''''''''''
 NavigationFailure:
 
-    Exception.Flag = True
+    With Exception
+        .IsError = False
+        .Flag = True
+        .Throw "An issue has occurred: The AS/400 has not found the correct screen location.  " & _
+                    "The procedure has been cancelled." & vbNewLine & vbNewLine & _
+                    "Please ensure the AS/400 is on the correct session, " & _
+                    "and on a friendly screen location, before proceeding."
+    End With
     
 GoTo Cleanup
 '''''''''''''''''''''''''''
 SIDNotAMatch:
 
-GoTo Cleanup
-'''''''''''''''''''''''''''
-LocationMismatchL
+    With Exception
+        .IsError = False
+        .Flag = True
+        .Throw "The selected Student ID# has changed since starting the procedure.  " & _
+                    "The procedure has been cancelled." & vbNewLine & vbNewLine & _
+                    "Please ensure the Student ID# is correct before proceeding."
+    End With
 
 GoTo Cleanup
 '''''''''''''''''''''''''''
