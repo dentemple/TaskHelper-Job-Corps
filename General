@@ -197,9 +197,17 @@ Public Sub NavigateHome(ByVal AS400 As cAS400, ByRef Exception As cException)
                 
             'Empty
             Case "          "
+            
+                If AS400.SearchText("Sign On", 1, 80, reverse) Then
+                
+                    Exception.Flag = True
+                    Exception.ErrMessage = messageMustSignIn
+                    GoTo Cleanup
+                    
+                End If
 
                 Select Case AS400.GetText(1, 32, 10)
-                    
+
                     'Exit
                     Case "       Exi"
                         AS400.SendKeys EnterKey
@@ -236,6 +244,14 @@ Public Sub NavigateHome(ByVal AS400 As cAS400, ByRef Exception As cException)
                 
             Case Else
             
+                If AS400.SearchText("Sign On", 1, 80, reverse) Then
+                
+                    Exception.Flag = True
+                    Exception.ErrMessage = messageMustSignIn
+                    GoTo Cleanup
+                    
+                End If
+            
                 AS400.SendKeys F3Key
                 AS400.SendKeys F12Key
 
@@ -261,7 +277,16 @@ Public Function ConfirmHomeScreen(ByVal AS400 As cAS400, ByRef Exception As cExc
     On Error GoTo 0
     If Not Exception Is Nothing Then Exception.Push "General.ConfirmHomeScreen"
     
-    ConfirmHomeScreen = AS400.SearchText(Trim(tagHome), 1, 1, forward)
+    If Exception.Flag And Exception.ErrMessage = messageMustSignIn Then
+    
+        ConfirmHomeScreen = False
+        MsgBox messageMustSignIn, vbCritical, "The AS/400 has signed out of this session"
+    
+    Else
+
+        ConfirmHomeScreen = AS400.SearchText(Trim(tagHome), 1, 1, forward)
+        
+    End If
     
     Exception.Pop
     
@@ -279,3 +304,10 @@ Public Function CheckString(ByVal result_to_save As String, Optional ByVal extra
     End If
     
 End Function
+
+Public Sub ClearEntryField(ByVal AS400 As cAS400, ByVal number_of_spaces As Long, _
+    ByVal row_to_enter As Long, ByVal col_to_enter)
+
+    AS400.SetText Space(number_of_spaces), row_to_enter, col_to_enter
+
+End Sub
